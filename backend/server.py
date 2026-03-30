@@ -21,10 +21,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-DB_NAME = os.environ.get('DB_NAME', 'annadatahub')
-JWT_SECRET = os.environ.get('JWT_SECRET_KEY', 'annadatahub-secret')
-CLAUDE_API_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
+MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
+DB_NAME = os.environ.get("DB_NAME", "annadatahub")
+JWT_SECRET = os.environ.get("JWT_SECRET_KEY", "annadatahub-secret")
+CLAUDE_API_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
 
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
@@ -116,19 +116,7 @@ async def login(user: UserLogin):
 
 @app.post("/api/crop/scan")
 async def scan_crop(request: CropScanRequest, authorization: str = Header(None)):
-    prompt = f"""You are an expert agricultural scientist for Indian farmers.
-Analyze this crop image and provide in JSON format:
-{{
-  "disease": "disease name or Healthy",
-  "severity": "Low/Medium/High/None",
-  "crop": "crop type",
-  "confidence": 85,
-  "treatment": "treatment description",
-  "medicine": "medicine name",
-  "dosage": "dosage per litre",
-  "prevention": "prevention tips",
-  "urgency": "Immediate/Within 7 days/No action needed"
-}}"""
+    prompt = f"""You are an expert agricultural scientist for Indian farmers.\nAnalyze this crop image and provide in JSON format:\n{{\n  "disease": "disease name or Healthy",\n  "severity": "Low/Medium/High/None",\n  "crop": "crop type",\n  "confidence": 85,\n  "treatment": "treatment description",\n  "medicine": "medicine name",\n  "dosage": "dosage per litre",\n  "prevention": "prevention tips",\n  "urgency": "Immediate/Within 7 days/No action needed"\n}}"""
     result = await call_claude_vision(request.image_base64, prompt)
     if authorization:
         try:
@@ -152,7 +140,7 @@ async def mandi_prices(crop: str = "wheat", state: str = "Punjab"):
 
 @app.get("/api/weather")
 async def weather(location: str = "Punjab"):
-    result = await call_claude(f"Give today's farming weather advisory for {location} India as JSON with temperature, humidity, rainfall_chance, spray_suitable, farming_advice.")
+    result = await call_claude(f"Give today\'s farming weather advisory for {location} India as JSON with temperature, humidity, rainfall_chance, spray_suitable, farming_advice.")
     return {"success": True, "data": result, "location": location}
 
 @app.get("/api/schemes")
