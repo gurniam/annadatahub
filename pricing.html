@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Annadatahub – Plans & Pricing</title>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green:      #1a5c2e;
+    --green-mid:  #2d7a45;
+    --green-light:#e8f5ec;
+    --gold:       #f5a623;
+    --gold-light: #fff8ec;
+    --earth:      #7c5c2e;
+    --bg:         #f4f7f4;
+    --white:      #ffffff;
+    --text:       #1a2e1a;
+    --muted:      #6b7c6b;
+    --border:     #d0e4d4;
+    --shadow:     0 4px 24px rgba(26,92,46,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hind', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+    padding: 32px 20px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .logo {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .logo-icon {
+    width: 48px; height: 48px;
+    background: var(--gold);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .logo-name {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.01em;
+  }
+  .logo-name span { color: var(--gold); }
+  header h2 {
+    font-family: 'Hind', sans-serif;
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 20px;
+  }
+
+  /* ── TOGGLE ── */
+  .toggle-wrap {
+    display: inline-flex;
+    background: rgba(255,255,255,0.15);
+    border-radius: 100px;
+    padding: 4px;
+    gap: 2px;
+  }
+  .toggle-btn {
+    padding: 8px 22px;
+    border-radius: 100px;
+    border: none;
+    font-family: 'Hind', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+  }
+  .toggle-btn.active {
+    background: white;
+    color: var(--green);
+  }
+  .save-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--text);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ── CARDS ── */
+  .cards-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 16px 48px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 20px;
+  }
+
+  .plan-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 28px 24px;
+    border: 2px solid var(--border);
+    box-shadow: var(--shadow);
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(26,92,46,0.15);
+  }
+  .plan-card.featured {
+    border-color: var(--green);
+    background: linear-gradient(160deg, #f0faf3 0%, white 60%);
+  }
+
+  .popular-badge {
+    position: absolute;
+    top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--green);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 16px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .plan-icon { font-size: 2rem; margin-bottom: 10px; }
+  .plan-name {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+  .plan-tagline {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  .price-block { margin-bottom: 20px; }
+  .price-amount {
+    font-family: 'Baloo 2', cursive;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+  .price-amount .rupee { font-size: 1.4rem; vertical-align: top; margin-top: 6px; display: inline-block; }
+  .price-period { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+  .price-original {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-right: 6px;
+  }
+  .price-save {
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* Features */
+  .features { list-style: none; margin-bottom: 24px; }
+  .features li {
+    display: flex; gap: 9px; align-items: flex-start;
+    font-size: 0.88rem;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+  }
+  .features li:last-child { border-bottom: none; }
+  .features li .check { color: var(--green); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .features li .cross { color: #ccc; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* CTA Button */
+  .cta-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .cta-btn.free {
+    background: var(--green-light);
+    color: var(--green);
+    border: 2px solid var(--border);
+  }
+  .cta-btn.free:hover { background: var(--border); }
+  .cta-btn.basic {
+    background: var(--green);
+    color: white;
+    box-shadow: 0 4px 14px rgba(26,92,46,0.3);
+  }
+  .cta-btn.basic:hover { background: var(--green-mid); transform: translateY(-1px); }
+  .cta-btn.premium {
+    background: linear-gradient(135deg, var(--gold) 0%, #e8940f 100%);
+    color: white;
+    box-shadow: 0 4px 14px rgba(245,166,35,0.4);
+  }
+  .cta-btn.premium:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,166,35,0.5); }
+
+  /* ── TRUST STRIP ── */
+  .trust-strip {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+  }
+  .trust-strip p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .trust-icons {
+    display: flex; justify-content: center; align-items: center;
+    gap: 24px; flex-wrap: wrap;
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.8rem; color: var(--muted); font-weight: 500;
+  }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal-icon { font-size: 3rem; margin-bottom: 12px; }
+  .modal-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.3rem; font-weight: 700;
+    color: var(--green); margin-bottom: 8px;
+  }
+  .modal-text { font-size: 0.9rem; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+  .modal-form input {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Hind', sans-serif;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .modal-form input:focus { border-color: var(--green); }
+  .modal-pay-btn {
+    width: 100%; padding: 13px;
+    background: var(--green); color: white;
+    border: none; border-radius: 12px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem; font-weight: 700;
+    cursor: pointer; margin-bottom: 10px;
+    transition: background 0.2s;
+  }
+  .modal-pay-btn.gold {
+    background: linear-gradient(135deg, var(--gold), #e8940f);
+  }
+  .modal-pay-btn:hover { opacity: 0.92; }
+  .modal-cancel {
+    background: none; border: none;
+    color: var(--muted); font-size: 0.85rem;
+    cursor: pointer; text-decoration: underline;
+  }
+  .modal-plan-summary {
+    background: var(--green-light);
+    border-radius: 10px; padding: 12px;
+    margin-bottom: 18px;
+    font-size: 0.88rem;
+  }
+  .modal-plan-summary strong { color: var(--green); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div class="logo-name">Annadata<span>Hub</span></div>
+  </div>
+  <h2>Simple plans for every farmer. Cancel anytime.</h2>
+  <div class="toggle-wrap">
+    <button class="toggle-btn active" onclick="setMode('monthly')">Monthly</button>
+    <button class="toggle-btn" onclick="setMode('yearly')">Yearly <span class="save-badge">Save 30%</span></button>
+  </div>
+</header>
+
+<!-- PRICING CARDS -->
+<div class="cards-wrap">
+
+  <!-- FREE -->
+  <div class="plan-card">
+    <div class="plan-icon">🌱</div>
+    <div class="plan-name">Free</div>
+    <div class="plan-tagline">Get started — perfect for trying out AgriScan</div>
+    <div class="price-block">
+      <div class="price-amount"><span class="rupee">₹</span>0</div>
+      <div class="price-period">forever free</div>
+    </div>
+    <ul class="features">
+      <li><span class="check">✓</span> 5 crop scans per month</li>
+      <li><span class="check">✓</span> Basic disease detection</li>
+      <li><span class="check">✓</span> Community access</li>
+      <li><span class="cross">✗</span> Personalized advice</li>
+      <li><span class="cross">✗</span> Multi-language support</li>
+      <li><span class="cross">✗</span> Early warning alerts</li>
+      <li><span class="cross">✗</span> Post-harvest guidance</li>
+    </ul>
+    <button class="cta-btn free" onclick="handleFree()">Start Free →</button>
+  </div>
+
+  <!-- BASIC -->
+  <div class="plan-card featured">
+    <div class="popular-badge">⭐ Most Popular</div>
+    <div class="plan-icon">🌿</div>
+    <div class="plan-name">Basic</div>
+    <div class="plan-tagline">Best for small farmers with 1–5 acres</div>
+    <div class="price-block">
+      <div class="price-amount" id="basic-price"><span class="rupee">₹</span>49</div>
+      <div class="price-period" id="basic-period">per month • billed monthly</div>
+      <div id="basic-save" style="display:none">
+        <span class="price-original">₹588/year</span>
+        <span class="price-save">You save ₹177!</span>
+      </div>
+    </div>
+    <ul class="features">
+      <li><span class="check">✓</span> 30 crop scans per month</li>
+      <li><span class="check">✓</span> Full disease detection + treatment</li>
+      <li><span class="check">✓</span> Community access</li>
+      <li><span class="check">✓</span> Personalized advice (3 languages)</li>
+      <li><span class="check">✓</span> Early warning alerts</li>
+      <li><span class="cross">✗</span> Post-harvest guidance</li>
+      <li><span class="cross">✗</span> All 13 languages</li>
+    </ul>
+    <button class="cta-btn basic" onclick="openModal('basic')">Get Basic Plan →</button>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="plan-card">
+    <div class="plan-icon">🌾</div>
+    <div class="plan-name">Premium</div>
+    <div class="plan-tagline">Full power for serious farmers & FPOs</div>
+    <div class="price-block">
+      <div class="price-amount" id="premium-price"><span class="rupee">₹</span>99</div>
+      <div class="price-period" id="premium-period">per month • billed monthly</div>
+      <div id="premium-save" style="display:none">
+        <span class="price-original">₹1,188/year</span>
+        <span class="price-save">You save ₹357!</span>
+      </div>
+    </div>
+    <ul class="features">
+      <li><span class="check">✓</span> Unlimited crop scans</li>
+      <li><span class="check">✓</span> Full disease detection + treatment</li>
+      <li><span class="check">✓</span> Community access</li>
+      <li><span class="check">✓</span> Personalized advice (all 13 languages)</li>
+      <li><span class="check">✓</span> Early warning alerts</li>
+      <li><span class="check">✓</span> Post-harvest guidance</li>
+      <li><span class="check">✓</span> Priority support</li>
+    </ul>
+    <button class="cta-btn premium" onclick="openModal('premium')">Get Premium Plan →</button>
+  </div>
+
+</div>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <p>Trusted by farmers across India</p>
+  <div class="trust-icons">
+    <div class="trust-item">🔒 Secure Payment</div>
+    <div class="trust-item">↩️ Cancel Anytime</div>
+    <div class="trust-item">📱 Works on Any Phone</div>
+    <div class="trust-item">🇮🇳 Made for Indian Farmers</div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-icon" id="modal-icon">🌿</div>
+    <div class="modal-title" id="modal-title">Get Basic Plan</div>
+    <div class="modal-plan-summary" id="modal-summary"></div>
+    <div class="modal-form">
+      <input type="text" id="user-name" placeholder="Your full name" />
+      <input type="tel" id="user-phone" placeholder="Mobile number (10 digits)" maxlength="10" />
+      <input type="email" id="user-email" placeholder="Email address" />
+      <button class="modal-pay-btn" id="pay-btn" onclick="startPayment()">Pay with Razorpay</button>
+      <br/>
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── CONFIG — Replace these with your real Razorpay keys ──
+  const RAZORPAY_KEY = "rzp_test_YourKeyHere"; // 🔑 Replace with your Razorpay Key ID
+
+  // Plan prices in paise (₹1 = 100 paise)
+  const PLANS = {
+    basic: {
+      monthly: { amount: 4900,  label: "Basic Monthly",  period: "per month" },
+      yearly:  { amount: 41100, label: "Basic Yearly",   period: "per year"  }
+    },
+    premium: {
+      monthly: { amount: 9900,  label: "Premium Monthly", period: "per month" },
+      yearly:  { amount: 83100, label: "Premium Yearly",  period: "per year"  }
+    }
+  };
+
+  let currentMode = "monthly";
+  let currentPlan = "basic";
+
+  function setMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll(".toggle-btn").forEach((b, i) => {
+      b.classList.toggle("active", (mode === "monthly" && i === 0) || (mode === "yearly" && i === 1));
+    });
+
+    // Update Basic price
+    if (mode === "monthly") {
+      document.getElementById("basic-price").innerHTML  = '<span class="rupee">₹</span>49';
+      document.getElementById("basic-period").textContent = "per month • billed monthly";
+      document.getElementById("basic-save").style.display = "none";
+      document.getElementById("premium-price").innerHTML = '<span class="rupee">₹</span>99';
+      document.getElementById("premium-period").textContent = "per month • billed monthly";
+      document.getElementById("premium-save").style.display = "none";
+    } else {
+      document.getElementById("basic-price").innerHTML  = '<span class="rupee">₹</span>411';
+      document.getElementById("basic-period").textContent = "per year • billed annually";
+      document.getElementById("basic-save").style.display = "block";
+      document.getElementById("premium-price").innerHTML = '<span class="rupee">₹</span>831';
+      document.getElementById("premium-period").textContent = "per year • billed annually";
+      document.getElementById("premium-save").style.display = "block";
+    }
+  }
+
+  function openModal(plan) {
+    currentPlan = plan;
+    const p = PLANS[plan][currentMode];
+    const amountRupees = p.amount / 100;
+
+    document.getElementById("modal-icon").textContent   = plan === "premium" ? "🌾" : "🌿";
+    document.getElementById("modal-title").textContent  = `Get ${plan === "premium" ? "Premium" : "Basic"} Plan`;
+    document.getElementById("modal-summary").innerHTML  =
+      `<strong>${p.label}</strong> — ₹${amountRupees.toLocaleString('en-IN')} ${p.period}<br/>
+       <small style="color:#6b7c6b">Secure payment via Razorpay · Cancel anytime</small>`;
+    document.getElementById("pay-btn").className =
+      `modal-pay-btn${plan === "premium" ? " gold" : ""}`;
+    document.getElementById("modal").classList.add("show");
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.remove("show");
+    document.getElementById("user-name").value = "";
+    document.getElementById("user-phone").value = "";
+    document.getElementById("user-email").value = "";
+  }
+
+  function handleFree() {
+    alert("Welcome to AnnadataHub Free! 🌱\nCreate your account to get started.");
+  }
+
+  function startPayment() {
+    const name  = document.getElementById("user-name").value.trim();
+    const phone = document.getElementById("user-phone").value.trim();
+    const email = document.getElementById("user-email").value.trim();
+
+    if (!name)  { alert("Please enter your name"); return; }
+    if (!phone || phone.length !== 10) { alert("Please enter a valid 10-digit mobile number"); return; }
+    if (!email || !email.includes("@")) { alert("Please enter a valid email address"); return; }
+
+    const p = PLANS[currentPlan][currentMode];
+
+    const options = {
+      key: RAZORPAY_KEY,
+      amount: p.amount,
+      currency: "INR",
+      name: "AnnadataHub",
+      description: p.label,
+      image: "",
+      prefill: { name, email, contact: "+91" + phone },
+      notes: { plan: p.label, billing: currentMode },
+      theme: { color: "#1a5c2e" },
+      handler: function(response) {
+        closeModal();
+        showSuccess(response.razorpay_payment_id, p.label);
+      },
+      modal: {
+        ondismiss: function() { console.log("Payment cancelled"); }
+      }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  function showSuccess(paymentId, planLabel) {
+    document.getElementById("modal").classList.add("show");
+    document.querySelector(".modal").innerHTML = `
+      <div style="text-align:center; padding: 10px 0">
+        <div style="font-size:3.5rem; margin-bottom:14px">🎉</div>
+        <div style="font-family:'Baloo 2',cursive; font-size:1.4rem; font-weight:700; color:#1a5c2e; margin-bottom:8px">
+          Payment Successful!
+        </div>
+        <p style="color:#6b7c6b; font-size:0.9rem; margin-bottom:16px; line-height:1.5">
+          Welcome to AnnadataHub <strong>${planLabel}</strong>!<br/>
+          Your account has been activated.
+        </p>
+        <div style="background:#e8f5ec; border-radius:10px; padding:12px; margin-bottom:20px; font-size:0.82rem; color:#2d7a45">
+          Payment ID: <strong>${paymentId}</strong>
+        </div>
+        <button onclick="location.reload()" style="background:#1a5c2e; color:white; border:none; border-radius:12px; padding:12px 28px; font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; cursor:pointer">
+          Go to Dashboard →
+        </button>
+      </div>
+    `;
+  }
+
+  // Close modal on backdrop click
+  document.getElementById("modal").addEventListener("click", function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+<!-- FOOTER -->
+<div style="background:#1a5c2e; color:rgba(255,255,255,0.7); text-align:center; padding:18px; font-size:0.82rem;">
+  © 2026 <span style="color:#f5a623; font-weight:700;">AnnadataHub</span> &nbsp;·&nbsp;
+  📧 <a href="mailto:annadattahub@gmail.com" style="color:#f5a623; text-decoration:none;">annadattahub@gmail.com</a> &nbsp;·&nbsp;
+  Made with ❤️ for Indian Farmers
+</div>
+
+</body>
+</html>

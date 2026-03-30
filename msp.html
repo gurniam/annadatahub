@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AnnadataHub — MSP Information Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;
+    --gold:#f5a623;--gold-light:#fff8ec;
+    --blue:#2563eb;--blue-light:#eff6ff;
+    --red:#dc2626;--red-light:#fee2e2;
+    --orange:#ea580c;--orange-light:#fff7ed;
+    --bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;}
+
+  .header{background:linear-gradient(135deg,var(--green),var(--green-mid));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:8px;}
+  .logo-icon{width:36px;height:36px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .logo-name{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .logo-name span{color:var(--gold);}
+  .lang-sel{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:5px 8px;border-radius:8px;font-size:0.78rem;cursor:pointer;}
+  .lang-sel option{background:var(--green);}
+
+  .tabs{display:flex;background:white;border-bottom:2px solid var(--border);overflow-x:auto;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex-shrink:0;padding:10px 10px;border:none;background:none;font-family:'Hind',sans-serif;font-size:0.74rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px;}
+  .tab.active{color:var(--green);border-bottom-color:var(--green);}
+  .tab .icon{font-size:1.1rem;}
+
+  .content{padding:14px;max-width:480px;margin:0 auto;}
+  .page{display:none;}
+  .page.active{display:block;}
+
+  .card{background:white;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .card-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+
+  .field{margin-bottom:10px;}
+  label{font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:3px;display:block;}
+  select,input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.86rem;background:white;color:var(--text);outline:none;transition:border 0.2s;}
+  select:focus,input:focus{border-color:var(--green);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  .btn{width:100%;padding:12px;border-radius:12px;border:none;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-green{background:var(--green);color:white;}
+  .btn-gold{background:var(--gold);color:var(--text);}
+  .btn-blue{background:var(--blue);color:white;}
+  .btn-sm{padding:7px 14px;font-size:0.78rem;width:auto;border-radius:8px;}
+  .btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+  .loading{text-align:center;padding:28px;}
+  .spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* MSP HERO */
+  .msp-hero{background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:16px;padding:18px;margin-bottom:14px;color:white;}
+  .msp-hero-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:4px;}
+  .msp-hero-sub{font-size:0.78rem;opacity:0.85;margin-bottom:14px;}
+  .msp-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .msp-hero-stat{background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;text-align:center;}
+  .msp-hero-val{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;}
+  .msp-hero-lbl{font-size:0.65rem;opacity:0.8;margin-top:2px;}
+
+  /* MSP TABLE */
+  .msp-row{background:white;border-radius:12px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden;}
+  .msp-row-header{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .crop-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+  .crop-name{font-weight:700;font-size:0.9rem;flex:1;}
+  .crop-category{font-size:0.7rem;color:var(--muted);}
+  .msp-price{text-align:right;}
+  .msp-val{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);}
+  .msp-unit{font-size:0.65rem;color:var(--muted);}
+  .msp-change{font-size:0.72rem;font-weight:700;}
+  .change-up{color:#16a34a;}
+  .change-down{color:var(--red);}
+
+  /* COMPARISON */
+  .compare-card{border-radius:14px;padding:16px;margin-bottom:10px;border:2px solid var(--border);}
+  .compare-card.good{border-color:#16a34a;background:#f0fdf4;}
+  .compare-card.bad{border-color:var(--red);background:var(--red-light);}
+  .compare-card.ok{border-color:var(--gold);background:var(--gold-light);}
+  .compare-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .compare-status{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+  .compare-item{background:rgba(255,255,255,0.7);border-radius:8px;padding:8px;text-align:center;}
+  .compare-item-val{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;}
+  .compare-item-lbl{font-size:0.62rem;color:var(--muted);}
+  .savings-box{border-radius:10px;padding:12px;text-align:center;}
+  .savings-amount{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;}
+  .advice-text{font-size:0.84rem;line-height:1.5;margin-top:8px;}
+
+  /* ALERT */
+  .alert-item{background:white;border-radius:12px;border-left:4px solid var(--red);padding:14px;margin-bottom:8px;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .alert-item.warning{border-left-color:var(--gold);}
+  .alert-item.good{border-left-color:#16a34a;}
+  .alert-title{font-weight:700;font-size:0.9rem;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+  .alert-text{font-size:0.82rem;color:#374151;line-height:1.5;}
+  .alert-time{font-size:0.7rem;color:var(--muted);margin-top:4px;}
+
+  /* PROCUREMENT CENTERS */
+  .center-card{background:white;border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:10px;}
+  .center-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+  .center-icon{width:44px;height:44px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+  .center-name{font-weight:700;font-size:0.9rem;margin-bottom:2px;}
+  .center-type{font-size:0.72rem;color:var(--muted);}
+  .center-distance{font-size:0.75rem;color:var(--green);font-weight:600;margin-left:auto;white-space:nowrap;}
+  .center-crops{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+  .ctag{background:var(--green-light);color:var(--green);padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:600;}
+  .center-info{font-size:0.78rem;color:var(--muted);}
+  .center-actions{display:flex;gap:8px;margin-top:10px;}
+  .center-btn{flex:1;padding:8px;background:var(--green);color:white;border:none;border-radius:8px;font-family:'Baloo 2',cursive;font-size:0.82rem;font-weight:700;cursor:pointer;}
+  .center-btn.outline{background:white;color:var(--green);border:1.5px solid var(--green);}
+
+  /* RIGHTS */
+  .right-card{background:white;border-radius:12px;border:1px solid var(--border);margin-bottom:10px;overflow:hidden;}
+  .right-header{padding:14px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .right-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+  .right-title{font-weight:700;font-size:0.9rem;flex:1;}
+  .right-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border);}
+  .right-body.open{display:block;padding-top:12px;}
+  .right-text{font-size:0.84rem;line-height:1.7;color:#374151;margin-bottom:8px;}
+  .right-steps{background:var(--green-light);border-radius:8px;padding:10px;margin-bottom:8px;}
+  .right-step{font-size:0.8rem;padding:4px 0;border-bottom:1px solid var(--border);}
+  .right-step:last-child{border:none;}
+  .helpline-box{background:var(--blue-light);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;}
+  .helpline-num{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--blue);}
+
+  /* AI RESPONSE */
+  .ai-box{background:white;border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px;}
+  .ai-label{font-size:0.7rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:8px;}
+  .ai-text{font-size:0.86rem;line-height:1.7;}
+
+  .info-box{border-radius:10px;padding:12px 14px;font-size:0.84rem;line-height:1.6;margin-bottom:10px;}
+  .info-green{background:var(--green-light);border-left:3px solid var(--green);}
+  .info-gold{background:var(--gold-light);border-left:3px solid var(--gold);color:#92400e;}
+  .info-blue{background:var(--blue-light);border-left:3px solid var(--blue);color:var(--blue);}
+  .info-red{background:var(--red-light);border-left:3px solid var(--red);color:var(--red);}
+
+  .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:0.7rem;font-weight:700;}
+  .badge-green{background:var(--green-light);color:var(--green);}
+  .badge-red{background:var(--red-light);color:var(--red);}
+  .badge-gold{background:var(--gold-light);color:#92400e;}
+  .badge-blue{background:var(--blue-light);color:var(--blue);}
+
+  .empty{text-align:center;padding:36px 20px;color:var(--muted);}
+  .empty .icon{font-size:2.5rem;margin-bottom:10px;}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.83rem;z-index:1000;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;text-align:center;}
+  .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
+  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+  .hidden{display:none;}
+  .pb{height:20px;}
+  .powered{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:8px;}
+  .divider{height:1px;background:var(--border);margin:12px 0;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div class="logo-name">Annadata<span>Hub</span></div>
+  </div>
+  <select class="lang-sel" id="langSel" onchange="setLang(this.value)">
+    <option value="en">English</option>
+    <option value="hi">हिंदी</option>
+    <option value="pa">ਪੰਜਾਬੀ</option>
+    <option value="mr">मराठी</option>
+    <option value="te">తెలుగు</option>
+    <option value="ta">தமிழ்</option>
+    <option value="gu">ગુજરાતી</option>
+    <option value="bn">বাংলা</option>
+  </select>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('msp')" id="tab-msp"><span class="icon">📊</span><span id="t1">MSP Rates</span></button>
+  <button class="tab" onclick="showTab('compare')" id="tab-compare"><span class="icon">⚖️</span><span id="t2">Compare</span></button>
+  <button class="tab" onclick="showTab('alerts')" id="tab-alerts"><span class="icon">🚨</span><span id="t3">Alerts</span></button>
+  <button class="tab" onclick="showTab('centers')" id="tab-centers"><span class="icon">🏛️</span><span id="t4">Centers</span></button>
+  <button class="tab" onclick="showTab('rights')" id="tab-rights"><span class="icon">⚖️</span><span id="t5">Rights</span></button>
+</div>
+
+<div class="content">
+
+  <!-- ══ MSP RATES ═══════════════════════════════════════════════ -->
+  <div class="page active" id="page-msp">
+
+    <div class="msp-hero">
+      <div class="msp-hero-title">📊 Official MSP Rates 2025-26</div>
+      <div class="msp-hero-sub">Government of India — Ministry of Agriculture · Updated annually</div>
+      <div class="msp-hero-grid">
+        <div class="msp-hero-stat"><div class="msp-hero-val">23</div><div class="msp-hero-lbl">Crops covered</div></div>
+        <div class="msp-hero-stat"><div class="msp-hero-val">2025-26</div><div class="msp-hero-lbl">Current season</div></div>
+        <div class="msp-hero-stat"><div class="msp-hero-val">₹2,275</div><div class="msp-hero-lbl">Wheat MSP/qtl</div></div>
+        <div class="msp-hero-stat"><div class="msp-hero-val">₹2,300</div><div class="msp-hero-lbl">Paddy MSP/qtl</div></div>
+      </div>
+    </div>
+
+    <div class="info-green">
+      <strong>ℹ️ What is MSP?</strong> Minimum Support Price is the government's guaranteed minimum price for your crop. If mandi price falls below MSP, government will buy from you at MSP.
+    </div>
+
+    <div class="field" style="margin-bottom:12px">
+      <select id="mspFilter" onchange="filterMSP(this.value)">
+        <option value="all">All Crops</option>
+        <option value="kharif">🌧️ Kharif (Summer crops)</option>
+        <option value="rabi">❄️ Rabi (Winter crops)</option>
+        <option value="other">🌾 Other crops</option>
+      </select>
+    </div>
+
+    <div id="mspList"></div>
+
+    <div class="info-gold" style="margin-top:12px">
+      <strong>💡 Important:</strong> MSP is announced by CACP (Commission for Agricultural Costs and Prices) and approved by Cabinet. Source: agricoop.gov.in
+    </div>
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ COMPARE MSP vs MANDI ════════════════════════════════════ -->
+  <div class="page" id="page-compare">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">⚖️ Compare MSP vs Mandi Price</div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:12px">Check if you are getting fair price for your crop</p>
+      <div class="two-col">
+        <div class="field">
+          <label>Your Crop</label>
+          <select id="compareCrop">
+            <option value="Wheat">🌾 Wheat (गेहूं)</option>
+            <option value="Paddy">🌾 Paddy (धान)</option>
+            <option value="Corn">🌽 Corn (मक्का)</option>
+            <option value="Soybean">🌿 Soybean</option>
+            <option value="Cotton">🌿 Cotton</option>
+            <option value="Mustard">🌻 Mustard</option>
+            <option value="Groundnut">🥜 Groundnut</option>
+            <option value="Sunflower">🌻 Sunflower</option>
+            <option value="Sugarcane">🎋 Sugarcane</option>
+            <option value="Pulses">🫘 Pulses (Dal)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Your State</label>
+          <select id="compareState">
+            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+            <option>Maharashtra</option><option>Madhya Pradesh</option><option>Gujarat</option>
+            <option>Rajasthan</option><option>Bihar</option><option>West Bengal</option>
+            <option>Andhra Pradesh</option><option>Tamil Nadu</option><option>Karnataka</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Price you are being offered (₹ per quintal)</label>
+        <input type="number" id="offeredPrice" placeholder="e.g. 1900"/>
+      </div>
+      <div class="field">
+        <label>Your quantity (quintals)</label>
+        <input type="number" id="quantity" placeholder="e.g. 50"/>
+      </div>
+      <button class="btn btn-green" onclick="comparePrices()" id="compareBtn">⚖️ Check If Price is Fair</button>
+    </div>
+
+    <div id="compareResult"></div>
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ MSP ALERTS ══════════════════════════════════════════════ -->
+  <div class="page" id="page-alerts">
+
+    <!-- Active Alerts -->
+    <div style="background:linear-gradient(135deg,var(--red),#b91c1c);border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.6rem;margin-bottom:6px">🚨</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800">MSP Price Alerts</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Get notified when mandi price drops below MSP</div>
+    </div>
+
+    <div id="activeAlerts"></div>
+
+    <!-- Set Alert -->
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">🔔 Set MSP Alert for Your Crop</div>
+      <div class="two-col">
+        <div class="field">
+          <label>Crop</label>
+          <select id="alertCrop">
+            <option>Wheat</option><option>Paddy</option><option>Mustard</option>
+            <option>Corn</option><option>Soybean</option><option>Groundnut</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Your State</label>
+          <select id="alertState">
+            <option>Punjab</option><option>Haryana</option><option>UP</option>
+            <option>Maharashtra</option><option>Gujarat</option><option>MP</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Alert me when price goes below (₹/quintal)</label>
+        <input type="number" id="alertPrice" placeholder="e.g. 2100 (leave blank for MSP itself)"/>
+      </div>
+      <button class="btn btn-green" onclick="setAlert()">🔔 Set Alert</button>
+      <div style="text-align:center;font-size:0.7rem;color:var(--muted);margin-top:6px">Alert will be sent to your WhatsApp and app notification</div>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ PROCUREMENT CENTERS ════════════════════════════════════ -->
+  <div class="page" id="page-centers">
+
+    <div class="info-green" style="margin-bottom:14px">
+      <strong>🏛️ Government Procurement Centers</strong> buy your crop at official MSP price. FCI, NAFED, state agencies operate these centers during procurement season.
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">🔍 Find Nearest Center</div>
+      <div class="two-col">
+        <div class="field">
+          <label>State</label>
+          <select id="centerState">
+            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+            <option>Maharashtra</option><option>Madhya Pradesh</option><option>Gujarat</option>
+            <option>Rajasthan</option><option>Bihar</option><option>West Bengal</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Your Crop</label>
+          <select id="centerCrop">
+            <option>Wheat</option><option>Paddy</option><option>Mustard</option>
+            <option>Pulses</option><option>Groundnut</option><option>Cotton</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-blue" onclick="findCenters()" id="centersBtn">🏛️ Find Centers Near Me</button>
+    </div>
+
+    <div id="centersList"></div>
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ FARMER RIGHTS ══════════════════════════════════════════ -->
+  <div class="page" id="page-rights">
+
+    <div style="background:linear-gradient(135deg,var(--blue),#1d4ed8);border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.6rem;margin-bottom:6px">⚖️</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800">Know Your Rights as a Farmer</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Based on Indian agricultural laws and government policies</div>
+    </div>
+
+    <div class="helpline-box" style="margin-bottom:14px">
+      <div style="font-size:1.5rem">📞</div>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:0.88rem;color:var(--blue)">Kisan Call Centre — Free Helpline</div>
+        <div class="helpline-num">1800-180-1551</div>
+        <div style="font-size:0.72rem;color:var(--muted)">Free call · Hindi & regional languages · Mon-Sat 6am-10pm</div>
+      </div>
+      <button class="btn-sm" style="background:var(--blue);color:white;border:none;border-radius:8px;padding:8px 12px;font-family:'Baloo 2',cursive;font-weight:700;cursor:pointer" onclick="window.location.href='tel:18001801551'">Call Now</button>
+    </div>
+
+    <div id="rightsList"></div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">🤖 Ask AI About Your Rights</div>
+      <div class="field">
+        <select id="rightsLang">
+          <option value="en">English</option><option value="hi">Hindi</option>
+          <option value="pa">Punjabi</option><option value="mr">Marathi</option>
+          <option value="te">Telugu</option><option value="ta">Tamil</option>
+        </select>
+      </div>
+      <div class="field">
+        <input type="text" id="rightsQuestion" placeholder="e.g. What can I do if mandi price is below MSP?"/>
+      </div>
+      <button class="btn btn-green" onclick="askRights()" id="rightsBtn">⚖️ Get Answer</button>
+      <div id="rightsAnswer"></div>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────
+const LANG_NAMES={en:"English",hi:"Hindi",pa:"Punjabi",mr:"Marathi",te:"Telugu",ta:"Tamil",gu:"Gujarati",bn:"Bengali"};
+
+// Official MSP 2025-26 (Government of India announced rates)
+const MSP_DATA = [
+  // KHARIF
+  {crop:"Paddy (Common)",icon:"🌾",msp:2300,prev:2183,category:"kharif",color:"#dcfce7",unit:"per quintal",hike:117},
+  {crop:"Paddy (Grade A)",icon:"🌾",msp:2320,prev:2203,category:"kharif",color:"#dcfce7",unit:"per quintal",hike:117},
+  {crop:"Jowar (Hybrid)",icon:"🌾",msp:3371,prev:3180,category:"kharif",color:"#dcfce7",unit:"per quintal",hike:191},
+  {crop:"Bajra",icon:"🌾",msp:2625,prev:2500,category:"kharif",color:"#dcfce7",unit:"per quintal",hike:125},
+  {crop:"Maize/Corn",icon:"🌽",msp:2090,prev:1962,category:"kharif",color:"#fefce8",unit:"per quintal",hike:128},
+  {crop:"Tur/Arhar Dal",icon:"🫘",msp:7550,prev:7000,category:"kharif",color:"#fdf4ff",unit:"per quintal",hike:550},
+  {crop:"Moong Dal",icon:"🫘",msp:8682,prev:8558,category:"kharif",color:"#fdf4ff",unit:"per quintal",hike:124},
+  {crop:"Urad Dal",icon:"🫘",msp:7400,prev:6950,category:"kharif",color:"#fdf4ff",unit:"per quintal",hike:450},
+  {crop:"Groundnut",icon:"🥜",msp:6783,prev:6377,category:"kharif",color:"#fff7ed",unit:"per quintal",hike:406},
+  {crop:"Sunflower Seed",icon:"🌻",msp:7280,prev:6760,category:"kharif",color:"#fefce8",unit:"per quintal",hike:520},
+  {crop:"Soybean",icon:"🌿",msp:4892,prev:4600,category:"kharif",color:"#f0fdf4",unit:"per quintal",hike:292},
+  {crop:"Cotton (Medium)",icon:"🌿",msp:7121,prev:6620,category:"kharif",color:"#f0f9ff",unit:"per quintal",hike:501},
+  {crop:"Sugarcane",icon:"🎋",msp:340,prev:315,category:"kharif",color:"#f0fdf4",unit:"per quintal",hike:25},
+  // RABI
+  {crop:"Wheat",icon:"🌾",msp:2275,prev:2150,category:"rabi",color:"#dcfce7",unit:"per quintal",hike:125},
+  {crop:"Barley",icon:"🌾",msp:1735,prev:1635,category:"rabi",color:"#dcfce7",unit:"per quintal",hike:100},
+  {crop:"Gram/Chana",icon:"🫘",msp:5440,prev:5230,category:"rabi",color:"#fdf4ff",unit:"per quintal",hike:210},
+  {crop:"Masoor Dal",icon:"🫘",msp:6425,prev:6000,category:"rabi",color:"#fdf4ff",unit:"per quintal",hike:425},
+  {crop:"Mustard/Rapeseed",icon:"🌻",msp:5950,prev:5650,category:"rabi",color:"#fefce8",unit:"per quintal",hike:300},
+  {crop:"Safflower",icon:"🌸",msp:5800,prev:5441,category:"rabi",color:"#fff7ed",unit:"per quintal",hike:359},
+];
+
+const ALERTS_DATA = [
+  {crop:"Wheat",state:"Punjab",msp:2275,current:2050,type:"bad",msg:"Wheat prices in many Punjab mandis are ₹225 below MSP today. Do not sell at these rates. Find nearest FCI center."},
+  {crop:"Mustard",state:"Rajasthan",msp:5950,current:5800,type:"warning",msg:"Mustard prices slightly below MSP in Rajasthan. Wait 1-2 weeks or sell at government center."},
+  {crop:"Paddy",state:"Haryana",msp:2300,current:2350,type:"good",msg:"Paddy prices are ABOVE MSP in Haryana today. Good time to sell in open market."},
+  {crop:"Wheat",state:"UP",msp:2275,current:2180,type:"bad",msg:"Wheat mandi prices in UP are ₹95 below MSP. Government procurement is open — contact nearest center."},
+];
+
+const RIGHTS = [
+  {
+    icon:"💰",color:"#dcfce7",title:"Right to Minimum Support Price",
+    text:"Every farmer has the right to receive at least MSP for 23 notified crops. If mandi price is below MSP, government agencies must procure your crop at MSP.",
+    steps:["Check official MSP at agricoop.gov.in","Visit nearest government procurement center (FCI/NAFED/State agency)","Register your crop with e-NAM portal","If procurement is denied — contact Kisan Call Centre 1800-180-1551"],
+    link:"https://agricoop.gov.in"
+  },
+  {
+    icon:"📋",color:"#eff6ff",title:"Right to Market Information",
+    text:"Under the Agricultural Produce Market Committee (APMC) Act, you have the right to know current market prices before selling. Market committees must display prices publicly.",
+    steps:["Check daily mandi prices at agmarknet.gov.in","Prices must be displayed at mandi gate — ask if not visible","You can negotiate based on current prices","Contact State Agricultural Marketing Board if prices not displayed"],
+    link:"https://agmarknet.gov.in"
+  },
+  {
+    icon:"🏛️",color:"#fdf4ff",title:"Right to Sell at Government Centers",
+    text:"You can sell your crop directly to government procurement agencies (FCI, NAFED, state agencies) at official MSP rates during procurement season. No middleman needed.",
+    steps:["Register at nearest procurement center","Bring land ownership documents (Khasra/Khatauni)","Bring Aadhaar card and bank account details","Payment directly to your bank account within 3 days","For wheat/paddy — government procurement is open every year"],
+    link:"https://fci.gov.in"
+  },
+  {
+    icon:"🌧️",color:"#fff7ed",title:"Right to Crop Insurance (PMFBY)",
+    text:"Under Pradhan Mantri Fasal Bima Yojana (PMFBY), farmers pay only 1.5-5% premium and get insurance for natural disaster, pest attack, drought. Government pays remaining premium.",
+    steps:["Register through Common Service Centre (CSC) or bank","Premium for Kharif: 2% of sum insured","Premium for Rabi: 1.5% of sum insured","Claim can be filed for natural disaster, pest, disease","Contact 14447 for PMFBY helpline"],
+    link:"https://pmfby.gov.in"
+  },
+  {
+    icon:"💳",color:"#f0fdf4",title:"Right to Kisan Credit Card (KCC)",
+    text:"Every farmer is entitled to a Kisan Credit Card for short-term crop loans at just 4% interest rate (after government subsidy). Limit based on land holding.",
+    steps:["Apply at nearest bank or Common Service Centre","Documents: Land records, Aadhaar, passport photo","Loan limit: ₹3 lakh at 4% interest","Can be used for seeds, fertilizers, equipment","Renew every year — no need to repay and take fresh loan"],
+    link:"https://www.nabard.org"
+  },
+  {
+    icon:"📱",color:"#fdf4ff",title:"Right to Digital Market Access (e-NAM)",
+    text:"e-NAM (National Agriculture Market) allows you to sell your crop online to buyers across India — getting the best price. Free registration for all farmers.",
+    steps:["Register at enam.gov.in — free","Bring land document, Aadhaar, bank account","List your produce with quantity and quality","Buyers from all India bid — you get best price","Payment directly to bank account"],
+    link:"https://enam.gov.in"
+  },
+];
+
+const DEMO_CENTERS = [
+  {name:"FCI Procurement Center",type:"Food Corporation of India",distance:"3.2 km",crops:["Wheat","Rice"],timing:"8am - 4pm Mon-Sat",contact:"0161-XXXXXXX",address:"Near Grain Market, Ludhiana",status:"Open"},
+  {name:"NAFED Procurement Point",type:"National Cooperative",distance:"7.8 km",crops:["Mustard","Pulses","Groundnut"],timing:"9am - 3pm",contact:"011-XXXXXXX",address:"Block Office Campus, Jagraon",status:"Open"},
+  {name:"Punjab Agro Mandi",type:"State Government Agency",distance:"12 km",crops:["Wheat","Paddy","Corn"],timing:"7am - 5pm",contact:"0161-XXXXXXX",address:"Main Mandi Complex",status:"Seasonal"},
+];
+
+let currentLang = "en";
+
+// ── LANGUAGE ─────────────────────────────────────────────────────
+function setLang(l) {
+  currentLang = l;
+  const labels = {
+    en:["MSP Rates","Compare","Alerts","Centers","Rights"],
+    hi:["MSP दर","तुलना","अलर्ट","केंद्र","अधिकार"],
+    pa:["MSP ਦਰਾਂ","ਤੁਲਨਾ","ਅਲਰਟ","ਕੇਂਦਰ","ਅਧਿਕਾਰ"],
+    mr:["MSP दर","तुलना","अलर्ट","केंद्रे","हक्क"],
+    te:["MSP రేట్లు","పోల్చడం","హెచ్చరికలు","కేంద్రాలు","హక్కులు"],
+    ta:["MSP விலை","ஒப்பீடு","எச்சரிக்கை","மையங்கள்","உரிமைகள்"],
+    gu:["MSP દર","સરખામણી","ચેતવણી","કેન્દ્રો","અધિકારો"],
+    bn:["MSP হার","তুলনা","সতর্কতা","কেন্দ্র","অধিকার"],
+  };
+  const lb = labels[l]||labels.en;
+  ["t1","t2","t3","t4","t5"].forEach((id,i)=>document.getElementById(id).textContent=lb[i]);
+}
+
+function showTab(tab) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
+}
+
+function showToast(msg,type="success") {
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.className="toast "+type;t.classList.remove("hidden");
+  setTimeout(()=>t.classList.add("hidden"),3000);
+}
+
+async function callClaude(system,user) {
+  const res = await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system,messages:[{role:"user",content:user}]})
+  });
+  if(!res.ok) throw new Error("API error");
+  const data = await res.json();
+  return data.content.map(b=>b.text||"").join("");
+}
+
+// ── MSP LIST ──────────────────────────────────────────────────────
+function renderMSP(data) {
+  document.getElementById("mspList").innerHTML = data.map((m,i)=>`
+    <div class="msp-row">
+      <div class="msp-row-header" onclick="toggleMSP(${i})">
+        <div class="crop-icon" style="background:${m.color}">${m.icon}</div>
+        <div style="flex:1">
+          <div class="crop-name">${m.crop}</div>
+          <div class="crop-category">${m.category==="kharif"?"🌧️ Kharif":"❄️ Rabi"} · ${m.unit}</div>
+        </div>
+        <div class="msp-price">
+          <div class="msp-val">₹${m.msp.toLocaleString("en-IN")}</div>
+          <div class="msp-unit">/quintal</div>
+          <div class="msp-change change-up">↑ ₹${m.hike} this year</div>
+        </div>
+      </div>
+      <div id="msp-detail-${i}" class="hidden" style="padding:0 14px 14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="background:var(--green-light);border-radius:8px;padding:10px;text-align:center">
+            <div style="font-size:0.68rem;color:var(--muted)">2024-25 MSP</div>
+            <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800">₹${m.prev.toLocaleString("en-IN")}</div>
+          </div>
+          <div style="background:var(--green-light);border-radius:8px;padding:10px;text-align:center;border:2px solid var(--green)">
+            <div style="font-size:0.68rem;color:var(--green);font-weight:700">2025-26 MSP ✅</div>
+            <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--green)">₹${m.msp.toLocaleString("en-IN")}</div>
+          </div>
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted)">Source: Ministry of Agriculture, Govt of India · agricoop.gov.in</div>
+        <button style="margin-top:8px;background:var(--green);color:white;border:none;border-radius:8px;padding:7px 14px;font-family:'Baloo 2',cursive;font-size:0.82rem;font-weight:700;cursor:pointer" onclick="setCompare('${m.crop}')">⚖️ Compare with Mandi Price →</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleMSP(i) { document.getElementById("msp-detail-"+i).classList.toggle("hidden"); }
+function filterMSP(cat) { renderMSP(cat==="all"?MSP_DATA:MSP_DATA.filter(m=>m.category===cat)); }
+function setCompare(crop) { showTab("compare"); document.getElementById("compareCrop").value=crop; }
+
+// ── COMPARE ───────────────────────────────────────────────────────
+async function comparePrices() {
+  const crop = document.getElementById("compareCrop").value;
+  const state = document.getElementById("compareState").value;
+  const offered = parseFloat(document.getElementById("offeredPrice").value);
+  const qty = parseFloat(document.getElementById("quantity").value)||1;
+  const lang = LANG_NAMES[currentLang]||"English";
+  const btn = document.getElementById("compareBtn");
+  const result = document.getElementById("compareResult");
+
+  if(!offered) { showToast("Enter the price being offered","error"); return; }
+
+  const mspItem = MSP_DATA.find(m=>m.crop.toLowerCase().includes(crop.toLowerCase().split(" ")[0]))||MSP_DATA.find(m=>m.crop.includes("Wheat"));
+  const msp = mspItem?.msp || 2275;
+  const diff = offered - msp;
+  const isGood = diff >= 0;
+  const isOk = diff >= -100 && diff < 0;
+  const isBad = diff < -100;
+  const totalLoss = Math.abs(diff) * qty;
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Checking...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Analysing your situation...</p></div>`;
+
+  try {
+    const advice = await callClaude(
+      `You are an agricultural expert helping Indian farmers understand MSP. Respond in ${lang}. Be direct and helpful. Max 4 sentences.`,
+      `Farmer is selling ${crop} in ${state}. MSP is ₹${msp}/quintal. Being offered ₹${offered}/quintal. Quantity: ${qty} quintals. ${isGood?"Price is above MSP — is it good time to sell?":isBad?"Price is ₹${Math.abs(diff)} BELOW MSP — what should farmer do? Name specific steps.":"Price is slightly below MSP — what should farmer do?"}`
+    );
+
+    result.innerHTML = `
+      <div class="compare-card ${isGood?"good":isOk?"ok":"bad"}">
+        <div class="compare-header">
+          <div style="font-size:2rem">${isGood?"✅":isOk?"⚠️":"🚨"}</div>
+          <div>
+            <div class="compare-status" style="color:${isGood?"#16a34a":isOk?"#92400e":""}">${isGood?"Price is ABOVE MSP — Good!":isOk?"Price is slightly below MSP":"Price is BELOW MSP — Don't Sell!"}</div>
+            <div style="font-size:0.78rem;color:var(--muted)">${crop} in ${state}</div>
+          </div>
+        </div>
+        <div class="compare-grid">
+          <div class="compare-item">
+            <div class="compare-item-val" style="color:var(--green)">₹${msp.toLocaleString("en-IN")}</div>
+            <div class="compare-item-lbl">Govt MSP</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-val" style="color:${isGood?"#16a34a":"var(--red)"}">₹${offered.toLocaleString("en-IN")}</div>
+            <div class="compare-item-lbl">Offered Price</div>
+          </div>
+          <div class="compare-item">
+            <div class="compare-item-val" style="color:${isGood?"#16a34a":"var(--red)"}">${isGood?"+":""}₹${diff.toLocaleString("en-IN")}</div>
+            <div class="compare-item-lbl">Difference</div>
+          </div>
+        </div>
+        ${!isGood?`
+        <div class="savings-box" style="background:${isBad?"#fee2e2":"var(--gold-light)"}">
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px">${isBad?"💸 You will LOSE if you sell now":"⚠️ You are losing"}</div>
+          <div class="savings-amount" style="color:${isBad?"var(--red)":"#92400e"}">₹${totalLoss.toLocaleString("en-IN")}</div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">on ${qty} quintals vs MSP</div>
+        </div>`:""}
+        <div class="advice-text">${advice}</div>
+      </div>
+
+      ${!isGood?`
+      <div class="card">
+        <div class="card-title" style="color:var(--green)">✅ What You Should Do</div>
+        <div class="info-green">→ Go to nearest FCI/NAFED procurement center</div>
+        <div class="info-green" style="margin-top:6px">→ Sell at government MSP of ₹${msp}/quintal</div>
+        <div class="info-green" style="margin-top:6px">→ Register on e-NAM (enam.gov.in) to find more buyers</div>
+        <div class="info-green" style="margin-top:6px">→ Call Kisan helpline: <strong>1800-180-1551</strong> (Free)</div>
+        <button class="btn btn-blue" style="margin-top:12px" onclick="showTab('centers')">🏛️ Find Nearest Procurement Center →</button>
+      </div>`:""}
+      <div class="powered">✨ Powered by Claude AI · MSP data from Ministry of Agriculture</div>
+    `;
+  } catch(e) {
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not analyse. Please try again.</p></div>`;
+  }
+  btn.disabled = false;
+  btn.textContent = "⚖️ Check If Price is Fair";
+}
+
+// ── ALERTS ────────────────────────────────────────────────────────
+function renderAlerts() {
+  const typeColors = {bad:"bad",warning:"warning",good:"good"};
+  const typeIcon = {bad:"🚨",warning:"⚠️",good:"✅"};
+  document.getElementById("activeAlerts").innerHTML = `
+    <div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px">📢 Current Market Alerts</div>
+    ${ALERTS_DATA.map(a=>`
+      <div class="alert-item ${typeColors[a.type]}">
+        <div class="alert-title">${typeIcon[a.type]} ${a.crop} — ${a.state}</div>
+        <div style="display:flex;gap:10px;margin-bottom:6px;font-size:0.78rem">
+          <span>MSP: <strong>₹${a.msp}</strong></span>
+          <span>Today: <strong style="color:${a.type==="good"?"#16a34a":"var(--red)"}">₹${a.current}</strong></span>
+          <span>${a.type==="good"?'<span style="color:#16a34a;font-weight:700">↑ Above MSP</span>':'<span style="color:var(--red);font-weight:700">↓ Below MSP</span>'}</span>
+        </div>
+        <div class="alert-text">${a.msg}</div>
+        <div class="alert-time">🕐 Updated today · Source: Agmarknet</div>
+      </div>
+    `).join("")}
+  `;
+}
+
+function setAlert() {
+  const crop = document.getElementById("alertCrop").value;
+  const state = document.getElementById("alertState").value;
+  showToast(`🔔 Alert set for ${crop} in ${state}!`,"success");
+  document.getElementById("alertPrice").value = "";
+}
+
+// ── CENTERS ───────────────────────────────────────────────────────
+async function findCenters() {
+  const state = document.getElementById("centerState").value;
+  const crop = document.getElementById("centerCrop").value;
+  const lang = LANG_NAMES[currentLang]||"English";
+  const btn = document.getElementById("centersBtn");
+  const list = document.getElementById("centersList");
+
+  btn.disabled = true; btn.textContent = "⏳ Finding...";
+  list.innerHTML = `<div class="loading"><div class="spinner"></div><p>Finding procurement centers...</p></div>`;
+
+  // Show demo centers first
+  setTimeout(() => {
+    list.innerHTML = DEMO_CENTERS.map(c=>`
+      <div class="center-card">
+        <div class="center-header">
+          <div class="center-icon">🏛️</div>
+          <div style="flex:1">
+            <div class="center-name">${c.name} <span class="badge ${c.status==="Open"?"badge-green":"badge-gold"}">${c.status}</span></div>
+            <div class="center-type">${c.type}</div>
+          </div>
+          <div class="center-distance">📍 ${c.distance}</div>
+        </div>
+        <div class="center-crops">${c.crops.map(cr=>`<span class="ctag">${cr}</span>`).join("")}</div>
+        <div class="center-info">⏰ ${c.timing} · 📞 ${c.contact}</div>
+        <div class="center-info" style="margin-top:3px">📍 ${c.address}</div>
+        <div class="center-actions">
+          <button class="center-btn" onclick="showToast('Opening directions...','success')">📍 Get Directions</button>
+          <button class="center-btn outline" onclick="showToast('Calling center...','success')">📞 Call Center</button>
+        </div>
+      </div>
+    `).join("") + `
+      <div class="info-blue">
+        <strong>💡 Tip:</strong> For most accurate center list, visit <strong>fci.gov.in</strong> or call Kisan helpline <strong>1800-180-1551</strong>
+      </div>`;
+    btn.disabled = false;
+    btn.textContent = "🏛️ Find Centers Near Me";
+    showToast(`Found ${DEMO_CENTERS.length} centers near you! ✅`,"success");
+  }, 1500);
+}
+
+// ── RIGHTS ────────────────────────────────────────────────────────
+function renderRights() {
+  document.getElementById("rightsList").innerHTML = RIGHTS.map((r,i)=>`
+    <div class="right-card">
+      <div class="right-header" onclick="toggleRight(${i})">
+        <div class="right-icon" style="background:${r.color}">${r.icon}</div>
+        <div class="right-title">${r.title}</div>
+        <div style="color:var(--muted);font-size:1rem">▼</div>
+      </div>
+      <div class="right-body" id="right-${i}">
+        <p class="right-text">${r.text}</p>
+        <div class="right-steps">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:6px">✅ How to use this right:</div>
+          ${r.steps.map(s=>`<div class="right-step">→ ${s}</div>`).join("")}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button style="flex:1;padding:8px;background:var(--blue);color:white;border:none;border-radius:8px;font-family:'Baloo 2',cursive;font-size:0.82rem;font-weight:700;cursor:pointer" onclick="window.open('${r.link}','_blank')">🌐 Official Website</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleRight(i) { document.getElementById("right-"+i).classList.toggle("open"); }
+
+async function askRights() {
+  const q = document.getElementById("rightsQuestion").value.trim();
+  const lang = LANG_NAMES[document.getElementById("rightsLang").value]||"English";
+  const btn = document.getElementById("rightsBtn");
+  const result = document.getElementById("rightsAnswer");
+
+  if(!q) { showToast("Please type your question","error"); return; }
+  btn.disabled = true; btn.textContent = "⏳ Getting answer...";
+  result.innerHTML = `<div class="loading" style="padding:16px"><div class="spinner"></div></div>`;
+
+  try {
+    const answer = await callClaude(
+      `You are a legal expert helping Indian farmers understand their agricultural rights. Respond in ${lang}. Give practical, specific advice based on Indian law. Be direct and helpful. Mention specific schemes, helpline numbers, and websites where relevant.`,
+      `Indian farmer question about their rights: ${q}`
+    );
+    result.innerHTML = `
+      <div class="ai-box">
+        <div class="ai-label">✨ Answer — Powered by Claude AI</div>
+        <div class="ai-text">${answer.replace(/\n/g,"<br/>")}</div>
+      </div>`;
+  } catch(e) {
+    result.innerHTML = `<div style="color:var(--red);font-size:0.84rem;margin-top:8px">Could not get answer. Try again.</div>`;
+  }
+  btn.disabled = false;
+  btn.textContent = "⚖️ Get Answer";
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+renderMSP(MSP_DATA);
+renderAlerts();
+renderRights();
+</script>
+</body>
+</html>

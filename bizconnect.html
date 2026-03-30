@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AnnadataHub — Business Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;
+    --gold:#f5a623;--gold-light:#fff8ec;
+    --blue:#2563eb;--blue-light:#eff6ff;
+    --purple:#7c3aed;--purple-light:#f5f3ff;
+    --orange:#ea580c;--orange-light:#fff7ed;
+    --red:#dc2626;--red-light:#fee2e2;
+    --bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;}
+  .header{background:linear-gradient(135deg,var(--green),var(--green-mid));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;display:flex;align-items:center;gap:8px;}
+  .logo span{color:var(--gold);}
+  .tabs{display:flex;background:white;border-bottom:2px solid var(--border);overflow-x:auto;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex-shrink:0;padding:10px 12px;border:none;background:none;font-family:'Hind',sans-serif;font-size:0.74rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:80px;}
+  .tab.active{color:var(--green);border-bottom-color:var(--green);}
+  .tab .icon{font-size:1.1rem;}
+  .content{padding:14px;max-width:480px;margin:0 auto;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:white;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .card-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .field{margin-bottom:10px;}
+  label{font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:3px;display:block;}
+  input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.86rem;background:white;color:var(--text);outline:none;transition:border 0.2s;}
+  input:focus,select:focus,textarea:focus{border-color:var(--green);}
+  textarea{resize:none;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .btn{width:100%;padding:12px;border-radius:12px;border:none;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-green{background:var(--green);color:white;}
+  .btn-gold{background:var(--gold);color:var(--text);}
+  .btn-blue{background:var(--blue);color:white;}
+  .btn-purple{background:var(--purple);color:white;}
+  .btn-orange{background:var(--orange);color:white;}
+  .btn-sm{padding:7px 14px;font-size:0.78rem;width:auto;border-radius:8px;}
+  .btn-outline{background:white;border:1.5px solid var(--green);color:var(--green);}
+  .btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;}
+  .badge-green{background:var(--green-light);color:var(--green);}
+  .badge-gold{background:var(--gold-light);color:#92400e;}
+  .badge-blue{background:var(--blue-light);color:var(--blue);}
+  .badge-red{background:var(--red-light);color:var(--red);}
+  .badge-purple{background:var(--purple-light);color:var(--purple);}
+  .spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading{text-align:center;padding:28px;}
+  .empty{text-align:center;padding:36px 20px;color:var(--muted);}
+  .empty .icon{font-size:2.5rem;margin-bottom:10px;}
+  .hidden{display:none;}
+  .pb{height:20px;}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.83rem;z-index:1000;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;text-align:center;}
+  .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
+  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;}
+  .modal-overlay.show{display:flex;}
+  .modal{background:white;border-radius:18px;padding:24px;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;}
+  .modal-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:14px;}
+  .modal-btn-row{display:flex;gap:10px;margin-top:16px;}
+  .modal-btn{flex:1;padding:10px;border-radius:10px;border:none;font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:700;cursor:pointer;}
+  .modal-confirm{background:var(--green);color:white;}
+  .modal-cancel{background:var(--border);color:var(--text);}
+
+  /* BUSINESS PROFILE CARDS */
+  .biz-profile-card{background:white;border-radius:16px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.07);}
+  .biz-header{padding:16px;display:flex;gap:12px;align-items:flex-start;}
+  .biz-avatar{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
+  .biz-name{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;margin-bottom:2px;}
+  .biz-type{font-size:0.72rem;color:var(--muted);margin-bottom:4px;}
+  .biz-location{font-size:0.75rem;color:var(--muted);display:flex;align-items:center;gap:3px;}
+  .biz-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+  .biz-stats{padding:0 16px 10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .biz-stat{background:var(--bg);border-radius:8px;padding:8px;text-align:center;}
+  .biz-stat-val{font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:800;color:var(--green);}
+  .biz-stat-lbl{font-size:0.6rem;color:var(--muted);}
+  .biz-actions{padding:0 16px 16px;display:flex;gap:8px;}
+  .verified-badge{display:inline-flex;align-items:center;gap:3px;background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;margin-left:6px;}
+
+  /* PLAN CARDS */
+  .plan-card{border-radius:14px;padding:18px;border:2px solid var(--border);margin-bottom:10px;cursor:pointer;transition:all 0.2s;position:relative;}
+  .plan-card.selected{border-color:var(--green);background:var(--green-light);}
+  .plan-card:hover{border-color:var(--green-mid);}
+  .plan-popular{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--green);color:white;padding:2px 14px;border-radius:20px;font-size:0.68rem;font-weight:700;white-space:nowrap;}
+  .plan-name{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--green);margin-bottom:3px;}
+  .plan-price{font-family:'Baloo 2',cursive;font-size:1.6rem;font-weight:800;color:var(--text);}
+  .plan-period{font-size:0.72rem;color:var(--muted);}
+  .plan-features{margin-top:8px;}
+  .plan-feat{font-size:0.8rem;padding:3px 0;color:#374151;}
+
+  /* DEAL CARDS */
+  .deal-card{background:white;border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:10px;}
+  .deal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+  .deal-title{font-weight:700;font-size:0.9rem;}
+  .deal-meta{font-size:0.75rem;color:var(--muted);margin-bottom:8px;}
+  .deal-amount{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);}
+  .deal-commission{font-size:0.72rem;color:var(--gold);font-weight:700;}
+  .deal-progress{height:6px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden;}
+  .deal-fill{height:100%;border-radius:3px;background:var(--green);}
+  .deal-parties{display:flex;gap:8px;align-items:center;font-size:0.78rem;}
+  .deal-arrow{color:var(--muted);}
+
+  /* COMMISSION TRACKER */
+  .commission-hero{background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:16px;padding:20px;margin-bottom:14px;color:white;text-align:center;}
+  .comm-total{font-family:'Baloo 2',cursive;font-size:2.5rem;font-weight:800;color:var(--gold);}
+  .comm-label{font-size:0.82rem;opacity:0.85;}
+  .comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .comm-stat{background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;text-align:center;}
+  .comm-stat-val{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;}
+  .comm-stat-lbl{font-size:0.68rem;opacity:0.8;}
+
+  /* REGISTRATION FORM */
+  .reg-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .reg-type{border:2px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all 0.15s;}
+  .reg-type.selected{border-color:var(--green);background:var(--green-light);}
+  .reg-type .rt-icon{font-size:1.8rem;margin-bottom:6px;}
+  .reg-type .rt-name{font-family:'Baloo 2',cursive;font-size:0.88rem;font-weight:700;color:var(--green);}
+  .reg-type .rt-desc{font-size:0.68rem;color:var(--muted);}
+
+  /* CONNECT BUTTON */
+  .connect-btn{background:var(--green);color:white;border:none;border-radius:10px;padding:9px 18px;font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;cursor:pointer;flex:1;}
+  .message-btn{background:white;color:var(--green);border:1.5px solid var(--green);border-radius:10px;padding:9px 18px;font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;cursor:pointer;flex:1;}
+  .info-box{border-radius:10px;padding:12px 14px;font-size:0.84rem;line-height:1.6;margin-bottom:10px;}
+  .info-green{background:var(--green-light);border-left:3px solid var(--green);color:var(--text);}
+  .info-gold{background:var(--gold-light);border-left:3px solid var(--gold);color:#92400e;}
+  .info-blue{background:var(--blue-light);border-left:3px solid var(--blue);color:var(--blue);}
+  .divider{height:1px;background:var(--border);margin:12px 0;}
+  .inner-tabs{display:flex;gap:8px;margin-bottom:14px;}
+  .inner-tab{flex:1;padding:9px;border:1.5px solid var(--border);border-radius:10px;background:white;font-family:'Hind',sans-serif;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;text-align:center;transition:all 0.15s;}
+  .inner-tab.active{background:var(--green);color:white;border-color:var(--green);}
+  .filter-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+  .search-box{flex:1;min-width:150px;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:0.84rem;outline:none;}
+  .search-box:focus{border-color:var(--green);}
+  .filter-sel{padding:9px 10px;border:1.5px solid var(--border);border-radius:10px;font-size:0.82rem;outline:none;background:white;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🤝 Business<span>Connect</span></div>
+  <div style="display:flex;gap:10px">
+    <div style="background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:20px;color:white;font-size:0.78rem;font-weight:600;cursor:pointer" onclick="showTab('register')">+ Join</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('connect')" id="tab-connect"><span class="icon">🔗</span>Connect</button>
+  <button class="tab" onclick="showTab('equipment')" id="tab-equipment"><span class="icon">🚜</span>Equipment</button>
+  <button class="tab" onclick="showTab('buyers')" id="tab-buyers"><span class="icon">🛒</span>Buyers</button>
+  <button class="tab" onclick="showTab('deals')" id="tab-deals"><span class="icon">🤝</span>Deals</button>
+  <button class="tab" onclick="showTab('register')" id="tab-register"><span class="icon">📝</span>Register</button>
+</div>
+
+<div class="content">
+
+  <!-- ══ CONNECT HUB ══════════════════════════════════════════════ -->
+  <div class="page active" id="page-connect">
+    <div class="commission-hero">
+      <div style="font-size:1.8rem;margin-bottom:6px">🤝</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:4px">AnnadataHub Business Connect</div>
+      <div style="font-size:0.8rem;opacity:0.85">Farmers · Equipment Owners · Buyers — all in one place</div>
+      <div class="comm-grid">
+        <div class="comm-stat"><div class="comm-stat-val">47</div><div class="comm-stat-lbl">🚜 Equipment Listed</div></div>
+        <div class="comm-stat"><div class="comm-stat-val">89</div><div class="comm-stat-lbl">🛒 Active Buyers</div></div>
+        <div class="comm-stat"><div class="comm-stat-val">1,247</div><div class="comm-stat-lbl">👨‍🌾 Farmers</div></div>
+        <div class="comm-stat"><div class="comm-stat-val">₹4.2L</div><div class="comm-stat-lbl">💰 Deals Done</div></div>
+      </div>
+    </div>
+
+    <div class="info-gold">
+      <strong>💰 How AnnadataHub Earns:</strong><br/>
+      Equipment rental deal → <strong>10% commission</strong><br/>
+      Produce sale deal → <strong>3% commission</strong><br/>
+      Business listing fee → <strong>₹99-499/month</strong>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">⚙️ How It Works</div>
+      <div style="display:grid;gap:10px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:32px;height:32px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.85rem;flex-shrink:0">1</div>
+          <div><div style="font-weight:700;font-size:0.88rem">Equipment owners & buyers register</div><div style="font-size:0.78rem;color:var(--muted)">Pay small monthly fee → get verified profile on FarmGram</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:32px;height:32px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.85rem;flex-shrink:0">2</div>
+          <div><div style="font-weight:700;font-size:0.88rem">Farmers discover them on FarmGram</div><div style="font-size:0.78rem;color:var(--muted)">Verified blue tick builds instant trust with farmers</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:32px;height:32px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.85rem;flex-shrink:0">3</div>
+          <div><div style="font-weight:700;font-size:0.88rem">Deal happens → AnnadataHub earns</div><div style="font-size:0.78rem;color:var(--muted)">Both parties confirm deal on platform → commission auto-calculated</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT DEALS -->
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">🔥 Recent Successful Deals</div>
+      <div id="recentDeals"></div>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ EQUIPMENT OWNERS ══════════════════════════════════════════ -->
+  <div class="page" id="page-equipment">
+    <div class="inner-tabs">
+      <div class="inner-tab active" onclick="switchInner('equip','browse',this)">🔍 Browse</div>
+      <div class="inner-tab" onclick="switchInner('equip','mylist',this)">📋 My Listings</div>
+    </div>
+
+    <div id="equip-browse">
+      <div class="filter-row">
+        <input class="search-box" placeholder="🔍 Search equipment..."/>
+        <select class="filter-sel">
+          <option value="all">All States</option>
+          <option>Punjab</option><option>Haryana</option><option>UP</option>
+          <option>Maharashtra</option><option>Gujarat</option><option>MP</option>
+        </select>
+      </div>
+      <div id="equipmentList"></div>
+    </div>
+
+    <div id="equip-mylist" class="hidden">
+      <div class="info-green">You have <strong>2 active listings</strong>. Earning ₹4,800 this month from bookings.</div>
+      <div id="myEquipList"></div>
+      <button class="btn btn-green" onclick="showTab('register')">➕ Add New Equipment</button>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ BUYERS ═════════════════════════════════════════════════════ -->
+  <div class="page" id="page-buyers">
+    <div class="inner-tabs">
+      <div class="inner-tab active" onclick="switchInner('buyer','browse',this)">🔍 Find Buyers</div>
+      <div class="inner-tab" onclick="switchInner('buyer','post',this)">📢 Post Requirement</div>
+    </div>
+
+    <div id="buyer-browse">
+      <div class="filter-row">
+        <input class="search-box" placeholder="🔍 Search buyers by crop..."/>
+        <select class="filter-sel">
+          <option value="all">All Types</option>
+          <option>Supermarket</option><option>Mill</option><option>Exporter</option>
+          <option>Restaurant</option><option>Processor</option>
+        </select>
+      </div>
+      <div id="buyersList"></div>
+    </div>
+
+    <div id="buyer-post" class="hidden">
+      <div class="card">
+        <div class="card-title" style="color:var(--blue)">📢 Post Buying Requirement</div>
+        <div class="info-blue">Post what you need → Farmers with matching produce will contact you directly!</div>
+        <div class="field"><label>Crop / Produce Needed</label>
+          <select><option value="">Select crop</option><option>Wheat</option><option>Rice</option><option>Tomato</option><option>Potato</option><option>Onion</option><option>Cotton</option><option>Soybean</option><option>Mustard</option><option>Vegetables</option><option>Fruits</option></select>
+        </div>
+        <div class="two-col">
+          <div class="field"><label>Quantity (quintals)</label><input type="number" placeholder="e.g. 500"/></div>
+          <div class="field"><label>Price Offered (₹/q)</label><input type="number" placeholder="e.g. 2200"/></div>
+        </div>
+        <div class="two-col">
+          <div class="field"><label>Quality Grade</label><select><option>Grade A</option><option>Grade B</option><option>Any grade</option></select></div>
+          <div class="field"><label>Delivery By</label><input type="date"/></div>
+        </div>
+        <div class="field"><label>Your State</label><select><option>Punjab</option><option>Haryana</option><option>Delhi NCR</option><option>Maharashtra</option><option>Gujarat</option><option>UP</option></select></div>
+        <div class="field"><label>Contact Number</label><input type="tel" placeholder="WhatsApp number" maxlength="10"/></div>
+        <button class="btn btn-blue" onclick="showToast('Requirement posted! Farmers will contact you 📢','success')">📢 Post Requirement</button>
+        <div style="text-align:center;font-size:0.7rem;color:var(--muted);margin-top:6px">Free to post · AnnadataHub earns 3% only on successful deal</div>
+      </div>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ DEALS TRACKER ══════════════════════════════════════════════ -->
+  <div class="page" id="page-deals">
+    <div class="commission-hero">
+      <div class="comm-total" id="totalCommission">₹41,250</div>
+      <div class="comm-label">Total Commission Earned by AnnadataHub</div>
+      <div class="comm-grid">
+        <div class="comm-stat"><div class="comm-stat-val" id="monthComm">₹12,840</div><div class="comm-stat-lbl">This Month</div></div>
+        <div class="comm-stat"><div class="comm-stat-val" id="weekComm">₹3,200</div><div class="comm-stat-lbl">This Week</div></div>
+        <div class="comm-stat"><div class="comm-stat-val">234</div><div class="comm-stat-lbl">Total Deals</div></div>
+        <div class="comm-stat"><div class="comm-stat-val">₹176</div><div class="comm-stat-lbl">Avg Per Deal</div></div>
+      </div>
+    </div>
+
+    <!-- Revenue Breakdown -->
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">💰 Revenue Breakdown</div>
+      <div id="revenueBreakdown"></div>
+    </div>
+
+    <!-- All Deals -->
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">📋 All Deals</div>
+      <div id="allDeals"></div>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+  <!-- ══ REGISTER ═══════════════════════════════════════════════════ -->
+  <div class="page" id="page-register">
+    <div style="background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.6rem;margin-bottom:6px">📝</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800">Join as Business Partner</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Connect with 1,247 farmers directly</div>
+    </div>
+
+    <!-- Type selector -->
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">Who are you?</div>
+      <div class="reg-type-grid">
+        <div class="reg-type selected" onclick="selectRegType(this,'equipment')" id="rt-equipment">
+          <div class="rt-icon">🚜</div>
+          <div class="rt-name">Equipment Owner</div>
+          <div class="rt-desc">Tractor, harvester, sprayer owner</div>
+        </div>
+        <div class="reg-type" onclick="selectRegType(this,'buyer')" id="rt-buyer">
+          <div class="rt-icon">🛒</div>
+          <div class="rt-name">Produce Buyer</div>
+          <div class="rt-desc">Hotel, mill, exporter, shop</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plan Selection -->
+    <div class="card">
+      <div class="card-title" style="color:var(--gold)">💰 Choose Your Plan</div>
+      <div id="planOptions"></div>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="card" id="regForm">
+      <div class="card-title" style="color:var(--green)">📋 Your Details</div>
+      <div class="field"><label>Business / Your Name</label><input type="text" id="regName" placeholder="e.g. Raju Agro Services"/></div>
+      <div class="two-col">
+        <div class="field"><label>WhatsApp Number</label><input type="tel" id="regPhone" placeholder="10 digits" maxlength="10"/></div>
+        <div class="field"><label>State</label><select id="regState"><option>Punjab</option><option>Haryana</option><option>UP</option><option>Maharashtra</option><option>Gujarat</option><option>MP</option><option>Rajasthan</option><option>Bihar</option><option>AP</option><option>Tamil Nadu</option><option>Karnataka</option></select></div>
+      </div>
+      <div class="field"><label>District</label><input type="text" id="regDistrict" placeholder="e.g. Ludhiana"/></div>
+      <div id="equipmentFields">
+        <div class="field"><label>Equipment Type</label><select><option>Tractor (Small)</option><option>Tractor (Large)</option><option>Combine Harvester</option><option>Rotavator</option><option>Seed Drill</option><option>Power Sprayer</option><option>Thresher</option><option>Water Pump</option><option>Other</option></select></div>
+        <div class="two-col">
+          <div class="field"><label>Rate/Hour (₹)</label><input type="number" placeholder="e.g. 600"/></div>
+          <div class="field"><label>Rate/Acre (₹)</label><input type="number" placeholder="e.g. 900"/></div>
+        </div>
+      </div>
+      <div id="buyerFields" class="hidden">
+        <div class="field"><label>Business Type</label><select><option>Supermarket/Retail</option><option>Flour/Oil Mill</option><option>Export Company</option><option>Restaurant/Hotel</option><option>Food Processor</option><option>Wholesale Market</option><option>Other</option></select></div>
+        <div class="field"><label>Crops You Buy</label><input type="text" placeholder="e.g. Wheat, Rice, Vegetables"/></div>
+        <div class="field"><label>Monthly Buying Quantity</label><select><option>Under 100 quintals</option><option>100-500 quintals</option><option>500-2000 quintals</option><option>2000+ quintals</option></select></div>
+      </div>
+      <div class="field"><label>Description</label><textarea rows="2" placeholder="Tell farmers about your business..."></textarea></div>
+
+      <div class="info-gold" style="margin-bottom:12px"><strong>Selected Plan:</strong> <span id="selectedPlanText">Basic — ₹99/month</span><br/>Payment via Razorpay after registration.</div>
+
+      <button class="btn btn-green" onclick="submitRegistration()">✅ Register & Pay Now</button>
+      <div style="text-align:center;font-size:0.7rem;color:var(--muted);margin-top:6px">Listing goes live within 24 hours after payment verification</div>
+    </div>
+
+    <div class="pb"></div>
+  </div>
+
+</div>
+
+<!-- CONNECT MODAL -->
+<div class="modal-overlay" id="connectModal">
+  <div class="modal">
+    <div class="modal-title" id="connectModalTitle">🤝 Connect Request</div>
+    <div id="connectModalBody"></div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-btn modal-confirm" id="connectConfirm">Send Request</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────
+const EQUIPMENT_OWNERS = [
+  {id:1,name:"Baldev Agro Services",avatar:"🚜",type:"Equipment Owner",location:"Ludhiana, Punjab",equipment:"Mahindra Tractor 575 DI (45HP)",rateHour:600,rateAcre:900,rating:4.8,bookings:47,monthlyEarning:"₹28,400",verified:true,plan:"premium",tags:["Tractor","Wheat","Rice","Punjab"],color:"#1a5c2e"},
+  {id:2,name:"Ramesh Harvester Co.",avatar:"🌾",type:"Equipment Owner",location:"Meerut, UP",equipment:"Combine Harvester — 2 units",rateHour:1800,rateAcre:2500,rating:4.6,bookings:23,monthlyEarning:"₹57,500",verified:true,plan:"premium",tags:["Harvester","Wheat","Rice","UP"],color:"#2563eb"},
+  {id:3,name:"Suresh Farm Machines",avatar:"⚙️",type:"Equipment Owner",location:"Anand, Gujarat",equipment:"Rotavator + Seed Drill",rateHour:400,rateAcre:600,rating:4.9,bookings:62,monthlyEarning:"₹37,200",verified:false,plan:"basic",tags:["Rotavator","Gujarat","Vegetables"],color:"#7c3aed"},
+  {id:4,name:"Kiran Sprayer Service",avatar:"💦",type:"Equipment Owner",location:"Nashik, Maharashtra",equipment:"Power Sprayer — 3 units",rateHour:250,rateAcre:350,rating:4.7,bookings:89,monthlyEarning:"₹31,150",verified:true,plan:"basic",tags:["Sprayer","Maharashtra","Grapes"],color:"#dc2626"},
+];
+
+const BUYERS = [
+  {id:1,name:"FreshMart Supermarket",avatar:"🏪",type:"Supermarket Chain",location:"Mumbai, Maharashtra",buying:"All vegetables & fruits",qty:"2000-5000 kg/week",price:"Mandi+15-20%",minQty:"500kg",verified:true,plan:"premium",rating:4.7,deals:34,tags:["Vegetables","Fruits","Organic","Maharashtra"],color:"#1a5c2e"},
+  {id:2,name:"Punjab Flour Mills Ltd",avatar:"🏭",type:"Flour Mill",location:"Ludhiana, Punjab",buying:"Wheat — all varieties",qty:"500-2000 quintals/month",price:"MSP+₹50-100",minQty:"50 quintals",verified:true,plan:"premium",rating:4.5,deals:67,tags:["Wheat","Punjab","Bulk"],color:"#2563eb"},
+  {id:3,name:"Taj Group Food Supply",avatar:"🏨",type:"Hotel Chain",location:"Delhi NCR",buying:"Organic vegetables, exotic fruits",qty:"300-800 kg/week",price:"Market+25-30%",minQty:"100kg",verified:true,plan:"premium",rating:4.9,deals:28,tags:["Organic","Vegetables","Premium","Delhi"],color:"#92400e"},
+  {id:4,name:"Gujarat Spice Exporters",avatar:"🌶️",type:"Export Company",location:"Rajkot, Gujarat",buying:"Chilli, Turmeric, Cumin, Coriander",qty:"50-500 quintals/month",price:"Premium export rates",minQty:"10 quintals",verified:true,plan:"premium",rating:4.6,deals:45,tags:["Spices","Export","Gujarat","Premium"],color:"#ea580c"},
+  {id:5,name:"Meghna Foods Processing",avatar:"🥫",type:"Food Processor",location:"Pune, Maharashtra",buying:"Tomato, Onion, Potato in bulk",qty:"1000-5000 kg/week",price:"Mandi+10%",minQty:"500kg",verified:false,plan:"basic",rating:4.3,deals:19,tags:["Vegetables","Processing","Maharashtra"],color:"#7c3aed"},
+];
+
+const DEALS = [
+  {id:"D001",type:"equipment",farmer:"Raju Singh",business:"Baldev Agro Services",item:"Tractor rental — 5 acres",amount:4500,commission:450,status:"completed",date:"23 Mar 2026",commPct:10},
+  {id:"D002",type:"produce",farmer:"Sunita Devi",business:"FreshMart Supermarket",item:"Tomato — 200kg",amount:24000,commission:720,status:"completed",date:"22 Mar 2026",commPct:3},
+  {id:"D003",type:"produce",farmer:"Mohan Patel",business:"Punjab Flour Mills Ltd",item:"Wheat — 50 quintals",amount:109000,commission:3270,status:"completed",date:"21 Mar 2026",commPct:3},
+  {id:"D004",type:"equipment",farmer:"Kavya Reddy",business:"Kiran Sprayer Service",item:"Sprayer — 3 acres",amount:1050,commission:105,status:"in_progress",date:"23 Mar 2026",commPct:10},
+  {id:"D005",type:"produce",farmer:"Gurpreet Singh",business:"Gujarat Spice Exporters",item:"Chilli — 20 quintals",amount:60000,commission:1800,status:"pending",date:"23 Mar 2026",commPct:3},
+  {id:"D006",type:"equipment",farmer:"Baldev Sharma",business:"Ramesh Harvester Co.",item:"Combine harvest — 8 acres",amount:20000,commission:2000,status:"completed",date:"20 Mar 2026",commPct:10},
+];
+
+const PLANS_EQUIPMENT = [
+  {id:"eq_basic",name:"Basic",price:99,period:"per month",features:["1 equipment listing","Profile on FarmGram","Farmer contact via WhatsApp","Basic analytics"]},
+  {id:"eq_standard",name:"Standard",price:199,period:"per month",popular:true,features:["3 equipment listings","✅ Verified blue tick","Priority in search results","Deal tracking dashboard","Phone support"]},
+  {id:"eq_premium",name:"Premium",price:299,period:"per month",features:["Unlimited listings","✅ Verified blue tick","Top of search always","Advanced analytics","Dedicated manager","FarmGram story feature"]},
+];
+
+const PLANS_BUYER = [
+  {id:"buy_basic",name:"Basic",price:199,period:"per month",features:["Post 2 requirements/month","Farmer contact via WhatsApp","Basic profile on FarmGram"]},
+  {id:"buy_standard",name:"Standard",price:349,period:"per month",popular:true,features:["Post 10 requirements/month","✅ Verified blue tick","Priority visibility to farmers","Deal tracking","Direct farmer database access"]},
+  {id:"buy_premium",name:"Premium",price:499,period:"per month",features:["Unlimited requirements","✅ Verified blue tick","Featured buyer profile","Dedicated account manager","Farmer crop calendar access","Custom requirements"]},
+];
+
+let selectedPlan = "eq_basic";
+let regType = "equipment";
+
+// ── TABS ─────────────────────────────────────────────────────────
+function showTab(tab) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  const tabEl = document.getElementById("tab-"+tab);
+  if(tabEl) tabEl.classList.add("active");
+}
+
+function switchInner(prefix, tab, el) {
+  const ids = prefix==="equip" ? ["browse","mylist"] : ["browse","post"];
+  ids.forEach(id=>document.getElementById(prefix+"-"+id)?.classList.toggle("hidden",id!==tab));
+  el.closest(".inner-tabs").querySelectorAll(".inner-tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+}
+
+// ── RENDER ────────────────────────────────────────────────────────
+function renderEquipment() {
+  document.getElementById("equipmentList").innerHTML = EQUIPMENT_OWNERS.map(e=>`
+    <div class="biz-profile-card">
+      <div class="biz-header">
+        <div class="biz-avatar" style="background:${e.color}22">${e.avatar}</div>
+        <div style="flex:1">
+          <div class="biz-name">${e.name}${e.verified?'<span class="verified-badge">✅ Verified</span>':''}</div>
+          <div class="biz-type">🚜 ${e.equipment}</div>
+          <div class="biz-location">📍 ${e.location}</div>
+          <div class="biz-tags">${e.tags.map(t=>`<span class="badge badge-green">${t}</span>`).join("")}</div>
+        </div>
+      </div>
+      <div class="biz-stats">
+        <div class="biz-stat"><div class="biz-stat-val">₹${e.rateAcre}</div><div class="biz-stat-lbl">per acre</div></div>
+        <div class="biz-stat"><div class="biz-stat-val">${e.rating}⭐</div><div class="biz-stat-lbl">rating</div></div>
+        <div class="biz-stat"><div class="biz-stat-val">${e.bookings}</div><div class="biz-stat-lbl">bookings</div></div>
+      </div>
+      <div class="biz-actions">
+        <button class="connect-btn" onclick="openConnect('equipment',${e.id})">🤝 Book Now</button>
+        <button class="message-btn" onclick="showToast('Opening WhatsApp...')">💬 Message</button>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("myEquipList").innerHTML = EQUIPMENT_OWNERS.slice(0,2).map(e=>`
+    <div class="deal-card">
+      <div class="deal-header">
+        <div class="deal-title">${e.avatar} ${e.name}</div>
+        <span class="badge badge-green">Active</span>
+      </div>
+      <div class="deal-meta">📍 ${e.location} · ${e.bookings} bookings this month</div>
+      <div class="deal-amount">${e.monthlyEarning} <span class="deal-commission">earned this month</span></div>
+    </div>
+  `).join("");
+}
+
+function renderBuyers() {
+  document.getElementById("buyersList").innerHTML = BUYERS.map(b=>`
+    <div class="biz-profile-card">
+      <div class="biz-header">
+        <div class="biz-avatar" style="background:${b.color}22">${b.avatar}</div>
+        <div style="flex:1">
+          <div class="biz-name">${b.name}${b.verified?'<span class="verified-badge">✅ Verified</span>':''}</div>
+          <div class="biz-type">🏢 ${b.type}</div>
+          <div class="biz-location">📍 ${b.location}</div>
+          <div style="font-size:0.75rem;color:var(--green);font-weight:600;margin-top:3px">💰 Paying: ${b.price}</div>
+          <div class="biz-tags">${b.tags.map(t=>`<span class="badge badge-blue">${t}</span>`).join("")}</div>
+        </div>
+      </div>
+      <div class="biz-stats">
+        <div class="biz-stat"><div class="biz-stat-val">${b.rating}⭐</div><div class="biz-stat-lbl">rating</div></div>
+        <div class="biz-stat"><div class="biz-stat-val">${b.deals}</div><div class="biz-stat-lbl">deals done</div></div>
+        <div class="biz-stat"><div class="biz-stat-val" style="font-size:0.72rem">${b.minQty}</div><div class="biz-stat-lbl">min order</div></div>
+      </div>
+      <div style="padding:0 16px 6px;font-size:0.8rem;color:#374151"><strong>Buying:</strong> ${b.buying}</div>
+      <div style="padding:0 16px 10px;font-size:0.8rem;color:var(--muted)">Quantity: ${b.qty}</div>
+      <div class="biz-actions">
+        <button class="connect-btn" onclick="openConnect('buyer',${b.id})">🌾 Sell to Them</button>
+        <button class="message-btn" onclick="showToast('Opening WhatsApp...')">💬 Contact</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderDeals() {
+  const totalComm = DEALS.reduce((s,d)=>s+d.commission,0);
+  const statusColor = s=>({completed:"badge-green",in_progress:"badge-gold",pending:"badge-blue"}[s]||"badge-gray");
+  const statusText = s=>({completed:"✅ Done",in_progress:"⏳ In Progress",pending:"🕐 Pending"}[s]||s);
+
+  document.getElementById("revenueBreakdown").innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div style="background:var(--green-light);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green)">₹${DEALS.filter(d=>d.type==="equipment").reduce((s,d)=>s+d.commission,0).toLocaleString("en-IN")}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">🚜 Equipment Commission (10%)</div>
+      </div>
+      <div style="background:var(--blue-light);border-radius:10px;padding:12px;text-align:center">
+        <div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--blue)">₹${DEALS.filter(d=>d.type==="produce").reduce((s,d)=>s+d.commission,0).toLocaleString("en-IN")}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">🌾 Produce Commission (3%)</div>
+      </div>
+    </div>
+    <div style="background:var(--gold-light);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:#92400e">₹${(499*3+299*2+199*2).toLocaleString("en-IN")}</div>
+      <div style="font-size:0.72rem;color:var(--muted)">💼 Monthly Listing Fees</div>
+    </div>
+  `;
+
+  document.getElementById("allDeals").innerHTML = DEALS.map(d=>`
+    <div class="deal-card">
+      <div class="deal-header">
+        <div class="deal-title">${d.type==="equipment"?"🚜":"🌾"} ${d.item}</div>
+        <span class="badge ${statusColor(d.status)}">${statusText(d.status)}</span>
+      </div>
+      <div class="deal-parties">
+        <span style="font-weight:600">👨‍🌾 ${d.farmer}</span>
+        <span class="deal-arrow">↔️</span>
+        <span style="font-weight:600">🏢 ${d.business}</span>
+      </div>
+      <div class="deal-meta" style="margin-top:4px">📅 ${d.date} · Deal ID: ${d.id}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <div><div class="deal-amount">₹${d.amount.toLocaleString("en-IN")}</div><div style="font-size:0.7rem;color:var(--muted)">Deal value</div></div>
+        <div style="text-align:right"><div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--gold)">+₹${d.commission.toLocaleString("en-IN")}</div><div style="font-size:0.7rem;color:var(--muted)">${d.commPct}% commission</div></div>
+      </div>
+      <div class="deal-progress"><div class="deal-fill" style="width:${d.status==="completed"?100:d.status==="in_progress"?60:20}%"></div></div>
+    </div>
+  `).join("");
+
+  document.getElementById("recentDeals").innerHTML = DEALS.slice(0,3).map(d=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-weight:600;font-size:0.85rem">${d.type==="equipment"?"🚜":"🌾"} ${d.item}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">${d.farmer} ↔ ${d.business}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:800;color:var(--gold)">+₹${d.commission}</div>
+        <div style="font-size:0.65rem;color:var(--muted)">commission</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderPlans(type) {
+  const plans = type==="equipment" ? PLANS_EQUIPMENT : PLANS_BUYER;
+  document.getElementById("planOptions").innerHTML = plans.map(p=>`
+    <div class="plan-card ${p.id===selectedPlan?'selected':''}" onclick="selectPlan('${p.id}','${p.name} — ₹${p.price}/month')" id="plan-${p.id}">
+      ${p.popular?'<div class="plan-popular">⭐ Most Popular</div>':""}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:${p.popular?'8px':'0'}">
+        <div class="plan-name">${p.name}</div>
+        <div><span class="plan-price">₹${p.price}</span><span class="plan-period">/${p.period.split(" ")[1]}</span></div>
+      </div>
+      <div class="plan-features">${p.features.map(f=>`<div class="plan-feat">✓ ${f}</div>`).join("")}</div>
+    </div>
+  `).join("");
+  selectedPlan = plans[0].id;
+  document.getElementById("selectedPlanText").textContent = `${plans[0].name} — ₹${plans[0].price}/month`;
+}
+
+function selectPlan(id, text) {
+  selectedPlan = id;
+  document.querySelectorAll(".plan-card").forEach(p=>p.classList.remove("selected"));
+  document.getElementById("plan-"+id)?.classList.add("selected");
+  document.getElementById("selectedPlanText").textContent = text;
+}
+
+function selectRegType(el, type) {
+  regType = type;
+  document.querySelectorAll(".reg-type").forEach(r=>r.classList.remove("selected"));
+  el.classList.add("selected");
+  document.getElementById("equipmentFields")?.classList.toggle("hidden", type!=="equipment");
+  document.getElementById("buyerFields")?.classList.toggle("hidden", type!=="buyer");
+  renderPlans(type);
+}
+
+function submitRegistration() {
+  const name = document.getElementById("regName").value.trim();
+  const phone = document.getElementById("regPhone").value.trim();
+  if(!name||!phone||phone.length!==10) { showToast("Please fill all required fields","error"); return; }
+  showToast(`✅ Registration submitted! We will verify and go live within 24 hours.`,"success");
+  setTimeout(()=>showTab("connect"),2000);
+}
+
+// ── CONNECT MODAL ─────────────────────────────────────────────────
+function openConnect(type, id) {
+  const item = type==="equipment" ? EQUIPMENT_OWNERS.find(e=>e.id===id) : BUYERS.find(b=>b.id===id);
+  if(!item) return;
+  document.getElementById("connectModalTitle").textContent = type==="equipment" ? "🚜 Book Equipment" : "🌾 Sell Your Produce";
+  document.getElementById("connectModalBody").innerHTML = `
+    <div style="background:var(--green-light);border-radius:10px;padding:12px;margin-bottom:14px">
+      <div style="font-weight:700">${item.name}</div>
+      <div style="font-size:0.78rem;color:var(--muted)">${item.location}</div>
+    </div>
+    <div style="display:grid;gap:10px">
+      <div><label style="font-size:0.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Your Name</label>
+        <input type="text" id="connName" placeholder="Your full name" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:0.86rem;outline:none"/></div>
+      <div><label style="font-size:0.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Your WhatsApp</label>
+        <input type="tel" id="connPhone" placeholder="10 digit number" maxlength="10" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:0.86rem;outline:none"/></div>
+      ${type==="equipment"?`
+      <div><label style="font-size:0.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Land Size (acres)</label>
+        <input type="number" id="connAcres" placeholder="e.g. 3" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:0.86rem;outline:none"/></div>
+      `:`
+      <div><label style="font-size:0.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:3px">Quantity Available (quintals)</label>
+        <input type="number" id="connQty" placeholder="e.g. 50" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:0.86rem;outline:none"/></div>
+      `}
+    </div>
+    <div style="background:var(--gold-light);border-radius:8px;padding:10px;margin-top:12px;font-size:0.78rem;color:#92400e">
+      💰 AnnadataHub earns <strong>${type==="equipment"?"10%":"3%"} commission</strong> when deal is confirmed by both parties.
+    </div>
+  `;
+  document.getElementById("connectConfirm").onclick = () => confirmConnect(type, item.name);
+  document.getElementById("connectModal").classList.add("show");
+}
+
+function confirmConnect(type, name) {
+  const connName = document.getElementById("connName").value.trim();
+  const connPhone = document.getElementById("connPhone").value.trim();
+  if(!connName||!connPhone) { showToast("Please fill all fields","error"); return; }
+  const dealId = "D" + Date.now().toString().slice(-4);
+  document.getElementById("connectModalBody").innerHTML = `
+    <div style="text-align:center;padding:10px 0">
+      <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin-bottom:8px">Request Sent!</div>
+      <div style="background:var(--green-light);border-radius:10px;padding:10px;margin-bottom:12px">
+        <strong>Deal ID: ${dealId}</strong>
+      </div>
+      <div style="font-size:0.84rem;color:var(--muted);line-height:1.6">
+        <strong>${name}</strong> will contact you on WhatsApp within 2 hours.<br/>
+        Once deal is confirmed — AnnadataHub commission applies automatically.
+      </div>
+    </div>`;
+  document.getElementById("connectConfirm").textContent = "Done ✅";
+  document.getElementById("connectConfirm").onclick = closeModal;
+  document.querySelector(".modal-cancel").style.display = "none";
+  showToast(`Deal ${dealId} initiated! 🤝`,"success");
+}
+
+function closeModal() {
+  document.getElementById("connectModal").classList.remove("show");
+  document.querySelector(".modal-cancel").style.display = "block";
+}
+document.getElementById("connectModal").addEventListener("click",e=>{ if(e.target===document.getElementById("connectModal")) closeModal(); });
+
+function showToast(msg,type="success") {
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.className="toast "+type;t.classList.remove("hidden");
+  setTimeout(()=>t.classList.add("hidden"),3000);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+renderEquipment();
+renderBuyers();
+renderDeals();
+renderPlans("equipment");
+</script>
+</body>
+</html>

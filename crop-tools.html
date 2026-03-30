@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AnnadataHub — Crop Calendar & Fertilizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green:#1a5c2e; --green-mid:#2d7a45; --green-light:#e8f5ec;
+    --gold:#f5a623; --gold-light:#fff8ec;
+    --brown:#92400e; --brown-light:#fef3c7;
+    --blue:#2563eb; --blue-light:#eff6ff;
+    --red:#dc2626; --red-light:#fee2e2;
+    --bg:#f0f5f1; --white:#fff; --text:#1a2e1a; --muted:#6b7c6b; --border:#d0e4d4;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Hind',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+  /* HEADER */
+  .header { background:linear-gradient(135deg,var(--green),var(--green-mid)); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-icon { width:38px; height:38px; background:var(--gold); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
+  .logo-name { font-family:'Baloo 2',cursive; font-size:1.3rem; font-weight:800; color:white; }
+  .logo-name span { color:var(--gold); }
+  .lang-sel { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:6px 10px; border-radius:8px; font-family:'Hind',sans-serif; font-size:0.8rem; cursor:pointer; }
+  .lang-sel option { background:var(--green); }
+
+  /* TABS */
+  .tabs { display:flex; background:white; border-bottom:2px solid var(--border); }
+  .tab { flex:1; padding:13px 8px; border:none; background:none; font-family:'Hind',sans-serif; font-size:0.85rem; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .tab.active { color:var(--green); border-bottom-color:var(--green); }
+  .tab .icon { font-size:1.4rem; }
+
+  /* LAYOUT */
+  .content { max-width:600px; margin:0 auto; padding:16px; }
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* CARDS */
+  .card { background:white; border-radius:16px; padding:18px; margin-bottom:14px; border:1px solid var(--border); box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+  .card-title { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+
+  /* FORM */
+  .field { margin-bottom:12px; }
+  label { font-size:0.8rem; font-weight:600; color:var(--muted); margin-bottom:4px; display:block; }
+  select, input { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:'Hind',sans-serif; font-size:0.88rem; background:white; color:var(--text); outline:none; transition:border 0.2s; }
+  select:focus, input:focus { border-color:var(--green); }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+  /* BUTTONS */
+  .btn { width:100%; padding:13px; border-radius:12px; border:none; font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn-green { background:var(--green); color:white; box-shadow:0 4px 14px rgba(26,92,46,0.25); }
+  .btn-green:hover { background:var(--green-mid); }
+  .btn-gold { background:var(--gold); color:var(--text); box-shadow:0 4px 14px rgba(245,166,35,0.3); }
+  .btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+  /* LOADING */
+  .loading { text-align:center; padding:30px; }
+  .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading p { color:var(--muted); font-size:0.88rem; }
+
+  /* CROP CALENDAR */
+  .calendar-hero { background:linear-gradient(135deg,var(--green),var(--green-mid)); border-radius:16px; padding:20px; color:white; margin-bottom:14px; }
+  .cal-crop { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; }
+  .cal-stage { font-size:0.88rem; opacity:0.85; margin-top:4px; }
+  .cal-day { font-family:'Baloo 2',cursive; font-size:2.5rem; font-weight:800; margin:8px 0 0; color:var(--gold); line-height:1; }
+  .cal-day-label { font-size:0.8rem; opacity:0.7; }
+  .progress-bar { height:8px; background:rgba(255,255,255,0.2); border-radius:4px; margin-top:14px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--gold); border-radius:4px; transition:width 1s ease; }
+  .progress-label { display:flex; justify-content:space-between; font-size:0.72rem; opacity:0.75; margin-top:4px; }
+
+  /* TIMELINE */
+  .timeline { position:relative; padding-left:28px; }
+  .timeline::before { content:''; position:absolute; left:10px; top:0; bottom:0; width:2px; background:var(--border); }
+  .tl-item { position:relative; margin-bottom:16px; }
+  .tl-dot { position:absolute; left:-22px; top:4px; width:14px; height:14px; border-radius:50%; border:2px solid white; box-shadow:0 0 0 2px var(--border); }
+  .tl-dot.today { background:var(--green); box-shadow:0 0 0 3px rgba(26,92,46,0.2); width:16px; height:16px; left:-23px; }
+  .tl-dot.done { background:var(--gold); }
+  .tl-dot.upcoming { background:var(--border); }
+  .tl-dot.urgent { background:var(--red); animation:pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(220,38,38,0.2)} 50%{box-shadow:0 0 0 6px rgba(220,38,38,0.1)} }
+
+  .tl-content { background:white; border-radius:12px; padding:12px 14px; border:1px solid var(--border); }
+  .tl-content.today-card { border-color:var(--green); background:var(--green-light); }
+  .tl-content.urgent-card { border-color:var(--red); background:var(--red-light); }
+  .tl-day { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+  .tl-day.today-label { color:var(--green); }
+  .tl-day.urgent-label { color:var(--red); }
+  .tl-task { font-weight:600; font-size:0.9rem; margin-bottom:4px; }
+  .tl-detail { font-size:0.82rem; color:#374151; line-height:1.5; }
+  .tl-tip { font-size:0.78rem; color:var(--muted); font-style:italic; margin-top:4px; }
+
+  /* FERTILIZER */
+  .result-hero { border-radius:16px; padding:20px; margin-bottom:14px; }
+  .savings-box { background:var(--green-light); border:2px solid var(--green); border-radius:14px; padding:18px; text-align:center; margin-bottom:14px; }
+  .savings-amount { font-family:'Baloo 2',cursive; font-size:2rem; font-weight:800; color:var(--green); }
+  .savings-label { font-size:0.82rem; color:var(--muted); margin-top:2px; }
+
+  .fert-table { width:100%; border-collapse:collapse; }
+  .fert-table th { background:var(--green-light); color:var(--green); padding:10px 12px; text-align:left; font-size:0.82rem; font-weight:700; border:1px solid var(--border); }
+  .fert-table td { padding:10px 12px; border:1px solid var(--border); font-size:0.85rem; color:#374151; }
+  .fert-table tr:nth-child(even) td { background:#fafffe; }
+  .fert-name { font-weight:700; color:var(--green); }
+  .fert-qty { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; color:var(--brown); }
+  .fert-cost { font-weight:600; color:var(--red); }
+
+  .tip-box { background:var(--gold-light); border:1px solid var(--gold); border-radius:12px; padding:14px; margin-bottom:10px; }
+  .tip-box .tip-title { font-weight:700; font-size:0.88rem; color:var(--brown); margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+  .tip-box p { font-size:0.84rem; line-height:1.6; color:#374151; }
+
+  .stage-badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; }
+  .badge-green { background:var(--green-light); color:var(--green); }
+  .badge-gold { background:var(--gold-light); color:var(--brown); }
+  .badge-blue { background:var(--blue-light); color:var(--blue); }
+  .badge-red { background:var(--red-light); color:var(--red); }
+
+  /* AI POWERED */
+  .ai-tag { display:inline-flex; align-items:center; gap:4px; background:var(--green-light); color:var(--green); padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; margin-bottom:10px; }
+
+  /* EMPTY */
+  .empty { text-align:center; padding:40px 20px; color:var(--muted); }
+  .empty .icon { font-size:3rem; margin-bottom:12px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:white; padding:10px 20px; border-radius:100px; font-size:0.84rem; z-index:1000; animation:toastIn 0.3s ease; white-space:nowrap; }
+  .toast.success { background:var(--green); }
+  .toast.error { background:var(--red); }
+  @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+  .divider { height:1px; background:var(--border); margin:14px 0; }
+  .powered { text-align:center; font-size:0.72rem; color:var(--muted); margin-top:8px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div class="logo-name">Annadata<span>Hub</span></div>
+  </div>
+  <select class="lang-sel" id="langSel" onchange="setLang(this.value)">
+    <option value="en">English</option>
+    <option value="hi">हिंदी</option>
+    <option value="bn">বাংলা</option>
+    <option value="te">తెలుగు</option>
+    <option value="mr">मराठी</option>
+    <option value="ta">தமிழ்</option>
+    <option value="gu">ગુજરાતી</option>
+    <option value="kn">ಕನ್ನಡ</option>
+    <option value="ml">മലയാളം</option>
+    <option value="pa">ਪੰਜਾਬੀ</option>
+    <option value="ur">اردو</option>
+  </select>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('calendar')" id="tab-calendar">
+    <span class="icon">📅</span>
+    <span id="t-cal">Crop Calendar</span>
+  </button>
+  <button class="tab" onclick="showTab('fertilizer')" id="tab-fertilizer">
+    <span class="icon">💊</span>
+    <span id="t-fert">Fertilizer</span>
+  </button>
+</div>
+
+<div class="content">
+
+  <!-- ══ CROP CALENDAR ═══════════════════════════════════════════ -->
+  <div class="page active" id="page-calendar">
+
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">📅 <span>Crop Calendar</span></div>
+      <div class="two-col">
+        <div class="field">
+          <label>Your Crop</label>
+          <select id="calCrop">
+            <option value="Wheat">Wheat (गेहूं)</option>
+            <option value="Rice">Rice (धान)</option>
+            <option value="Corn">Corn (मक्का)</option>
+            <option value="Tomato">Tomato (टमाटर)</option>
+            <option value="Potato">Potato (आलू)</option>
+            <option value="Cotton">Cotton (कपास)</option>
+            <option value="Sugarcane">Sugarcane (गन्ना)</option>
+            <option value="Mustard">Mustard (सरसों)</option>
+            <option value="Soybean">Soybean (सोयाबीन)</option>
+            <option value="Onion">Onion (प्याज)</option>
+            <option value="Groundnut">Groundnut (मूंगफली)</option>
+            <option value="Chilli">Chilli (मिर्च)</option>
+            <option value="Banana">Banana (केला)</option>
+            <option value="Mango">Mango (आम)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Sowing Date</label>
+          <input type="date" id="calDate" />
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Your State</label>
+          <select id="calState">
+            <option value="Punjab">Punjab</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Bihar">Bihar</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Telangana">Telangana</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Land Size (acres)</label>
+          <input type="number" id="calLand" placeholder="e.g. 2" value="2" min="0.5" max="100" />
+        </div>
+      </div>
+      <button class="btn btn-green" onclick="getCalendar()" id="cal-btn">
+        📅 Generate My Crop Calendar
+      </button>
+    </div>
+
+    <div id="calendar-result"></div>
+  </div>
+
+  <!-- ══ FERTILIZER CALCULATOR ═══════════════════════════════════ -->
+  <div class="page" id="page-fertilizer">
+
+    <div class="card">
+      <div class="card-title" style="color:var(--brown)">💊 Fertilizer Calculator</div>
+      <div class="two-col">
+        <div class="field">
+          <label>Your Crop</label>
+          <select id="fertCrop">
+            <option value="Wheat">Wheat (गेहूं)</option>
+            <option value="Rice">Rice (धान)</option>
+            <option value="Corn">Corn (मक्का)</option>
+            <option value="Tomato">Tomato (टमाटर)</option>
+            <option value="Potato">Potato (आलू)</option>
+            <option value="Cotton">Cotton (कपास)</option>
+            <option value="Sugarcane">Sugarcane (गन्ना)</option>
+            <option value="Mustard">Mustard (सरसों)</option>
+            <option value="Soybean">Soybean (सोयाबीन)</option>
+            <option value="Onion">Onion (प्याज)</option>
+            <option value="Groundnut">Groundnut (मूंगफली)</option>
+            <option value="Chilli">Chilli (मिर्च)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Land Size (acres)</label>
+          <input type="number" id="fertLand" placeholder="e.g. 3" value="3" min="0.5" max="100" />
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Growth Stage</label>
+          <select id="fertStage">
+            <option value="before sowing (basal)">Before Sowing</option>
+            <option value="early growth (21-30 days)">Early Growth (21-30 days)</option>
+            <option value="vegetative (45-60 days)">Vegetative (45-60 days)</option>
+            <option value="flowering">Flowering</option>
+            <option value="fruiting/grain filling">Fruiting / Grain Filling</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Soil Type</label>
+          <select id="fertSoil">
+            <option value="loamy">Loamy</option>
+            <option value="clay">Clay</option>
+            <option value="sandy">Sandy</option>
+            <option value="black cotton">Black Cotton</option>
+            <option value="red">Red Soil</option>
+            <option value="alluvial">Alluvial</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>State</label>
+        <select id="fertState">
+          <option value="Punjab">Punjab</option>
+          <option value="Haryana">Haryana</option>
+          <option value="Uttar Pradesh">Uttar Pradesh</option>
+          <option value="Maharashtra">Maharashtra</option>
+          <option value="Madhya Pradesh">Madhya Pradesh</option>
+          <option value="Rajasthan">Rajasthan</option>
+          <option value="Gujarat">Gujarat</option>
+          <option value="Bihar">Bihar</option>
+          <option value="West Bengal">West Bengal</option>
+          <option value="Andhra Pradesh">Andhra Pradesh</option>
+          <option value="Tamil Nadu">Tamil Nadu</option>
+          <option value="Karnataka">Karnataka</option>
+        </select>
+      </div>
+      <button class="btn btn-gold" onclick="getFertilizer()" id="fert-btn">
+        💊 Calculate Exact Quantities
+      </button>
+    </div>
+
+    <div id="fertilizer-result"></div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+const LANG_NAMES = {
+  en:"English",hi:"Hindi",bn:"Bengali",te:"Telugu",
+  mr:"Marathi",ta:"Tamil",gu:"Gujarati",kn:"Kannada",
+  ml:"Malayalam",pa:"Punjabi",ur:"Urdu"
+};
+let currentLang = "en";
+
+function setLang(l) {
+  currentLang = l;
+  const labels = {
+    en:["Crop Calendar","Fertilizer"],
+    hi:["फसल कैलेंडर","खाद कैलकुलेटर"],
+    bn:["ফসল ক্যালেন্ডার","সার হিসাব"],
+    te:["పంట క్యాలెండర్","ఎరువుల లెక్క"],
+    mr:["पीक कॅलेंडर","खत कॅल्क्युलेटर"],
+    ta:["பயிர் நாட்காட்டி","உர கணக்கீடு"],
+    gu:["પાક કેલેન્ડર","ખાતર કેલ્ક્યુલેટર"],
+    kn:["ಬೆಳೆ ಕ್ಯಾಲೆಂಡರ್","ಗೊಬ್ಬರ ಲೆಕ್ಕ"],
+    ml:["വിള കലണ്ടർ","വളം കണക്ക്"],
+    pa:["ਫਸਲ ਕੈਲੰਡਰ","ਖਾਦ ਕੈਲਕੁਲੇਟਰ"],
+    ur:["فصل کیلنڈر","کھاد حساب"]
+  };
+  const lb = labels[l] || labels.en;
+  document.getElementById("t-cal").textContent = lb[0];
+  document.getElementById("t-fert").textContent = lb[1];
+}
+
+function showTab(tab) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("page-" + tab).classList.add("active");
+  document.getElementById("tab-" + tab).classList.add("active");
+}
+
+function showToast(msg, type="success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast " + type; t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 3000);
+}
+
+async function callClaude(system, user) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-20250514", max_tokens:1500,
+      system, messages:[{role:"user",content:user}]
+    })
+  });
+  if (!res.ok) throw new Error("API error");
+  const data = await res.json();
+  const text = data.content.map(b => b.text||"").join("");
+  const match = text.replace(/```json|```/g,"").trim().match(/\{[\s\S]*\}/);
+  if (!match) throw new Error("No JSON");
+  return JSON.parse(match[0]);
+}
+
+// days since sowing
+function daysSince(dateStr) {
+  if (!dateStr) return 30;
+  const sow = new Date(dateStr);
+  const today = new Date();
+  return Math.max(1, Math.floor((today - sow) / (1000*60*60*24)));
+}
+
+// ── CROP CALENDAR ────────────────────────────────────────────────
+async function getCalendar() {
+  const crop = document.getElementById("calCrop").value;
+  const date = document.getElementById("calDate").value;
+  const state = document.getElementById("calState").value;
+  const land = document.getElementById("calLand").value || "2";
+  const lang = LANG_NAMES[currentLang] || "English";
+  const days = daysSince(date);
+  const btn = document.getElementById("cal-btn");
+  const result = document.getElementById("calendar-result");
+
+  btn.disabled = true; btn.textContent = "⏳ Generating calendar...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Building your personalized crop calendar...</p></div>`;
+
+  try {
+    const data = await callClaude(
+      `You are an expert Indian agricultural scientist. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.`,
+      `Create a detailed crop calendar for a farmer with these details:
+      Crop: ${crop}, State: ${state}, Land: ${land} acres, Days since sowing: ${days} days.
+      Today is day ${days} of the crop cycle.
+      
+      Return JSON:
+      {
+        "crop": "${crop}",
+        "total_days": number (total crop duration in days),
+        "current_day": ${days},
+        "current_stage": "stage name",
+        "stage_emoji": "emoji",
+        "harvest_date": "approximate harvest in X days",
+        "today_tasks": [
+          {"task": "task name", "detail": "what exactly to do", "urgent": true/false, "tip": "money saving tip"}
+        ],
+        "upcoming_week": [
+          {"day": "Day X", "task": "task name", "detail": "description", "type": "irrigation/fertilizer/pesticide/harvest/other"}
+        ],
+        "key_milestones": [
+          {"day": "Day X", "milestone": "milestone name", "action": "what to do"}
+        ],
+        "warnings": ["any current warnings for this crop in this season"],
+        "expected_yield": "X quintals per acre",
+        "expected_income": "₹X,XXX per acre at current mandi price"
+      }`
+    );
+
+    const typeColors = {
+      irrigation: "#0ea5e9", fertilizer: "#f5a623",
+      pesticide: "#dc2626", harvest: "#1a5c2e", other: "#6b7c6b"
+    };
+
+    const progress = Math.min(100, Math.round((data.current_day / data.total_days) * 100));
+
+    result.innerHTML = `
+      <div class="calendar-hero">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="cal-crop">${data.stage_emoji} ${data.crop}</div>
+            <div class="cal-stage">${data.current_stage}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="cal-day">${data.current_day}</div>
+            <div class="cal-day-label">days old</div>
+          </div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+        <div class="progress-label">
+          <span>Sowing</span>
+          <span>${progress}% complete</span>
+          <span>Harvest in ~${data.harvest_date}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+          <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:0.72rem;opacity:0.75">Expected Yield</div>
+            <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700">${data.expected_yield}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;text-align:center">
+            <div style="font-size:0.72rem;opacity:0.75">Expected Income</div>
+            <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--gold)">${data.expected_income}</div>
+          </div>
+        </div>
+      </div>
+
+      ${data.warnings && data.warnings.length > 0 ? `
+        <div style="background:var(--red-light);border:1px solid var(--red);border-radius:12px;padding:14px;margin-bottom:14px">
+          <div style="font-weight:700;color:var(--red);margin-bottom:6px;font-size:0.9rem">⚠️ Current Warnings</div>
+          ${data.warnings.map(w => `<div style="font-size:0.84rem;color:#374151;margin-bottom:4px">• ${w}</div>`).join("")}
+        </div>
+      ` : ""}
+
+      <div class="card">
+        <div class="card-title" style="color:var(--green)">✅ Do Today — Day ${data.current_day}</div>
+        ${data.today_tasks.map(t => `
+          <div class="tl-content ${t.urgent ? 'urgent-card' : 'today-card'}" style="margin-bottom:10px">
+            <div class="tl-day ${t.urgent ? 'urgent-label' : 'today-label'}">${t.urgent ? '🚨 URGENT' : '📌 TODAY'}</div>
+            <div class="tl-task">${t.task}</div>
+            <div class="tl-detail">${t.detail}</div>
+            ${t.tip ? `<div class="tl-tip">💡 ${t.tip}</div>` : ""}
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--blue)">📆 This Week's Plan</div>
+        <div class="timeline">
+          ${data.upcoming_week.map(item => `
+            <div class="tl-item">
+              <div class="tl-dot upcoming" style="background:${typeColors[item.type] || '#6b7c6b'}"></div>
+              <div class="tl-content">
+                <div class="tl-day">${item.day}</div>
+                <div class="tl-task">${item.task}</div>
+                <div class="tl-detail">${item.detail}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--gold)">🏆 Key Milestones</div>
+        ${data.key_milestones.map(m => `
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+            <div style="background:var(--gold-light);border-radius:8px;padding:6px 10px;font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;color:var(--brown);flex-shrink:0">${m.day}</div>
+            <div>
+              <div style="font-weight:700;font-size:0.88rem">${m.milestone}</div>
+              <div style="font-size:0.82rem;color:var(--muted)">${m.action}</div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="powered">✨ Powered by Claude AI · Updated for ${state}</div>
+    `;
+    showToast("Calendar ready! ✅");
+  } catch(e) {
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not generate calendar. Please try again.</p></div>`;
+    showToast("Error. Try again.", "error");
+  }
+  btn.disabled = false; btn.textContent = "📅 Generate My Crop Calendar";
+}
+
+// ── FERTILIZER CALCULATOR ─────────────────────────────────────────
+async function getFertilizer() {
+  const crop = document.getElementById("fertCrop").value;
+  const land = document.getElementById("fertLand").value || "3";
+  const stage = document.getElementById("fertStage").value;
+  const soil = document.getElementById("fertSoil").value;
+  const state = document.getElementById("fertState").value;
+  const lang = LANG_NAMES[currentLang] || "English";
+  const btn = document.getElementById("fert-btn");
+  const result = document.getElementById("fertilizer-result");
+
+  btn.disabled = true; btn.textContent = "⏳ Calculating...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Calculating exact quantities to save your money...</p></div>`;
+
+  try {
+    const data = await callClaude(
+      `You are an expert Indian agricultural soil scientist. Respond ENTIRELY in ${lang}. Return ONLY valid JSON. All prices in Indian Rupees.`,
+      `Calculate exact fertilizer quantities for: Crop=${crop}, Land=${land} acres, Stage=${stage}, Soil=${soil}, State=${state}.
+      
+      Return JSON:
+      {
+        "crop": "${crop}",
+        "land": "${land} acres",
+        "stage": "${stage}",
+        "fertilizers": [
+          {
+            "name": "fertilizer name (e.g. Urea)",
+            "local_name": "local/Hindi name",
+            "quantity_kg": number,
+            "quantity_bags": "X bags (50kg each)",
+            "cost_per_kg": number,
+            "total_cost": number,
+            "how_to_apply": "brief application method",
+            "timing": "best time to apply"
+          }
+        ],
+        "total_cost": number,
+        "typical_farmer_spends": number,
+        "you_save": number,
+        "application_tips": ["tip1", "tip2", "tip3"],
+        "dont_do": ["common mistake 1", "common mistake 2"],
+        "organic_alternatives": "organic options if any",
+        "next_application": "when to apply fertilizer next time"
+      }`
+    );
+
+    result.innerHTML = `
+      <div class="savings-box">
+        <div style="font-size:0.82rem;color:var(--muted);margin-bottom:4px">💰 You will SAVE</div>
+        <div class="savings-amount">₹${data.you_save?.toLocaleString('en-IN') || "0"}</div>
+        <div class="savings-label">vs. what most farmers overspend</div>
+        <div style="margin-top:10px;font-size:0.82rem;color:var(--muted)">
+          Your cost: <strong style="color:var(--green)">₹${data.total_cost?.toLocaleString('en-IN')}</strong> &nbsp;·&nbsp;
+          Typical farmer: <strong style="color:var(--red)">₹${data.typical_farmer_spends?.toLocaleString('en-IN')}</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--brown)">💊 Exact Quantities for ${data.land}</div>
+        <div class="ai-tag">✨ Claude AI Calculated</div>
+        <table class="fert-table">
+          <tr><th>Fertilizer</th><th>Quantity</th><th>Cost</th></tr>
+          ${data.fertilizers.map(f => `
+            <tr>
+              <td>
+                <div class="fert-name">${f.name}</div>
+                <div style="font-size:0.75rem;color:var(--muted)">${f.local_name}</div>
+                <div style="font-size:0.75rem;color:var(--blue);margin-top:2px">${f.timing}</div>
+              </td>
+              <td>
+                <div class="fert-qty">${f.quantity_kg} kg</div>
+                <div style="font-size:0.75rem;color:var(--muted)">${f.quantity_bags}</div>
+              </td>
+              <td>
+                <div class="fert-cost">₹${f.total_cost?.toLocaleString('en-IN')}</div>
+                <div style="font-size:0.75rem;color:var(--muted)">₹${f.cost_per_kg}/kg</div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" style="font-size:0.78rem;color:#374151;background:#fafffe;font-style:italic">
+                📝 ${f.how_to_apply}
+              </td>
+            </tr>
+          `).join("")}
+          <tr>
+            <td colspan="2" style="font-weight:700;color:var(--green)">TOTAL</td>
+            <td style="font-weight:800;font-family:'Baloo 2',cursive;font-size:1rem;color:var(--green)">₹${data.total_cost?.toLocaleString('en-IN')}</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="tip-box">
+        <div class="tip-title">✅ How to Apply Correctly</div>
+        ${data.application_tips.map(t => `<p>• ${t}</p>`).join("")}
+      </div>
+
+      <div class="tip-box" style="background:var(--red-light);border-color:var(--red)">
+        <div class="tip-title" style="color:var(--red)">❌ Don't Do These (Common Mistakes)</div>
+        ${data.dont_do.map(d => `<p style="color:#374151">• ${d}</p>`).join("")}
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="color:var(--green)">🌿 Organic Alternative</div>
+        <p style="font-size:0.86rem;line-height:1.6;color:#374151">${data.organic_alternatives}</p>
+        <div class="divider"></div>
+        <div style="font-size:0.84rem;color:var(--green);font-weight:600">⏰ Next Application: ${data.next_application}</div>
+      </div>
+
+      <div class="powered">✨ Powered by Claude AI · Based on ICAR recommendations for ${state}</div>
+    `;
+    showToast("Calculated! ✅");
+  } catch(e) {
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not calculate. Please try again.</p></div>`;
+    showToast("Error. Try again.", "error");
+  }
+  btn.disabled = false; btn.textContent = "💊 Calculate Exact Quantities";
+}
+
+// Set today's date as default
+document.getElementById("calDate").valueAsDate = new Date(Date.now() - 30*24*60*60*1000);
+</script>
+</body>
+</html>

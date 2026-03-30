@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AnnadataHub — Farmer Learning Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green:#1a5c2e; --green-mid:#2d7a45; --green-light:#e8f5ec;
+    --gold:#f5a623; --gold-light:#fff8ec;
+    --blue:#2563eb; --blue-light:#eff6ff;
+    --purple:#7c3aed; --purple-light:#f5f3ff;
+    --red:#dc2626; --red-light:#fee2e2;
+    --orange:#ea580c; --orange-light:#fff7ed;
+    --bg:#f0f5f1; --white:#fff; --text:#1a2e1a; --muted:#6b7c6b; --border:#d0e4d4;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Hind',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+  /* HEADER */
+  .header { background:linear-gradient(135deg,var(--green),var(--green-mid)); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
+  .logo { display:flex; align-items:center; gap:8px; }
+  .logo-icon { width:36px; height:36px; background:var(--gold); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+  .logo-name { font-family:'Baloo 2',cursive; font-size:1.2rem; font-weight:800; color:white; }
+  .logo-name span { color:var(--gold); }
+  .lang-sel { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:5px 8px; border-radius:8px; font-size:0.78rem; cursor:pointer; }
+  .lang-sel option { background:var(--green); }
+
+  /* TABS */
+  .tabs { display:flex; background:white; border-bottom:2px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab { flex-shrink:0; padding:11px 10px; border:none; background:none; font-family:'Hind',sans-serif; font-size:0.74rem; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:2px; min-width:72px; }
+  .tab.active { color:var(--green); border-bottom-color:var(--green); }
+  .tab .icon { font-size:1.2rem; }
+
+  /* LAYOUT */
+  .content { max-width:600px; margin:0 auto; padding:14px; }
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* CARDS */
+  .card { background:white; border-radius:14px; padding:16px; margin-bottom:12px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .card-title { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+  /* FORM */
+  .field { margin-bottom:10px; }
+  label { font-size:0.78rem; font-weight:600; color:var(--muted); margin-bottom:3px; display:block; }
+  select, input, textarea { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; font-family:'Hind',sans-serif; font-size:0.86rem; background:white; color:var(--text); outline:none; transition:border 0.2s; }
+  select:focus, input:focus, textarea:focus { border-color:var(--green); }
+  textarea { resize:none; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  /* BUTTONS */
+  .btn { width:100%; padding:12px; border-radius:12px; border:none; font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .btn-green { background:var(--green); color:white; box-shadow:0 4px 12px rgba(26,92,46,0.25); }
+  .btn-gold { background:var(--gold); color:var(--text); }
+  .btn-blue { background:var(--blue); color:white; }
+  .btn-purple { background:var(--purple); color:white; }
+  .btn-orange { background:var(--orange); color:white; }
+  .btn-sm { padding:7px 14px; font-size:0.78rem; width:auto; border-radius:8px; }
+  .btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+  /* LOADING */
+  .loading { text-align:center; padding:28px; }
+  .spinner { width:34px; height:34px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 10px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading p { color:var(--muted); font-size:0.86rem; }
+
+  /* TECHNIQUE CARDS */
+  .technique-card { background:white; border-radius:14px; border:1px solid var(--border); margin-bottom:12px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.05); transition:transform 0.2s; }
+  .technique-card:hover { transform:translateY(-2px); }
+  .tech-header { padding:16px; display:flex; gap:12px; align-items:flex-start; cursor:pointer; }
+  .tech-icon { width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; }
+  .tech-name { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; margin-bottom:3px; }
+  .tech-tagline { font-size:0.78rem; color:var(--muted); line-height:1.4; }
+  .tech-badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:0.68rem; font-weight:700; }
+  .badge-green { background:var(--green-light); color:var(--green); }
+  .badge-gold { background:var(--gold-light); color:#92400e; }
+  .badge-blue { background:var(--blue-light); color:var(--blue); }
+  .badge-purple { background:var(--purple-light); color:var(--purple); }
+  .badge-orange { background:var(--orange-light); color:var(--orange); }
+  .tech-expand { display:none; padding:0 16px 16px; border-top:1px solid var(--border); }
+  .tech-expand.open { display:block; padding-top:14px; }
+  .tech-detail { font-size:0.86rem; line-height:1.7; color:#374151; margin-bottom:12px; }
+  .steps-list { counter-reset:step; }
+  .step-item { counter-increment:step; display:flex; gap:10px; margin-bottom:10px; font-size:0.84rem; }
+  .step-num { width:24px; height:24px; background:var(--green); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.75rem; flex-shrink:0; }
+  .step-text { line-height:1.5; color:#374151; padding-top:2px; }
+  .investment-box { background:var(--gold-light); border:1px solid var(--gold); border-radius:10px; padding:12px; margin:10px 0; }
+  .invest-title { font-weight:700; font-size:0.82rem; color:#92400e; margin-bottom:6px; }
+  .invest-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .invest-item { font-size:0.78rem; }
+  .invest-label { color:var(--muted); }
+  .invest-val { font-weight:700; color:var(--text); }
+  .learn-btn { background:var(--green); color:white; border:none; border-radius:10px; padding:10px 16px; font-family:'Baloo 2',cursive; font-size:0.88rem; font-weight:700; cursor:pointer; width:100%; margin-top:8px; }
+
+  /* YOUTUBE LINKS */
+  .yt-card { background:white; border-radius:12px; border:1px solid var(--border); margin-bottom:8px; overflow:hidden; display:flex; gap:0; }
+  .yt-thumb { width:110px; height:70px; background:#000; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:2rem; cursor:pointer; position:relative; }
+  .yt-play { position:absolute; width:28px; height:28px; background:red; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; }
+  .yt-info { padding:10px; flex:1; }
+  .yt-title { font-weight:700; font-size:0.82rem; margin-bottom:4px; line-height:1.3; cursor:pointer; color:var(--text); }
+  .yt-title:hover { color:var(--blue); }
+  .yt-channel { font-size:0.7rem; color:var(--muted); margin-bottom:4px; }
+  .yt-lang { display:inline-block; padding:2px 8px; border-radius:20px; font-size:0.65rem; font-weight:700; background:var(--red-light); color:var(--red); }
+  .yt-views { font-size:0.68rem; color:var(--muted); }
+
+  /* BUSINESS IDEAS */
+  .biz-card { background:white; border-radius:14px; border:1px solid var(--border); margin-bottom:12px; overflow:hidden; }
+  .biz-header { padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; }
+  .biz-icon { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+  .biz-name { font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:700; margin-bottom:2px; }
+  .biz-earn { font-size:0.78rem; font-weight:700; color:var(--green); }
+  .biz-invest { font-size:0.72rem; color:var(--muted); }
+  .biz-body { display:none; padding:0 16px 16px; border-top:1px solid var(--border); }
+  .biz-body.open { display:block; padding-top:12px; }
+  .biz-desc { font-size:0.85rem; line-height:1.6; color:#374151; margin-bottom:10px; }
+  .biz-steps { background:var(--green-light); border-radius:10px; padding:12px; margin-bottom:10px; }
+  .biz-steps-title { font-weight:700; font-size:0.82rem; color:var(--green); margin-bottom:6px; }
+  .biz-step { font-size:0.8rem; padding:4px 0; border-bottom:1px solid var(--border); }
+  .biz-step:last-child { border:none; }
+  .income-table { width:100%; font-size:0.78rem; margin-top:8px; }
+  .income-table th { background:var(--green-light); color:var(--green); padding:6px 10px; text-align:left; }
+  .income-table td { padding:6px 10px; border-bottom:1px solid var(--border); }
+
+  /* VOICE FEEDBACK */
+  .feedback-circle { width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg,var(--purple),#6d28d9); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; cursor:pointer; box-shadow:0 8px 30px rgba(124,58,237,0.3); transition:all 0.2s; }
+  .feedback-circle:hover { transform:scale(1.05); }
+  .feedback-circle.recording { animation:recPulse 1s infinite; background:linear-gradient(135deg,var(--red),#ef4444); }
+  @keyframes recPulse { 0%,100%{box-shadow:0 8px 30px rgba(220,38,38,0.3)} 50%{box-shadow:0 8px 50px rgba(220,38,38,0.6),0 0 0 20px rgba(220,38,38,0.1)} }
+  .fb-icon { font-size:2.2rem; }
+  .fb-status { text-align:center; font-size:0.86rem; color:var(--muted); margin-bottom:14px; min-height:20px; }
+  .fb-transcript { background:var(--purple-light); border-radius:12px; padding:12px; font-size:0.86rem; margin-bottom:10px; min-height:40px; display:none; line-height:1.5; }
+  .feedback-card { background:var(--green-light); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:10px; }
+  .fb-farmer { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .fb-avatar { width:32px; height:32px; border-radius:50%; background:var(--green); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.82rem; flex-shrink:0; }
+  .fb-name { font-weight:700; font-size:0.85rem; }
+  .fb-location { font-size:0.7rem; color:var(--muted); }
+  .fb-text { font-size:0.83rem; color:#374151; line-height:1.5; margin-bottom:6px; }
+  .fb-rating { color:var(--gold); font-size:0.85rem; }
+  .fb-time { font-size:0.68rem; color:var(--muted); }
+  .star-rating { display:flex; gap:6px; margin:10px 0; }
+  .star { font-size:1.5rem; cursor:pointer; transition:transform 0.1s; }
+  .star:hover { transform:scale(1.2); }
+
+  /* AI LEARN */
+  .ai-answer { background:white; border:1px solid var(--border); border-radius:12px; padding:14px; margin-top:12px; }
+  .ai-label { font-size:0.7rem; font-weight:700; color:var(--green); text-transform:uppercase; margin-bottom:8px; display:flex; align-items:center; gap:5px; }
+  .ai-text { font-size:0.86rem; line-height:1.7; color:var(--text); }
+  .ai-steps { margin-top:10px; }
+  .ai-step { display:flex; gap:8px; margin-bottom:8px; font-size:0.83rem; }
+  .ai-step-num { width:22px; height:22px; background:var(--green); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; flex-shrink:0; }
+
+  /* PROGRESS */
+  .progress-bar { height:6px; background:var(--border); border-radius:3px; overflow:hidden; margin-top:6px; }
+  .progress-fill { height:100%; border-radius:3px; background:var(--green); }
+
+  /* EMPTY */
+  .empty { text-align:center; padding:36px 20px; color:var(--muted); }
+  .empty .icon { font-size:2.5rem; margin-bottom:10px; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1e293b; color:white; padding:10px 20px; border-radius:100px; font-size:0.83rem; z-index:1000; animation:toastIn 0.3s ease; white-space:nowrap; max-width:90vw; text-align:center; }
+  .toast.success { background:var(--green); }
+  .toast.error { background:var(--red); }
+  @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+  .hidden { display:none; }
+  .powered { text-align:center; font-size:0.7rem; color:var(--muted); margin-top:8px; }
+  .divider { height:1px; background:var(--border); margin:12px 0; }
+  .section-label { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div class="logo-name">Annadata<span>Hub</span></div>
+  </div>
+  <select class="lang-sel" id="langSel" onchange="setLang(this.value)">
+    <option value="en">English</option>
+    <option value="hi">हिंदी</option>
+    <option value="bn">বাংলা</option>
+    <option value="te">తెలుగు</option>
+    <option value="mr">मराठी</option>
+    <option value="ta">தமிழ்</option>
+    <option value="gu">ગુજરાતી</option>
+    <option value="kn">ಕನ್ನಡ</option>
+    <option value="ml">മലയാളം</option>
+    <option value="pa">ਪੰਜਾਬੀ</option>
+  </select>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('techniques')" id="tab-techniques"><span class="icon">🌱</span><span id="t1">Techniques</span></button>
+  <button class="tab" onclick="showTab('business')" id="tab-business"><span class="icon">💼</span><span id="t2">Business</span></button>
+  <button class="tab" onclick="showTab('videos')" id="tab-videos"><span class="icon">▶️</span><span id="t3">Videos</span></button>
+  <button class="tab" onclick="showTab('ailearn')" id="tab-ailearn"><span class="icon">🤖</span><span id="t4">Ask AI</span></button>
+  <button class="tab" onclick="showTab('feedback')" id="tab-feedback"><span class="icon">🎙️</span><span id="t5">Feedback</span></button>
+</div>
+
+<div class="content">
+
+  <!-- ══ FARMING TECHNIQUES ══════════════════════════════════════ -->
+  <div class="page active" id="page-techniques">
+    <div style="background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:6px">🎓</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800">Farmer University</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Learn modern techniques. Earn more from your farm.</div>
+    </div>
+
+    <div class="field">
+      <select id="techFilter" onchange="filterTechniques(this.value)">
+        <option value="all">All Techniques</option>
+        <option value="water">💧 Water Saving</option>
+        <option value="soil">🌍 Soil Health</option>
+        <option value="modern">🚀 Modern Farming</option>
+        <option value="organic">🌿 Organic Farming</option>
+        <option value="business">💰 Income Generation</option>
+      </select>
+    </div>
+
+    <div id="techniquesList"></div>
+  </div>
+
+  <!-- ══ BUSINESS IDEAS ══════════════════════════════════════════ -->
+  <div class="page" id="page-business">
+    <div style="background:linear-gradient(135deg,var(--gold),#e8940f);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:6px">💼</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800">Earn Beyond Farming</div>
+      <div style="font-size:0.78rem;color:rgba(0,0,0,0.7);margin-top:3px">Start a business from your farm. Earn 2-5x more.</div>
+    </div>
+
+    <div class="field" style="margin-bottom:12px">
+      <select id="bizFilter" onchange="filterBusiness(this.value)">
+        <option value="all">All Business Ideas</option>
+        <option value="low">💰 Low Investment (under ₹10,000)</option>
+        <option value="medium">💰💰 Medium (₹10,000-50,000)</option>
+        <option value="high">💰💰💰 High Return</option>
+      </select>
+    </div>
+
+    <div id="businessList"></div>
+  </div>
+
+  <!-- ══ YOUTUBE VIDEOS ══════════════════════════════════════════ -->
+  <div class="page" id="page-videos">
+    <div style="background:linear-gradient(135deg,#dc2626,#b91c1c);border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:6px">▶️</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800">Learn by Watching</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Best YouTube videos in your language</div>
+    </div>
+
+    <div class="two-col" style="margin-bottom:12px">
+      <select id="videoLang" onchange="filterVideos()">
+        <option value="all">All Languages</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Punjabi">Punjabi</option>
+        <option value="Marathi">Marathi</option>
+        <option value="Telugu">Telugu</option>
+        <option value="Tamil">Tamil</option>
+        <option value="Gujarati">Gujarati</option>
+        <option value="Bengali">Bengali</option>
+        <option value="Kannada">Kannada</option>
+      </select>
+      <select id="videoTopic" onchange="filterVideos()">
+        <option value="all">All Topics</option>
+        <option value="hydroponics">Hydroponics</option>
+        <option value="organic">Organic Farming</option>
+        <option value="drip">Drip Irrigation</option>
+        <option value="mushroom">Mushroom Farming</option>
+        <option value="business">Agri Business</option>
+        <option value="government">Govt Schemes</option>
+      </select>
+    </div>
+
+    <div id="videosList"></div>
+  </div>
+
+  <!-- ══ ASK AI TO LEARN ═════════════════════════════════════════ -->
+  <div class="page" id="page-ailearn">
+    <div style="background:linear-gradient(135deg,var(--blue),#1d4ed8);border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:6px">🤖</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800">Ask AI — Learn Anything</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Get step-by-step guide for any farming technique</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">🎯 What do you want to learn?</div>
+      <div class="field">
+        <select id="learnLang">
+          <option value="en">English</option>
+          <option value="hi">Hindi (हिंदी)</option>
+          <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+          <option value="mr">Marathi (मराठी)</option>
+          <option value="te">Telugu (తెలుగు)</option>
+          <option value="ta">Tamil (தமிழ்)</option>
+          <option value="gu">Gujarati (ગુજરાતી)</option>
+          <option value="bn">Bengali (বাংলা)</option>
+          <option value="kn">Kannada (ಕನ್ನಡ)</option>
+          <option value="ml">Malayalam (മലയാളം)</option>
+        </select>
+      </div>
+      <div class="field">
+        <textarea id="learnQuestion" rows="3" placeholder="Type your question e.g. How to start hydroponics farming? How to grow mushrooms? How to make compost?"></textarea>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+        <div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('How to start hydroponics farming at home?')">🌱 Hydroponics</div>
+        <div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('How to grow mushrooms and earn money?')">🍄 Mushroom farming</div>
+        <div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('How to make vermicompost at home?')">🌍 Vermicompost</div>
+        <div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('How to start drip irrigation on small farm?')">💧 Drip irrigation</div>
+        <div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('How to earn money from organic farming?')">🌿 Organic farming</div>
+        <div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('How to start a dairy business from my farm?')">🐄 Dairy business</div>
+      </div>
+      <button class="btn btn-blue" onclick="askToLearn()" id="learnBtn">🤖 Get Step-by-Step Guide</button>
+    </div>
+
+    <div id="learnResult"></div>
+  </div>
+
+  <!-- ══ VOICE FEEDBACK ══════════════════════════════════════════ -->
+  <div class="page" id="page-feedback">
+    <div style="background:linear-gradient(135deg,var(--purple),#6d28d9);border-radius:14px;padding:16px;margin-bottom:14px;color:white;text-align:center">
+      <div style="font-size:1.8rem;margin-bottom:6px">🎙️</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800">Farmer Voice Feedback</div>
+      <div style="font-size:0.78rem;opacity:0.85;margin-top:3px">Your feedback makes AnnadataHub better for every farmer</div>
+    </div>
+
+    <!-- Give Feedback -->
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">🎙️ Give Your Feedback</div>
+      <p style="font-size:0.84rem;color:var(--muted);text-align:center;margin-bottom:16px">Tap the mic and speak in your language</p>
+
+      <div class="feedback-circle" id="feedbackCircle" onclick="toggleFeedback()">
+        <span class="fb-icon" id="fbIcon">🎙️</span>
+      </div>
+      <div class="fb-status" id="fbStatus">Tap to speak your feedback</div>
+      <div class="fb-transcript" id="fbTranscript"></div>
+
+      <div class="divider"></div>
+      <div style="font-size:0.8rem;font-weight:600;color:var(--muted);margin-bottom:8px;text-align:center">Or type your feedback:</div>
+
+      <div class="field">
+        <select id="fbLang">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="pa">Punjabi</option>
+          <option value="mr">Marathi</option>
+          <option value="te">Telugu</option>
+          <option value="ta">Tamil</option>
+        </select>
+      </div>
+      <div class="field">
+        <input type="text" id="fbName" placeholder="Your name (optional)"/>
+      </div>
+      <div class="field">
+        <input type="text" id="fbLocation" placeholder="Your village/district"/>
+      </div>
+
+      <div style="margin-bottom:10px">
+        <label style="font-size:0.78rem;font-weight:600;color:var(--muted);display:block;margin-bottom:6px">Rate AnnadataHub</label>
+        <div class="star-rating" id="starRating">
+          <span class="star" onclick="setRating(1)" data-val="1">☆</span>
+          <span class="star" onclick="setRating(2)" data-val="2">☆</span>
+          <span class="star" onclick="setRating(3)" data-val="3">☆</span>
+          <span class="star" onclick="setRating(4)" data-val="4">☆</span>
+          <span class="star" onclick="setRating(5)" data-val="5">☆</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <textarea id="fbText" rows="3" placeholder="Tell us what you like, what can be better, what features you need..."></textarea>
+      </div>
+
+      <div class="field">
+        <label style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:4px;display:block">What feature helped you most?</label>
+        <select id="fbFeature">
+          <option value="">Select feature</option>
+          <option>📷 Crop Scanner</option>
+          <option>📅 Crop Calendar</option>
+          <option>📊 Mandi Prices</option>
+          <option>🌦️ Weather Alerts</option>
+          <option>💊 Fertilizer Calculator</option>
+          <option>🎙️ Voice Assistant</option>
+          <option>💰 Profit Calculator</option>
+          <option>🏛️ Government Schemes</option>
+          <option>📰 Agriculture News</option>
+          <option>🌱 Learning Center</option>
+        </select>
+      </div>
+
+      <button class="btn btn-purple" onclick="submitFeedback()">📤 Submit Feedback</button>
+    </div>
+
+    <!-- Recent Feedback -->
+    <div class="card">
+      <div class="card-title" style="color:var(--purple)">💬 What Farmers Say</div>
+      <div id="feedbackList"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────
+const LANG_NAMES = {en:"English",hi:"Hindi",bn:"Bengali",te:"Telugu",mr:"Marathi",ta:"Tamil",gu:"Gujarati",kn:"Kannada",ml:"Malayalam",pa:"Punjabi"};
+
+const TECHNIQUES = [
+  {
+    id:1, name:"Hydroponics Farming", icon:"🌱", bg:"#e0fdf4", category:"modern",
+    tagline:"Grow crops without soil — 10x more yield in less space",
+    badges:[{text:"No Soil Needed",cls:"badge-green"},{text:"10x Yield",cls:"badge-gold"},{text:"Water Saving",cls:"badge-blue"}],
+    detail:"Hydroponics is a method of growing plants using mineral nutrient solutions in water, without soil. Plants get nutrients directly in water. You can grow tomatoes, lettuce, spinach, herbs and more. Works in small spaces — even your terrace or room!",
+    investment:{setup:"₹5,000-20,000",monthly:"₹1,000-3,000",earning:"₹15,000-50,000/month",roi:"3-6 months"},
+    steps:["Set up a small frame with PVC pipes or troughs","Fill with nutrient solution (available at agri shops)","Place seedlings in net pots inside the pipes","Ensure 14-16 hours of light (sunlight or LED)","Check nutrient levels weekly — add as needed","Harvest in 30-45 days and sell directly to restaurants"],
+    crops:["Tomato","Lettuce","Spinach","Herbs","Strawberry","Cucumber"]
+  },
+  {
+    id:2, name:"Mushroom Farming", icon:"🍄", bg:"#fdf4ff", category:"business",
+    tagline:"Start with ₹3,000 — earn ₹20,000/month from small space",
+    badges:[{text:"Low Investment",cls:"badge-green"},{text:"High Demand",cls:"badge-gold"},{text:"Indoor",cls:"badge-blue"}],
+    detail:"Mushroom farming is one of the most profitable agri-businesses for small farmers. Oyster and button mushrooms can be grown in a small room or shed. High demand from hotels, restaurants and households. No land needed!",
+    investment:{setup:"₹3,000-10,000",monthly:"₹500-2,000",earning:"₹15,000-40,000/month",roi:"1-2 months"},
+    steps:["Buy mushroom spawn from agri university or online","Prepare growing bags with paddy straw or sawdust","Sterilize the substrate by boiling","Fill bags with spawn — keep in dark room at 25-30°C","Maintain humidity 80-90% by sprinkling water daily","Harvest in 15-20 days — sell at ₹80-150/kg"],
+    crops:["Oyster Mushroom","Button Mushroom","Milky Mushroom","Shiitake"]
+  },
+  {
+    id:3, name:"Drip Irrigation", icon:"💧", bg:"#eff6ff", category:"water",
+    tagline:"Save 50% water — increase yield by 30-40%",
+    badges:[{text:"50% Water Saving",cls:"badge-blue"},{text:"Govt Subsidy",cls:"badge-green"},{text:"Higher Yield",cls:"badge-gold"}],
+    detail:"Drip irrigation delivers water directly to plant roots through small tubes. Reduces water use by 50%, improves yield by 30-40%. Government gives 50-90% subsidy under PMKSY scheme. Ideal for vegetables, fruits and sugarcane.",
+    investment:{setup:"₹15,000-40,000/acre",monthly:"₹200-500",earning:"Save ₹5,000-15,000/acre",roi:"1 season"},
+    steps:["Apply for PMKSY subsidy at your local agriculture office","Contact registered drip irrigation company","Install main pipeline from water source","Lay lateral pipes along crop rows","Connect drippers at plant base","Set timer for automatic watering 2-3 times daily"],
+    crops:["Tomato","Cotton","Sugarcane","Banana","Grapes","Vegetables"]
+  },
+  {
+    id:4, name:"Vermicompost Business", icon:"🌍", bg:"#fef9c3", category:"organic",
+    tagline:"Turn farm waste into gold — sell organic fertilizer",
+    badges:[{text:"Zero Waste",cls:"badge-green"},{text:"Organic",cls:"badge-gold"},{text:"Extra Income",cls:"badge-purple"}],
+    detail:"Vermicompost is produced by earthworms from farm waste, kitchen waste and cow dung. Rich in nutrients — sells at ₹8-15/kg. You can produce 2-3 tonnes per month from a small pit. Farmers and organic gardeners buy it eagerly.",
+    investment:{setup:"₹2,000-5,000",monthly:"₹500",earning:"₹10,000-30,000/month",roi:"2-3 months"},
+    steps:["Dig a pit 3x3 feet or use wooden boxes","Add layer of cow dung + farm waste + kitchen waste","Add earthworms (Eisenia fetida) — 1kg per pit","Cover with wet gunny bags — keep moist","Add new waste every 2 weeks on top","After 45-60 days harvest compost and sell"],
+    crops:["All crops benefit","Organic vegetables","Flowers","Fruits"]
+  },
+  {
+    id:5, name:"Terrace/Rooftop Farming", icon:"🏠", bg:"#f0fdf4", category:"modern",
+    tagline:"Grow vegetables on your roof — save money, earn money",
+    badges:[{text:"No Land Needed",cls:"badge-green"},{text:"Urban Farmers",cls:"badge-blue"},{text:"Fresh Produce",cls:"badge-gold"}],
+    detail:"Rooftop farming uses your house terrace to grow vegetables, herbs and fruits. Great for farmers with small land or people in towns/cities. Grow for family use and sell excess to neighbours and local shops.",
+    investment:{setup:"₹3,000-10,000",monthly:"₹500-1,000",earning:"₹5,000-20,000/month",roi:"2-3 months"},
+    steps:["Check terrace load capacity with a mason","Set up raised beds using old tyres or wooden boxes","Add soil mix: garden soil + compost + cocopeat","Plant seasonal vegetables: tomato, chilli, spinach","Water twice daily — morning and evening","Harvest in 30-60 days — sell to neighbours"],
+    crops:["Tomato","Chilli","Spinach","Herbs","Lettuce","Beans"]
+  },
+  {
+    id:6, name:"Organic Farming Certification", icon:"🌿", bg:"#f0fdf4", category:"organic",
+    tagline:"Certified organic = 2-3x higher price for your crops",
+    badges:[{text:"Premium Price",cls:"badge-gold"},{text:"Export Ready",cls:"badge-green"},{text:"Subsidy Available",cls:"badge-blue"}],
+    detail:"Organic certification proves your crops are grown without chemicals. Certified organic produce sells at 2-3x higher price in cities, supermarkets and exports. Takes 3 years to certify but worth every rupee.",
+    investment:{setup:"₹5,000-15,000",monthly:"₹1,000",earning:"2-3x current price",roi:"3 years"},
+    steps:["Stop all chemical fertilizers and pesticides","Apply for Participatory Guarantee System (PGS) at your KVK","Document all farming activities in a diary","Get inspected by PGS group after 3 years","Get certified — now sell as organic at premium","Connect with organic mandis and supermarkets in your city"],
+    crops:["All crops","Especially vegetables","Rice","Pulses","Spices"]
+  },
+  {
+    id:7, name:"Solar Pump for Irrigation", icon:"☀️", bg:"#fefce8", category:"water",
+    tagline:"Free water pumping — save ₹20,000-50,000/year on electricity",
+    badges:[{text:"90% Subsidy",cls:"badge-green"},{text:"Free Electricity",cls:"badge-gold"},{text:"24/7 Water",cls:"badge-blue"}],
+    detail:"Solar water pumps run on solar energy — no electricity bills. Government gives 90% subsidy under PM-KUSUM scheme. Pay only 10% of cost. Works day and night with battery backup. Saves ₹20,000-50,000/year on electricity.",
+    investment:{setup:"₹15,000-30,000 (after 90% subsidy)",monthly:"₹0 electricity",earning:"Save ₹20,000-50,000/year",roi:"1 year"},
+    steps:["Apply at PM-KUSUM portal or local agriculture office","Submit land documents and bank details","Wait for approval — usually 2-3 months","Solar pump company installs for free","Start using — no electricity bill ever","Maintain panels once a month — wipe with clean cloth"],
+    crops:["All irrigated crops"]
+  },
+  {
+    id:8, name:"Beekeeping Business", icon:"🐝", bg:"#fff7ed", category:"business",
+    tagline:"Earn ₹25,000-60,000/year from bees — also improves crop yield",
+    badges:[{text:"Low Maintenance",cls:"badge-green"},{text:"Dual Income",cls:"badge-gold"},{text:"Crop Benefit",cls:"badge-purple"}],
+    detail:"Beekeeping produces honey (₹200-500/kg), beeswax and royal jelly. Bees also pollinate your crops — improving yield by 20-30%. Low maintenance — check boxes weekly. Govt gives subsidy on beehive boxes.",
+    investment:{setup:"₹10,000-25,000",monthly:"₹500",earning:"₹25,000-60,000/year",roi:"6-12 months"},
+    steps:["Get training from KVK — free 5-day course available","Buy 5-10 bee boxes with Italian/local bees","Place boxes near flowering crops or fruit trees","Check boxes weekly — look for queen bee","Harvest honey every 15-20 days — 10-15 kg per box","Sell to local shops, online or directly to consumers"],
+    crops:["Best near: Mustard","Sunflower","Litchi","Mango","Vegetables"]
+  },
+];
+
+const BUSINESSES = [
+  {
+    id:1, name:"Fresh Vegetable Home Delivery", icon:"🥦", bg:"#e0fdf4",
+    earn:"₹15,000-40,000/month", invest:"Under ₹5,000", level:"low",
+    desc:"Collect fresh vegetables from farmers in your village. Deliver to households in nearby town/city. People pay premium for fresh, direct-from-farm produce. Start with WhatsApp orders.",
+    steps:["Create a WhatsApp group — 'Fresh Veggies Daily'","Post photos of fresh vegetables every morning","Take orders by 8am — deliver by 11am","Charge 20-30% above mandi price","Start with 20 customers — grow to 200","Add milk, eggs, fruits over time"],
+    income:[["20 customers","₹5,000-8,000/month"],["50 customers","₹12,000-20,000/month"],["100 customers","₹25,000-40,000/month"]],
+  },
+  {
+    id:2, name:"Pickle & Preserve Making", icon:"🫙", bg:"#fff7ed",
+    earn:"₹10,000-30,000/month", invest:"₹3,000-8,000", level:"low",
+    desc:"Make pickles, jams, chutneys from your farm produce. Sell online (Amazon, Meesho), local shops and WhatsApp. High demand for homemade, chemical-free products. Women farmers especially successful.",
+    steps:["Start with mango or lemon pickle from your own farm","Make 50 jars — invest ₹3,000 in jars and spices","Sell to neighbours and relatives first","Create Instagram page with product photos","List on Amazon/Meesho after 3 months","Get FSSAI license for ₹100/year to sell legally"],
+    income:[["50 jars/month","₹5,000-8,000/month"],["200 jars/month","₹15,000-25,000/month"],["Online sales","₹30,000+/month"]],
+  },
+  {
+    id:3, name:"Agri Tourism / Farm Stay", icon:"🏡", bg:"#fdf4ff",
+    earn:"₹20,000-80,000/month", invest:"₹20,000-50,000", level:"medium",
+    desc:"City people pay to visit farms, learn farming, eat fresh food, stay overnight. Growing trend in India — especially near cities. Convert one room of your house into a stay. Earn from accommodation + farm activities + meals.",
+    steps:["Clean and decorate one or two rooms simply","Create Facebook/Instagram page with farm photos","List on AirBnB and MakeMyTrip as farm stay","Offer activities: milking cow, picking vegetables, cooking","Charge ₹1,500-3,000 per person per day","Partner with travel agencies in nearby city"],
+    income:[["Weekend visitors","₹15,000-25,000/month"],["Full bookings","₹40,000-80,000/month"],["Festival season","₹1,00,000+/month"]],
+  },
+  {
+    id:4, name:"Seed Production Business", icon:"🌾", bg:"#fefce8",
+    earn:"₹30,000-1,00,000/year", invest:"₹10,000-20,000", level:"medium",
+    desc:"Grow certified seeds and sell to other farmers. Seeds sell at 3-5x price of regular grain. Government and seed companies buy certified seeds. Requires training but very profitable.",
+    steps:["Get training from KVK on seed production","Register as seed producer with state agriculture dept","Grow isolation plots — keep away from other crops","Carefully harvest, clean and dry seeds","Get quality tested at government lab","Sell to seed companies or direct to farmers"],
+    income:[["1 acre seed","₹30,000-50,000/year"],["3 acres seed","₹80,000-1,50,000/year"],["Contract with company","Guaranteed income"]],
+  },
+  {
+    id:5, name:"Medicinal Plant Farming", icon:"🌿", bg:"#f0fdf4",
+    earn:"₹50,000-2,00,000/acre/year", invest:"₹5,000-15,000", level:"medium",
+    desc:"Medicinal plants like Ashwagandha, Aloe Vera, Tulsi, Giloy, Stevia sell at very high prices. Pharma companies buy in bulk. Government promotes this under National Medicinal Plants Board with subsidies.",
+    steps:["Contact NMPB for free training and subsidy","Select 1-2 plants suitable for your region","Buy certified planting material from KVK","Grow on 1 acre first — learn the process","Contact Ayurvedic/herbal companies for bulk buying","Get contract farming agreement for guaranteed price"],
+    income:[["Ashwagandha 1 acre","₹80,000-1,20,000/year"],["Aloe Vera 1 acre","₹60,000-1,00,000/year"],["Stevia 1 acre","₹1,00,000-2,00,000/year"]],
+  },
+  {
+    id:6, name:"Dairy + Value Addition", icon:"🥛", bg:"#eff6ff",
+    earn:"₹20,000-60,000/month", invest:"₹30,000-80,000", level:"medium",
+    desc:"If you have cows or buffaloes — don't just sell raw milk. Make ghee, paneer, curd, butter and sell directly. Value-added dairy products earn 3-4x more than raw milk. Strong demand everywhere.",
+    steps:["Start making ghee from your own milk at home","Sell to neighbors and local shops first","Learn paneer and curd making (free YouTube)","Get FSSAI license to sell legally","Create WhatsApp broadcast for regular customers","Scale up — hire 1 helper when orders grow"],
+    income:[["Raw milk only","₹8,000-12,000/month"],["Ghee + paneer","₹25,000-40,000/month"],["Full dairy products","₹50,000-80,000/month"]],
+  },
+];
+
+const VIDEOS = [
+  {title:"Hydroponics Farming at Home — Complete Guide",channel:"Kheti Kisani",lang:"Hindi",topic:"hydroponics",views:"2.3M views",url:"https://www.youtube.com/results?search_query=hydroponics+farming+hindi",emoji:"🌱"},
+  {title:"ਹਾਈਡ੍ਰੋਪੋਨਿਕਸ ਖੇਤੀ ਕਿਵੇਂ ਕਰੀਏ",channel:"Punjab Kheti",lang:"Punjabi",topic:"hydroponics",views:"850K views",url:"https://www.youtube.com/results?search_query=hydroponics+farming+punjabi",emoji:"🌱"},
+  {title:"Mushroom Farming Business — ₹50,000/month",channel:"Agri World",lang:"Hindi",topic:"mushroom",views:"5.1M views",url:"https://www.youtube.com/results?search_query=mushroom+farming+hindi",emoji:"🍄"},
+  {title:"Organic Farming Complete Course",channel:"Kisan Helpline",lang:"Hindi",topic:"organic",views:"1.8M views",url:"https://www.youtube.com/results?search_query=organic+farming+hindi",emoji:"🌿"},
+  {title:"సేంద్రియ వ్యవసాయం — పూర్తి గైడ్",channel:"Rythu Kosam",lang:"Telugu",topic:"organic",views:"920K views",url:"https://www.youtube.com/results?search_query=organic+farming+telugu",emoji:"🌿"},
+  {title:"Drip Irrigation Setup — Save Water Save Money",channel:"KVK India",lang:"Hindi",topic:"drip",views:"3.2M views",url:"https://www.youtube.com/results?search_query=drip+irrigation+hindi",emoji:"💧"},
+  {title:"தொட்டி தோட்டம் — Terrace Farming Tamil",channel:"Vivasayam",lang:"Tamil",topic:"organic",views:"1.1M views",url:"https://www.youtube.com/results?search_query=terrace+farming+tamil",emoji:"🏠"},
+  {title:"Vermicompost Business — Complete Setup",channel:"Organic India",lang:"Hindi",topic:"organic",views:"2.7M views",url:"https://www.youtube.com/results?search_query=vermicompost+business+hindi",emoji:"🌍"},
+  {title:"ਕਿਸਾਨ ਕਾਰੋਬਾਰ — ਖੇਤੀ ਤੋਂ ਕਮਾਈ",channel:"Kisan Business",lang:"Punjabi",topic:"business",views:"670K views",url:"https://www.youtube.com/results?search_query=kisan+business+punjabi",emoji:"💼"},
+  {title:"PM Kisan Yojana — Complete Guide 2026",channel:"Sarkari Help",lang:"Hindi",topic:"government",views:"4.5M views",url:"https://www.youtube.com/results?search_query=pm+kisan+yojana+2026",emoji:"🏛️"},
+  {title:"Mushroom Sheti — Complete Marathi Guide",channel:"Shetkari",lang:"Marathi",topic:"mushroom",views:"780K views",url:"https://www.youtube.com/results?search_query=mushroom+farming+marathi",emoji:"🍄"},
+  {title:"ഹൈഡ്രോപോണിക്സ് — Malayalam Complete Guide",channel:"Kerala Krishi",lang:"Kannada",topic:"hydroponics",views:"430K views",url:"https://www.youtube.com/results?search_query=hydroponics+farming+malayalam",emoji:"🌱"},
+  {title:"ಸಾವಯವ ಕೃಷಿ — Kannada Organic Farming",channel:"Krishi Mitra",lang:"Kannada",topic:"organic",views:"560K views",url:"https://www.youtube.com/results?search_query=organic+farming+kannada",emoji:"🌿"},
+  {title:"Drip Irrigation Gujarati — ટપક સિંચાઈ",channel:"Gujarat Kheti",lang:"Gujarati",topic:"drip",views:"340K views",url:"https://www.youtube.com/results?search_query=drip+irrigation+gujarati",emoji:"💧"},
+  {title:"জৈব কৃষি — Bengali Organic Farming Guide",channel:"Krishi Bangla",lang:"Bengali",topic:"organic",views:"490K views",url:"https://www.youtube.com/results?search_query=organic+farming+bengali",emoji:"🌿"},
+];
+
+const DEMO_FEEDBACK = [
+  {name:"Raju Singh",location:"Punjab",rating:5,text:"Crop scanner saved my wheat crop! It identified rust disease 2 weeks early. I treated it and saved 80% of my yield. Bahut badhiya app hai!",feature:"📷 Crop Scanner",time:"2 days ago"},
+  {name:"Sunita Devi",location:"Maharashtra",rating:5,text:"Mandi prices feature is very useful. I check every evening before selling. Got ₹200 more per quintal by selling at right time. Thank you AnnadataHub!",feature:"📊 Mandi Prices",time:"4 days ago"},
+  {name:"Mohan Patel",location:"Gujarat",rating:4,text:"Voice assistant is very helpful. I speak in Gujarati and it answers well. My son showed me how to use and now I use every day.",feature:"🎙️ Voice Assistant",time:"1 week ago"},
+  {name:"Kavya Reddy",location:"Andhra Pradesh",rating:5,text:"Government schemes page told me about PM-KUSUM solar pump. I applied and got 90% subsidy. Now no electricity bill for irrigation!",feature:"🏛️ Government Schemes",time:"2 weeks ago"},
+];
+
+let currentRating = 0;
+let isFeedbackRecording = false;
+let feedbackRecognition = null;
+
+// ── LANGUAGE ──────────────────────────────────────────────────────
+function setLang(l) {
+  const labels = {
+    en:["Techniques","Business","Videos","Ask AI","Feedback"],
+    hi:["तकनीक","व्यापार","वीडियो","AI पूछें","फ़ीडबैक"],
+    pa:["ਤਕਨੀਕ","ਕਾਰੋਬਾਰ","ਵੀਡੀਓ","AI ਪੁੱਛੋ","ਫੀਡਬੈਕ"],
+    mr:["तंत्र","व्यवसाय","व्हिडिओ","AI विचारा","अभिप्राय"],
+    te:["పద్ధతులు","వ్యాపారం","వీడియోలు","AI అడగండి","అభిప్రాయం"],
+    ta:["நுட்பங்கள்","வியாபாரம்","வீடியோக்கள்","AI கேளுங்கள்","கருத்து"],
+    gu:["તકનીક","વ્યવસાય","વીડિઓ","AI પૂછો","પ્રતિસાદ"],
+  };
+  const lb = labels[l] || labels.en;
+  ["t1","t2","t3","t4","t5"].forEach((id,i) => document.getElementById(id).textContent = lb[i]);
+}
+
+function showTab(tab) {
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
+}
+
+function showToast(msg,type="success") {
+  const t = document.getElementById("toast");
+  t.textContent=msg; t.className="toast "+type; t.classList.remove("hidden");
+  setTimeout(()=>t.classList.add("hidden"),3500);
+}
+
+async function callClaude(system,user) {
+  const res = await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,system,messages:[{role:"user",content:user}]})
+  });
+  if(!res.ok) throw new Error("API error");
+  const data = await res.json();
+  return data.content.map(b=>b.text||"").join("");
+}
+
+// ── TECHNIQUES ────────────────────────────────────────────────────
+function renderTechniques(data) {
+  document.getElementById("techniquesList").innerHTML = data.map(t=>`
+    <div class="technique-card">
+      <div class="tech-header" onclick="toggleTech(${t.id})">
+        <div class="tech-icon" style="background:${t.bg}">${t.icon}</div>
+        <div style="flex:1">
+          <div class="tech-name">${t.name}</div>
+          <div class="tech-tagline">${t.tagline}</div>
+          <div class="tech-badges">${t.badges.map(b=>`<span class="badge ${b.cls}">${b.text}</span>`).join("")}</div>
+        </div>
+        <div style="font-size:1.2rem;color:var(--muted);flex-shrink:0">▼</div>
+      </div>
+      <div class="tech-expand" id="tech-${t.id}">
+        <p class="tech-detail">${t.detail}</p>
+        <div class="investment-box">
+          <div class="invest-title">💰 Investment & Returns</div>
+          <div class="invest-grid">
+            <div class="invest-item"><div class="invest-label">Setup Cost</div><div class="invest-val">${t.investment.setup}</div></div>
+            <div class="invest-item"><div class="invest-label">Monthly Cost</div><div class="invest-val">${t.investment.monthly}</div></div>
+            <div class="invest-item"><div class="invest-label">Monthly Earning</div><div class="invest-val" style="color:var(--green)">${t.investment.earning}</div></div>
+            <div class="invest-item"><div class="invest-label">Returns in</div><div class="invest-val">${t.investment.roi}</div></div>
+          </div>
+        </div>
+        <div class="section-label">📋 How to Start — Step by Step</div>
+        <div class="steps-list">
+          ${t.steps.map(s=>`<div class="step-item"><div class="step-num">→</div><div class="step-text">${s}</div></div>`).join("")}
+        </div>
+        <div style="margin-top:10px">
+          <div class="section-label">🌾 Suitable Crops</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">${t.crops.map(c=>`<span class="badge badge-green">${c}</span>`).join("")}</div>
+        </div>
+        <button class="learn-btn" onclick="learnMore('${t.name}')">🤖 Ask AI for Detailed Guide →</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleTech(id) {
+  const el = document.getElementById("tech-"+id);
+  el.classList.toggle("open");
+}
+
+function filterTechniques(cat) {
+  const filtered = cat==="all" ? TECHNIQUES : TECHNIQUES.filter(t=>t.category===cat);
+  renderTechniques(filtered);
+}
+
+function learnMore(name) {
+  showTab("ailearn");
+  document.getElementById("learnQuestion").value = `How to start ${name}? Give me complete step by step guide with costs in India.`;
+}
+
+// ── BUSINESS ──────────────────────────────────────────────────────
+function renderBusiness(data) {
+  document.getElementById("businessList").innerHTML = data.map(b=>`
+    <div class="biz-card">
+      <div class="biz-header" onclick="toggleBiz(${b.id})">
+        <div class="biz-icon" style="background:${b.bg}">${b.icon}</div>
+        <div style="flex:1">
+          <div class="biz-name">${b.name}</div>
+          <div class="biz-earn">💰 ${b.earn}</div>
+          <div class="biz-invest">Investment: ${b.invest}</div>
+        </div>
+        <div style="font-size:1.2rem;color:var(--muted)">▼</div>
+      </div>
+      <div class="biz-body" id="biz-${b.id}">
+        <p class="biz-desc">${b.desc}</p>
+        <div class="biz-steps">
+          <div class="biz-steps-title">✅ How to Start</div>
+          ${b.steps.map(s=>`<div class="biz-step">→ ${s}</div>`).join("")}
+        </div>
+        <div class="section-label">📊 Realistic Income</div>
+        <table class="income-table">
+          <tr><th>Scale</th><th>Monthly Earning</th></tr>
+          ${b.income.map(i=>`<tr><td>${i[0]}</td><td style="color:var(--green);font-weight:700">${i[1]}</td></tr>`).join("")}
+        </table>
+        <button class="learn-btn" style="background:var(--gold);color:var(--text);margin-top:10px" onclick="learnMore('${b.name} business')">🤖 Get Complete Business Plan →</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleBiz(id) {
+  document.getElementById("biz-"+id).classList.toggle("open");
+}
+
+function filterBusiness(level) {
+  const filtered = level==="all" ? BUSINESSES : BUSINESSES.filter(b=>b.level===level);
+  renderBusiness(filtered);
+}
+
+// ── VIDEOS ────────────────────────────────────────────────────────
+function renderVideos(data) {
+  document.getElementById("videosList").innerHTML = data.map(v=>`
+    <div class="yt-card">
+      <div class="yt-thumb" onclick="openVideo('${v.url}')">
+        <span style="font-size:2rem">${v.emoji}</span>
+        <div class="yt-play">▶</div>
+      </div>
+      <div class="yt-info">
+        <div class="yt-title" onclick="openVideo('${v.url}')">${v.title}</div>
+        <div class="yt-channel">📺 ${v.channel}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:3px">
+          <span class="yt-lang">${v.lang}</span>
+          <span class="yt-views">👁 ${v.views}</span>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function filterVideos() {
+  const lang = document.getElementById("videoLang").value;
+  const topic = document.getElementById("videoTopic").value;
+  let filtered = VIDEOS;
+  if(lang!=="all") filtered = filtered.filter(v=>v.lang===lang);
+  if(topic!=="all") filtered = filtered.filter(v=>v.topic===topic);
+  renderVideos(filtered.length ? filtered : VIDEOS);
+}
+
+function openVideo(url) {
+  window.open(url,"_blank");
+}
+
+// ── ASK AI TO LEARN ───────────────────────────────────────────────
+function setLearnQ(q) { document.getElementById("learnQuestion").value = q; }
+
+async function askToLearn() {
+  const q = document.getElementById("learnQuestion").value.trim();
+  const langCode = document.getElementById("learnLang").value;
+  const lang = LANG_NAMES[langCode] || "English";
+  const btn = document.getElementById("learnBtn");
+  const result = document.getElementById("learnResult");
+  if(!q) { showToast("Please type or select a question","error"); return; }
+
+  btn.disabled = true; btn.textContent = "⏳ Getting guide...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Preparing your personalized learning guide...</p></div>`;
+
+  try {
+    const answer = await callClaude(
+      `You are an expert agricultural trainer for Indian farmers. Respond ENTIRELY in ${lang}. 
+      Give practical, detailed, step-by-step guidance that a farmer with no technical background can follow.
+      Include: what it is, why to do it, step by step how to start, costs in Indian rupees, where to get materials, how to earn money from it.
+      Format with clear sections and numbered steps. Keep language simple.`,
+      `Indian farmer question: ${q}\n\nPlease give a complete practical guide that this farmer can implement immediately.`
+    );
+
+    result.innerHTML = `
+      <div class="ai-answer">
+        <div class="ai-label">✨ Claude AI — Your Personal Farming Guide</div>
+        <div class="ai-text">${answer.replace(/\n/g,"<br/>")}</div>
+      </div>
+      <div style="background:var(--green-light);border-radius:12px;padding:14px;margin-top:12px">
+        <div style="font-weight:700;font-size:0.86rem;color:var(--green);margin-bottom:6px">📹 Watch Related Videos</div>
+        <button class="btn btn-sm" style="background:var(--red);color:white;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:0.82rem" onclick="window.open('https://www.youtube.com/results?search_query=${encodeURIComponent(q+' hindi')}','_blank')">▶ Search YouTube in Hindi</button>
+      </div>
+      <div class="powered">✨ Powered by Claude AI · Always verify with your local KVK</div>
+    `;
+    showToast("Guide ready! ✅");
+  } catch(e) {
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not get guide. Please try again.</p></div>`;
+    showToast("Error. Try again.","error");
+  }
+  btn.disabled = false; btn.textContent = "🤖 Get Step-by-Step Guide";
+}
+
+// ── VOICE FEEDBACK ────────────────────────────────────────────────
+function toggleFeedback() {
+  if(!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast("Voice not supported. Please type your feedback.","error"); return;
+  }
+  if(isFeedbackRecording) { stopFeedbackRecording(); return; }
+  startFeedbackRecording();
+}
+
+function startFeedbackRecording() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  feedbackRecognition = new SR();
+  const langMap = {en:"en-IN",hi:"hi-IN",pa:"pa-IN",mr:"mr-IN",te:"te-IN",ta:"ta-IN"};
+  feedbackRecognition.lang = langMap[document.getElementById("fbLang").value] || "hi-IN";
+  feedbackRecognition.continuous = false;
+  feedbackRecognition.interimResults = true;
+
+  feedbackRecognition.onstart = () => {
+    isFeedbackRecording = true;
+    document.getElementById("feedbackCircle").classList.add("recording");
+    document.getElementById("fbIcon").textContent = "⏹️";
+    document.getElementById("fbStatus").textContent = "🔴 Recording... Speak your feedback";
+    document.getElementById("fbTranscript").style.display = "block";
+  };
+
+  feedbackRecognition.onresult = (e) => {
+    const text = Array.from(e.results).map(r=>r[0].transcript).join("");
+    document.getElementById("fbTranscript").textContent = "🎙️ " + text;
+    if(e.results[e.results.length-1].isFinal) {
+      document.getElementById("fbText").value = text;
+    }
+  };
+
+  feedbackRecognition.onerror = () => { stopFeedbackRecording(); };
+  feedbackRecognition.onend = () => stopFeedbackRecording();
+  feedbackRecognition.start();
+}
+
+function stopFeedbackRecording() {
+  isFeedbackRecording = false;
+  if(feedbackRecognition) feedbackRecognition.stop();
+  document.getElementById("feedbackCircle").classList.remove("recording");
+  document.getElementById("fbIcon").textContent = "🎙️";
+  document.getElementById("fbStatus").textContent = "Tap to speak your feedback";
+}
+
+function setRating(val) {
+  currentRating = val;
+  document.querySelectorAll(".star").forEach((s,i)=>{
+    s.textContent = i < val ? "⭐" : "☆";
+  });
+}
+
+function submitFeedback() {
+  const text = document.getElementById("fbText").value.trim();
+  const name = document.getElementById("fbName").value.trim() || "Anonymous Farmer";
+  const location = document.getElementById("fbLocation").value.trim() || "India";
+  const feature = document.getElementById("fbFeature").value;
+  if(!text) { showToast("Please write or speak your feedback","error"); return; }
+  if(currentRating === 0) { showToast("Please give a star rating","error"); return; }
+
+  DEMO_FEEDBACK.unshift({
+    name, location, rating:currentRating,
+    text, feature: feature || "General",
+    time: "Just now"
+  });
+  renderFeedback();
+
+  document.getElementById("fbText").value = "";
+  document.getElementById("fbName").value = "";
+  document.getElementById("fbLocation").value = "";
+  document.getElementById("fbTranscript").style.display = "none";
+  document.getElementById("fbTranscript").textContent = "";
+  setRating(0);
+  document.getElementById("fbFeature").value = "";
+
+  showToast("Thank you for your feedback! 🙏 It helps us improve.","success");
+}
+
+function renderFeedback() {
+  document.getElementById("feedbackList").innerHTML = DEMO_FEEDBACK.map(f=>`
+    <div class="feedback-card">
+      <div class="fb-farmer">
+        <div class="fb-avatar">${f.name[0]}</div>
+        <div>
+          <div class="fb-name">${f.name}</div>
+          <div class="fb-location">📍 ${f.location}</div>
+        </div>
+        <div style="margin-left:auto;text-align:right">
+          <div class="fb-rating">${"⭐".repeat(f.rating)}</div>
+          <div class="fb-time">${f.time}</div>
+        </div>
+      </div>
+      <div class="fb-text">"${f.text}"</div>
+      ${f.feature ? `<div style="font-size:0.72rem;color:var(--green);font-weight:600">Most helpful: ${f.feature}</div>` : ""}
+    </div>
+  `).join("");
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+renderTechniques(TECHNIQUES);
+renderBusiness(BUSINESSES);
+renderVideos(VIDEOS);
+renderFeedback();
+</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Annadatahub – Legal Policies</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green:      #1a5c2e;
+    --green-mid:  #2d7a45;
+    --green-light:#e8f5ec;
+    --gold:       #f5a623;
+    --bg:         #f4f7f4;
+    --white:      #ffffff;
+    --text:       #1a2e1a;
+    --muted:      #6b7c6b;
+    --border:     #d0e4d4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Hind', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--green), var(--green-mid));
+    padding: 28px 20px;
+    text-align: center;
+  }
+  .logo {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-bottom: 8px; text-decoration: none;
+  }
+  .logo-icon {
+    width: 42px; height: 42px; background: var(--gold);
+    border-radius: 12px; display: flex; align-items: center;
+    justify-content: center; font-size: 1.4rem;
+  }
+  .logo-name {
+    font-family: 'Baloo 2', cursive; font-size: 1.5rem;
+    font-weight: 800; color: white;
+  }
+  .logo-name span { color: var(--gold); }
+  header p { color: rgba(255,255,255,0.7); font-size: 0.88rem; }
+
+  /* NAV TABS */
+  .tab-bar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: center; gap: 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .tab-btn {
+    padding: 14px 28px;
+    background: none; border: none;
+    font-family: 'Hind', sans-serif; font-size: 0.92rem; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+  .tab-btn:hover { color: var(--green); }
+
+  /* CONTENT */
+  .content {
+    max-width: 780px; margin: 0 auto;
+    padding: 36px 20px 60px;
+  }
+  .policy-section { display: none; }
+  .policy-section.active { display: block; }
+
+  .page-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.7rem; font-weight: 800;
+    color: var(--green); margin-bottom: 6px;
+  }
+  .page-date {
+    font-size: 0.82rem; color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .section-block {
+    background: white; border-radius: 16px;
+    padding: 24px; margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 10px rgba(26,92,46,0.06);
+  }
+  .section-block h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--green); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-block p {
+    font-size: 0.9rem; line-height: 1.7;
+    color: #374151; margin-bottom: 10px;
+  }
+  .section-block p:last-child { margin-bottom: 0; }
+  .section-block ul {
+    padding-left: 18px; margin-top: 6px;
+  }
+  .section-block ul li {
+    font-size: 0.9rem; line-height: 1.7;
+    color: #374151; margin-bottom: 6px;
+  }
+
+  .highlight-box {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    color: var(--green);
+    line-height: 1.6;
+  }
+
+  .gold-box {
+    background: #fff8ec;
+    border-left: 4px solid var(--gold);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    color: #7c5c2e;
+    line-height: 1.6;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 12px 0; font-size: 0.88rem;
+  }
+  th {
+    background: var(--green-light); color: var(--green);
+    padding: 10px 14px; text-align: left; font-weight: 700;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px; border: 1px solid var(--border);
+    color: #374151; line-height: 1.5;
+  }
+  tr:nth-child(even) td { background: #fafffe; }
+
+  .contact-card {
+    background: linear-gradient(135deg, var(--green), var(--green-mid));
+    border-radius: 16px; padding: 24px;
+    color: white; text-align: center;
+    margin-top: 24px;
+  }
+  .contact-card h3 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem; margin-bottom: 8px;
+  }
+  .contact-card p { font-size: 0.88rem; opacity: 0.85; margin-bottom: 4px; }
+  .contact-card a { color: var(--gold); text-decoration: none; font-weight: 600; }
+
+  /* FOOTER */
+  footer {
+    background: var(--green);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 18px;
+    font-size: 0.8rem;
+  }
+  footer span { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🌾</div>
+    <div class="logo-name">Annadata<span>Hub</span></div>
+  </div>
+  <p>Legal Policies &amp; Terms</p>
+</header>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('refund')">↩️ Refund Policy</button>
+  <button class="tab-btn" onclick="showTab('terms')">📋 Terms &amp; Conditions</button>
+  <button class="tab-btn" onclick="showTab('privacy')">🔒 Privacy Policy</button>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ══ REFUND POLICY ══════════════════════════════════════════ -->
+  <div class="policy-section active" id="refund">
+    <div class="page-title">↩️ Refund &amp; Cancellation Policy</div>
+    <div class="page-date">Last updated: March 2026</div>
+
+    <div class="highlight-box">
+      <strong>Simple version:</strong> If you are not happy with AnnadataHub within 7 days of payment, we will refund you — no questions asked.
+    </div>
+
+    <div class="section-block">
+      <h2>✅ When You Get a Full Refund</h2>
+      <p>You are eligible for a full refund if:</p>
+      <ul>
+        <li>You request a refund within <strong>7 days</strong> of your first payment</li>
+        <li>The app was not working properly due to a technical issue on our side</li>
+        <li>You were charged twice for the same subscription</li>
+        <li>You did not receive the service you paid for</li>
+      </ul>
+      <div class="gold-box">
+        📞 To request a refund, simply email us or WhatsApp us within 7 days. We process refunds within 5–7 business days back to your original payment method.
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>❌ When Refunds Are Not Applicable</h2>
+      <ul>
+        <li>Refund request made after 7 days of payment</li>
+        <li>You have used more than 10 crop scans in the billing period</li>
+        <li>Subscription was purchased during a special discount or offer</li>
+        <li>Account was terminated due to violation of our Terms of Service</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>🔄 How to Cancel Your Subscription</h2>
+      <p>You can cancel your subscription at any time — no penalty, no hidden charges.</p>
+      <ul>
+        <li>Go to your <strong>Profile → Subscription → Cancel Plan</strong></li>
+        <li>Or email us at <strong>annadattahub@gmail.com</strong></li>
+        <li>Or WhatsApp us at <strong>+91 XXXXX XXXXX</strong></li>
+      </ul>
+      <p>After cancellation, you keep access until the end of your current billing period. You will not be charged again after that.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>📊 Subscription Plans Summary</h2>
+      <table>
+        <tr><th>Plan</th><th>Price</th><th>Refund Window</th><th>Cancellation</th></tr>
+        <tr><td>Free</td><td>₹0</td><td>N/A</td><td>Anytime</td></tr>
+        <tr><td>Basic Monthly</td><td>₹49/month</td><td>7 days</td><td>Anytime</td></tr>
+        <tr><td>Basic Yearly</td><td>₹411/year</td><td>7 days</td><td>Anytime</td></tr>
+        <tr><td>Premium Monthly</td><td>₹99/month</td><td>7 days</td><td>Anytime</td></tr>
+        <tr><td>Premium Yearly</td><td>₹831/year</td><td>7 days</td><td>Anytime</td></tr>
+      </table>
+    </div>
+
+    <div class="contact-card">
+      <h3>Need a Refund? Contact Us</h3>
+      <p>📧 Email: <a href="mailto:annadattahub@gmail.com">annadattahub@gmail.com</a></p>
+      <p>📱 WhatsApp: <a href="#">+91 XXXXX XXXXX</a></p>
+      <p style="margin-top:8px; font-size:0.8rem;">We respond within 24 hours on working days</p>
+    </div>
+  </div>
+
+  <!-- ══ TERMS & CONDITIONS ═════════════════════════════════════ -->
+  <div class="policy-section" id="terms">
+    <div class="page-title">📋 Terms &amp; Conditions</div>
+    <div class="page-date">Last updated: March 2026</div>
+
+    <div class="section-block">
+      <h2>📌 1. About AnnadataHub</h2>
+      <p>AnnadataHub ("we", "us", "our") is an AI-powered crop disease detection and farm advisory platform built for Indian farmers. By using our website or app, you agree to these terms.</p>
+      <p>Our service is available at <strong>www.annadatahub.com</strong> and as a mobile web application.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>👤 2. Who Can Use This Service</h2>
+      <ul>
+        <li>You must be at least 18 years old to create an account</li>
+        <li>You must provide accurate name, phone number and email address</li>
+        <li>One person can only have one free account</li>
+        <li>You are responsible for keeping your password safe</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>🌾 3. Our Service</h2>
+      <p>AnnadataHub provides:</p>
+      <ul>
+        <li>AI-powered crop disease detection from photos</li>
+        <li>Treatment and prevention recommendations</li>
+        <li>Personalized farming advice in regional languages</li>
+        <li>Community forums for farmers</li>
+        <li>Early warning alerts for pest and disease outbreaks</li>
+        <li>Post-harvest storage guidance</li>
+      </ul>
+      <div class="gold-box">
+        ⚠️ <strong>Important:</strong> Our AI advice is for guidance only. Always consult a qualified agricultural expert or Krishi Vigyan Kendra (KVK) before making major farming decisions. We are not responsible for crop losses based solely on our recommendations.
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>💳 4. Payments &amp; Subscriptions</h2>
+      <ul>
+        <li>All payments are processed securely through <strong>Razorpay</strong></li>
+        <li>Prices are in Indian Rupees (₹) and include applicable taxes</li>
+        <li>Subscriptions renew automatically unless cancelled</li>
+        <li>We will send you a reminder email before renewal</li>
+        <li>You can cancel anytime — see our Refund Policy</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>🚫 5. What You Must Not Do</h2>
+      <ul>
+        <li>Share your account with others</li>
+        <li>Use our service for any illegal activity</li>
+        <li>Upload fake, misleading or inappropriate photos</li>
+        <li>Try to hack, damage or overload our systems</li>
+        <li>Copy or resell our AI analysis or content</li>
+        <li>Post spam or abusive content in the community forum</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>📷 6. Your Photos &amp; Data</h2>
+      <p>When you upload a crop photo for analysis:</p>
+      <ul>
+        <li>You give us permission to process it using AI</li>
+        <li>We do not sell your photos to anyone</li>
+        <li>Photos may be used (anonymously) to improve our AI model</li>
+        <li>You can request deletion of your data anytime</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>⚖️ 7. Limitation of Liability</h2>
+      <p>AnnadataHub is not liable for:</p>
+      <ul>
+        <li>Any crop losses or damages based on our recommendations</li>
+        <li>Service interruptions due to maintenance or technical issues</li>
+        <li>Losses due to incorrect information provided by users</li>
+      </ul>
+      <p>Our maximum liability is limited to the amount you paid us in the last 3 months.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>🏛️ 8. Governing Law</h2>
+      <p>These terms are governed by the laws of <strong>India</strong>. Any disputes will be resolved in the courts of <strong>[Your City], India</strong>. We follow all applicable Indian laws including the IT Act 2000 and Consumer Protection Act 2019.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>✏️ 9. Changes to These Terms</h2>
+      <p>We may update these terms from time to time. We will notify you by email or in-app notification before any major changes take effect. Continued use of the service means you accept the updated terms.</p>
+    </div>
+
+    <div class="contact-card">
+      <h3>Questions About Our Terms?</h3>
+      <p>📧 Email: <a href="mailto:annadattahub@gmail.com">annadattahub@gmail.com</a></p>
+      <p>📱 WhatsApp: <a href="#">+91 XXXXX XXXXX</a></p>
+    </div>
+  </div>
+
+  <!-- ══ PRIVACY POLICY ═════════════════════════════════════════ -->
+  <div class="policy-section" id="privacy">
+    <div class="page-title">🔒 Privacy Policy</div>
+    <div class="page-date">Last updated: March 2026</div>
+
+    <div class="highlight-box">
+      <strong>Simple version:</strong> We only collect what we need to run the service. We never sell your personal data. You can delete your account and data anytime.
+    </div>
+
+    <div class="section-block">
+      <h2>📋 1. What Information We Collect</h2>
+      <table>
+        <tr><th>Information</th><th>Why We Collect It</th></tr>
+        <tr><td>Name, email, phone</td><td>To create your account</td></tr>
+        <tr><td>Crop photos</td><td>To run AI disease analysis</td></tr>
+        <tr><td>Location (optional)</td><td>For regional pest alerts</td></tr>
+        <tr><td>Payment info</td><td>Processed by Razorpay — we don't store card details</td></tr>
+        <tr><td>Device &amp; usage data</td><td>To improve the app</td></tr>
+      </table>
+    </div>
+
+    <div class="section-block">
+      <h2>🔐 2. How We Protect Your Data</h2>
+      <ul>
+        <li>All data is encrypted in transit (HTTPS/SSL)</li>
+        <li>Passwords are stored in encrypted form — even we cannot read them</li>
+        <li>We use secure cloud servers hosted in India</li>
+        <li>Payment data is handled entirely by Razorpay — PCI DSS compliant</li>
+        <li>We regularly review our security practices</li>
+      </ul>
+    </div>
+
+    <div class="section-block">
+      <h2>🤝 3. Who We Share Data With</h2>
+      <ul>
+        <li><strong>Razorpay</strong> — for processing payments</li>
+        <li><strong>Anthropic Claude AI</strong> — for analyzing crop photos (no personal data shared)</li>
+        <li><strong>MongoDB Atlas</strong> — for storing your account data securely</li>
+      </ul>
+      <p>We do <strong>not</strong> sell, rent or share your personal data with advertisers or third parties for marketing.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>✅ 4. Your Rights</h2>
+      <ul>
+        <li><strong>Access:</strong> Ask us what data we have about you</li>
+        <li><strong>Correction:</strong> Update your name, email or phone anytime</li>
+        <li><strong>Deletion:</strong> Delete your account and all data permanently</li>
+        <li><strong>Download:</strong> Request a copy of your data</li>
+        <li><strong>Opt-out:</strong> Unsubscribe from marketing emails anytime</li>
+      </ul>
+      <p>To exercise any of these rights, email us at <strong>annadattahub@gmail.com</strong></p>
+    </div>
+
+    <div class="section-block">
+      <h2>🍪 5. Cookies</h2>
+      <p>We use only essential cookies to keep you logged in and remember your preferences. We do not use advertising or tracking cookies.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>👶 6. Children's Privacy</h2>
+      <p>AnnadataHub is not intended for children under 18. We do not knowingly collect data from minors. If you believe a minor has created an account, please contact us and we will delete it immediately.</p>
+    </div>
+
+    <div class="contact-card">
+      <h3>Privacy Questions?</h3>
+      <p>📧 Email: <a href="mailto:annadattahub@gmail.com">annadattahub@gmail.com</a></p>
+      <p>📱 WhatsApp: <a href="#">+91 XXXXX XXXXX</a></p>
+      <p style="margin-top:8px; font-size:0.8rem;">We respond within 48 hours</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 <span>AnnadataHub</span> · Made with ❤️ for Indian Farmers · All rights reserved
+</footer>
+
+<script>
+  function showTab(tab) {
+    document.querySelectorAll(".policy-section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+    event.target.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+</script>
+</body>
+</html>
