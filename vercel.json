@@ -2,7 +2,6 @@
   "version": 2,
   "routes": [
     { "src": "/", "dest": "/index.html" },
-    { "src": "/home", "dest": "/index.html" },
     { "src": "/farmgram", "dest": "/farmgram.html" },
     { "src": "/msp", "dest": "/msp.html" },
     { "src": "/learn", "dest": "/learn.html" },

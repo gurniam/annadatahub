@@ -383,22 +383,22 @@ function showToast(msg, type="success") {
 }
 
 async function callClaude(system, user) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system,
-      messages: [{ role: "user", content: user }]
-    })
-  });
-  if (!res.ok) throw new Error("API error");
-  const data = await res.json();
-  const text = data.content.map(b => b.text || "").join("");
-  const match = text.replace(/```json|```/g, "").trim().match(/\{[\s\S]*\}/);
-  if (!match) throw new Error("No JSON");
-  return JSON.parse(match[0]);
+  try {
+    const res = await fetch("https://annadatahub-production.up.railway.app/api/ai/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: user, language: typeof currentLang !== 'undefined' ? currentLang : "en" })
+    });
+    if (!res.ok) throw new Error("API error");
+    const data = await res.json();
+    const text = data.answer || "";
+    const clean = text.replace(/```json|```/g, "").trim();
+    const match = clean.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("No JSON found");
+    return JSON.parse(match[0]);
+  } catch(e) {
+    throw new Error("AI service error: " + e.message);
+  }
 }
 
 // ── MANDI PRICES ─────────────────────────────────────────────────
