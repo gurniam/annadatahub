@@ -2,12 +2,11 @@
   "version": 2,
   "routes": [
     { "src": "/", "dest": "/index.html" },
-    { "src": "/home", "dest": "/home.html" },
-    { "src": "/admin", "dest": "/admin.html" },
+    { "src": "/home", "dest": "/index.html" },
     { "src": "/farmgram", "dest": "/farmgram.html" },
     { "src": "/msp", "dest": "/msp.html" },
     { "src": "/learn", "dest": "/learn.html" },
     { "src": "/finance", "dest": "/finance-tools.html" },
-    { "src": "/pricing", "dest": "/pricing.html" }
+    { "src": "/admin", "dest": "/admin.html" }
   ]
 }

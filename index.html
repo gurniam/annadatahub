@@ -5,181 +5,117 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AnnadataHub — Farmer App</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="annadatahub-api.js"></script>
 <style>
-  :root {
-    --green:#1a5c2e; --green-mid:#2d7a45; --green-light:#e8f5ec;
-    --gold:#f5a623; --gold-light:#fff8ec;
-    --bg:#f0f5f1; --white:#fff; --text:#1a2e1a; --muted:#6b7c6b; --border:#d0e4d4;
-  }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Hind',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-
-  /* HEADER */
-  .header { background:linear-gradient(135deg,var(--green),var(--green-mid)); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; }
-  .logo { display:flex; align-items:center; gap:10px; }
-  .logo-icon { width:44px; height:44px; background:var(--gold); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
-  .logo-name { font-family:'Baloo 2',cursive; font-size:1.4rem; font-weight:800; color:white; }
-  .logo-name span { color:var(--gold); }
-
-  /* LANGUAGE BAR */
-  .lang-bar { background:var(--green); padding:10px 20px; display:flex; gap:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  .lang-bar::-webkit-scrollbar { display:none; }
-  .lang-btn { flex-shrink:0; padding:6px 14px; border-radius:20px; border:1.5px solid rgba(255,255,255,0.3); background:transparent; color:rgba(255,255,255,0.75); font-family:'Hind',sans-serif; font-size:0.82rem; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-  .lang-btn.active { background:var(--gold); color:var(--text); border-color:var(--gold); }
-
-  /* GREETING */
-  .greeting { padding:20px; background:linear-gradient(160deg,var(--green) 0%,var(--green-mid) 100%); color:white; }
-  .greet-time { font-size:0.82rem; opacity:0.75; margin-bottom:4px; }
-  .greet-text { font-family:'Baloo 2',cursive; font-size:1.5rem; font-weight:800; margin-bottom:4px; }
-  .greet-sub { font-size:0.86rem; opacity:0.85; }
-  .weather-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); padding:6px 14px; border-radius:20px; font-size:0.82rem; margin-top:10px; }
-
-  /* MAIN CONTENT */
-  .content { padding:16px; max-width:480px; margin:0 auto; }
-
-  /* BIG BUTTONS - Main Features */
-  .big-btn { background:white; border-radius:18px; padding:20px; margin-bottom:12px; border:1px solid var(--border); box-shadow:0 4px 16px rgba(0,0,0,0.07); display:flex; align-items:center; gap:16px; cursor:pointer; transition:all 0.2s; text-decoration:none; color:var(--text); }
-  .big-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.12); }
-  .big-btn:active { transform:translateY(0); }
-  .btn-icon-wrap { width:64px; height:64px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; }
-  .btn-title { font-family:'Baloo 2',cursive; font-size:1.1rem; font-weight:700; margin-bottom:3px; }
-  .btn-desc { font-size:0.8rem; color:var(--muted); line-height:1.4; }
-  .btn-arrow { margin-left:auto; font-size:1.2rem; color:var(--muted); flex-shrink:0; }
-  .btn-badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:0.68rem; font-weight:700; margin-top:4px; }
-
-  /* SECTION TITLE */
-  .section-title { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; color:var(--green); margin:20px 0 12px; display:flex; align-items:center; gap:8px; }
-
-  /* QUICK ACCESS GRID */
-  .quick-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
-  .quick-btn { background:white; border-radius:14px; padding:16px; text-align:center; border:1px solid var(--border); cursor:pointer; transition:all 0.2s; text-decoration:none; color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
-  .quick-btn:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.1); }
-  .quick-icon { font-size:2rem; margin-bottom:8px; }
-  .quick-title { font-family:'Baloo 2',cursive; font-size:0.88rem; font-weight:700; margin-bottom:2px; }
-  .quick-desc { font-size:0.72rem; color:var(--muted); line-height:1.3; }
-
-  /* DAILY TIPS */
-  .tip-card { background:linear-gradient(135deg,var(--gold-light),#fff); border:1px solid var(--gold); border-radius:14px; padding:16px; margin-bottom:12px; display:flex; gap:12px; align-items:flex-start; }
-  .tip-icon { font-size:1.8rem; flex-shrink:0; }
-  .tip-title { font-weight:700; font-size:0.9rem; color:#92400e; margin-bottom:4px; }
-  .tip-text { font-size:0.82rem; color:#374151; line-height:1.5; }
-
-  /* HELP BUTTON */
-  .help-btn { position:fixed; bottom:24px; right:20px; width:56px; height:56px; background:var(--green); color:white; border-radius:50%; border:none; font-size:1.5rem; cursor:pointer; box-shadow:0 6px 20px rgba(26,92,46,0.4); z-index:100; display:flex; align-items:center; justify-content:center; animation:helpPulse 3s infinite; }
-  @keyframes helpPulse { 0%,100%{box-shadow:0 6px 20px rgba(26,92,46,0.4)} 50%{box-shadow:0 6px 30px rgba(26,92,46,0.6),0 0 0 10px rgba(26,92,46,0.1)} }
-
-  /* HELP MODAL */
-  .help-modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; display:none; align-items:flex-end; justify-content:center; }
-  .help-modal.show { display:flex; }
-  .help-sheet { background:white; border-radius:24px 24px 0 0; padding:24px; width:100%; max-width:480px; animation:slideUp 0.3s ease; }
-  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-  .help-title { font-family:'Baloo 2',cursive; font-size:1.2rem; font-weight:800; color:var(--green); margin-bottom:16px; text-align:center; }
-  .help-option { display:flex; align-items:center; gap:14px; padding:14px; border-radius:14px; background:var(--bg); margin-bottom:10px; cursor:pointer; border:1px solid var(--border); }
-  .help-option:hover { background:var(--green-light); }
-  .help-opt-icon { font-size:1.8rem; flex-shrink:0; }
-  .help-opt-title { font-weight:700; font-size:0.92rem; }
-  .help-opt-desc { font-size:0.78rem; color:var(--muted); margin-top:2px; }
-  .help-close { width:100%; padding:12px; background:var(--green); color:white; border:none; border-radius:12px; font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; cursor:pointer; margin-top:6px; }
-
-  /* ONBOARDING MODAL */
-  .onboard-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
-  .onboard-box { background:white; border-radius:20px; padding:28px; max-width:400px; width:100%; text-align:center; }
-  .onboard-step { display:none; }
-  .onboard-step.active { display:block; }
-  .onboard-icon { font-size:4rem; margin-bottom:14px; }
-  .onboard-title { font-family:'Baloo 2',cursive; font-size:1.4rem; font-weight:800; color:var(--green); margin-bottom:8px; }
-  .onboard-text { font-size:0.9rem; color:var(--muted); line-height:1.6; margin-bottom:20px; }
-  .onboard-next { width:100%; padding:13px; background:var(--green); color:white; border:none; border-radius:12px; font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; cursor:pointer; }
-  .onboard-skip { background:none; border:none; color:var(--muted); font-size:0.82rem; cursor:pointer; margin-top:10px; display:block; width:100%; }
-  .onboard-dots { display:flex; justify-content:center; gap:6px; margin-bottom:16px; }
-  .dot { width:8px; height:8px; border-radius:50%; background:var(--border); }
-  .dot.active { background:var(--green); }
-
-  /* TOAST */
-  .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:#1e293b; color:white; padding:10px 20px; border-radius:100px; font-size:0.84rem; z-index:1000; animation:toastIn 0.3s ease; white-space:nowrap; max-width:90vw; text-align:center; }
-  .toast.success { background:var(--green); }
-  @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-  .hidden { display:none; }
-
+  :root{--green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;--gold:#f5a623;--gold-light:#fff8ec;--blue:#2563eb;--red:#dc2626;--bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;}
+  .header{background:linear-gradient(135deg,var(--green),var(--green-mid));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .logo{display:flex;align-items:center;gap:8px;}
+  .logo-icon{width:36px;height:36px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .logo-name{font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:white;}
+  .logo-name span{color:var(--gold);}
+  .lang-bar{background:var(--green);padding:8px 16px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .lang-bar::-webkit-scrollbar{display:none;}
+  .lang-btn{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.75);font-family:'Hind',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;}
+  .lang-btn.active{background:var(--gold);color:var(--text);border-color:var(--gold);}
+  .greeting{padding:16px;background:linear-gradient(160deg,var(--green),var(--green-mid));color:white;}
+  .greet-time{font-size:0.82rem;opacity:0.75;margin-bottom:3px;}
+  .greet-text{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:3px;}
+  .greet-sub{font-size:0.84rem;opacity:0.85;}
+  .weather-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:20px;font-size:0.78rem;margin-top:8px;}
+  .content{padding:14px;}
+  .tip-card{background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;gap:10px;}
+  .section-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--green);margin:16px 0 10px;display:flex;align-items:center;gap:6px;}
+  /* BIG BUTTONS */
+  .big-btn{background:white;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text);}
+  .big-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.1);}
+  .big-btn.green{background:linear-gradient(135deg,var(--green),var(--green-mid));color:white;border:none;}
+  .btn-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;}
+  .btn-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;margin-bottom:2px;}
+  .btn-desc{font-size:0.76rem;opacity:0.75;line-height:1.3;}
+  .btn-arrow{margin-left:auto;font-size:1rem;opacity:0.5;flex-shrink:0;}
+  .btn-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.65rem;font-weight:700;margin-top:4px;}
+  /* QUICK GRID */
+  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+  .quick-btn{background:white;border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text);display:block;}
+  .quick-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+  .quick-icon{font-size:1.8rem;margin-bottom:6px;}
+  .quick-title{font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;margin-bottom:2px;}
+  .quick-desc{font-size:0.68rem;color:var(--muted);line-height:1.3;}
+  /* EMERGENCY */
+  .emergency-btn{background:#fff5f5;border:1px solid #fecaca;border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;color:var(--text);margin-bottom:10px;}
   /* BOTTOM NAV */
-  .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:white; border-top:1px solid var(--border); padding:8px 0 10px; display:flex; justify-content:space-around; z-index:50; max-width:480px; margin:0 auto; }
-  .nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; font-size:0.6rem; color:var(--muted); cursor:pointer; padding:4px 12px; border-radius:10px; font-weight:600; }
-  .nav-item.active { color:var(--green); }
-  .nav-item .nav-icon { font-size:1.3rem; }
-  .nav-scan-btn { width:52px; height:52px; background:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-top:-20px; box-shadow:0 4px 16px rgba(26,92,46,0.4); cursor:pointer; }
-
-  .pb-safe { height:70px; }
+  .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);padding:8px 0 10px;display:flex;justify-content:space-around;z-index:50;max-width:480px;margin:0 auto;}
+  .nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:0.6rem;color:var(--muted);cursor:pointer;padding:4px 8px;font-weight:600;text-decoration:none;}
+  .nav-item.active{color:var(--green);}
+  .nav-icon{font-size:1.2rem;}
+  .nav-scan{width:48px;height:48px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-top:-16px;box-shadow:0 4px 14px rgba(26,92,46,0.4);cursor:pointer;text-decoration:none;}
+  .pb{height:75px;}
+  /* ONBOARDING */
+  .onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .onboard-box{background:white;border-radius:20px;padding:28px;max-width:360px;width:100%;text-align:center;}
+  .onboard-step{display:none;}
+  .onboard-step.active{display:block;}
+  .onboard-icon{font-size:3.5rem;margin-bottom:12px;}
+  .onboard-title{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green);margin-bottom:8px;}
+  .onboard-text{font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+  .onboard-next{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;}
+  .onboard-skip{background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;margin-top:10px;display:block;width:100%;}
+  .onboard-dots{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+  .dot.active{background:var(--green);}
+  /* HELP */
+  .help-btn{position:fixed;bottom:80px;right:16px;width:50px;height:50px;background:var(--green);color:white;border-radius:50%;border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 16px rgba(26,92,46,0.4);z-index:90;display:flex;align-items:center;justify-content:center;}
+  .help-modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+  .help-modal.show{display:flex;}
+  .help-sheet{background:white;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;}
+  .help-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin-bottom:14px;text-align:center;}
+  .help-option{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--bg);margin-bottom:8px;cursor:pointer;border:1px solid var(--border);text-decoration:none;color:var(--text);}
+  .help-close{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;margin-top:6px;}
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.83rem;z-index:1000;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;text-align:center;}
+  .toast.success{background:var(--green);}
+  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+  .hidden{display:none;}
 </style>
 </head>
 <body>
 
-<!-- ONBOARDING (shows first time) -->
+<!-- ONBOARDING -->
 <div class="onboard-overlay" id="onboarding">
   <div class="onboard-box">
-    <div class="onboard-dots">
-      <div class="dot active" id="od1"></div>
-      <div class="dot" id="od2"></div>
-      <div class="dot" id="od3"></div>
-      <div class="dot" id="od4"></div>
-    </div>
-
-    <div class="onboard-step active" id="os1">
-      <div class="onboard-icon">🌾</div>
-      <div class="onboard-title">Welcome to AnnadataHub!</div>
-      <div class="onboard-text">Your AI farming assistant. Built for Indian farmers. Works in 11 languages.</div>
-      <button class="onboard-next" onclick="nextStep(2)">Next →</button>
-      <button class="onboard-skip" onclick="closeOnboarding()">Skip</button>
-    </div>
-
-    <div class="onboard-step" id="os2">
-      <div class="onboard-icon">📷</div>
-      <div class="onboard-title">Scan Your Sick Crop</div>
-      <div class="onboard-text">Take a photo of your crop. Our AI tells you exactly what disease it has and how to treat it. Takes only 30 seconds!</div>
-      <button class="onboard-next" onclick="nextStep(3)">Next →</button>
-      <button class="onboard-skip" onclick="closeOnboarding()">Skip</button>
-    </div>
-
-    <div class="onboard-step" id="os3">
-      <div class="onboard-icon">🎙️</div>
-      <div class="onboard-title">Speak — Don't Type!</div>
-      <div class="onboard-text">Can't type easily? Just tap the mic button and SPEAK your question in Hindi, Punjabi, Tamil or any language. We understand you!</div>
-      <button class="onboard-next" onclick="nextStep(4)">Next →</button>
-      <button class="onboard-skip" onclick="closeOnboarding()">Skip</button>
-    </div>
-
-    <div class="onboard-step" id="os4">
-      <div class="onboard-icon">✅</div>
-      <div class="onboard-title">You're Ready!</div>
-      <div class="onboard-text">AnnadataHub is free to start. Check mandi prices, weather and scan crops — all free. Upgrade anytime for more features.</div>
-      <button class="onboard-next" onclick="closeOnboarding()" style="background:var(--gold);color:var(--text)">Start Using App 🚀</button>
-    </div>
+    <div class="onboard-dots"><div class="dot active" id="od1"></div><div class="dot" id="od2"></div><div class="dot" id="od3"></div><div class="dot" id="od4"></div></div>
+    <div class="onboard-step active" id="os1"><div class="onboard-icon">🌾</div><div class="onboard-title">Welcome to AnnadataHub!</div><div class="onboard-text">Your AI farming assistant. Built for Indian farmers. Works in 11 languages.</div><button class="onboard-next" onclick="nextStep(2)">Next →</button><button class="onboard-skip" onclick="closeOnboarding()">Skip</button></div>
+    <div class="onboard-step" id="os2"><div class="onboard-icon">📷</div><div class="onboard-title">Scan Your Sick Crop</div><div class="onboard-text">Take a photo of your crop. AI tells you exactly what disease it has and how to treat it!</div><button class="onboard-next" onclick="nextStep(3)">Next →</button><button class="onboard-skip" onclick="closeOnboarding()">Skip</button></div>
+    <div class="onboard-step" id="os3"><div class="onboard-icon">🎙️</div><div class="onboard-title">Speak — Don't Type!</div><div class="onboard-text">Tap the mic and speak your question in Hindi, Punjabi, Tamil or any language!</div><button class="onboard-next" onclick="nextStep(4)">Next →</button><button class="onboard-skip" onclick="closeOnboarding()">Skip</button></div>
+    <div class="onboard-step" id="os4"><div class="onboard-icon">✅</div><div class="onboard-title">You're Ready!</div><div class="onboard-text">AnnadataHub is free to start. All features available for Indian farmers!</div><button class="onboard-next" onclick="closeOnboarding()" style="background:var(--gold);color:var(--text)">Start Using App 🚀</button></div>
   </div>
 </div>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logo">
-    <div class="logo-icon">🌾</div>
-    <div class="logo-name">Annadata<span>Hub</span></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:white;cursor:pointer" onclick="showHelp()">❓</div>
-    <div style="width:36px;height:36px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:white;font-weight:700;cursor:pointer">R</div>
+  <div class="logo"><div class="logo-icon">🌾</div><div class="logo-name">Annadata<span>Hub</span></div></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="login-btn" onclick="showLoginModal()" style="background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:6px 12px;font-family:'Baloo 2',cursive;font-size:0.8rem;font-weight:700;cursor:pointer">👤 Login</button>
+    <div class="user-btn" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;display:none;align-items:center;gap:6px;cursor:pointer">
+      <span class="user-name" style="color:white;font-size:0.8rem;font-weight:600">Farmer</span>
+    </div>
+    <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:white;cursor:pointer" onclick="showHelp()">❓</div>
   </div>
 </div>
 
-<!-- LANGUAGE SELECTOR -->
+<!-- LANGUAGE BAR -->
 <div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang(this,'en','Good Morning','How is your crop today?')">English</button>
-  <button class="lang-btn" onclick="setLang(this,'hi','सुप्रभात 🙏','आज आपकी फसल कैसी है?')">हिंदी</button>
-  <button class="lang-btn" onclick="setLang(this,'pa','ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ 🙏','ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?')">ਪੰਜਾਬੀ</button>
-  <button class="lang-btn" onclick="setLang(this,'mr','शुभ प्रभात 🙏','आज तुमची शेती कशी आहे?')">मराठी</button>
-  <button class="lang-btn" onclick="setLang(this,'te','శుభోదయం 🙏','ఈరోజు మీ పంట ఎలా ఉంది?')">తెలుగు</button>
-  <button class="lang-btn" onclick="setLang(this,'ta','காலை வணக்கம் 🙏','இன்று உங்கள் பயிர் எப்படி?')">தமிழ்</button>
-  <button class="lang-btn" onclick="setLang(this,'gu','સુ પ્રભાત 🙏','આજ તમારો પાક કેવો છે?')">ગુજરાતી</button>
-  <button class="lang-btn" onclick="setLang(this,'bn','শুভ সকাল 🙏','আজ আপনার ফসল কেমন?')">বাংলা</button>
-  <button class="lang-btn" onclick="setLang(this,'kn','ಶುಭೋದಯ 🙏','ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?')">ಕನ್ನಡ</button>
-  <button class="lang-btn" onclick="setLang(this,'ml','സുപ്രഭാതം 🙏','ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?')">മലയാളം</button>
+  <button class="lang-btn active" onclick="setLang(this,'Good Morning, Farmer! 🙏','How is your crop today?')">English</button>
+  <button class="lang-btn" onclick="setLang(this,'सुप्रभात किसान! 🙏','आज आपकी फसल कैसी है?')">हिंदी</button>
+  <button class="lang-btn" onclick="setLang(this,'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏','ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?')">ਪੰਜਾਬੀ</button>
+  <button class="lang-btn" onclick="setLang(this,'शुभ प्रभात शेतकरी! 🙏','आज तुमची शेती कशी आहे?')">मराठी</button>
+  <button class="lang-btn" onclick="setLang(this,'శుభోదయం రైతు! 🙏','ఈరోజు మీ పంట ఎలా ఉంది?')">తెలుగు</button>
+  <button class="lang-btn" onclick="setLang(this,'காலை வணக்கம் விவசாயி! 🙏','இன்று உங்கள் பயிர் எப்படி?')">தமிழ்</button>
+  <button class="lang-btn" onclick="setLang(this,'સુ પ્રભાત ખેડૂત! 🙏','આજ તમારો પાક કેવો છે?')">ગુજરાતી</button>
+  <button class="lang-btn" onclick="setLang(this,'শুভ সকাল কৃষক! 🙏','আজ আপনার ফসল কেমন?')">বাংলা</button>
+  <button class="lang-btn" onclick="setLang(this,'ಶುಭೋದಯ ರೈತ! 🙏','ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?')">ಕನ್ನಡ</button>
+  <button class="lang-btn" onclick="setLang(this,'സുപ്രഭാതം കർഷകൻ! 🙏','ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?')">മലയാളം</button>
 </div>
 
 <!-- GREETING -->
@@ -190,137 +126,105 @@
   <div class="weather-pill">🌤️ 28°C · Good weather for spraying today</div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="content">
 
   <!-- DAILY TIP -->
-  <div class="tip-card" id="dailyTip">
-    <div class="tip-icon">💡</div>
-    <div>
-      <div class="tip-title">Today's Tip</div>
-      <div class="tip-text" id="tipText">Check your wheat crop for yellow rust — this is the season. Look for yellow stripes on leaves. If found, spray Propiconazole immediately.</div>
-    </div>
+  <div class="tip-card">
+    <div style="font-size:1.3rem">💡</div>
+    <div><div style="font-weight:700;font-size:0.86rem;color:#92400e">Today's Tip</div><div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust this season. Spray Propiconazole immediately if found.</div></div>
   </div>
 
-  <!-- MOST IMPORTANT - BIG BUTTONS -->
+  <!-- MOST IMPORTANT -->
   <div class="section-title">🚀 Most Important</div>
 
-  <a class="big-btn" href="javascript:void(0)" onclick="goTo('scan')" style="background:linear-gradient(135deg,#1a5c2e,#2d7a45);color:white;border:none">
+  <a class="big-btn green" href="farmer-tools.html">
     <div class="btn-icon-wrap" style="background:rgba(255,255,255,0.2)">📷</div>
-    <div style="flex:1">
-      <div class="btn-title" style="color:white">Scan Sick Crop</div>
-      <div class="btn-desc" style="color:rgba(255,255,255,0.8)">Take photo → AI tells disease + treatment in 30 seconds</div>
-      <span class="btn-badge" style="background:var(--gold);color:var(--text)">FREE</span>
-    </div>
+    <div style="flex:1"><div class="btn-title" style="color:white">Scan Sick Crop</div><div class="btn-desc" style="color:rgba(255,255,255,0.8)">Take photo → AI tells disease + treatment in 30 seconds</div><span class="btn-badge" style="background:var(--gold);color:var(--text)">FREE</span></div>
     <div class="btn-arrow" style="color:rgba(255,255,255,0.7)">→</div>
   </a>
 
-  <a class="big-btn" href="javascript:void(0)" onclick="goTo('mandi')">
+  <a class="big-btn" href="farmer-tools.html">
     <div class="btn-icon-wrap" style="background:#dcfce7">📊</div>
-    <div style="flex:1">
-      <div class="btn-title">Today's Mandi Price</div>
-      <div class="btn-desc">Check today's price before selling your crop</div>
-      <span class="btn-badge" style="background:#dcfce7;color:#16a34a">UPDATED DAILY</span>
-    </div>
+    <div style="flex:1"><div class="btn-title">Today's Mandi Price</div><div class="btn-desc">Check today's price before selling your crop</div><span class="btn-badge" style="background:#dcfce7;color:#16a34a">UPDATED DAILY</span></div>
     <div class="btn-arrow">→</div>
   </a>
 
-  <a class="big-btn" href="javascript:void(0)" onclick="goTo('weather')">
+  <a class="big-btn" href="farmer-tools.html">
     <div class="btn-icon-wrap" style="background:#e0f2fe">🌦️</div>
-    <div style="flex:1">
-      <div class="btn-title">Weather for My Farm</div>
-      <div class="btn-desc">Rain coming? Good day to spray? Check now</div>
-      <span class="btn-badge" style="background:#e0f2fe;color:#0369a1">5-DAY FORECAST</span>
-    </div>
+    <div style="flex:1"><div class="btn-title">Weather for My Farm</div><div class="btn-desc">Rain coming? Good day to spray? Check now</div><span class="btn-badge" style="background:#e0f2fe;color:#0369a1">5-DAY FORECAST</span></div>
     <div class="btn-arrow">→</div>
   </a>
 
-  <a class="big-btn" href="javascript:void(0)" onclick="goTo('voice')">
+  <a class="big-btn" href="msp.html">
+    <div class="btn-icon-wrap" style="background:#fef9c3">📊</div>
+    <div style="flex:1"><div class="btn-title">MSP vs Mandi Price</div><div class="btn-desc">Check if you are getting fair price for your crop</div><span class="btn-badge" style="background:#fef9c3;color:#92400e">SAVE MONEY</span></div>
+    <div class="btn-arrow">→</div>
+  </a>
+
+  <a class="big-btn" href="power-tools.html">
     <div class="btn-icon-wrap" style="background:#f5f3ff">🎙️</div>
-    <div style="flex:1">
-      <div class="btn-title">Speak Your Question</div>
-      <div class="btn-desc">Can't type? Just speak in Hindi, Punjabi or any language</div>
-      <span class="btn-badge" style="background:#f5f3ff;color:#7c3aed">11 LANGUAGES</span>
-    </div>
+    <div style="flex:1"><div class="btn-title">Speak Your Question</div><div class="btn-desc">Can't type? Just speak in your language</div><span class="btn-badge" style="background:#f5f3ff;color:#7c3aed">11 LANGUAGES</span></div>
     <div class="btn-arrow">→</div>
   </a>
 
-  <!-- MORE FEATURES -->
-  <div class="section-title">🌾 More Features</div>
-
+  <!-- FARMING TOOLS -->
+  <div class="section-title">🌾 Farming Tools</div>
   <div class="quick-grid">
-    <div class="quick-btn" onclick="goTo('calendar')">
-      <div class="quick-icon">📅</div>
-      <div class="quick-title">Crop Calendar</div>
-      <div class="quick-desc">What to do today on your farm</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('fertilizer')">
-      <div class="quick-icon">💊</div>
-      <div class="quick-title">Fertilizer Guide</div>
-      <div class="quick-desc">Exact quantity for your field</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('schemes')">
-      <div class="quick-icon">🏛️</div>
-      <div class="quick-title">Free Money Schemes</div>
-      <div class="quick-desc">PM-Kisan & other schemes</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('profit')">
-      <div class="quick-icon">💰</div>
-      <div class="quick-title">Profit Calculator</div>
-      <div class="quick-desc">Did you earn or lose?</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('soil')">
-      <div class="quick-icon">🌍</div>
-      <div class="quick-title">Soil Health</div>
-      <div class="quick-desc">Photo of soil → AI analysis</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('learn')">
-      <div class="quick-icon">🎓</div>
-      <div class="quick-title">Learn New Farming</div>
-      <div class="quick-desc">Hydroponics, mushroom & more</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('news')">
-      <div class="quick-icon">📰</div>
-      <div class="quick-title">Farm News</div>
-      <div class="quick-desc">Latest agri news today</div>
-    </div>
-    <div class="quick-btn" onclick="goTo('community')">
-      <div class="quick-icon">👥</div>
-      <div class="quick-title">Talk to Farmers</div>
-      <div class="quick-desc">Chat with farmers like you</div>
-    </div>
+    <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">📅</div><div class="quick-title">Crop Calendar</div><div class="quick-desc">What to do today on your farm</div></a>
+    <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">💊</div><div class="quick-title">Fertilizer Guide</div><div class="quick-desc">Exact quantity for your field</div></a>
+    <a class="quick-btn" href="farmer-tools.html"><div class="quick-icon">🏛️</div><div class="quick-title">Govt Schemes</div><div class="quick-desc">PM-Kisan & other schemes</div></a>
+    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">💰</div><div class="quick-title">Profit Calculator</div><div class="quick-desc">Did you earn or lose?</div></a>
+    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">🌍</div><div class="quick-title">Soil Health</div><div class="quick-desc">AI soil analysis</div></a>
+    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🏦</div><div class="quick-title">Loan Calculator</div><div class="quick-desc">Calculate your EMI</div></a>
+    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🧪</div><div class="quick-title">Pesticide Guide</div><div class="quick-desc">Correct dosage for crops</div></a>
+    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🛡️</div><div class="quick-title">Crop Insurance</div><div class="quick-desc">PMFBY calculator</div></a>
+  </div>
+
+  <!-- LEARN & CONNECT -->
+  <div class="section-title">🎓 Learn & Connect</div>
+  <div class="quick-grid">
+    <a class="quick-btn" href="learn.html"><div class="quick-icon">🌱</div><div class="quick-title">New Techniques</div><div class="quick-desc">Hydroponics, mushroom & more</div></a>
+    <a class="quick-btn" href="learn.html"><div class="quick-icon">💼</div><div class="quick-title">Business Ideas</div><div class="quick-desc">Earn beyond farming</div></a>
+    <a class="quick-btn" href="learn.html"><div class="quick-icon">▶️</div><div class="quick-title">YouTube Videos</div><div class="quick-desc">Learn in your language</div></a>
+    <a class="quick-btn" href="learn.html"><div class="quick-icon">🤖</div><div class="quick-title">Ask AI</div><div class="quick-desc">Get any farming answer</div></a>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div class="section-title">👥 Community</div>
+  <div class="quick-grid">
+    <a class="quick-btn" href="farmgram.html"><div class="quick-icon">📱</div><div class="quick-title">FarmGram</div><div class="quick-desc">Instagram for farmers</div></a>
+    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">💬</div><div class="quick-title">Farmer Chat</div><div class="quick-desc">Talk to farmers like you</div></a>
+    <a class="quick-btn" href="bizconnect.html"><div class="quick-icon">🚜</div><div class="quick-title">Equipment Rental</div><div class="quick-desc">Find tractors nearby</div></a>
+    <a class="quick-btn" href="bizconnect.html"><div class="quick-icon">🛒</div><div class="quick-title">Sell Produce</div><div class="quick-desc">Direct to buyers</div></a>
+  </div>
+
+  <!-- NEWS -->
+  <div class="section-title">📰 Information</div>
+  <div class="quick-grid">
+    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">📰</div><div class="quick-title">Farm News</div><div class="quick-desc">Latest agri news today</div></a>
+    <a class="quick-btn" href="msp.html"><div class="quick-icon">⚖️</div><div class="quick-title">Know Your Rights</div><div class="quick-desc">MSP & farmer rights</div></a>
+    <a class="quick-btn" href="pricing.html"><div class="quick-icon">💳</div><div class="quick-title">Upgrade Plan</div><div class="quick-desc">Basic ₹49 · Premium ₹99</div></a>
+    <a class="quick-btn" href="learn.html"><div class="quick-icon">🎙️</div><div class="quick-title">Give Feedback</div><div class="quick-desc">Help us improve</div></a>
   </div>
 
   <!-- EMERGENCY -->
   <div class="section-title">🚨 Emergency Help</div>
-  <a class="big-btn" href="javascript:void(0)" onclick="callKVK()" style="background:#fff5f5;border-color:#fecaca">
-    <div class="btn-icon-wrap" style="background:#fee2e2">☎️</div>
-    <div style="flex:1">
-      <div class="btn-title" style="color:#dc2626">Call Kisan Helpline</div>
-      <div class="btn-desc">Free call — talk to expert farmer advisor</div>
-      <span class="btn-badge" style="background:#fee2e2;color:#dc2626">1800-180-1551 FREE</span>
-    </div>
-    <div class="btn-arrow" style="color:#dc2626">→</div>
+  <a class="emergency-btn" href="tel:18001801551">
+    <div style="font-size:1.5rem">☎️</div>
+    <div style="flex:1"><div style="font-weight:700;font-size:0.9rem;color:var(--red)">Call Kisan Helpline — FREE</div><div style="font-size:0.75rem;color:var(--muted)">1800-180-1551 · Hindi & regional languages</div></div>
+    <div style="color:var(--red)">→</div>
   </a>
 
-  <div class="pb-safe"></div>
+  <div class="pb"></div>
 </div>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <div class="nav-item active" onclick="goTo('home')">
-    <span class="nav-icon">🏠</span>Home
-  </div>
-  <div class="nav-item" onclick="goTo('mandi')">
-    <span class="nav-icon">📊</span>Prices
-  </div>
-  <div class="nav-scan-btn" onclick="goTo('scan')">📷</div>
-  <div class="nav-item" onclick="goTo('weather')">
-    <span class="nav-icon">🌦️</span>Weather
-  </div>
-  <div class="nav-item" onclick="goTo('profile')">
-    <span class="nav-icon">👤</span>Profile
-  </div>
+  <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span>Home</a>
+  <a class="nav-item" href="farmer-tools.html"><span class="nav-icon">📊</span>Prices</a>
+  <a class="nav-scan" href="farmer-tools.html">📷</a>
+  <a class="nav-item" href="farmgram.html"><span class="nav-icon">📱</span>FarmGram</a>
+  <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span>MSP</a>
 </div>
 
 <!-- HELP BUTTON -->
@@ -329,48 +233,11 @@
 <!-- HELP MODAL -->
 <div class="help-modal" id="helpModal">
   <div class="help-sheet">
-    <div class="help-title">How can we help you? 🙏</div>
-
-    <div class="help-option" onclick="goTo('voice');closeHelp()">
-      <div class="help-opt-icon">🎙️</div>
-      <div>
-        <div class="help-opt-title">Speak Your Problem</div>
-        <div class="help-opt-desc">Tap and speak in your language — we understand</div>
-      </div>
-    </div>
-
-    <div class="help-option" onclick="watchTutorial()">
-      <div class="help-opt-icon">▶️</div>
-      <div>
-        <div class="help-opt-title">Watch How to Use App</div>
-        <div class="help-opt-desc">Short video guide in Hindi</div>
-      </div>
-    </div>
-
-    <div class="help-option" onclick="callKVK()">
-      <div class="help-opt-icon">☎️</div>
-      <div>
-        <div class="help-opt-title">Call Free Helpline</div>
-        <div class="help-opt-desc">1800-180-1551 · Free · Hindi · Mon-Sat</div>
-      </div>
-    </div>
-
-    <div class="help-option" onclick="whatsappHelp()">
-      <div class="help-opt-icon">💬</div>
-      <div>
-        <div class="help-opt-title">WhatsApp Us</div>
-        <div class="help-opt-desc">Send message — we reply within 2 hours</div>
-      </div>
-    </div>
-
-    <div class="help-option" onclick="showOnboarding()">
-      <div class="help-opt-icon">🔄</div>
-      <div>
-        <div class="help-opt-title">See App Guide Again</div>
-        <div class="help-opt-desc">Step by step tour of the app</div>
-      </div>
-    </div>
-
+    <div class="help-title">How can we help? 🙏</div>
+    <a class="help-option" href="power-tools.html"><div style="font-size:1.5rem">🎙️</div><div><div style="font-weight:700;font-size:0.88rem">Speak Your Problem</div><div style="font-size:0.75rem;color:var(--muted)">Tap and speak in your language</div></div></a>
+    <a class="help-option" href="tel:18001801551"><div style="font-size:1.5rem">☎️</div><div><div style="font-weight:700;font-size:0.88rem">Call Free Helpline</div><div style="font-size:0.75rem;color:var(--muted)">1800-180-1551 · Free · Mon-Sat</div></div></a>
+    <div class="help-option" onclick="showOnboarding();closeHelp()"><div style="font-size:1.5rem">🔄</div><div><div style="font-weight:700;font-size:0.88rem">See App Guide Again</div><div style="font-size:0.75rem;color:var(--muted)">Step by step tour of the app</div></div></div>
+    <a class="help-option" href="pricing.html"><div style="font-size:1.5rem">💳</div><div><div style="font-weight:700;font-size:0.88rem">View Plans & Pricing</div><div style="font-size:0.75rem;color:var(--muted)">Free · Basic ₹49 · Premium ₹99</div></div></a>
     <button class="help-close" onclick="closeHelp()">Close</button>
   </div>
 </div>
@@ -378,117 +245,47 @@
 <div id="toast" class="toast hidden"></div>
 
 <script>
-// ── DAILY TIPS ────────────────────────────────────────────────────
-const TIPS = [
-  "Check your wheat crop for yellow rust — this is the season. Look for yellow stripes on leaves. Spray Propiconazole if found.",
-  "Best time to spray pesticide is early morning (6-9am) or evening (4-7pm). Never spray in hot afternoon sun.",
-  "Check PM-KISAN status today — 17th installment released. Go to Schemes section to check if money came.",
-  "Tomato prices are high this week. If you have tomatoes ready — sell in next 3 days for best price.",
-  "Water your crops in the morning — plants absorb water better. Evening watering can cause fungal disease.",
-  "Apply potash fertilizer to flowering crops — it improves fruit quality and size significantly.",
-  "Keep a farming diary — note what you planted, when, what disease, what treatment. Very helpful for next season.",
-];
+const TIPS=["Check wheat for yellow rust — spray Propiconazole if found.","Best time to spray: early morning 6-9am or evening 4-7pm. Never in hot afternoon.","Check PM-KISAN status — visit Schemes section.","Water crops in the morning — plants absorb better. Evening watering causes fungal disease.","Apply potash fertilizer to flowering crops — improves fruit quality."];
+const hour=new Date().getHours();
+document.getElementById("greetTime").textContent=hour<12?"Good Morning ☀️":hour<17?"Good Afternoon 🌤️":"Good Evening 🌙";
+document.getElementById("tipText").textContent=TIPS[new Date().getDay()%TIPS.length];
 
-// ── LANGUAGE ──────────────────────────────────────────────────────
-function setLang(btn, code, greeting, sub) {
+function setLang(btn,greeting,sub){
   document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
-  document.getElementById("greetText").textContent = greeting;
-  document.getElementById("greetSub").textContent = sub;
-  showToast("Language changed! 🌍","success");
+  document.getElementById("greetText").textContent=greeting;
+  document.getElementById("greetSub").textContent=sub;
 }
 
-// ── NAVIGATION ────────────────────────────────────────────────────
-const PAGE_MAP = {
-  scan: "index.html#scan",
-  mandi: "farmer-tools.html",
-  weather: "farmer-tools.html",
-  voice: "power-tools.html",
-  calendar: "crop-tools.html",
-  fertilizer: "crop-tools.html",
-  schemes: "farmer-tools.html",
-  profit: "power-tools.html",
-  soil: "power-tools.html",
-  learn: "learn.html",
-  news: "power-tools.html",
-  community: "index.html#community",
-  home: "#",
-  profile: "index.html#profile",
-};
-
-function goTo(page) {
-  const url = PAGE_MAP[page];
-  if(url && url !== "#") {
-    showToast("Opening " + page + "... 🌾","success");
-    setTimeout(()=>{ window.location.href = url; }, 500);
-  }
-}
-
-// ── ONBOARDING ────────────────────────────────────────────────────
-let currentStep = 1;
-
-function nextStep(step) {
+let currentStep=1;
+function nextStep(step){
   document.getElementById("os"+currentStep).classList.remove("active");
   document.getElementById("od"+currentStep).classList.remove("active");
-  currentStep = step;
+  currentStep=step;
   document.getElementById("os"+step).classList.add("active");
   document.getElementById("od"+step).classList.add("active");
 }
-
-function closeOnboarding() {
-  document.getElementById("onboarding").style.display = "none";
-  localStorage.setItem && localStorage.setItem("onboarded","1");
-  showToast("Welcome to AnnadataHub! 🌾","success");
+function closeOnboarding(){
+  document.getElementById("onboarding").style.display="none";
+  try{localStorage.setItem("onboarded","1");}catch(e){}
 }
-
-function showOnboarding() {
-  currentStep = 1;
+function showOnboarding(){
+  currentStep=1;
   document.querySelectorAll(".onboard-step").forEach(s=>s.classList.remove("active"));
   document.querySelectorAll(".dot").forEach(d=>d.classList.remove("active"));
   document.getElementById("os1").classList.add("active");
   document.getElementById("od1").classList.add("active");
-  document.getElementById("onboarding").style.display = "flex";
-  closeHelp();
+  document.getElementById("onboarding").style.display="flex";
 }
+try{if(localStorage.getItem("onboarded"))document.getElementById("onboarding").style.display="none";}catch(e){}
 
-// Check if already onboarded
-try {
-  if(localStorage.getItem("onboarded")) {
-    document.getElementById("onboarding").style.display = "none";
-  }
-} catch(e) {}
+function showHelp(){document.getElementById("helpModal").classList.add("show");}
+function closeHelp(){document.getElementById("helpModal").classList.remove("show");}
+document.getElementById("helpModal").addEventListener("click",e=>{if(e.target===document.getElementById("helpModal"))closeHelp();});
 
-// ── HELP ──────────────────────────────────────────────────────────
-function showHelp() { document.getElementById("helpModal").classList.add("show"); }
-function closeHelp() { document.getElementById("helpModal").classList.remove("show"); }
-document.getElementById("helpModal").addEventListener("click",e=>{ if(e.target===document.getElementById("helpModal")) closeHelp(); });
-
-function callKVK() {
-  showToast("Calling Kisan Helpline: 1800-180-1551","success");
-  setTimeout(()=>{ window.location.href = "tel:18001801551"; }, 500);
-}
-
-function whatsappHelp() {
-  window.open("https://wa.me/91XXXXXXXXXX?text=Hello AnnadataHub, I need help with the app","_blank");
-}
-
-function watchTutorial() {
-  window.open("https://www.youtube.com/results?search_query=annadatahub+app+tutorial","_blank");
-}
-
-// ── DAILY TIP ─────────────────────────────────────────────────────
-const today = new Date().getDay();
-document.getElementById("tipText").textContent = TIPS[today % TIPS.length];
-
-// ── GREETING TIME ─────────────────────────────────────────────────
-const hour = new Date().getHours();
-const timeGreet = hour < 12 ? "Good Morning ☀️" : hour < 17 ? "Good Afternoon 🌤️" : "Good Evening 🌙";
-document.getElementById("greetTime").textContent = timeGreet;
-
-// ── TOAST ─────────────────────────────────────────────────────────
-function showToast(msg,type="success") {
-  const t = document.getElementById("toast");
-  t.textContent=msg; t.className="toast "+type; t.classList.remove("hidden");
+function showToast(msg,type="success"){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.className="toast "+type;t.classList.remove("hidden");
   setTimeout(()=>t.classList.add("hidden"),2500);
 }
 </script>
