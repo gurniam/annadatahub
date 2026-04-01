@@ -569,93 +569,74 @@ async function getWeather() {
 
 // ── GOVERNMENT SCHEMES ────────────────────────────────────────────
 async function getSchemes() {
-  const land = document.getElementById("schemeLand").value;
   const state = document.getElementById("schemeState").value;
-  const crop = document.getElementById("schemeCrop").value;
-  const lang = LANG_NAMES[currentLang] || "English";
   const btn = document.getElementById("schemes-btn");
   const result = document.getElementById("schemes-result");
   const t = UI_TEXT[currentLang] || UI_TEXT.en;
 
   btn.disabled = true;
-  btn.textContent = "⏳ " + t.loading;
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${t.loading}</p></div>`;
+  btn.textContent = "⏳ Loading...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Finding schemes...</p></div>`;
 
   try {
-    const data = await callClaude(
-      `You are an expert on Indian government agricultural schemes and subsidies. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.`,
-      `List government schemes a farmer is eligible for with: land = ${land}, state = ${state}, crop = ${crop}.
-      Include both central and state schemes. Return JSON:
-      {
-        "summary": "1 sentence summary of eligibility",
-        "schemes": [
-          {
-            "name": "scheme name",
-            "emoji": "relevant emoji",
-            "color": "#hex color",
-            "tagline": "short tagline",
-            "amount": "₹X,XXX",
-            "amount_label": "per year/per acre/etc",
-            "eligible": true/false,
-            "description": "2 sentence description",
-            "benefits": ["benefit 1", "benefit 2", "benefit 3"],
-            "documents": ["Aadhaar", "Land record", "etc"],
-            "how_to_apply": "1 sentence on how to apply",
-            "apply_url": "official website URL"
-          }
-        ]
-      }
-      Include at least 5 schemes like PM-KISAN, Kisan Credit Card, PMFBY, soil health card, state schemes etc.`
+    const res = await fetch(
+      `https://annadatahub-production-a9db.up.railway.app/api/schemes?state=${encodeURIComponent(state)}`
     );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const outer = await res.json();
+    if (!outer.success) throw new Error('API error');
+    const data = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
+    const schemes = data.schemes || [];
+
+    const cards = schemes.map((s, i) => `
+      <div class="scheme-card">
+        <div class="scheme-header" onclick="toggleScheme(${i})">
+          <div class="scheme-icon" style="background:${s.color}22">${s.emoji}</div>
+          <div style="flex:1">
+            <div class="scheme-name">${s.name}</div>
+            <div class="scheme-tagline">${s.tagline}</div>
+          </div>
+          <div class="scheme-amount">
+            <div class="amt">${s.amount}</div>
+            <div class="lbl">${s.amount_label}</div>
+          </div>
+        </div>
+        <div class="scheme-body" id="scheme-${i}">
+          <span class="eligible-badge eligible-yes">✅ You are eligible!</span>
+          <p>${s.description}</p>
+          <strong style="font-size:0.82rem;color:var(--green)">Benefits:</strong>
+          <ul>${s.benefits.map(b => `<li>${b}</li>`).join("")}</ul>
+          <div style="margin-top:10px">
+            <strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong>
+            <p style="margin-top:4px">${s.documents.join(", ")}</p>
+          </div>
+          <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">
+            📋 <strong>How to apply:</strong> ${s.how_to_apply}
+          </div>
+          <a href="${s.apply_url}" target="_blank" class="apply-btn">Apply Now →</a>
+        </div>
+      </div>
+    `).join("");
 
     result.innerHTML = `
       <div class="advice-box" style="margin-bottom:14px">
         <strong>🎯 Your Eligibility:</strong> ${data.summary}
       </div>
-
-      ${data.schemes.map((s, i) => `
-        <div class="scheme-card">
-          <div class="scheme-header" onclick="toggleScheme(${i})">
-            <div class="scheme-icon" style="background:${s.color}22">${s.emoji}</div>
-            <div style="flex:1">
-              <div class="scheme-name">${s.name}</div>
-              <div class="scheme-tagline">${s.tagline}</div>
-            </div>
-            <div class="scheme-amount">
-              <div class="amt">${s.amount}</div>
-              <div class="lbl">${s.amount_label}</div>
-            </div>
-          </div>
-          <div class="scheme-body" id="scheme-${i}">
-            <span class="eligible-badge ${s.eligible ? 'eligible-yes' : 'eligible-check'}">
-              ${s.eligible ? '✅ You are eligible!' : '⚠️ Check eligibility'}
-            </span>
-            <p>${s.description}</p>
-            <strong style="font-size:0.82rem;color:var(--green)">Benefits:</strong>
-            <ul>${s.benefits.map(b => `<li>${b}</li>`).join("")}</ul>
-            <div style="margin-top:10px">
-              <strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong>
-              <p style="margin-top:4px">${s.documents.join(", ")}</p>
-            </div>
-            <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">
-              📝 <strong>How to apply:</strong> ${s.how_to_apply}
-            </div>
-            <a href="${s.apply_url}" target="_blank" class="apply-btn">Apply Now →</a>
-          </div>
-        </div>
-      `).join("")}
-
+      ${cards}
       <div style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:8px">
-        ✨ ${t.powered} · Always verify at official government websites
+        🌾 Always verify at official government websites
       </div>
     `;
-    showToast("Schemes found! ✅");
+    showToast("Schemes loaded! ✅");
+
   } catch(e) {
+    console.error("Schemes error:", e);
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch schemes. Please try again.</p></div>`;
     showToast("Error fetching schemes", "error");
   }
+
   btn.disabled = false;
-  btn.textContent = "🏛️ Find My Eligible Schemes";
+  btn.textContent = "🏛 Find My Eligible Schemes";
 }
 
 function toggleScheme(i) {
