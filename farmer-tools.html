@@ -415,25 +415,24 @@ async function getMandiPrices() {
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${t.loading}</p></div>`;
 
   try {
-    const data = await callClaude(
-      `You are an expert on Indian agricultural markets. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.`,
-      `Give realistic current mandi prices for ${crop} in ${state}, India.
-      Return JSON: {
-        "crop": "${crop}",
-        "state": "${state}",
-        "min_price": number (₹ per quintal),
-        "max_price": number,
-        "modal_price": number,
-        "mandis": [
-          {"name": "mandi name", "price": number, "trend": "up/down/same", "change": "+/-X"},
-          {"name": "mandi name", "price": number, "trend": "up/down/same", "change": "+/-X"},
-          {"name": "mandi name", "price": number, "trend": "up/down/same", "change": "+/-X"},
-          {"name": "mandi name", "price": number, "trend": "up/down/same", "change": "+/-X"}
-        ],
-        "sell_advice": "Should farmer sell now or wait? Explain in 2-3 sentences.",
-        "best_mandi": "Which mandi gives best price and why"
-      }`
-    );
+    
+      const res = await fetch(
+    `https://annadatahub-production-a9db.up.railway.app/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`
+);
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+const result = await res.json();
+if (!result.success) throw new Error(result.message || 'API error');
+const raw = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+const data = {
+    crop: result.crop || crop,
+    state: result.state || state,
+    min_price: raw.min_price || raw.Min_Price || '—',
+    max_price: raw.max_price || raw.Max_Price || '—',
+    modal_price: raw.modal_price || raw.Modal_Price || '—',
+    mandis: raw.mandis || raw.records || [],
+    sell_advice: raw.sell_advice || '',
+    best_mandi: raw.best_mandi || ''
+};
 
     const trendIcon = t => t === "up" ? "↑" : t === "down" ? "↓" : "→";
     const trendClass = t => t === "up" ? "trend-up" : t === "down" ? "trend-down" : "trend-same";
