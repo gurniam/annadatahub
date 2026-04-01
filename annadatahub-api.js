@@ -1,6 +1,6 @@
 // AnnadataHub API Connector
 // Railway Backend URL
-const BACKEND = "https://annadatahub-production.up.railway.app";
+const BACKEND = "https://annadatahub-production-9db.up.railway.app";
 
 // ── AUTH FUNCTIONS ──────────────────────────────────────────────
 const AnnadataAPI = {
