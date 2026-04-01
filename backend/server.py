@@ -211,7 +211,7 @@ async def weather(location: str = "Punjab"):
             })
     except:
         result = get_weather_fallback(location)
-    return {"success": True, "data
+    return {"success": True, "data": result, "location": location}
 @app.get("/api/schemes")
 async def govt_schemes(state: str = "Punjab"):
     prompt = f'List 5 government schemes for farmers in {state} India. JSON array only: [{{"name": "name", "benefit": "benefit", "eligibility": "who", "how_to_apply": "steps", "deadline": "date"}}]'
