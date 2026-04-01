@@ -462,10 +462,10 @@ const data = {
         <div class="price-grid">
           ${data.mandis.map(m => `
             <div class="price-card">
-              <div class="price-mandi">${m.name}</div>
+              <div class="price-mandi">${m.market}</div>
               <div class="price-amount">₹${m.price}</div>
               <div class="price-unit">/quintal</div>
-              <div class="price-trend ${trendClass(m.trend)}">${trendIcon(m.trend)} ${m.change}</div>
+              <div class="price-unit">${m.unit}</div>
             </div>
           `).join("")}
         </div>
