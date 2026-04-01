@@ -457,114 +457,65 @@ async function getMandiPrices() {
 async function getWeather() {
   const location = document.getElementById("weatherLocation").value || "Delhi";
   const crop = document.getElementById("weatherCrop").value;
-  const lang = LANG_NAMES[currentLang] || "English";
   const btn = document.getElementById("weather-btn");
   const result = document.getElementById("weather-result");
-  const t = UI_TEXT[currentLang] || UI_TEXT.en;
 
   btn.disabled = true;
-  btn.textContent = "⏳ " + t.loading;
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${t.loading}</p></div>`;
+  btn.textContent = "⏳ Loading...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching weather...</p></div>`;
 
   try {
-    const data = await callClaude(
-      `You are an expert agricultural meteorologist for India. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.`,
-      `Give realistic weather forecast and farming advice for ${location}, India for a farmer growing ${crop}.
-      Return JSON: {
-        "location": "${location}",
-        "temp": number (celsius),
-        "feels_like": number,
-        "humidity": number (percent),
-        "wind": number (km/h),
-        "rainfall_chance": number (percent),
-        "condition": "Sunny/Cloudy/Rainy/etc",
-        "condition_emoji": "☀️/🌧️/⛅/etc",
-        "alerts": [
-          {"type": "warning/danger/good", "title": "alert title", "message": "2 sentence advice for farmer"},
-          {"type": "warning/danger/good", "title": "alert title", "message": "2 sentence advice for farmer"}
-        ],
-        "forecast": [
-          {"day": "Mon", "emoji": "☀️", "temp": number},
-          {"day": "Tue", "emoji": "⛅", "temp": number},
-          {"day": "Wed", "emoji": "🌧️", "temp": number},
-          {"day": "Thu", "emoji": "☀️", "temp": number},
-          {"day": "Fri", "emoji": "⛅", "temp": number}
-        ],
-        "spray_advice": "Is it good day to spray pesticide? Yes/No and why.",
-        "irrigation_advice": "Should farmer irrigate today? Yes/No and why."
-      }`
+    const res = await fetch(
+      `https://annadatahub-production-a9db.up.railway.app/api/weather?location=${encodeURIComponent(location)}`
     );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const outer = await res.json();
+    if (!outer.success) throw new Error('API error');
+    const w = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
 
-    const alertColors = { warning: "warning", danger: "danger", good: "good" };
+    const emoji = w.rainfall_chance > 50 ? '🌧️' : w.humidity > 75 ? '☁️' : '☀️';
+    const sprayOk = w.spray_suitable;
 
     result.innerHTML = `
       <div class="weather-hero">
-        <div style="font-size:3rem;margin-bottom:6px">${data.condition_emoji}</div>
-        <div class="weather-temp">${data.temp}°C</div>
-        <div class="weather-desc">${data.condition}</div>
-        <div class="weather-location">📍 ${data.location}</div>
+        <div style="font-size:3rem;margin-bottom:6px">${emoji}</div>
+        <div class="weather-temp">${w.temperature}°C</div>
+        <div class="weather-desc">${w.description || 'Current conditions'}</div>
+        <div class="weather-location">📍 ${outer.location}</div>
         <div class="weather-grid">
           <div class="weather-stat">
             <div class="icon">💧</div>
-            <div class="val">${data.humidity}%</div>
+            <div class="val">${w.humidity}%</div>
             <div class="lbl">Humidity</div>
           </div>
           <div class="weather-stat">
-            <div class="icon">🌧️</div>
-            <div class="val">${data.rainfall_chance}%</div>
+            <div class="icon">🌧</div>
+            <div class="val">${w.rainfall_chance}%</div>
             <div class="lbl">Rain Chance</div>
           </div>
           <div class="weather-stat">
-            <div class="icon">💨</div>
-            <div class="val">${data.wind} km/h</div>
-            <div class="lbl">Wind</div>
+            <div class="icon">⏰</div>
+            <div class="val">${w.best_time_to_work || '6-10am'}</div>
+            <div class="lbl">Best Time</div>
           </div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-title" style="color:var(--sky)">📅 5-Day Forecast</div>
-        <div class="forecast-row">
-          ${data.forecast.map(f => `
-            <div class="forecast-day">
-              <div class="day">${f.day}</div>
-              <div class="icon">${f.emoji}</div>
-              <div class="temp">${f.temp}°</div>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title" style="color:var(--sky)">⚠️ Farm Alerts for ${crop}</div>
-        ${data.alerts.map(a => `
-          <div class="alert-box ${alertColors[a.type] || 'good'}">
-            <div class="alert-icon">${a.type === 'danger' ? '🚨' : a.type === 'warning' ? '⚠️' : '✅'}</div>
-            <div>
-              <div class="alert-title">${a.title}</div>
-              <div class="alert-text">${a.message}</div>
-            </div>
-          </div>
-        `).join("")}
-      </div>
-
-      <div class="card">
-        <div class="card-title" style="color:var(--green)">🌾 Today's Farm Advice</div>
-        <div class="ai-tip">🧪 <strong>Spray Pesticide?</strong> ${data.spray_advice}</div>
-        <div class="ai-tip" style="margin-top:8px">💧 <strong>Irrigate Today?</strong> ${data.irrigation_advice}</div>
-      </div>
-
-      <div style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:4px">
-        ✨ ${t.powered}
+      <div class="alert-box ${sprayOk ? 'alert-box.good' : 'alert-box.warning'}" style="margin-top:12px;padding:12px;border-radius:10px;background:${sprayOk ? 'var(--green-light)' : 'var(--earth-light)'}">
+        <strong>${sprayOk ? '✅ Good for spraying' : '⚠️ Avoid spraying today'}</strong>
+        <p style="margin-top:4px;font-size:0.85rem">${w.farming_advice}</p>
+        ${w.alert ? `<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>` : ''}
       </div>
     `;
     showToast("Weather fetched! ✅");
+
   } catch(e) {
+    console.error("Weather error:", e);
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch weather. Please try again.</p></div>`;
     showToast("Error fetching weather", "error");
   }
+
   btn.disabled = false;
-  btn.textContent = "🌤️ Get Weather & Alerts";
+  btn.textContent = "🌤 Get Weather & Alerts";
 }
 
 // ── GOVERNMENT SCHEMES ────────────────────────────────────────────
