@@ -217,52 +217,77 @@ async def govt_schemes(state: str = "Punjab"):
     schemes = [
         {
             "name": "PM-KISAN",
-            "benefit": "₹6,000 per year (₹2,000 every 4 months) directly in bank account",
-            "eligibility": "All small and marginal farmers with land records",
-            "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center with Aadhar + land records + bank passbook",
-            "deadline": "Ongoing - register anytime",
-            "helpline": "155261 / 011-23381092",
-            "website": "pmkisan.gov.in"
+            "emoji": "💰",
+            "color": "#2e7d32",
+            "tagline": "₹6,000/year direct to bank",
+            "amount": "₹6,000",
+            "amount_label": "per year",
+            "eligible": True,
+            "description": "Direct income support of Rs.6000 per year to all farmer families with cultivable land.",
+            "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"],
+            "documents": ["Aadhar card", "Land records", "Bank passbook"],
+            "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center",
+            "apply_url": "https://pmkisan.gov.in"
         },
         {
-            "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
-            "benefit": "Crop insurance - full compensation for crop loss due to flood, drought, pest",
-            "eligibility": "All farmers growing notified crops. Premium only 1.5% for Rabi, 2% for Kharif",
-            "how_to_apply": "Contact nearest bank or insurance company before sowing season",
-            "deadline": "Before sowing - Kharif by July 31, Rabi by December 31",
-            "helpline": "1800-200-7710",
-            "website": "pmfby.gov.in"
+            "name": "PM Fasal Bima Yojana",
+            "emoji": "🌾",
+            "color": "#f57c00",
+            "tagline": "Crop insurance at lowest premium",
+            "amount": "1.5-2%",
+            "amount_label": "premium only",
+            "eligible": True,
+            "description": "Comprehensive crop insurance against flood, drought, pest and disease at very low premium.",
+            "benefits": ["Full compensation for crop loss", "Kharif premium only 2%", "Rabi premium only 1.5%"],
+            "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"],
+            "how_to_apply": "Contact nearest bank before sowing season",
+            "apply_url": "https://pmfby.gov.in"
         },
         {
-            "name": "Kisan Credit Card (KCC)",
-            "benefit": "Crop loan up to ₹3 lakh at only 4% interest rate per year",
-            "eligibility": "All farmers, sharecroppers, tenant farmers with land records",
-            "how_to_apply": "Apply at nearest SBI, PNB, or cooperative bank with Aadhar + land records",
-            "deadline": "Ongoing",
-            "helpline": "1800-180-1551",
-            "website": "pmkisan.gov.in/KCC.aspx"
+            "name": "Kisan Credit Card",
+            "emoji": "💳",
+            "color": "#1565c0",
+            "tagline": "Crop loan at 4% interest",
+            "amount": "₹3 lakh",
+            "amount_label": "at 4% interest",
+            "eligible": True,
+            "description": "Easy credit for crop production, post-harvest expenses and allied activities.",
+            "benefits": ["Loan up to Rs.3 lakh", "Interest rate only 4%", "Flexible repayment"],
+            "documents": ["Aadhar card", "Land records", "Bank passbook", "Passport photo"],
+            "how_to_apply": "Apply at nearest SBI, PNB or cooperative bank",
+            "apply_url": "https://www.sbi.co.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card"
         },
         {
-            "name": "PM Kisan Maan Dhan Yojana (Pension)",
-            "benefit": "₹3,000 per month pension after age 60",
-            "eligibility": "Farmers aged 18-40 years with less than 2 hectares land",
-            "how_to_apply": "Visit nearest CSC center with Aadhar + bank passbook + land records",
-            "deadline": "Ongoing",
-            "helpline": "1800-267-6888",
-            "website": "maandhan.in"
+            "name": "PM Kisan Maan Dhan Yojana",
+            "emoji": "👴",
+            "color": "#6a1b9a",
+            "tagline": "₹3,000/month pension after 60",
+            "amount": "₹3,000",
+            "amount_label": "per month after 60",
+            "eligible": True,
+            "description": "Pension scheme for small and marginal farmers to secure their old age.",
+            "benefits": ["₹3,000 monthly pension", "Contribute only ₹55-200/month", "Government matches contribution"],
+            "documents": ["Aadhar card", "Land records", "Bank passbook", "Age proof"],
+            "how_to_apply": "Visit nearest CSC center with documents",
+            "apply_url": "https://maandhan.in"
         },
         {
-            "name": "Soil Health Card Scheme",
-            "benefit": "Free soil testing + fertilizer recommendations to reduce input costs",
-            "eligibility": "All farmers",
-            "how_to_apply": "Contact nearest Krishi Vigyan Kendra or agriculture department office",
-            "deadline": "Ongoing",
-            "helpline": "1800-180-1551",
-            "website": "soilhealth.dac.gov.in"
+            "name": "Soil Health Card",
+            "emoji": "🌱",
+            "color": "#558b2f",
+            "tagline": "Free soil testing + advice",
+            "amount": "Free",
+            "amount_label": "no cost",
+            "eligible": True,
+            "description": "Free soil testing to get crop-wise recommendations for fertilizers and nutrients.",
+            "benefits": ["Free soil testing", "Fertilizer recommendations", "Reduce input costs by 20%"],
+            "documents": ["Aadhar card", "Land records"],
+            "how_to_apply": "Contact nearest Krishi Vigyan Kendra or agriculture office",
+            "apply_url": "https://soilhealth.dac.gov.in"
         }
     ]
-    result = json.dumps(schemes)
-    return {"success": True, "data": result}
+    data = {"summary": f"You are eligible for {len(schemes)} central government schemes. Apply today to get maximum benefits.", "schemes": schemes}
+    return {"success": True, "data": json.dumps(data)}
 @app.get("/api/msp")
 async def msp_info(crop: str = "wheat"):
     prompt = f'MSP info for {crop} India 2024-25. JSON only: {{"crop": "{crop}", "msp_price": 2275, "procurement_agency": "agency", "documents_needed": ["doc1"], "how_to_sell": "steps", "payment_timeline": "days", "helpline": "number"}}'
