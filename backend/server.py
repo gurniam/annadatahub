@@ -212,14 +212,57 @@ async def weather(location: str = "Punjab"):
     except:
         result = get_weather_fallback(location)
     return {"success": True, "data": result, "location": location}
-@app.get("/api/schemes")
+Done@app.get("/api/schemes")
 async def govt_schemes(state: str = "Punjab"):
-    prompt = f'List 5 government schemes for farmers in {state} India. JSON array only: [{{"name": "name", "benefit": "benefit", "eligibility": "who", "how_to_apply": "steps", "deadline": "date"}}]'
-    result = await call_claude(prompt)
-    if not result:
-        result = get_schemes_fallback(state)
+    schemes = [
+        {
+            "name": "PM-KISAN",
+            "benefit": "₹6,000 per year (₹2,000 every 4 months) directly in bank account",
+            "eligibility": "All small and marginal farmers with land records",
+            "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center with Aadhar + land records + bank passbook",
+            "deadline": "Ongoing - register anytime",
+            "helpline": "155261 / 011-23381092",
+            "website": "pmkisan.gov.in"
+        },
+        {
+            "name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+            "benefit": "Crop insurance - full compensation for crop loss due to flood, drought, pest",
+            "eligibility": "All farmers growing notified crops. Premium only 1.5% for Rabi, 2% for Kharif",
+            "how_to_apply": "Contact nearest bank or insurance company before sowing season",
+            "deadline": "Before sowing - Kharif by July 31, Rabi by December 31",
+            "helpline": "1800-200-7710",
+            "website": "pmfby.gov.in"
+        },
+        {
+            "name": "Kisan Credit Card (KCC)",
+            "benefit": "Crop loan up to ₹3 lakh at only 4% interest rate per year",
+            "eligibility": "All farmers, sharecroppers, tenant farmers with land records",
+            "how_to_apply": "Apply at nearest SBI, PNB, or cooperative bank with Aadhar + land records",
+            "deadline": "Ongoing",
+            "helpline": "1800-180-1551",
+            "website": "pmkisan.gov.in/KCC.aspx"
+        },
+        {
+            "name": "PM Kisan Maan Dhan Yojana (Pension)",
+            "benefit": "₹3,000 per month pension after age 60",
+            "eligibility": "Farmers aged 18-40 years with less than 2 hectares land",
+            "how_to_apply": "Visit nearest CSC center with Aadhar + bank passbook + land records",
+            "deadline": "Ongoing",
+            "helpline": "1800-267-6888",
+            "website": "maandhan.in"
+        },
+        {
+            "name": "Soil Health Card Scheme",
+            "benefit": "Free soil testing + fertilizer recommendations to reduce input costs",
+            "eligibility": "All farmers",
+            "how_to_apply": "Contact nearest Krishi Vigyan Kendra or agriculture department office",
+            "deadline": "Ongoing",
+            "helpline": "1800-180-1551",
+            "website": "soilhealth.dac.gov.in"
+        }
+    ]
+    result = json.dumps(schemes)
     return {"success": True, "data": result}
-
 @app.get("/api/msp")
 async def msp_info(crop: str = "wheat"):
     prompt = f'MSP info for {crop} India 2024-25. JSON only: {{"crop": "{crop}", "msp_price": 2275, "procurement_agency": "agency", "documents_needed": ["doc1"], "how_to_sell": "steps", "payment_timeline": "days", "helpline": "number"}}'
