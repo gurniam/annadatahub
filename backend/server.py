@@ -212,7 +212,7 @@ async def weather(location: str = "Punjab"):
     except:
         result = get_weather_fallback(location)
     return {"success": True, "data": result, "location": location}
-Done@app.get("/api/schemes")
+@app.get("/api/schemes")
 async def govt_schemes(state: str = "Punjab"):
     schemes = [
         {
