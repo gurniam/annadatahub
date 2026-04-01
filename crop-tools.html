@@ -356,7 +356,7 @@ function showToast(msg, type="success") {
 
 async function callClaude(system, user) {
   try {
-    const res = await fetch("https://annadatahub-production.up.railway.app/api/ai/ask", {
+    const res = await fetch("https://annadatahub-production-a9db.up.railway.app/api/ai/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ question: user, language: typeof currentLang !== 'undefined' ? currentLang : "en" })
