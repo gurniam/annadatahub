@@ -405,90 +405,52 @@ async function callClaude(system, user) {
 async function getMandiPrices() {
   const crop = document.getElementById("mandiCrop").value;
   const state = document.getElementById("mandiState").value;
-  const lang = LANG_NAMES[currentLang] || "English";
   const btn = document.getElementById("mandi-btn");
   const result = document.getElementById("mandi-result");
   const t = UI_TEXT[currentLang] || UI_TEXT.en;
 
   btn.disabled = true;
-  btn.textContent = "⏳ " + t.loading;
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${t.loading}</p></div>`;
+  btn.textContent = "⏳ Loading...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching prices...</p></div>`;
 
   try {
-    
-      const res = await fetch(
-    `https://annadatahub-production-a9db.up.railway.app/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`
-);
-if (!res.ok) throw new Error(`HTTP ${res.status}`);
-const result = await res.json();
-if (!result.success) throw new Error(result.message || 'API error');
-const raw = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
-const data = {
-    crop: result.crop || crop,
-    state: result.state || state,
-    min_price: raw.min_price || raw.Min_Price || '—',
-    max_price: raw.max_price || raw.Max_Price || '—',
-    modal_price: raw.modal_price || raw.Modal_Price || '—',
-    mandis: raw.mandis || raw.records || [],
-    sell_advice: raw.sell_advice || '',
-    best_mandi: raw.best_mandi || ''
-};
+    const res = await fetch(
+      `https://annadatahub-production-a9db.up.railway.app/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const outer = await res.json();
+    if (!outer.success) throw new Error('API error');
+    const raw = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
+    const markets = raw.markets || [];
 
-    const trendIcon = t => t === "up" ? "↑" : t === "down" ? "↓" : "→";
-    const trendClass = t => t === "up" ? "trend-up" : t === "down" ? "trend-down" : "trend-same";
+    const rows = markets.map(m => `
+      <div class="price-card">
+        <div class="price-mandi">${m.market}</div>
+        <div class="price-amount">₹${m.price}</div>
+        <div class="price-unit">${m.unit}</div>
+      </div>
+    `).join("");
 
     result.innerHTML = `
       <div class="card">
-        <div class="card-title" style="color:var(--green)">📊 ${data.crop} — ${data.state}</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
-          <div style="background:var(--green-light);border-radius:10px;padding:10px;text-align:center">
-            <div style="font-size:0.7rem;color:var(--muted);font-weight:600">MIN</div>
-            <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--red)">₹${data.min_price}</div>
-            <div style="font-size:0.68rem;color:var(--muted)">/quintal</div>
-          </div>
-          <div style="background:var(--green-light);border-radius:10px;padding:10px;text-align:center;border:2px solid var(--green)">
-            <div style="font-size:0.7rem;color:var(--green);font-weight:700">MODAL ⭐</div>
-            <div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green)">₹${data.modal_price}</div>
-            <div style="font-size:0.68rem;color:var(--muted)">/quintal</div>
-          </div>
-          <div style="background:var(--green-light);border-radius:10px;padding:10px;text-align:center">
-            <div style="font-size:0.7rem;color:var(--muted);font-weight:600">MAX</div>
-            <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:#16a34a">₹${data.max_price}</div>
-            <div style="font-size:0.68rem;color:var(--muted)">/quintal</div>
-          </div>
+        <div class="card-title">${outer.crop} — ${outer.state}</div>
+        <div style="font-size:0.85rem;margin-bottom:8px">MSP: ₹${raw.msp}/quintal | ${raw.date}</div>
+        <div class="price-grid">${rows}</div>
+        <div class="advice-box" style="margin-top:12px;padding:10px;background:#f0f9f0;border-radius:8px">
+          💡 ${raw.best_selling_tip || ''}
         </div>
-
-        <div style="font-weight:700;font-size:0.82rem;margin-bottom:8px;color:var(--muted)">NEARBY MANDIS TODAY</div>
-        <div class="price-grid">
-          ${data.mandis.map(m => `
-            <div class="price-card">
-              <div class="price-mandi">${m.market}</div>
-              <div class="price-amount">₹${m.price}</div>
-              <div class="price-unit">/quintal</div>
-              <div class="price-unit">${m.unit}</div>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-
-      <div class="advice-box">
-        <strong>💡 Sell or Wait?</strong><br/>${data.sell_advice}
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.1)">
-          <strong>🏆 Best Mandi:</strong> ${data.best_mandi}
-        </div>
-      </div>
-
-      <div style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:8px">
-        ✨ ${t.powered} · Prices are indicative
       </div>
     `;
     showToast("Prices fetched! ✅");
+
   } catch(e) {
-    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch prices. Please try again.</p></div>`;
+    console.error("Mandi error:", e);
+    result.innerHTML = `<div class="empty"><p>Could not fetch prices: ${e.message}</p></div>`;
     showToast("Error fetching prices", "error");
   }
+
   btn.disabled = false;
-  btn.textContent = "📊 Get Today's Prices";
+  btn.textContent = "🏛 Get Today's Prices";
 }
 
 // ── WEATHER ───────────────────────────────────────────────────────
