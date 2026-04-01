@@ -184,12 +184,34 @@ async def mandi_prices(crop: str = "wheat", state: str = "Punjab"):
 
 @app.get("/api/weather")
 async def weather(location: str = "Punjab"):
-    prompt = f'Farming weather for {location} India today. JSON only: {{"temperature": 28, "humidity": 65, "rainfall_chance": 20, "spray_suitable": true, "farming_advice": "advice", "best_time_to_work": "hours", "alert": null}}'
-    result = await call_claude(prompt)
-    if not result:
+    WEATHER_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            r = await c.get(
+                f"https://api.openweathermap.org/data/2.5/weather",
+                params={"q": f"{location},IN", "appid": WEATHER_KEY, "units": "metric"}
+            )
+            w = r.json()
+            if w.get("cod") != 200:
+                raise Exception("Bad response")
+            temp = w["main"]["temp"]
+            humidity = w["main"]["humidity"]
+            rain = w.get("rain", {}).get("1h", 0)
+            desc = w["weather"][0]["description"]
+            spray = humidity < 80 and rain == 0
+            result = json.dumps({
+                "temperature": round(temp),
+                "humidity": humidity,
+                "rainfall_chance": min(int(rain * 100), 100),
+                "description": desc,
+                "spray_suitable": spray,
+                "farming_advice": "Good conditions for farming." if spray else "High humidity or rain. Avoid spraying.",
+                "best_time_to_work": "Early morning 6-10am",
+                "alert": "Rain detected - protect harvested crops!" if rain > 0 else None
+            })
+    except:
         result = get_weather_fallback(location)
-    return {"success": True, "data": result, "location": location}
-
+    return {"success": True, "data
 @app.get("/api/schemes")
 async def govt_schemes(state: str = "Punjab"):
     prompt = f'List 5 government schemes for farmers in {state} India. JSON array only: [{{"name": "name", "benefit": "benefit", "eligibility": "who", "how_to_apply": "steps", "deadline": "date"}}]'
