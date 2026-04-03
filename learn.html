@@ -597,11 +597,7 @@ async function callClaude(system, user) {
     });
     if (!res.ok) throw new Error("API error");
     const data = await res.json();
-    const text = data.answer || "";
-    const clean = text.replace(/```json|```/g, "").trim();
-    const match = clean.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error("No JSON found");
-    return JSON.parse(match[0]);
+    return data.answer || "";
   } catch(e) {
     throw new Error("AI service error: " + e.message);
   }
