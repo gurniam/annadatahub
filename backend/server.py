@@ -65,19 +65,24 @@ def verify_token(token: str) -> dict:
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+
 async def call_claude(prompt: str, system: str = "") -> Optional[str]:
-    if not CLAUDE_API_KEY:
+    if not GROQ_API_KEY:
         return None
     try:
         async with httpx.AsyncClient(timeout=30.0) as c:
             r = await c.post(
-                "https://api.anthropic.com/v1/messages",
-                headers={"x-api-key": CLAUDE_API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-                json={"model": "claude-haiku-4-5-20251001", "max_tokens": 1024, "system": system or "You are AnnadataHub AI for Indian farmers. Always respond with valid JSON only.", "messages": [{"role": "user", "content": prompt}]}
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+                json={"model": "llama-3.3-70b-versatile", "max_tokens": 1024, "messages": [
+                    {"role": "system", "content": system or "You are AnnadataHub AI for Indian farmers. Always respond with valid JSON only."},
+                    {"role": "user", "content": prompt}
+                ]}
             )
             data = r.json()
-            if "content" in data and len(data["content"]) > 0:
-                return data["content"][0]["text"]
+            if "choices" in data and len(data["choices"]) > 0:
+                return data["choices"][0]["message"]["content"]
             return None
     except:
         return None
