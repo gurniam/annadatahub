@@ -365,14 +365,14 @@ async function callClaude(system, user) {
     const data = await res.json();
     const text = data.answer || "";
     const clean = text.replace(/```json|```/g, "").trim();
-    const match = clean.match(/\{[\s\S]*\}/);
+    // Try to find JSON object or array
+    const match = clean.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
     if (!match) throw new Error("No JSON found");
     return JSON.parse(match[0]);
   } catch(e) {
     throw new Error("AI service error: " + e.message);
   }
 }
-
 // days since sowing
 function daysSince(dateStr) {
   if (!dateStr) return 30;
