@@ -72,8 +72,6 @@
   .toast.error{background:var(--red);}
   @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
   .hidden{display:none;}
-
-  /* ── AUTH MODAL ── */
   .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
   .auth-overlay.hidden{display:none!important;}
   .auth-box{background:white;border-radius:20px;padding:24px 20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto;position:relative;}
@@ -119,8 +117,6 @@
       <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Login</button>
       <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</button>
     </div>
-
-    <!-- LOGIN -->
     <div id="loginForm">
       <div class="auth-field"><label>📧 Email</label><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/></div>
       <div class="auth-field"><label>🔒 Password</label><input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password"/></div>
@@ -128,8 +124,6 @@
       <button class="auth-btn" id="loginBtn" onclick="doLogin()">Login to AnnadataHub</button>
       <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">New farmer? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('signup')">Create free account</span></div>
     </div>
-
-    <!-- SIGNUP -->
     <div id="signupForm" class="hidden">
       <div class="auth-field"><label>👤 Full Name</label><input type="text" id="signupName" placeholder="e.g. Gurnam Singh" autocomplete="name"/></div>
       <div class="auth-field"><label>📧 Email</label><input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email"/></div>
@@ -152,7 +146,6 @@
       <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Free Account 🚀</button>
       <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">Already have account? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('login')">Login</span></div>
     </div>
-
     <div class="auth-benefits">
       <div class="auth-benefit">✅ Free crop disease scanner</div>
       <div class="auth-benefit">✅ Save your farm history</div>
@@ -197,16 +190,16 @@
 
 <!-- LANGUAGE BAR -->
 <div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang(this,'Good Morning, Farmer! 🙏','How is your crop today?')">English</button>
-  <button class="lang-btn" onclick="setLang(this,'सुप्रभात किसान! 🙏','आज आपकी फसल कैसी है?')">हिंदी</button>
-  <button class="lang-btn" onclick="setLang(this,'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏','ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?')">ਪੰਜਾਬੀ</button>
-  <button class="lang-btn" onclick="setLang(this,'शुभ प्रभात शेतकरी! 🙏','आज तुमची शेती कशी आहे?')">मराठी</button>
-  <button class="lang-btn" onclick="setLang(this,'శుభోదయం రైతు! 🙏','ఈరోజు మీ పంట ఎలా ఉంది?')">తెలుగు</button>
-  <button class="lang-btn" onclick="setLang(this,'காலை வணக்கம் விவசாயி! 🙏','இன்று உங்கள் பயிர் எப்படி?')">தமிழ்</button>
-  <button class="lang-btn" onclick="setLang(this,'સુ પ્રભાત ખેડૂત! 🙏','આજ તમારો પાક કેવો છે?')">ગુજરાતી</button>
-  <button class="lang-btn" onclick="setLang(this,'শুভ সকাল কৃষক! 🙏','আজ আপনার ফসল কেমন?')">বাংলা</button>
-  <button class="lang-btn" onclick="setLang(this,'ಶುಭೋದಯ ರೈತ! 🙏','ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?')">ಕನ್ನಡ</button>
-  <button class="lang-btn" onclick="setLang(this,'സുപ്രഭാതം കർഷകൻ! 🙏','ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?')">മലയാളം</button>
+  <button class="lang-btn" data-lang="en" onclick="setLang('en')">English</button>
+  <button class="lang-btn" data-lang="hi" onclick="setLang('hi')">हिंदी</button>
+  <button class="lang-btn" data-lang="pa" onclick="setLang('pa')">ਪੰਜਾਬੀ</button>
+  <button class="lang-btn" data-lang="mr" onclick="setLang('mr')">मराठी</button>
+  <button class="lang-btn" data-lang="te" onclick="setLang('te')">తెలుగు</button>
+  <button class="lang-btn" data-lang="ta" onclick="setLang('ta')">தமிழ்</button>
+  <button class="lang-btn" data-lang="gu" onclick="setLang('gu')">ગુજરાતી</button>
+  <button class="lang-btn" data-lang="bn" onclick="setLang('bn')">বাংলা</button>
+  <button class="lang-btn" data-lang="kn" onclick="setLang('kn')">ಕನ್ನಡ</button>
+  <button class="lang-btn" data-lang="ml" onclick="setLang('ml')">മലയാളം</button>
 </div>
 
 <!-- GREETING -->
@@ -218,38 +211,32 @@
 </div>
 
 <div class="content">
-
   <div class="tip-card">
     <div style="font-size:1.3rem">💡</div>
     <div><div style="font-weight:700;font-size:0.86rem;color:#92400e">Today's Tip</div><div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust this season. Spray Propiconazole immediately if found.</div></div>
   </div>
 
   <div class="section-title">🚀 Most Important</div>
-
   <a class="big-btn green" href="farmer-tools.html">
     <div class="btn-icon-wrap" style="background:rgba(255,255,255,0.2)">📷</div>
     <div style="flex:1"><div class="btn-title" style="color:white">Scan Sick Crop</div><div class="btn-desc" style="color:rgba(255,255,255,0.8)">Take photo → AI tells disease + treatment in 30 seconds</div><span class="btn-badge" style="background:var(--gold);color:var(--text)">FREE</span></div>
     <div class="btn-arrow" style="color:rgba(255,255,255,0.7)">→</div>
   </a>
-
   <a class="big-btn" href="farmer-tools.html">
     <div class="btn-icon-wrap" style="background:#dcfce7">📊</div>
     <div style="flex:1"><div class="btn-title">Today's Mandi Price</div><div class="btn-desc">Check today's price before selling your crop</div><span class="btn-badge" style="background:#dcfce7;color:#16a34a">UPDATED DAILY</span></div>
     <div class="btn-arrow">→</div>
   </a>
-
   <a class="big-btn" href="farmer-tools.html">
     <div class="btn-icon-wrap" style="background:#e0f2fe">🌦️</div>
     <div style="flex:1"><div class="btn-title">Weather for My Farm</div><div class="btn-desc">Rain coming? Good day to spray? Check now</div><span class="btn-badge" style="background:#e0f2fe;color:#0369a1">5-DAY FORECAST</span></div>
     <div class="btn-arrow">→</div>
   </a>
-
   <a class="big-btn" href="msp.html">
     <div class="btn-icon-wrap" style="background:#fef9c3">📊</div>
     <div style="flex:1"><div class="btn-title">MSP vs Mandi Price</div><div class="btn-desc">Check if you are getting fair price for your crop</div><span class="btn-badge" style="background:#fef9c3;color:#92400e">SAVE MONEY</span></div>
     <div class="btn-arrow">→</div>
   </a>
-
   <a class="big-btn" href="power-tools.html">
     <div class="btn-icon-wrap" style="background:#f5f3ff">🎙️</div>
     <div style="flex:1"><div class="btn-title">Speak Your Question</div><div class="btn-desc">Can't type? Just speak in your language</div><span class="btn-badge" style="background:#f5f3ff;color:#7c3aed">11 LANGUAGES</span></div>
@@ -296,7 +283,6 @@
     <div style="flex:1"><div style="font-weight:700;font-size:0.9rem;color:var(--red)">Call Kisan Helpline — FREE</div><div style="font-size:0.75rem;color:var(--muted)">1800-180-1551 · Hindi & regional languages</div></div>
     <div style="color:var(--red)">→</div>
   </a>
-
   <div class="pb"></div>
 </div>
 
@@ -311,7 +297,6 @@
 
 <button class="help-btn" onclick="showHelp()">❓</button>
 
-<!-- HELP MODAL -->
 <div class="help-modal" id="helpModal">
   <div class="help-sheet">
     <div class="help-title">How can we help? 🙏</div>
@@ -328,6 +313,36 @@
 <script>
 const API = "https://annadatahub-production-a9db.up.railway.app";
 
+// ── Language system ────────────────────────────────────────────
+const LANG_DATA = {
+  en: { greeting: "Good Morning, Farmer! 🙏", sub: "How is your crop today?" },
+  hi: { greeting: "सुप्रभात किसान! 🙏",        sub: "आज आपकी फसल कैसी है?" },
+  pa: { greeting: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏",  sub: "ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?" },
+  mr: { greeting: "शुभ प्रभात शेतकरी! 🙏",     sub: "आज तुमची शेती कशी आहे?" },
+  te: { greeting: "శుభోదయం రైతు! 🙏",          sub: "ఈరోజు మీ పంట ఎలా ఉంది?" },
+  ta: { greeting: "காலை வணக்கம் விவசாயி! 🙏",  sub: "இன்று உங்கள் பயிர் எப்படி?" },
+  gu: { greeting: "સુ પ્રભાત ખેડૂત! 🙏",       sub: "આજ તમારો પાક કેવો છે?" },
+  bn: { greeting: "শুভ সকাল কৃষক! 🙏",         sub: "আজ আপনার ফসল কেমন?" },
+  kn: { greeting: "ಶುಭೋದಯ ರೈತ! 🙏",            sub: "ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?" },
+  ml: { greeting: "സുപ്രഭാതം കർഷകൻ! 🙏",       sub: "ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?" },
+};
+
+function setLang(code) {
+  try { localStorage.setItem("annadatahub_lang", code); } catch(e) {}
+  const lang = LANG_DATA[code] || LANG_DATA.en;
+  const gt = document.getElementById("greetText");
+  const gs = document.getElementById("greetSub");
+  if (gt) gt.textContent = lang.greeting;
+  if (gs) gs.textContent = lang.sub;
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-lang") === code);
+  });
+}
+
+function getCurrentLang() {
+  try { return localStorage.getItem("annadatahub_lang") || "en"; } catch(e) { return "en"; }
+}
+
 // ── Token helpers ──────────────────────────────────────────────
 function saveToken(token, user) {
   try { localStorage.setItem("auth_token", token); localStorage.setItem("auth_user", JSON.stringify(user)); } catch(e) {}
@@ -341,9 +356,7 @@ function showLoginModal() {
   if (getToken()) { showProfile(); return; }
   document.getElementById("authOverlay").classList.remove("hidden");
 }
-function hideLoginModal() {
-  document.getElementById("authOverlay").classList.add("hidden");
-}
+function hideLoginModal() { document.getElementById("authOverlay").classList.add("hidden"); }
 function switchAuthTab(tab) {
   document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
   document.getElementById("signupForm").classList.toggle("hidden", tab !== "signup");
@@ -357,7 +370,6 @@ function showAuthError(id, msg) {
   el.textContent = msg; el.classList.remove("hidden");
 }
 
-// ── Header UI ──────────────────────────────────────────────────
 function updateHeaderUI(user) {
   const loginBtn = document.querySelector(".login-btn");
   const userBtn  = document.querySelector(".user-btn");
@@ -385,32 +397,30 @@ function showProfile() {
   document.getElementById("profileModal").classList.add("show");
 }
 
-// ── Login ──────────────────────────────────────────────────────
 async function doLogin() {
-  const email    = document.getElementById("loginEmail").value.trim();
+  const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
   if (!email || !password) { showAuthError("loginError", "Please enter email and password."); return; }
   const btn = document.getElementById("loginBtn");
   btn.disabled = true; btn.textContent = "Logging in...";
   try {
-    const res  = await fetch(`${API}/api/auth/login`, {
+    const res = await fetch(`${API}/api/auth/login`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
-    if (!res.ok) { showAuthError("loginError", data.detail || "Login failed. Check email/password."); return; }
+    if (!res.ok) { showAuthError("loginError", data.detail || "Login failed."); return; }
     saveToken(data.token, data.user);
     updateHeaderUI(data.user);
     hideLoginModal();
     showToast("Welcome back, " + data.user.full_name.split(" ")[0] + "! 🙏", "success");
   } catch(e) {
-    showAuthError("loginError", "Network error. Check your internet connection.");
+    showAuthError("loginError", "Network error. Check your internet.");
   } finally {
     btn.disabled = false; btn.textContent = "Login to AnnadataHub";
   }
 }
 
-// ── Signup ─────────────────────────────────────────────────────
 async function doSignup() {
   const full_name = document.getElementById("signupName").value.trim();
   const email     = document.getElementById("signupEmail").value.trim();
@@ -423,31 +433,30 @@ async function doSignup() {
   const btn = document.getElementById("signupBtn");
   btn.disabled = true; btn.textContent = "Creating account...";
   try {
-    const res  = await fetch(`${API}/api/auth/register`, {
+    const res = await fetch(`${API}/api/auth/register`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ full_name, email, password, phone, state })
     });
     const data = await res.json();
-    if (!res.ok) { showAuthError("signupError", data.detail || "Registration failed. Try again."); return; }
+    if (!res.ok) { showAuthError("signupError", data.detail || "Registration failed."); return; }
     saveToken(data.token, data.user);
     updateHeaderUI(data.user);
     hideLoginModal();
-    showToast("Welcome to AnnadataHub, " + data.user.full_name.split(" ")[0] + "! 🎉", "success");
+    showToast("Welcome, " + data.user.full_name.split(" ")[0] + "! 🎉", "success");
   } catch(e) {
-    showAuthError("signupError", "Network error. Check your internet connection.");
+    showAuthError("signupError", "Network error. Check your internet.");
   } finally {
     btn.disabled = false; btn.textContent = "Create Free Account 🚀";
   }
 }
 
-// ── Logout ─────────────────────────────────────────────────────
 function doLogout() {
   clearToken(); updateHeaderUI(null);
   document.getElementById("profileModal").classList.remove("show");
   showToast("Logged out successfully.");
 }
 
-// ── Existing app functions ─────────────────────────────────────
+// ── App ────────────────────────────────────────────────────────
 const TIPS = ["Check wheat for yellow rust — spray Propiconazole if found.",
   "Best time to spray: early morning 6-9am or evening 4-7pm. Never in hot afternoon.",
   "Check PM-KISAN status — visit Schemes section.",
@@ -456,13 +465,6 @@ const TIPS = ["Check wheat for yellow rust — spray Propiconazole if found.",
 const hour = new Date().getHours();
 document.getElementById("greetTime").textContent = hour < 12 ? "Good Morning ☀️" : hour < 17 ? "Good Afternoon 🌤️" : "Good Evening 🌙";
 document.getElementById("tipText").textContent = TIPS[new Date().getDay() % TIPS.length];
-
-function setLang(btn, greeting, sub) {
-  document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  document.getElementById("greetText").textContent = greeting;
-  document.getElementById("greetSub").textContent = sub;
-}
 
 let currentStep = 1;
 function nextStep(step) {
@@ -497,10 +499,11 @@ function showToast(msg, type = "") {
   setTimeout(() => t.classList.add("hidden"), 2500);
 }
 
-// ── Auto-login on page load ────────────────────────────────────
+// ── Init ───────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
   const user = getUser();
   if (user && getToken()) updateHeaderUI(user);
+  setLang(getCurrentLang()); // apply saved language on every page load
 });
 </script>
 </body>
