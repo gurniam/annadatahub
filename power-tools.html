@@ -424,11 +424,15 @@ function showToast(msg,type="success") {
 async function callAI(system, user, imageB64=null) {
   try {
     if (imageB64) {
-      const res = await fetch(`${BACKEND}/api/crop/scan`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image_base64: imageB64, language: currentLang })
-      });
+      const res = await fetch(`${BACKEND}/api/ai/ask`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ 
+    question: user, 
+    language: currentLang,
+    system_prompt: system || null
+  })
+});
       if (!res.ok) throw new Error("API error " + res.status);
       const data = await res.json();
       return data.result || "";
