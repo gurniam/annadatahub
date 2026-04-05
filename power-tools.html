@@ -18,8 +18,6 @@
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   body { font-family:'Hind',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-
-  /* HEADER */
   .header { background:linear-gradient(135deg,var(--green),var(--green-mid)); padding:14px 16px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; box-shadow:0 2px 12px rgba(0,0,0,0.15); }
   .logo { display:flex; align-items:center; gap:8px; }
   .logo-icon { width:36px; height:36px; background:var(--gold); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
@@ -27,24 +25,16 @@
   .logo-name span { color:var(--gold); }
   .lang-sel { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); color:white; padding:5px 8px; border-radius:8px; font-size:0.78rem; cursor:pointer; }
   .lang-sel option { background:var(--green); }
-
-  /* TABS - scrollable */
   .tabs { display:flex; background:white; border-bottom:2px solid var(--border); overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .tabs::-webkit-scrollbar { display:none; }
   .tab { flex-shrink:0; padding:11px 12px; border:none; background:none; font-family:'Hind',sans-serif; font-size:0.75rem; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:2px; min-width:70px; }
   .tab.active { color:var(--green); border-bottom-color:var(--green); }
   .tab .icon { font-size:1.2rem; }
-
-  /* LAYOUT */
   .content { max-width:600px; margin:0 auto; padding:14px; }
   .page { display:none; }
   .page.active { display:block; }
-
-  /* CARDS */
   .card { background:white; border-radius:14px; padding:16px; margin-bottom:12px; border:1px solid var(--border); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
   .card-title { font-family:'Baloo 2',cursive; font-size:1rem; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
-
-  /* FORM */
   .field { margin-bottom:10px; }
   label { font-size:0.78rem; font-weight:600; color:var(--muted); margin-bottom:3px; display:block; }
   select, input, textarea { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; font-family:'Hind',sans-serif; font-size:0.86rem; background:white; color:var(--text); outline:none; transition:border 0.2s; }
@@ -52,8 +42,6 @@
   textarea { resize:none; }
   .two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .three-col { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
-
-  /* BUTTONS */
   .btn { width:100%; padding:12px; border-radius:12px; border:none; font-family:'Baloo 2',cursive; font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
   .btn-green { background:var(--green); color:white; box-shadow:0 4px 12px rgba(26,92,46,0.25); }
   .btn-green:hover { background:var(--green-mid); }
@@ -63,14 +51,10 @@
   .btn-sky { background:var(--sky); color:white; }
   .btn-sm { padding:8px 16px; font-size:0.82rem; width:auto; border-radius:8px; }
   .btn:disabled { opacity:0.6; cursor:not-allowed; }
-
-  /* LOADING */
   .loading { text-align:center; padding:28px; }
   .spinner { width:34px; height:34px; border:3px solid var(--border); border-top-color:var(--green); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 10px; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .loading p { color:var(--muted); font-size:0.86rem; }
-
-  /* VOICE */
   .voice-circle { width:120px; height:120px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--green-mid)); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; cursor:pointer; transition:all 0.2s; box-shadow:0 8px 30px rgba(26,92,46,0.3); position:relative; }
   .voice-circle:hover { transform:scale(1.05); }
   .voice-circle.listening { animation:voicePulse 1s infinite; background:linear-gradient(135deg,var(--red),#ef4444); }
@@ -83,8 +67,6 @@
   .quick-questions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
   .quick-q { background:var(--green-light); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:0.8rem; cursor:pointer; color:var(--green); font-weight:500; transition:all 0.15s; }
   .quick-q:hover { background:var(--green); color:white; }
-
-  /* PROFIT CALC */
   .profit-result { border-radius:14px; padding:20px; text-align:center; margin-bottom:12px; }
   .profit-result.profit { background:linear-gradient(135deg,#dcfce7,#bbf7d0); border:2px solid #16a34a; }
   .profit-result.loss { background:linear-gradient(135deg,var(--red-light),#fecaca); border:2px solid var(--red); }
@@ -97,8 +79,6 @@
   .breakdown-row:last-child { border-bottom:none; }
   .breakdown-label { color:var(--muted); }
   .breakdown-value { font-weight:700; font-family:'Baloo 2',cursive; }
-
-  /* SOIL */
   .soil-zone { background:#2d1b00; border-radius:14px; aspect-ratio:1.5; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; margin-bottom:12px; cursor:pointer; }
   .soil-zone img { width:100%; height:100%; object-fit:cover; }
   .soil-placeholder { color:rgba(255,255,255,0.5); text-align:center; }
@@ -114,8 +94,6 @@
   .level-good { color:#16a34a; }
   .level-medium { color:var(--gold); }
   .level-low { color:var(--red); }
-
-  /* NEWS */
   .news-card { background:white; border-radius:14px; border:1px solid var(--border); margin-bottom:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
   .news-header { padding:14px; }
   .news-category { display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; margin-bottom:8px; }
@@ -130,13 +108,11 @@
   .news-expand { width:100%; padding:10px; background:var(--green-light); border:none; border-top:1px solid var(--border); font-family:'Hind',sans-serif; font-size:0.82rem; color:var(--green); font-weight:600; cursor:pointer; }
   .news-detail { padding:14px; border-top:1px solid var(--border); font-size:0.84rem; line-height:1.6; color:#374151; display:none; }
   .news-detail.open { display:block; }
-
-  /* CHAT */
   .chat-area { height:380px; overflow-y:auto; padding:12px; background:#f8faf8; border-radius:12px; margin-bottom:10px; border:1px solid var(--border); }
   .chat-msg { display:flex; gap:8px; margin-bottom:12px; animation:fadeIn 0.3s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
   .chat-msg.own { flex-direction:row-reverse; }
-  .chat-avatar { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0; }
+  .chat-avatar { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0; color:white; }
   .chat-bubble { max-width:75%; padding:10px 13px; border-radius:14px; font-size:0.86rem; line-height:1.5; }
   .chat-msg:not(.own) .chat-bubble { background:white; border:1px solid var(--border); border-radius:4px 14px 14px 14px; }
   .chat-msg.own .chat-bubble { background:var(--green); color:white; border-radius:14px 4px 14px 14px; }
@@ -154,8 +130,6 @@
   .online-count { background:var(--green-light); border-radius:20px; padding:4px 12px; font-size:0.75rem; color:var(--green); font-weight:600; display:inline-flex; align-items:center; gap:5px; margin-bottom:10px; }
   .online-dot { width:6px; height:6px; border-radius:50%; background:#16a34a; animation:blink 1.5s infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-  /* MISC */
   .tip-box { background:var(--gold-light); border:1px solid var(--gold); border-radius:10px; padding:12px; margin-bottom:10px; font-size:0.84rem; line-height:1.6; }
   .tip-box strong { color:var(--brown); }
   .ai-tag { display:inline-flex; align-items:center; gap:4px; background:var(--green-light); color:var(--green); padding:2px 10px; border-radius:20px; font-size:0.7rem; font-weight:700; margin-bottom:8px; }
@@ -172,7 +146,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="logo">
     <div class="logo-icon">🌾</div>
@@ -193,7 +166,6 @@
   </select>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="showTab('voice')" id="tab-voice"><span class="icon">🎙️</span><span id="t1">Voice</span></button>
   <button class="tab" onclick="showTab('profit')" id="tab-profit"><span class="icon">💰</span><span id="t2">Profit</span></button>
@@ -204,29 +176,24 @@
 
 <div class="content">
 
-  <!-- ══ VOICE ASSISTANT ══════════════════════════════════════════ -->
+  <!-- VOICE ASSISTANT -->
   <div class="page active" id="page-voice">
     <div class="card" style="text-align:center">
       <div class="card-title" style="justify-content:center;color:var(--green)">🎙️ Voice Assistant</div>
       <p style="font-size:0.84rem;color:var(--muted);margin-bottom:20px">Speak in your language — get instant farming answers</p>
-
       <div class="voice-circle" id="voiceCircle" onclick="toggleVoice()">
         <span class="voice-icon" id="voiceIcon">🎙️</span>
       </div>
       <div class="voice-status" id="voiceStatus">Tap the mic to speak</div>
-
       <div class="voice-transcript" id="voiceTranscript"></div>
-
       <div class="voice-answer" id="voiceAnswer">
-        <div class="answer-label">✨ Claude AI Answer</div>
+        <div class="answer-label">🌾 AnnadataHub AI Answer</div>
         <div id="answerText"></div>
       </div>
-
       <div class="divider"></div>
       <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;font-weight:600">Or tap a quick question:</div>
       <div class="quick-questions" id="quickQuestions"></div>
     </div>
-
     <div class="card">
       <div class="card-title" style="color:var(--green)">⌨️ Type Your Question</div>
       <div class="field">
@@ -249,7 +216,7 @@
     </div>
   </div>
 
-  <!-- ══ PROFIT CALCULATOR ════════════════════════════════════════ -->
+  <!-- PROFIT CALCULATOR -->
   <div class="page" id="page-profit">
     <div class="card">
       <div class="card-title" style="color:#16a34a">💰 Profit & Loss Calculator</div>
@@ -270,7 +237,6 @@
           <input type="number" id="profLand" value="2" min="0.5"/>
         </div>
       </div>
-
       <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase">Your Expenses (₹)</div>
       <div class="three-col">
         <div class="field"><label>Seeds</label><input type="number" id="profSeeds" placeholder="0"/></div>
@@ -280,7 +246,6 @@
         <div class="field"><label>Irrigation</label><input type="number" id="profIrrigation" placeholder="0"/></div>
         <div class="field"><label>Other</label><input type="number" id="profOther" placeholder="0"/></div>
       </div>
-
       <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase">Your Income (₹)</div>
       <div class="two-col">
         <div class="field"><label>Selling Price (₹/quintal)</label><input type="number" id="profPrice" placeholder="e.g. 2000"/></div>
@@ -291,7 +256,7 @@
     <div id="profit-result"></div>
   </div>
 
-  <!-- ══ SOIL CHECKER ═════════════════════════════════════════════ -->
+  <!-- SOIL CHECKER -->
   <div class="page" id="page-soil">
     <div class="card">
       <div class="card-title" style="color:var(--brown)">🌍 Soil Health Checker</div>
@@ -327,7 +292,7 @@
     <div id="soil-result"></div>
   </div>
 
-  <!-- ══ AGRICULTURE NEWS ═════════════════════════════════════════ -->
+  <!-- AGRICULTURE NEWS -->
   <div class="page" id="page-news">
     <div class="card">
       <div class="card-title" style="color:var(--blue)">📰 Agriculture News</div>
@@ -358,22 +323,16 @@
     <div id="news-result"></div>
   </div>
 
-  <!-- ══ FARMER CHAT ══════════════════════════════════════════════ -->
+  <!-- FARMER CHAT -->
   <div class="page" id="page-chat">
     <div class="card" style="padding-bottom:14px">
       <div class="card-title" style="color:var(--green)">🤝 Farmer Community Chat</div>
-
       <div class="online-count"><div class="online-dot"></div><span id="onlineCount">247 farmers online</span></div>
-
       <div style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:6px">Trending Topics:</div>
       <div class="chat-topics" id="chatTopics"></div>
-
       <div class="chat-area" id="chatArea"></div>
-
       <div class="two-col" style="margin-bottom:8px">
-        <div class="field" style="margin:0">
-          <input id="chatName" placeholder="Your name" value="Farmer"/>
-        </div>
+        <div class="field" style="margin:0"><input id="chatName" placeholder="Your name" value="Farmer"/></div>
         <div class="field" style="margin:0">
           <select id="chatState">
             <option value="Punjab">Punjab</option><option value="Haryana">Haryana</option>
@@ -397,23 +356,46 @@
 <div id="toast" class="toast hidden"></div>
 
 <script>
-// ── GLOBALS ──────────────────────────────────────────────────────
+const BACKEND = "https://annadatahub-production-a9db.up.railway.app";
+
 const LANG_NAMES = {
   en:"English",hi:"Hindi",bn:"Bengali",te:"Telugu",
   mr:"Marathi",ta:"Tamil",gu:"Gujarati",kn:"Kannada",
   ml:"Malayalam",pa:"Punjabi",ur:"Urdu"
 };
+
 let currentLang = "en";
 let soilImageBase64 = null;
 let isListening = false;
 let recognition = null;
+
+// ── FIX: Stop speech and voice when leaving page ──────────────────
+window.addEventListener("beforeunload", () => {
+  stopListening();
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+});
+
+window.addEventListener("pagehide", () => {
+  stopListening();
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+});
+
+// ── FIX: Stop speech when switching tabs ─────────────────────────
+function showTab(tab) {
+  stopListening();
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
+}
 
 const QUICK_QUESTIONS = {
   en:["When to irrigate wheat?","Best fertilizer for rice?","How to control aphids?","What is MSP today?","Rain coming this week?"],
   hi:["गेहूं में पानी कब दें?","धान के लिए सबसे अच्छी खाद?","माहू कैसे भगाएं?","आज MSP क्या है?","इस हफ्ते बारिश आएगी?"],
   mr:["गव्हाला पाणी केव्हा द्यावे?","भाताचे सर्वोत्तम खत?","मावा कसा घालवायचा?","आजचा MSP काय?","या आठवड्यात पाऊस?"],
   ta:["கோதுமைக்கு தண்ணீர் எப்போது?","நெல்லுக்கு சிறந்த உரம்?","அசுவினி எப்படி கட்டுப்படுத்துவது?","இன்று MSP என்ன?","இந்த வாரம் மழை வருமா?"],
-  gu:["ઘઉંને ક્યારે પાણી આપવું?","ચોખા માટે શ્રેષ્ઠ ખાતર?","​​માહૂ કેવી રીતે ભગાડવો?","આજે MSP શું છે?","આ અઠવાડિયે વરસાદ?"],
+  gu:["ઘઉંને ક્યારે પાણી આપવું?","ચોખા માટે શ્રેષ્ઠ ખાતર?","માહૂ કેવી રીતે ભગાડવો?","આજે MSP શું છે?","આ અઠવાડિયે વરસાદ?"],
   pa:["ਕਣਕ ਨੂੰ ਪਾਣੀ ਕਦੋਂ ਦੇਣਾ?","ਝੋਨੇ ਲਈ ਵਧੀਆ ਖਾਦ?","ਤੇਲਾ ਕਿਵੇਂ ਭਜਾਓ?","ਅੱਜ MSP ਕੀ ਹੈ?","ਇਸ ਹਫ਼ਤੇ ਮੀਂਹ?"]
 };
 
@@ -424,19 +406,12 @@ const DEMO_CHATS = [
   {name:"Sunita Devi",state:"UP",msg:"Aphids attack on my mustard crop. Used neem oil spray — very effective! Try it.",time:"8 min ago",color:"#7c3aed"},
   {name:"Mohan Patel",state:"Gujarat",msg:"Got PM-KISAN 17th installment today ₹2000. Check your account!",time:"15 min ago",color:"#0369a1"},
   {name:"Kavya Reddy",state:"AP",msg:"Rain forecast for next 3 days in Kurnool. Don't spray pesticides today.",time:"22 min ago",color:"#92400e"},
-  {name:"Gurpreet",state:"Punjab",msg:"AgriScan diagnosed my tomato as early blight. Saved my crop! Good app 👍",time:"31 min ago",color:"#dc2626"},
+  {name:"Gurpreet",state:"Punjab",msg:"AnnadataHub diagnosed my tomato as early blight. Saved my crop! Good app 👍",time:"31 min ago",color:"#dc2626"},
 ];
 
 function setLang(l) {
   currentLang = l;
   renderQuickQuestions();
-}
-
-function showTab(tab) {
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById("page-"+tab).classList.add("active");
-  document.getElementById("tab-"+tab).classList.add("active");
 }
 
 function showToast(msg,type="success") {
@@ -445,24 +420,25 @@ function showToast(msg,type="success") {
   setTimeout(()=>t.classList.add("hidden"),3000);
 }
 
-async function callClaude(system,user,imageB64=null) {
+// ── FIX: renamed from callClaude to callAI ──
+async function callAI(system, user, imageB64=null) {
   try {
     if (imageB64) {
-      const res = await fetch("https://annadatahub-production-a9db.up.railway.app/api/crop/scan", {
+      const res = await fetch(`${BACKEND}/api/crop/scan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image_base64: imageB64, language: typeof currentLang !== 'undefined' ? currentLang : "en" })
+        body: JSON.stringify({ image_base64: imageB64, language: currentLang })
       });
-      if (!res.ok) throw new Error("API error");
+      if (!res.ok) throw new Error("API error " + res.status);
       const data = await res.json();
       return data.result || "";
     }
-    const res = await fetch("https://annadatahub-production-a9db.up.railway.app/api/ai/ask", {
+    const res = await fetch(`${BACKEND}/api/ai/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: user, language: typeof currentLang !== 'undefined' ? currentLang : "en" })
+      body: JSON.stringify({ question: user, language: currentLang })
     });
-    if (!res.ok) throw new Error("API error");
+    if (!res.ok) throw new Error("API error " + res.status);
     const data = await res.json();
     return data.answer || "";
   } catch(e) {
@@ -470,22 +446,14 @@ async function callClaude(system,user,imageB64=null) {
   }
 }
 
-async function callClaudeJSON(system,user,imageB64=null) {
-  const text = await callClaude(system,user,imageB64);
-  const clean = text.replace(/```json|```/g,"").trim();
-  const match = clean.match(/\{[\s\S]*\}/);
-  if(!match) throw new Error("No JSON found");
-  return JSON.parse(match[0]);
-}
-
-async function callClaudeJSON(system,user,imageB64=null) {
-  const text = await callClaude(system,user,imageB64);
+async function callAIJSON(system, user, imageB64=null) {
+  const text = await callAI(system, user, imageB64);
   const match = text.replace(/```json|```/g,"").trim().match(/\{[\s\S]*\}/);
   if(!match) throw new Error("No JSON");
   return JSON.parse(match[0]);
 }
 
-// ── VOICE ASSISTANT ──────────────────────────────────────────────
+// ── VOICE ASSISTANT ──
 function renderQuickQuestions() {
   const qs = QUICK_QUESTIONS[currentLang] || QUICK_QUESTIONS.en;
   document.getElementById("quickQuestions").innerHTML = qs.map(q=>
@@ -509,7 +477,6 @@ function startListening() {
   recognition.lang = langMap[currentLang] || "hi-IN";
   recognition.continuous = false;
   recognition.interimResults = true;
-
   recognition.onstart = () => {
     isListening = true;
     document.getElementById("voiceCircle").classList.add("listening");
@@ -518,15 +485,11 @@ function startListening() {
     document.getElementById("voiceTranscript").style.display = "block";
     document.getElementById("voiceTranscript").textContent = "...";
   };
-
   recognition.onresult = (e) => {
     const transcript = Array.from(e.results).map(r=>r[0].transcript).join("");
     document.getElementById("voiceTranscript").textContent = "🎙️ " + transcript;
-    if(e.results[e.results.length-1].isFinal) {
-      askQuestion(transcript);
-    }
+    if(e.results[e.results.length-1].isFinal) askQuestion(transcript);
   };
-
   recognition.onerror = () => { stopListening(); showToast("Could not hear. Try again.","error"); };
   recognition.onend = () => stopListening();
   recognition.start();
@@ -534,10 +497,13 @@ function startListening() {
 
 function stopListening() {
   isListening = false;
-  if(recognition) recognition.stop();
-  document.getElementById("voiceCircle").classList.remove("listening");
-  document.getElementById("voiceIcon").textContent = "🎙️";
-  document.getElementById("voiceStatus").textContent = "Tap the mic to speak";
+  if(recognition) { try { recognition.stop(); } catch(e) {} recognition = null; }
+  const circle = document.getElementById("voiceCircle");
+  const icon = document.getElementById("voiceIcon");
+  const status = document.getElementById("voiceStatus");
+  if(circle) circle.classList.remove("listening");
+  if(icon) icon.textContent = "🎙️";
+  if(status) status.textContent = "Tap the mic to speak";
 }
 
 async function askTyped() {
@@ -555,15 +521,14 @@ async function askQuestion(question) {
   document.getElementById("voiceStatus").textContent = "⏳ Getting answer...";
 
   try {
-    const answer = await callClaude(
+    const answer = await callAI(
       `You are a helpful agricultural expert for Indian farmers. Respond ENTIRELY in ${lang}. Give practical, simple advice in 3-4 sentences. Be specific with quantities, prices in rupees, and local context.`,
       `Farmer question: ${question}`
     );
     document.getElementById("answerText").textContent = answer;
     document.getElementById("voiceStatus").textContent = "✅ Answer ready";
-
-    // Text to speech
     if('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
       const utt = new SpeechSynthesisUtterance(answer);
       const langMap = {en:"en-IN",hi:"hi-IN",bn:"bn-IN",te:"te-IN",mr:"mr-IN",ta:"ta-IN"};
       utt.lang = langMap[currentLang] || "hi-IN";
@@ -572,10 +537,11 @@ async function askQuestion(question) {
     }
   } catch(e) {
     document.getElementById("answerText").textContent = "Sorry, could not get answer. Please try again.";
+    document.getElementById("voiceStatus").textContent = "❌ Error. Try again.";
   }
 }
 
-// ── PROFIT CALCULATOR ─────────────────────────────────────────────
+// ── PROFIT CALCULATOR ──
 async function calcProfit() {
   const crop = document.getElementById("profCrop").value;
   const land = parseFloat(document.getElementById("profLand").value)||2;
@@ -588,66 +554,43 @@ async function calcProfit() {
   const price = parseFloat(document.getElementById("profPrice").value)||0;
   const yieldQ = parseFloat(document.getElementById("profYield").value)||0;
   const lang = LANG_NAMES[currentLang]||"English";
-
   const totalExp = seeds+fert+pest+labour+irr+other;
   const totalInc = price * yieldQ;
   const netProfit = totalInc - totalExp;
   const profitPerAcre = netProfit / land;
   const isProfit = netProfit >= 0;
-
   const result = document.getElementById("profit-result");
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Calculating...</p></div>`;
 
   try {
-    const advice = await callClaudeJSON(
+    const advice = await callAIJSON(
       `You are an agricultural economist. Respond in ${lang}. Return ONLY valid JSON.`,
-      `Farmer grew ${crop} on ${land} acres.
-      Expenses: Seeds=₹${seeds}, Fertilizer=₹${fert}, Pesticide=₹${pest}, Labour=₹${labour}, Irrigation=₹${irr}, Other=₹${other}.
-      Income: Sold at ₹${price}/quintal, yield=${yieldQ} quintals.
-      Net=${isProfit?"Profit":"Loss"} of ₹${Math.abs(netProfit)}.
-      Return JSON: {
-        "verdict": "one line verdict",
-        "comparison": "how does this compare to average farmer for this crop",
-        "cost_per_quintal": number,
-        "roi_percent": number,
-        "top_cost": "which expense is highest and if it can be reduced",
-        "tips": ["tip to increase profit next season","tip2","tip3"],
-        "next_season": "what to do differently next season"
-      }`
+      `Farmer grew ${crop} on ${land} acres. Expenses: Seeds=₹${seeds}, Fertilizer=₹${fert}, Pesticide=₹${pest}, Labour=₹${labour}, Irrigation=₹${irr}, Other=₹${other}. Income: Sold at ₹${price}/quintal, yield=${yieldQ} quintals. Net=${isProfit?"Profit":"Loss"} of ₹${Math.abs(netProfit)}.
+      Return JSON: {"verdict":"one line verdict","comparison":"how this compares to average farmer","cost_per_quintal":number,"roi_percent":number,"top_cost":"highest expense analysis","tips":["tip1","tip2","tip3"],"next_season":"what to do differently"}`
     );
 
     result.innerHTML = `
       <div class="profit-result ${isProfit?'profit':'loss'}">
         <div class="profit-amount ${isProfit?'green':'red'}">${isProfit?'+':'-'}₹${Math.abs(netProfit).toLocaleString('en-IN')}</div>
         <div class="profit-label">${isProfit?'🎉 Profit!':'😔 Loss'} on ${land} acres of ${crop}</div>
-        <div class="profit-per-acre">₹${Math.abs(profitPerAcre).toFixed(0).toLocaleString('en-IN')} per acre</div>
+        <div class="profit-per-acre">₹${Math.abs(profitPerAcre).toFixed(0)} per acre</div>
       </div>
-
       <div class="card">
         <div class="card-title" style="color:var(--green)">📊 Breakdown</div>
         <div class="breakdown-row"><span class="breakdown-label">Total Income</span><span class="breakdown-value" style="color:#16a34a">+₹${totalInc.toLocaleString('en-IN')}</span></div>
         <div class="breakdown-row"><span class="breakdown-label">Total Expenses</span><span class="breakdown-value" style="color:var(--red)">-₹${totalExp.toLocaleString('en-IN')}</span></div>
-        <div class="breakdown-row"><span class="breakdown-label">Cost per Quintal</span><span class="breakdown-value">₹${advice.cost_per_quintal?.toFixed(0)}</span></div>
-        <div class="breakdown-row"><span class="breakdown-label">Return on Investment</span><span class="breakdown-value ${isProfit?'':''}">  ${advice.roi_percent?.toFixed(1)}%</span></div>
-        <div class="breakdown-row" style="border:none"><span class="breakdown-label" style="font-style:italic">${advice.comparison}</span></div>
+        <div class="breakdown-row"><span class="breakdown-label">Cost per Quintal</span><span class="breakdown-value">₹${advice.cost_per_quintal?.toFixed(0)||'N/A'}</span></div>
+        <div class="breakdown-row"><span class="breakdown-label">Return on Investment</span><span class="breakdown-value">${advice.roi_percent?.toFixed(1)||'N/A'}%</span></div>
+        <div class="breakdown-row" style="border:none"><span class="breakdown-label" style="font-style:italic">${advice.comparison||''}</span></div>
       </div>
-
-      <div class="tip-box">
-        <strong>📌 ${advice.verdict}</strong><br/>
-        <strong>💡 Biggest Cost:</strong> ${advice.top_cost}
-      </div>
-
+      <div class="tip-box"><strong>📌 ${advice.verdict||''}</strong><br/><strong>💡 Biggest Cost:</strong> ${advice.top_cost||''}</div>
       <div class="card">
         <div class="card-title" style="color:var(--green)">🚀 How to Earn More Next Season</div>
-        ${advice.tips.map(t=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.86rem">→ ${t}</div>`).join("")}
-        <div style="margin-top:10px;background:var(--green-light);border-radius:8px;padding:10px;font-size:0.84rem">
-          🌱 <strong>Next Season Plan:</strong> ${advice.next_season}
-        </div>
+        ${(advice.tips||[]).map(t=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:0.86rem">→ ${t}</div>`).join("")}
+        <div style="margin-top:10px;background:var(--green-light);border-radius:8px;padding:10px;font-size:0.84rem">🌱 <strong>Next Season Plan:</strong> ${advice.next_season||''}</div>
       </div>
-      <div class="powered">✨ Powered by Claude AI</div>
-    `;
+      <div class="powered">🌾 Powered by AnnadataHub AI</div>`;
   } catch(e) {
-    // Show basic result without AI
     result.innerHTML = `
       <div class="profit-result ${isProfit?'profit':'loss'}">
         <div class="profit-amount ${isProfit?'green':'red'}">${isProfit?'+':'-'}₹${Math.abs(netProfit).toLocaleString('en-IN')}</div>
@@ -660,7 +603,7 @@ async function calcProfit() {
   }
 }
 
-// ── SOIL CHECKER ─────────────────────────────────────────────────
+// ── SOIL CHECKER ──
 function handleSoilPhoto(e) {
   const file = e.target.files?.[0];
   if(!file) return;
@@ -670,13 +613,11 @@ function handleSoilPhoto(e) {
     soilImageBase64 = full.split(",")[1];
     const zone = document.getElementById("soilZone");
     document.getElementById("soilPlaceholder").style.display = "none";
-    // Remove old img if any
     const old = zone.querySelector("img");
     if(old) old.remove();
     const img = document.createElement("img");
     img.src = full;
     zone.appendChild(img);
-    // Add clear btn
     if(!zone.querySelector(".soil-clear")) {
       const clr = document.createElement("button");
       clr.className = "soil-clear"; clr.textContent = "✕";
@@ -703,89 +644,45 @@ async function checkSoil() {
   const lang = LANG_NAMES[currentLang]||"English";
   const btn = document.getElementById("soil-btn");
   const result = document.getElementById("soil-result");
-
   btn.disabled = true; btn.textContent = "⏳ Analysing soil...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Analysing soil health...</p></div>`;
 
   try {
-    const prompt = `Analyse this soil ${soilImageBase64 ? "photo" : "based on given context"} for growing ${crop} in ${state}, India.
-    Return ONLY valid JSON:
-    {
-      "overall_health": number (0-100),
-      "soil_type": "identified soil type",
-      "color_analysis": "what soil color indicates",
-      "nutrients": [
-        {"name":"Nitrogen (N)","level":"High/Medium/Low","score":number,"recommendation":"what to do"},
-        {"name":"Phosphorus (P)","level":"High/Medium/Low","score":number,"recommendation":"what to do"},
-        {"name":"Potassium (K)","level":"High/Medium/Low","score":number,"recommendation":"what to do"},
-        {"name":"Organic Matter","level":"High/Medium/Low","score":number,"recommendation":"what to do"}
-      ],
-      "ph_level": "estimated pH range",
-      "suitable_for_crop": true/false,
-      "if_not_suitable": "what to do to make it suitable",
-      "immediate_actions": ["action1","action2","action3"],
-      "estimated_cost_to_improve": "₹X,XXX per acre",
-      "yield_potential": "High/Medium/Low with explanation"
-    }`;
-
-    const data = await callClaudeJSON(
-      `You are an expert soil scientist for Indian agriculture. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.`,
-      prompt, soilImageBase64
-    );
-
+    const prompt = `Analyse this soil ${soilImageBase64?"photo":"based on given context"} for growing ${crop} in ${state}, India. Return ONLY valid JSON: {"overall_health":number,"soil_type":"type","color_analysis":"what color indicates","nutrients":[{"name":"Nitrogen (N)","level":"High/Medium/Low","score":number,"recommendation":"what to do"},{"name":"Phosphorus (P)","level":"High/Medium/Low","score":number,"recommendation":"what to do"},{"name":"Potassium (K)","level":"High/Medium/Low","score":number,"recommendation":"what to do"},{"name":"Organic Matter","level":"High/Medium/Low","score":number,"recommendation":"what to do"}],"ph_level":"range","suitable_for_crop":true,"if_not_suitable":"steps","immediate_actions":["action1","action2","action3"],"estimated_cost_to_improve":"₹X,XXX per acre","yield_potential":"High/Medium/Low"}`;
+    const data = await callAIJSON(`You are an expert soil scientist for Indian agriculture. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.`, prompt, soilImageBase64);
     const healthColor = data.overall_health >= 70 ? "#16a34a" : data.overall_health >= 40 ? "#f5a623" : "#dc2626";
     const levelColor = l => l==="High"?"#16a34a":l==="Medium"?"#f5a623":"#dc2626";
 
     result.innerHTML = `
       <div class="card">
         <div class="card-title" style="color:var(--brown)">🌍 Soil Health Report</div>
-        <div class="ai-tag">✨ Claude AI Analysis</div>
+        <div class="ai-tag">🌾 AnnadataHub AI Analysis</div>
         <div style="text-align:center;margin-bottom:16px">
           <div style="font-family:'Baloo 2',cursive;font-size:3rem;font-weight:800;color:${healthColor}">${data.overall_health}</div>
           <div style="font-size:0.82rem;color:var(--muted)">Overall Health Score / 100</div>
           <div class="health-bar" style="margin:8px auto;max-width:200px"><div class="health-fill" style="width:${data.overall_health}%;background:${healthColor}"></div></div>
         </div>
-
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-          <div style="background:var(--brown-light);border-radius:10px;padding:10px">
-            <div style="font-size:0.72rem;color:var(--muted);font-weight:600">Soil Type</div>
-            <div style="font-weight:700;font-size:0.9rem">${data.soil_type}</div>
-          </div>
-          <div style="background:var(--brown-light);border-radius:10px;padding:10px">
-            <div style="font-size:0.72rem;color:var(--muted);font-weight:600">pH Level</div>
-            <div style="font-weight:700;font-size:0.9rem">${data.ph_level}</div>
-          </div>
+          <div style="background:var(--brown-light);border-radius:10px;padding:10px"><div style="font-size:0.72rem;color:var(--muted);font-weight:600">Soil Type</div><div style="font-weight:700;font-size:0.9rem">${data.soil_type}</div></div>
+          <div style="background:var(--brown-light);border-radius:10px;padding:10px"><div style="font-size:0.72rem;color:var(--muted);font-weight:600">pH Level</div><div style="font-weight:700;font-size:0.9rem">${data.ph_level}</div></div>
         </div>
-
         <div style="font-size:0.82rem;color:#374151;font-style:italic;margin-bottom:12px">📍 ${data.color_analysis}</div>
-
         <div style="font-weight:700;font-size:0.82rem;color:var(--muted);margin-bottom:8px;text-transform:uppercase">Nutrient Levels</div>
         <div class="nutrient-grid">
-          ${data.nutrients.map(n=>`
-            <div class="nutrient-card">
-              <div class="nutrient-name">${n.name}</div>
-              <div class="nutrient-level" style="color:${levelColor(n.level)}">${n.level}</div>
-              <div class="health-bar"><div class="health-fill" style="width:${n.score}%;background:${levelColor(n.level)}"></div></div>
-              <div style="font-size:0.72rem;color:var(--muted);margin-top:4px">${n.recommendation}</div>
-            </div>
-          `).join("")}
+          ${(data.nutrients||[]).map(n=>`<div class="nutrient-card"><div class="nutrient-name">${n.name}</div><div class="nutrient-level" style="color:${levelColor(n.level)}">${n.level}</div><div class="health-bar"><div class="health-fill" style="width:${n.score}%;background:${levelColor(n.level)}"></div></div><div style="font-size:0.72rem;color:var(--muted);margin-top:4px">${n.recommendation}</div></div>`).join("")}
         </div>
       </div>
-
       <div class="card">
-        <div class="card-title" style="color:${data.suitable_for_crop?'#16a34a':'var(--red)'}">
-          ${data.suitable_for_crop?'✅ Good for '+crop:'⚠️ Needs Improvement for '+crop}
-        </div>
+        <div class="card-title" style="color:${data.suitable_for_crop?'#16a34a':'var(--red)'}">${data.suitable_for_crop?'✅ Good for '+crop:'⚠️ Needs Improvement for '+crop}</div>
         ${!data.suitable_for_crop?`<div style="font-size:0.86rem;margin-bottom:12px;line-height:1.5">${data.if_not_suitable}</div>`:""}
         <div style="font-size:0.82rem;font-weight:700;color:var(--muted);margin-bottom:8px">IMMEDIATE ACTIONS:</div>
-        ${data.immediate_actions.map(a=>`<div style="padding:7px 0;border-bottom:1px solid var(--border);font-size:0.85rem">→ ${a}</div>`).join("")}
+        ${(data.immediate_actions||[]).map(a=>`<div style="padding:7px 0;border-bottom:1px solid var(--border);font-size:0.85rem">→ ${a}</div>`).join("")}
         <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:0.85rem">
           <span>💰 Cost to improve: <strong>${data.estimated_cost_to_improve}</strong></span>
-          <span>📈 Yield: <strong>${data.yield_potential.split(" ")[0]}</strong></span>
+          <span>📈 Yield: <strong>${(data.yield_potential||'').split(" ")[0]}</strong></span>
         </div>
       </div>
-      <div class="powered">✨ Powered by Claude AI · Based on ICAR standards</div>
-    `;
+      <div class="powered">🌾 Powered by AnnadataHub AI · Based on ICAR standards</div>`;
     showToast("Soil analysis complete! ✅");
   } catch(e) {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Analysis failed. Please try again.</p></div>`;
@@ -794,64 +691,41 @@ async function checkSoil() {
   btn.disabled = false; btn.textContent = "🔬 Analyse My Soil";
 }
 
-// ── AGRICULTURE NEWS ─────────────────────────────────────────────
+// ── AGRICULTURE NEWS ──
 async function getNews() {
   const state = document.getElementById("newsState").value;
   const topic = document.getElementById("newsTopic").value;
   const lang = LANG_NAMES[currentLang]||"English";
   const btn = document.getElementById("news-btn");
   const result = document.getElementById("news-result");
-
   btn.disabled = true; btn.textContent = "⏳ Getting news...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching latest agricultural news...</p></div>`;
 
   try {
-    const data = await callClaudeJSON(
+    const data = await callAIJSON(
       `You are an agricultural news editor for India. Respond ENTIRELY in ${lang}. Return ONLY valid JSON. Generate realistic, current, helpful news.`,
-      `Generate 5 important agricultural news items for ${state}, India. Topic focus: ${topic}.
-      Today is March 2026. Include MSP updates, scheme news, weather, pest alerts as relevant.
-      Return JSON:
-      {"news": [
-        {
-          "category": "price/scheme/weather/alert/general",
-          "title": "news headline",
-          "summary": "2 sentence summary",
-          "detail": "full 4-5 sentence news story with specific details, numbers, dates",
-          "impact": "how this affects farmers directly",
-          "action": "what farmers should do now",
-          "time_ago": "X hours/days ago"
-        }
-      ]}`
+      `Generate 5 important agricultural news items for ${state}, India. Topic focus: ${topic}. Today is April 2026. Include MSP updates, scheme news, weather, pest alerts as relevant. Return JSON: {"news":[{"category":"price/scheme/weather/alert/general","title":"headline","summary":"2 sentence summary","detail":"4-5 sentence story with specific details","impact":"how this affects farmers","action":"what farmers should do now","time_ago":"X hours/days ago"}]}`
     );
 
     const catClass = c => ({price:"cat-price",scheme:"cat-scheme",weather:"cat-weather",alert:"cat-alert",general:"cat-general"}[c]||"cat-general");
     const catLabel = c => ({price:"💰 MSP/Price",scheme:"🏛️ Scheme",weather:"🌦️ Weather",alert:"🚨 Alert",general:"🌾 General"}[c]||"🌾 News");
 
-    result.innerHTML = data.news.map((n,i) => `
+    result.innerHTML = (data.news||[]).map((n,i) => `
       <div class="news-card">
         <div class="news-header">
           <div class="news-category ${catClass(n.category)}">${catLabel(n.category)}</div>
           <div class="news-title">${n.title}</div>
           <div class="news-summary">${n.summary}</div>
-          <div class="news-meta">
-            <span>🕐 ${n.time_ago}</span>
-            <span>📍 ${state}</span>
-          </div>
+          <div class="news-meta"><span>🕐 ${n.time_ago}</span><span>📍 ${state}</span></div>
         </div>
         <button class="news-expand" onclick="toggleNews(${i})">Read more ▼</button>
         <div class="news-detail" id="news-${i}">
           <p>${n.detail}</p>
-          <div style="margin-top:10px;background:var(--green-light);border-radius:8px;padding:10px">
-            <div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">📌 Impact on You:</div>
-            <div style="font-size:0.83rem">${n.impact}</div>
-          </div>
-          <div style="margin-top:8px;background:var(--gold-light);border-radius:8px;padding:10px">
-            <div style="font-weight:700;font-size:0.82rem;color:var(--brown);margin-bottom:4px">✅ What to Do:</div>
-            <div style="font-size:0.83rem">${n.action}</div>
-          </div>
+          <div style="margin-top:10px;background:var(--green-light);border-radius:8px;padding:10px"><div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">📌 Impact on You:</div><div style="font-size:0.83rem">${n.impact}</div></div>
+          <div style="margin-top:8px;background:var(--gold-light);border-radius:8px;padding:10px"><div style="font-weight:700;font-size:0.82rem;color:var(--brown);margin-bottom:4px">✅ What to Do:</div><div style="font-size:0.83rem">${n.action}</div></div>
         </div>
       </div>
-    `).join("") + `<div class="powered">✨ Powered by Claude AI · Verify important news at official sources</div>`;
+    `).join("") + `<div class="powered">🌾 Powered by AnnadataHub AI · Verify important news at official sources</div>`;
 
     showToast("News loaded! ✅");
   } catch(e) {
@@ -862,25 +736,17 @@ async function getNews() {
 }
 
 function toggleNews(i) {
-  const el = document.getElementById("news-"+i);
-  el.classList.toggle("open");
+  document.getElementById("news-"+i).classList.toggle("open");
 }
 
-// ── FARMER CHAT ───────────────────────────────────────────────────
+// ── FARMER CHAT ──
 function initChat() {
-  // Render topics
   document.getElementById("chatTopics").innerHTML = CHAT_TOPICS.map(t=>
     `<div class="chat-topic" onclick="sendChatMsg('${t}')">${t}</div>`
   ).join("");
-
-  // Render demo messages
   const area = document.getElementById("chatArea");
-  DEMO_CHATS.forEach(m => {
-    area.innerHTML += chatBubble(m.name, m.state, m.msg, m.time, m.color, false);
-  });
+  DEMO_CHATS.forEach(m => { area.innerHTML += chatBubble(m.name, m.state, m.msg, m.time, m.color, false); });
   area.scrollTop = area.scrollHeight;
-
-  // Random online count
   setInterval(() => {
     const count = 240 + Math.floor(Math.random()*20);
     document.getElementById("onlineCount").textContent = count + " farmers online";
@@ -889,15 +755,7 @@ function initChat() {
 
 function chatBubble(name, state, msg, time, color, isOwn) {
   const initials = name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2);
-  return `
-    <div class="chat-msg ${isOwn?'own':''}">
-      <div class="chat-avatar" style="background:${color}">${initials}</div>
-      <div>
-        <div class="chat-name">${name} · ${state}</div>
-        <div class="chat-bubble">${msg}</div>
-        <div class="chat-time">${time}</div>
-      </div>
-    </div>`;
+  return `<div class="chat-msg ${isOwn?'own':''}"><div class="chat-avatar" style="background:${color}">${initials}</div><div><div class="chat-name">${name} · ${state}</div><div class="chat-bubble">${msg}</div><div class="chat-time">${time}</div></div></div>`;
 }
 
 function sendChatMsg(msg) {
@@ -912,37 +770,29 @@ async function sendChat() {
   const name = document.getElementById("chatName").value || "Farmer";
   const state = document.getElementById("chatState").value;
   const area = document.getElementById("chatArea");
-
-  // Add own message
   area.innerHTML += chatBubble(name, state, msg, "Just now", "#1a5c2e", true);
   input.value = "";
   area.scrollTop = area.scrollHeight;
 
-  // AI response as community member
   try {
     const lang = LANG_NAMES[currentLang]||"English";
-    const response = await callClaude(
-      `You are a helpful Indian farmer in a community chat. Respond in ${lang}. Give a short, practical, friendly response in 1-2 sentences. Sign off with a farmer name and state.`,
+    const response = await callAI(
+      `You are a helpful Indian farmer in a community chat. Respond in ${lang}. Give a short, practical, friendly response in 1-2 sentences.`,
       `A farmer named ${name} from ${state} asked: "${msg}". Reply as another farmer with practical experience.`
     );
-
-    // Extract or generate farmer name
     const farmerNames = ["Ramesh Yadav · UP","Kiran Patil · Maharashtra","Baldev Singh · Punjab","Meena Devi · Bihar","Suresh Kumar · AP"];
     const randomFarmer = farmerNames[Math.floor(Math.random()*farmerNames.length)];
     const [fn, fs] = randomFarmer.split(" · ");
     const colors = ["#7c3aed","#0369a1","#92400e","#dc2626","#2d7a45"];
     const rc = colors[Math.floor(Math.random()*colors.length)];
-
     setTimeout(() => {
       area.innerHTML += chatBubble(fn, fs, response, "Just now", rc, false);
       area.scrollTop = area.scrollHeight;
     }, 1200);
-  } catch(e) {
-    // silent fail
-  }
+  } catch(e) { /* silent fail */ }
 }
 
-// ── INIT ─────────────────────────────────────────────────────────
+// ── INIT ──
 renderQuickQuestions();
 initChat();
 </script>
