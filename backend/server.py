@@ -356,9 +356,8 @@ async def ask_ai(query: AIQuery):
         "ml": "മലയാളത്തിൽ.", "ur": "اردو میں جواب۔", "en": "Reply in English."
     }
     lang = lang_map.get(query.language, "Reply in English.")
-    result = await call_ai(
-        query.question,
-        f"You are AnnadataHub AI, a farming assistant for Indian farmers. Give practical, actionable advice specific to India. {lang}"
+    system = query.system_prompt if query.system_prompt else f"You are AnnadataHub AI, a farming assistant for Indian farmers. Give practical, actionable advice specific to India. {lang}"
+result = await call_ai(query.question, system)
     )
     if not result:
         # FIX: language-aware fallback message
