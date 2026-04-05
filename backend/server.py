@@ -63,6 +63,7 @@ class CropScanRequest(BaseModel):
 class AIQuery(BaseModel):
     question: str
     language: Optional[str] = "en"
+    system_prompt: Optional[str] = None
 
 class FarmGramPost(BaseModel):
     content: str
