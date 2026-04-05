@@ -27,7 +27,6 @@
   .content{padding:14px;}
   .tip-card{background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;gap:10px;}
   .section-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--green);margin:16px 0 10px;display:flex;align-items:center;gap:6px;}
-  /* BIG BUTTONS */
   .big-btn{background:white;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text);}
   .big-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.1);}
   .big-btn.green{background:linear-gradient(135deg,var(--green),var(--green-mid));color:white;border:none;}
@@ -36,23 +35,19 @@
   .btn-desc{font-size:0.76rem;opacity:0.75;line-height:1.3;}
   .btn-arrow{margin-left:auto;font-size:1rem;opacity:0.5;flex-shrink:0;}
   .btn-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.65rem;font-weight:700;margin-top:4px;}
-  /* QUICK GRID */
   .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
   .quick-btn{background:white;border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text);display:block;}
   .quick-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1);}
   .quick-icon{font-size:1.8rem;margin-bottom:6px;}
   .quick-title{font-family:'Baloo 2',cursive;font-size:0.85rem;font-weight:700;margin-bottom:2px;}
   .quick-desc{font-size:0.68rem;color:var(--muted);line-height:1.3;}
-  /* EMERGENCY */
   .emergency-btn{background:#fff5f5;border:1px solid #fecaca;border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;color:var(--text);margin-bottom:10px;}
-  /* BOTTOM NAV */
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--border);padding:8px 0 10px;display:flex;justify-content:space-around;z-index:50;max-width:480px;margin:0 auto;}
   .nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:0.6rem;color:var(--muted);cursor:pointer;padding:4px 8px;font-weight:600;text-decoration:none;}
   .nav-item.active{color:var(--green);}
   .nav-icon{font-size:1.2rem;}
   .nav-scan{width:48px;height:48px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-top:-16px;box-shadow:0 4px 14px rgba(26,92,46,0.4);cursor:pointer;text-decoration:none;}
   .pb{height:75px;}
-  /* ONBOARDING */
   .onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
   .onboard-box{background:white;border-radius:20px;padding:28px;max-width:360px;width:100%;text-align:center;}
   .onboard-step{display:none;}
@@ -65,7 +60,6 @@
   .onboard-dots{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
   .dot.active{background:var(--green);}
-  /* HELP */
   .help-btn{position:fixed;bottom:80px;right:16px;width:50px;height:50px;background:var(--green);color:white;border-radius:50%;border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 16px rgba(26,92,46,0.4);z-index:90;display:flex;align-items:center;justify-content:center;}
   .help-modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
   .help-modal.show{display:flex;}
@@ -75,8 +69,28 @@
   .help-close{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;margin-top:6px;}
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.83rem;z-index:1000;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;text-align:center;}
   .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
   @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
   .hidden{display:none;}
+
+  /* ── AUTH MODAL ── */
+  .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .auth-overlay.hidden{display:none!important;}
+  .auth-box{background:white;border-radius:20px;padding:24px 20px;width:100%;max-width:380px;max-height:90vh;overflow-y:auto;position:relative;}
+  .auth-close{position:absolute;top:14px;right:14px;background:var(--bg);border:none;width:30px;height:30px;border-radius:50%;font-size:0.9rem;cursor:pointer;color:var(--muted);}
+  .auth-tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:18px;}
+  .auth-tab{flex:1;padding:8px;border:none;background:none;font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:700;color:var(--muted);cursor:pointer;border-radius:10px;transition:all 0.2s;}
+  .auth-tab.active{background:white;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+  .auth-field{margin-bottom:12px;}
+  .auth-field label{font-size:0.75rem;font-weight:600;color:var(--muted);margin-bottom:4px;display:block;}
+  .auth-field input,.auth-field select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.88rem;outline:none;transition:border 0.2s;}
+  .auth-field input:focus,.auth-field select:focus{border-color:var(--green);}
+  .auth-btn{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity 0.2s;}
+  .auth-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .auth-error{background:#fee2e2;color:#dc2626;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-bottom:10px;}
+  .auth-error.hidden{display:none;}
+  .auth-benefits{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+  .auth-benefit{font-size:0.72rem;color:var(--muted);background:var(--green-light);border-radius:8px;padding:6px 8px;}
 </style>
 </head>
 <body>
@@ -92,12 +106,89 @@
   </div>
 </div>
 
+<!-- AUTH MODAL -->
+<div class="auth-overlay hidden" id="authOverlay">
+  <div class="auth-box">
+    <button class="auth-close" onclick="hideLoginModal()">✕</button>
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="font-size:2.5rem">🌾</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--green)">AnnadataHub</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">India's Farmer App</div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Login</button>
+      <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginForm">
+      <div class="auth-field"><label>📧 Email</label><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/></div>
+      <div class="auth-field"><label>🔒 Password</label><input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password"/></div>
+      <div class="auth-error hidden" id="loginError"></div>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">Login to AnnadataHub</button>
+      <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">New farmer? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('signup')">Create free account</span></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="signupForm" class="hidden">
+      <div class="auth-field"><label>👤 Full Name</label><input type="text" id="signupName" placeholder="e.g. Gurnam Singh" autocomplete="name"/></div>
+      <div class="auth-field"><label>📧 Email</label><input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email"/></div>
+      <div class="auth-field"><label>📱 Phone (optional)</label><input type="tel" id="signupPhone" placeholder="9876543210" autocomplete="tel"/></div>
+      <div class="auth-field">
+        <label>📍 State</label>
+        <select id="signupState">
+          <option value="">Select your state</option>
+          <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+          <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+          <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+          <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
+          <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
+          <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
+          <option>Himachal Pradesh</option><option>Other</option>
+        </select>
+      </div>
+      <div class="auth-field"><label>🔒 Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password"/></div>
+      <div class="auth-error hidden" id="signupError"></div>
+      <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Free Account 🚀</button>
+      <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">Already have account? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('login')">Login</span></div>
+    </div>
+
+    <div class="auth-benefits">
+      <div class="auth-benefit">✅ Free crop disease scanner</div>
+      <div class="auth-benefit">✅ Save your farm history</div>
+      <div class="auth-benefit">✅ Post on FarmGram</div>
+      <div class="auth-benefit">✅ Get personalized advice</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE SHEET -->
+<div class="help-modal" id="profileModal">
+  <div class="help-sheet">
+    <div class="help-title">👤 My Profile</div>
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="width:64px;height:64px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 8px">🧑‍🌾</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700" id="profileName">Farmer</div>
+      <div style="font-size:0.78rem;color:var(--muted)" id="profileEmail"></div>
+      <div style="display:inline-block;padding:3px 12px;background:var(--green-light);color:var(--green);border-radius:20px;font-size:0.72rem;font-weight:700;margin-top:4px" id="profilePlan">FREE PLAN</div>
+    </div>
+    <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-around;text-align:center">
+      <div><div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green)" id="profileScans">0</div><div style="font-size:0.72rem;color:var(--muted)">Crop Scans</div></div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div><div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green)">Free</div><div style="font-size:0.72rem;color:var(--muted)">Plan</div></div>
+    </div>
+    <button class="help-close" style="background:var(--red);margin-bottom:8px" onclick="doLogout()">🚪 Logout</button>
+    <button class="help-close" onclick="document.getElementById('profileModal').classList.remove('show')">Close</button>
+  </div>
+</div>
+
 <!-- HEADER -->
 <div class="header">
   <div class="logo"><div class="logo-icon">🌾</div><div class="logo-name">Annadata<span>Hub</span></div></div>
   <div style="display:flex;align-items:center;gap:8px">
     <button class="login-btn" onclick="showLoginModal()" style="background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:6px 12px;font-family:'Baloo 2',cursive;font-size:0.8rem;font-weight:700;cursor:pointer">👤 Login</button>
-    <div class="user-btn" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;display:none;align-items:center;gap:6px;cursor:pointer">
+    <div class="user-btn" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;display:none;align-items:center;gap:6px;cursor:pointer" onclick="showProfile()">
+      <span style="font-size:1rem">🧑‍🌾</span>
       <span class="user-name" style="color:white;font-size:0.8rem;font-weight:600">Farmer</span>
     </div>
     <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:white;cursor:pointer" onclick="showHelp()">❓</div>
@@ -128,13 +219,11 @@
 
 <div class="content">
 
-  <!-- DAILY TIP -->
   <div class="tip-card">
     <div style="font-size:1.3rem">💡</div>
     <div><div style="font-weight:700;font-size:0.86rem;color:#92400e">Today's Tip</div><div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust this season. Spray Propiconazole immediately if found.</div></div>
   </div>
 
-  <!-- MOST IMPORTANT -->
   <div class="section-title">🚀 Most Important</div>
 
   <a class="big-btn green" href="farmer-tools.html">
@@ -167,7 +256,6 @@
     <div class="btn-arrow">→</div>
   </a>
 
-  <!-- FARMING TOOLS -->
   <div class="section-title">🌾 Farming Tools</div>
   <div class="quick-grid">
     <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">📅</div><div class="quick-title">Crop Calendar</div><div class="quick-desc">What to do today on your farm</div></a>
@@ -180,7 +268,6 @@
     <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🛡️</div><div class="quick-title">Crop Insurance</div><div class="quick-desc">PMFBY calculator</div></a>
   </div>
 
-  <!-- LEARN & CONNECT -->
   <div class="section-title">🎓 Learn & Connect</div>
   <div class="quick-grid">
     <a class="quick-btn" href="learn.html"><div class="quick-icon">🌱</div><div class="quick-title">New Techniques</div><div class="quick-desc">Hydroponics, mushroom & more</div></a>
@@ -189,16 +276,12 @@
     <a class="quick-btn" href="learn.html"><div class="quick-icon">🤖</div><div class="quick-title">Ask AI</div><div class="quick-desc">Get any farming answer</div></a>
   </div>
 
-  <!-- COMMUNITY -->
   <div class="section-title">👥 Community</div>
   <div class="quick-grid">
-    <a class="quick-btn" href="farmgram.html"><div class="quick-icon">📱</div><div class="quick-title">FarmGram</div><div class="quick-desc">Instagram for farmers</div></a>
+    <a class="quick-btn" href="farmgram.html"><div class="quick-icon">📱</div><div class="quick-title">FarmGram</div><div class="quick-desc">Connect with farmers</div></a>
     <a class="quick-btn" href="power-tools.html"><div class="quick-icon">💬</div><div class="quick-title">Farmer Chat</div><div class="quick-desc">Talk to farmers like you</div></a>
-    <a class="quick-btn" href="bizconnect.html"><div class="quick-icon">🚜</div><div class="quick-title">Equipment Rental</div><div class="quick-desc">Find tractors nearby</div></a>
-    <a class="quick-btn" href="bizconnect.html"><div class="quick-icon">🛒</div><div class="quick-title">Sell Produce</div><div class="quick-desc">Direct to buyers</div></a>
   </div>
 
-  <!-- NEWS -->
   <div class="section-title">📰 Information</div>
   <div class="quick-grid">
     <a class="quick-btn" href="power-tools.html"><div class="quick-icon">📰</div><div class="quick-title">Farm News</div><div class="quick-desc">Latest agri news today</div></a>
@@ -207,7 +290,6 @@
     <a class="quick-btn" href="learn.html"><div class="quick-icon">🎙️</div><div class="quick-title">Give Feedback</div><div class="quick-desc">Help us improve</div></a>
   </div>
 
-  <!-- EMERGENCY -->
   <div class="section-title">🚨 Emergency Help</div>
   <a class="emergency-btn" href="tel:18001801551">
     <div style="font-size:1.5rem">☎️</div>
@@ -227,7 +309,6 @@
   <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span>MSP</a>
 </div>
 
-<!-- HELP BUTTON -->
 <button class="help-btn" onclick="showHelp()">❓</button>
 
 <!-- HELP MODAL -->
@@ -245,49 +326,182 @@
 <div id="toast" class="toast hidden"></div>
 
 <script>
-const TIPS=["Check wheat for yellow rust — spray Propiconazole if found.","Best time to spray: early morning 6-9am or evening 4-7pm. Never in hot afternoon.","Check PM-KISAN status — visit Schemes section.","Water crops in the morning — plants absorb better. Evening watering causes fungal disease.","Apply potash fertilizer to flowering crops — improves fruit quality."];
-const hour=new Date().getHours();
-document.getElementById("greetTime").textContent=hour<12?"Good Morning ☀️":hour<17?"Good Afternoon 🌤️":"Good Evening 🌙";
-document.getElementById("tipText").textContent=TIPS[new Date().getDay()%TIPS.length];
+const API = "https://annadatahub-production-a9db.up.railway.app";
 
-function setLang(btn,greeting,sub){
-  document.querySelectorAll(".lang-btn").forEach(b=>b.classList.remove("active"));
+// ── Token helpers ──────────────────────────────────────────────
+function saveToken(token, user) {
+  try { localStorage.setItem("auth_token", token); localStorage.setItem("auth_user", JSON.stringify(user)); } catch(e) {}
+}
+function getToken() { try { return localStorage.getItem("auth_token"); } catch(e) { return null; } }
+function getUser()  { try { return JSON.parse(localStorage.getItem("auth_user")); } catch(e) { return null; } }
+function clearToken() { try { localStorage.removeItem("auth_token"); localStorage.removeItem("auth_user"); } catch(e) {} }
+
+// ── Auth modal ─────────────────────────────────────────────────
+function showLoginModal() {
+  if (getToken()) { showProfile(); return; }
+  document.getElementById("authOverlay").classList.remove("hidden");
+}
+function hideLoginModal() {
+  document.getElementById("authOverlay").classList.add("hidden");
+}
+function switchAuthTab(tab) {
+  document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
+  document.getElementById("signupForm").classList.toggle("hidden", tab !== "signup");
+  document.getElementById("loginTab").classList.toggle("active", tab === "login");
+  document.getElementById("signupTab").classList.toggle("active", tab === "signup");
+  document.getElementById("loginError").classList.add("hidden");
+  document.getElementById("signupError").classList.add("hidden");
+}
+function showAuthError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.remove("hidden");
+}
+
+// ── Header UI ──────────────────────────────────────────────────
+function updateHeaderUI(user) {
+  const loginBtn = document.querySelector(".login-btn");
+  const userBtn  = document.querySelector(".user-btn");
+  const userName = document.querySelector(".user-name");
+  if (user) {
+    if (loginBtn) loginBtn.style.display = "none";
+    if (userBtn)  userBtn.style.display = "flex";
+    if (userName) userName.textContent = user.full_name.split(" ")[0];
+  } else {
+    if (loginBtn) loginBtn.style.display = "";
+    if (userBtn)  userBtn.style.display = "none";
+  }
+}
+
+function showProfile() {
+  const user = getUser();
+  if (!user) return;
+  document.getElementById("profileName").textContent  = user.full_name;
+  document.getElementById("profileEmail").textContent = user.email;
+  document.getElementById("profilePlan").textContent  = (user.plan || "free").toUpperCase() + " PLAN";
+  fetch(`${API}/api/user/profile`, { headers: { "Authorization": "Bearer " + getToken() } })
+    .then(r => r.json()).then(d => {
+      if (d.user) document.getElementById("profileScans").textContent = d.user.scan_count || 0;
+    }).catch(() => {});
+  document.getElementById("profileModal").classList.add("show");
+}
+
+// ── Login ──────────────────────────────────────────────────────
+async function doLogin() {
+  const email    = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  if (!email || !password) { showAuthError("loginError", "Please enter email and password."); return; }
+  const btn = document.getElementById("loginBtn");
+  btn.disabled = true; btn.textContent = "Logging in...";
+  try {
+    const res  = await fetch(`${API}/api/auth/login`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthError("loginError", data.detail || "Login failed. Check email/password."); return; }
+    saveToken(data.token, data.user);
+    updateHeaderUI(data.user);
+    hideLoginModal();
+    showToast("Welcome back, " + data.user.full_name.split(" ")[0] + "! 🙏", "success");
+  } catch(e) {
+    showAuthError("loginError", "Network error. Check your internet connection.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Login to AnnadataHub";
+  }
+}
+
+// ── Signup ─────────────────────────────────────────────────────
+async function doSignup() {
+  const full_name = document.getElementById("signupName").value.trim();
+  const email     = document.getElementById("signupEmail").value.trim();
+  const phone     = document.getElementById("signupPhone").value.trim();
+  const state     = document.getElementById("signupState").value;
+  const password  = document.getElementById("signupPassword").value;
+  if (!full_name) { showAuthError("signupError", "Please enter your name."); return; }
+  if (!email)     { showAuthError("signupError", "Please enter your email."); return; }
+  if (!password || password.length < 6) { showAuthError("signupError", "Password must be at least 6 characters."); return; }
+  const btn = document.getElementById("signupBtn");
+  btn.disabled = true; btn.textContent = "Creating account...";
+  try {
+    const res  = await fetch(`${API}/api/auth/register`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ full_name, email, password, phone, state })
+    });
+    const data = await res.json();
+    if (!res.ok) { showAuthError("signupError", data.detail || "Registration failed. Try again."); return; }
+    saveToken(data.token, data.user);
+    updateHeaderUI(data.user);
+    hideLoginModal();
+    showToast("Welcome to AnnadataHub, " + data.user.full_name.split(" ")[0] + "! 🎉", "success");
+  } catch(e) {
+    showAuthError("signupError", "Network error. Check your internet connection.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Create Free Account 🚀";
+  }
+}
+
+// ── Logout ─────────────────────────────────────────────────────
+function doLogout() {
+  clearToken(); updateHeaderUI(null);
+  document.getElementById("profileModal").classList.remove("show");
+  showToast("Logged out successfully.");
+}
+
+// ── Existing app functions ─────────────────────────────────────
+const TIPS = ["Check wheat for yellow rust — spray Propiconazole if found.",
+  "Best time to spray: early morning 6-9am or evening 4-7pm. Never in hot afternoon.",
+  "Check PM-KISAN status — visit Schemes section.",
+  "Water crops in the morning — plants absorb better. Evening watering causes fungal disease.",
+  "Apply potash fertilizer to flowering crops — improves fruit quality."];
+const hour = new Date().getHours();
+document.getElementById("greetTime").textContent = hour < 12 ? "Good Morning ☀️" : hour < 17 ? "Good Afternoon 🌤️" : "Good Evening 🌙";
+document.getElementById("tipText").textContent = TIPS[new Date().getDay() % TIPS.length];
+
+function setLang(btn, greeting, sub) {
+  document.querySelectorAll(".lang-btn").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
-  document.getElementById("greetText").textContent=greeting;
-  document.getElementById("greetSub").textContent=sub;
+  document.getElementById("greetText").textContent = greeting;
+  document.getElementById("greetSub").textContent = sub;
 }
 
-let currentStep=1;
-function nextStep(step){
-  document.getElementById("os"+currentStep).classList.remove("active");
-  document.getElementById("od"+currentStep).classList.remove("active");
-  currentStep=step;
-  document.getElementById("os"+step).classList.add("active");
-  document.getElementById("od"+step).classList.add("active");
+let currentStep = 1;
+function nextStep(step) {
+  document.getElementById("os" + currentStep).classList.remove("active");
+  document.getElementById("od" + currentStep).classList.remove("active");
+  currentStep = step;
+  document.getElementById("os" + step).classList.add("active");
+  document.getElementById("od" + step).classList.add("active");
 }
-function closeOnboarding(){
-  document.getElementById("onboarding").style.display="none";
-  try{localStorage.setItem("onboarded","1");}catch(e){}
+function closeOnboarding() {
+  document.getElementById("onboarding").style.display = "none";
+  try { localStorage.setItem("onboarded", "1"); } catch(e) {}
 }
-function showOnboarding(){
-  currentStep=1;
-  document.querySelectorAll(".onboard-step").forEach(s=>s.classList.remove("active"));
-  document.querySelectorAll(".dot").forEach(d=>d.classList.remove("active"));
+function showOnboarding() {
+  currentStep = 1;
+  document.querySelectorAll(".onboard-step").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".dot").forEach(d => d.classList.remove("active"));
   document.getElementById("os1").classList.add("active");
   document.getElementById("od1").classList.add("active");
-  document.getElementById("onboarding").style.display="flex";
+  document.getElementById("onboarding").style.display = "flex";
 }
-try{if(localStorage.getItem("onboarded"))document.getElementById("onboarding").style.display="none";}catch(e){}
+try { if (localStorage.getItem("onboarded")) document.getElementById("onboarding").style.display = "none"; } catch(e) {}
 
-function showHelp(){document.getElementById("helpModal").classList.add("show");}
-function closeHelp(){document.getElementById("helpModal").classList.remove("show");}
-document.getElementById("helpModal").addEventListener("click",e=>{if(e.target===document.getElementById("helpModal"))closeHelp();});
+function showHelp() { document.getElementById("helpModal").classList.add("show"); }
+function closeHelp() { document.getElementById("helpModal").classList.remove("show"); }
+document.getElementById("helpModal").addEventListener("click", e => { if (e.target === document.getElementById("helpModal")) closeHelp(); });
 
-function showToast(msg,type="success"){
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.className="toast "+type;t.classList.remove("hidden");
-  setTimeout(()=>t.classList.add("hidden"),2500);
+function showToast(msg, type = "") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast" + (type ? " " + type : "");
+  t.classList.remove("hidden");
+  setTimeout(() => t.classList.add("hidden"), 2500);
 }
+
+// ── Auto-login on page load ────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getUser();
+  if (user && getToken()) updateHeaderUI(user);
+});
 </script>
 </body>
 </html>
