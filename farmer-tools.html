@@ -16,70 +16,43 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Hind', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, var(--green), var(--green-mid));
-    padding: 16px 20px; display: flex; align-items: center;
-    justify-content: space-between; position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-  }
+  .header { background: linear-gradient(135deg, var(--green), var(--green-mid)); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
   .logo { display: flex; align-items: center; gap: 10px; }
   .logo-icon { width: 38px; height: 38px; background: var(--gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
   .logo-name { font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 800; color: white; }
   .logo-name span { color: var(--gold); }
   .lang-select { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 10px; border-radius: 8px; font-family: 'Hind', sans-serif; font-size: 0.8rem; cursor: pointer; }
   .lang-select option { background: var(--green); color: white; }
-
-  /* TABS */
   .tabs { display: flex; background: white; border-bottom: 2px solid var(--border); overflow-x: auto; }
   .tab { flex: 1; min-width: 100px; padding: 12px 8px; border: none; background: none; font-family: 'Hind', sans-serif; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .tab.active { color: var(--green); border-bottom-color: var(--green); }
   .tab span { font-size: 1.3rem; }
-
-  /* CONTENT */
   .content { max-width: 600px; margin: 0 auto; padding: 16px; }
   .page { display: none; }
   .page.active { display: block; }
-
-  /* CARDS */
   .card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
   .card-title { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-
-  /* FORM */
   .field { margin-bottom: 12px; }
   label { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block; }
   select, input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Hind', sans-serif; font-size: 0.88rem; background: white; color: var(--text); outline: none; transition: border 0.2s; }
   select:focus, input:focus { border-color: var(--green); }
-
   .btn { width: 100%; padding: 13px; border-radius: 12px; border: none; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-green { background: var(--green); color: white; box-shadow: 0 4px 14px rgba(26,92,46,0.25); }
   .btn-green:hover { background: var(--green-mid); }
   .btn-gold { background: var(--gold); color: var(--text); }
   .btn-sky { background: var(--sky); color: white; }
   .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-  /* LOADING */
   .loading { text-align: center; padding: 30px; }
   .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading p { color: var(--muted); font-size: 0.88rem; }
-
-  /* MANDI PRICES */
   .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
   .price-card { background: var(--green-light); border-radius: 12px; padding: 14px; text-align: center; border: 1px solid var(--border); }
   .price-mandi { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
   .price-amount { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; color: var(--green); }
   .price-unit { font-size: 0.72rem; color: var(--muted); }
-  .price-trend { font-size: 0.78rem; font-weight: 600; margin-top: 4px; }
-  .trend-up { color: #16a34a; }
-  .trend-down { color: var(--red); }
-  .trend-same { color: var(--muted); }
-
   .advice-box { background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; padding: 14px; margin-top: 12px; font-size: 0.88rem; line-height: 1.6; }
   .advice-box strong { color: var(--earth); }
-
-  /* WEATHER */
   .weather-hero { background: linear-gradient(135deg, #0369a1, #0ea5e9); border-radius: 16px; padding: 22px; color: white; margin-bottom: 14px; text-align: center; }
   .weather-temp { font-family: 'Baloo 2', cursive; font-size: 3.5rem; font-weight: 800; line-height: 1; }
   .weather-desc { font-size: 1rem; opacity: 0.9; margin: 6px 0; }
@@ -89,22 +62,6 @@
   .weather-stat .icon { font-size: 1.3rem; margin-bottom: 4px; }
   .weather-stat .val { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; }
   .weather-stat .lbl { font-size: 0.7rem; opacity: 0.8; }
-
-  .alert-box { border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
-  .alert-box.warning { background: var(--earth-light); border: 1px solid var(--gold); }
-  .alert-box.danger { background: var(--red-light); border: 1px solid var(--red); }
-  .alert-box.good { background: var(--green-light); border: 1px solid var(--border); }
-  .alert-icon { font-size: 1.5rem; flex-shrink: 0; }
-  .alert-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 3px; }
-  .alert-text { font-size: 0.83rem; line-height: 1.5; color: #374151; }
-
-  .forecast-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-top: 4px; }
-  .forecast-day { background: var(--sky-light); border-radius: 10px; padding: 10px 12px; text-align: center; flex-shrink: 0; min-width: 70px; }
-  .forecast-day .day { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
-  .forecast-day .icon { font-size: 1.4rem; margin: 4px 0; }
-  .forecast-day .temp { font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700; color: var(--sky); }
-
-  /* SCHEMES */
   .scheme-card { background: white; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   .scheme-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
   .scheme-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
@@ -120,33 +77,21 @@
   .scheme-body ul li { font-size: 0.84rem; line-height: 1.6; color: #374151; margin-bottom: 4px; }
   .eligible-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; }
   .eligible-yes { background: var(--green-light); color: var(--green); }
-  .eligible-check { background: var(--earth-light); color: var(--earth); }
   .apply-btn { display: inline-block; background: var(--green); color: white; padding: 8px 18px; border-radius: 8px; font-size: 0.84rem; font-weight: 600; text-decoration: none; margin-top: 8px; border: none; cursor: pointer; font-family: 'Hind', sans-serif; }
-
-  /* AI RESULT */
-  .ai-result { background: var(--green-light); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-top: 14px; }
-  .ai-label { font-size: 0.72rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .ai-text { font-size: 0.88rem; line-height: 1.7; color: var(--text); }
-  .ai-tip { background: white; border-radius: 8px; padding: 10px 12px; margin-top: 8px; font-size: 0.84rem; border-left: 3px solid var(--green); line-height: 1.5; }
-
-  /* EMPTY */
   .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
   .empty .icon { font-size: 3rem; margin-bottom: 12px; }
   .empty p { font-size: 0.88rem; }
-
-  /* TOAST */
   .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 100px; font-size: 0.84rem; z-index: 1000; animation: toastIn 0.3s ease; white-space: nowrap; }
   .toast.success { background: var(--green); }
   .toast.error { background: var(--red); }
   @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-
   .divider { height: 1px; background: var(--border); margin: 14px 0; }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .powered { text-align: center; font-size: 0.7rem; color: var(--muted); margin-top: 8px; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="logo">
     <div class="logo-icon">🌾</div>
@@ -167,32 +112,27 @@
   </select>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="showTab('mandi')" id="tab-mandi">
-    <span>📊</span>
-    <span id="t-mandi">Mandi</span>
+    <span>📊</span><span id="t-mandi">Mandi</span>
   </button>
   <button class="tab" onclick="showTab('weather')" id="tab-weather">
-    <span>🌦️</span>
-    <span id="t-weather">Weather</span>
+    <span>🌦️</span><span id="t-weather">Weather</span>
   </button>
   <button class="tab" onclick="showTab('schemes')" id="tab-schemes">
-    <span>🏛️</span>
-    <span id="t-schemes">Schemes</span>
+    <span>🏛️</span><span id="t-schemes">Schemes</span>
   </button>
 </div>
 
 <div class="content">
 
-  <!-- ══ MANDI PRICES ══════════════════════════════════════════ -->
+  <!-- MANDI PRICES -->
   <div class="page active" id="page-mandi">
-
     <div class="card">
       <div class="card-title" style="color:var(--green)">📊 <span id="mandi-title">Live Mandi Prices</span></div>
       <div class="two-col">
         <div class="field">
-          <label id="lbl-crop">Your Crop</label>
+          <label>Your Crop</label>
           <select id="mandiCrop">
             <option value="Wheat">Wheat (गेहूं)</option>
             <option value="Rice">Rice (धान)</option>
@@ -213,7 +153,7 @@
           </select>
         </div>
         <div class="field">
-          <label id="lbl-state">Your State</label>
+          <label>Your State</label>
           <select id="mandiState">
             <option value="Punjab">Punjab</option>
             <option value="Haryana">Haryana</option>
@@ -233,26 +173,22 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-green" onclick="getMandiPrices()" id="mandi-btn">
-        📊 Get Today's Prices
-      </button>
+      <button class="btn btn-green" onclick="getMandiPrices()" id="mandi-btn">📊 Get Today's Prices</button>
     </div>
-
     <div id="mandi-result"></div>
   </div>
 
-  <!-- ══ WEATHER ════════════════════════════════════════════════ -->
+  <!-- WEATHER -->
   <div class="page" id="page-weather">
-
     <div class="card">
       <div class="card-title" style="color:var(--sky)">🌦️ <span id="weather-title">Weather & Farm Alerts</span></div>
       <div class="two-col">
         <div class="field">
-          <label id="lbl-district">District / City</label>
-          <input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik" />
+          <label>District / City</label>
+          <input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik"/>
         </div>
         <div class="field">
-          <label id="lbl-wcrop">Your Crop</label>
+          <label>Your Crop</label>
           <select id="weatherCrop">
             <option value="Wheat">Wheat</option>
             <option value="Rice">Rice</option>
@@ -267,21 +203,17 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-sky" onclick="getWeather()" id="weather-btn">
-        🌤️ Get Weather & Alerts
-      </button>
+      <button class="btn btn-sky" onclick="getWeather()" id="weather-btn">🌤️ Get Weather & Alerts</button>
     </div>
-
     <div id="weather-result"></div>
   </div>
 
-  <!-- ══ GOVERNMENT SCHEMES ═════════════════════════════════════ -->
+  <!-- GOVERNMENT SCHEMES -->
   <div class="page" id="page-schemes">
-
     <div class="card">
       <div class="card-title" style="color:var(--earth)">🏛️ <span id="schemes-title">Government Schemes</span></div>
       <div class="field">
-        <label id="lbl-land">Land Size (acres)</label>
+        <label>Land Size (acres)</label>
         <select id="schemeLand">
           <option value="less than 1 acre">Less than 1 acre</option>
           <option value="1-2 acres">1 - 2 acres</option>
@@ -292,7 +224,7 @@
       </div>
       <div class="two-col">
         <div class="field">
-          <label id="lbl-sstate">State</label>
+          <label>State</label>
           <select id="schemeState">
             <option value="Punjab">Punjab</option>
             <option value="Haryana">Haryana</option>
@@ -309,7 +241,7 @@
           </select>
         </div>
         <div class="field">
-          <label id="lbl-scrop">Main Crop</label>
+          <label>Main Crop</label>
           <select id="schemeCrop">
             <option value="Wheat">Wheat</option>
             <option value="Rice">Rice</option>
@@ -322,39 +254,37 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">
-        🏛️ Find My Eligible Schemes
-      </button>
+      <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">🏛️ Find My Eligible Schemes</button>
     </div>
-
     <div id="schemes-result"></div>
   </div>
 
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast" style="display:none"></div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────
+const BACKEND = "https://annadatahub-production-a9db.up.railway.app";
+
 const LANG_NAMES = {
   en:"English", hi:"Hindi", bn:"Bengali", te:"Telugu",
   mr:"Marathi", ta:"Tamil", gu:"Gujarati", kn:"Kannada",
   ml:"Malayalam", pa:"Punjabi", ur:"Urdu"
 };
 
+// FIX: removed "Claude AI" from all UI text → "AnnadataHub AI"
 const UI_TEXT = {
-  en: { mandi:"Mandi", weather:"Weather", schemes:"Schemes", loading:"Getting information...", powered:"Powered by Claude AI" },
-  hi: { mandi:"मंडी", weather:"मौसम", schemes:"योजनाएं", loading:"जानकारी मिल रही है...", powered:"Claude AI द्वारा" },
-  bn: { mandi:"মান্ডি", weather:"আবহাওয়া", schemes:"প্রকল্প", loading:"তথ্য পাওয়া যাচ্ছে...", powered:"Claude AI দ্বারা" },
-  te: { mandi:"మండి", weather:"వాతావరణం", schemes:"పథకాలు", loading:"సమాచారం వస్తోంది...", powered:"Claude AI ద్వారా" },
-  mr: { mandi:"मंडी", weather:"हवामान", schemes:"योजना", loading:"माहिती मिळत आहे...", powered:"Claude AI द्वारे" },
-  ta: { mandi:"மண்டி", weather:"வானிலை", schemes:"திட்டங்கள்", loading:"தகவல் வருகிறது...", powered:"Claude AI மூலம்" },
-  gu: { mandi:"મંડી", weather:"હવામાન", schemes:"યોજના", loading:"માહિતી આવી રही છે...", powered:"Claude AI દ્વારા" },
-  kn: { mandi:"ಮಂಡಿ", weather:"ಹವಾಮಾನ", schemes:"ಯೋಜನೆ", loading:"ಮಾಹಿತಿ ಬರುತ್ತಿದೆ...", powered:"Claude AI ಮೂಲಕ" },
-  ml: { mandi:"മണ്ടി", weather:"കാലാവസ്ഥ", schemes:"പദ്ധതികൾ", loading:"വിവരം വരുന്നു...", powered:"Claude AI വഴി" },
-  pa: { mandi:"ਮੰਡੀ", weather:"ਮੌਸਮ", schemes:"ਯੋਜਨਾਵਾਂ", loading:"ਜਾਣਕਾਰੀ ਆ ਰਹੀ ਹੈ...", powered:"Claude AI ਦੁਆਰਾ" },
-  ur: { mandi:"منڈی", weather:"موسم", schemes:"اسکیمیں", loading:"معلومات آ رہی ہے...", powered:"Claude AI کے ذریعے" },
+  en: { mandi:"Mandi", weather:"Weather", schemes:"Schemes", powered:"Powered by AnnadataHub AI" },
+  hi: { mandi:"मंडी", weather:"मौसम", schemes:"योजनाएं", powered:"AnnadataHub AI द्वारा" },
+  bn: { mandi:"মান্ডি", weather:"আবহাওয়া", schemes:"প্রকল্প", powered:"AnnadataHub AI দ্বারা" },
+  te: { mandi:"మండి", weather:"వాతావరణం", schemes:"పథకాలు", powered:"AnnadataHub AI ద్వారా" },
+  mr: { mandi:"मंडी", weather:"हवामान", schemes:"योजना", powered:"AnnadataHub AI द्वारे" },
+  ta: { mandi:"மண்டி", weather:"வானிலை", schemes:"திட்டங்கள்", powered:"AnnadataHub AI மூலம்" },
+  gu: { mandi:"મંડી", weather:"હવામાન", schemes:"યોજના", powered:"AnnadataHub AI દ્વારા" },
+  kn: { mandi:"ಮಂಡಿ", weather:"ಹವಾಮಾನ", schemes:"ಯೋಜನೆ", powered:"AnnadataHub AI ಮೂಲಕ" },
+  ml: { mandi:"മണ്ടി", weather:"കാലാവസ്ഥ", schemes:"പദ്ധതികൾ", powered:"AnnadataHub AI വഴി" },
+  pa: { mandi:"ਮੰਡੀ", weather:"ਮੌਸਮ", schemes:"ਯੋਜਨਾਵਾਂ", powered:"AnnadataHub AI ਦੁਆਰਾ" },
+  ur: { mandi:"منڈی", weather:"موسم", schemes:"اسکیمیں", powered:"AnnadataHub AI کے ذریعے" },
 };
 
 let currentLang = "en";
@@ -382,14 +312,15 @@ function showToast(msg, type="success") {
   setTimeout(() => t.style.display = "none", 3000);
 }
 
-async function callClaude(system, user) {
+// FIX: renamed from callClaude to callAI
+async function callAI(system, user) {
   try {
-    const res = await fetch("https://annadatahub-production-a9db.up.railway.app/api/ai/ask", {
+    const res = await fetch(`${BACKEND}/api/ai/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: user, language: typeof currentLang !== 'undefined' ? currentLang : "en" })
+      body: JSON.stringify({ question: user, language: currentLang })
     });
-    if (!res.ok) throw new Error("API error");
+    if (!res.ok) throw new Error("API error " + res.status);
     const data = await res.json();
     const text = data.answer || "";
     const clean = text.replace(/```json|```/g, "").trim();
@@ -401,22 +332,18 @@ async function callClaude(system, user) {
   }
 }
 
-// ── MANDI PRICES ─────────────────────────────────────────────────
+// ── MANDI PRICES ──
 async function getMandiPrices() {
   const crop = document.getElementById("mandiCrop").value;
   const state = document.getElementById("mandiState").value;
   const btn = document.getElementById("mandi-btn");
   const result = document.getElementById("mandi-result");
-  const t = UI_TEXT[currentLang] || UI_TEXT.en;
 
-  btn.disabled = true;
-  btn.textContent = "⏳ Loading...";
+  btn.disabled = true; btn.textContent = "⏳ Loading...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching prices...</p></div>`;
 
   try {
-    const res = await fetch(
-      `https://annadatahub-production-a9db.up.railway.app/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`
-    );
+    const res = await fetch(`${BACKEND}/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const outer = await res.json();
     if (!outer.success) throw new Error('API error');
@@ -428,8 +355,7 @@ async function getMandiPrices() {
         <div class="price-mandi">${m.market}</div>
         <div class="price-amount">₹${m.price}</div>
         <div class="price-unit">${m.unit}</div>
-      </div>
-    `).join("");
+      </div>`).join("");
 
     result.innerHTML = `
       <div class="card">
@@ -440,39 +366,30 @@ async function getMandiPrices() {
           💡 ${raw.best_selling_tip || ''}
         </div>
       </div>
-    `;
+      <div class="powered">🌾 AnnadataHub AI · Verify prices at your local mandi before selling</div>`;
     showToast("Prices fetched! ✅");
-
   } catch(e) {
-    console.error("Mandi error:", e);
-    result.innerHTML = `<div class="empty"><p>Could not fetch prices: ${e.message}</p></div>`;
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch prices. Try again.</p></div>`;
     showToast("Error fetching prices", "error");
   }
-
-  btn.disabled = false;
-  btn.textContent = "🏛 Get Today's Prices";
+  btn.disabled = false; btn.textContent = "📊 Get Today's Prices";
 }
 
-// ── WEATHER ───────────────────────────────────────────────────────
+// ── WEATHER ──
 async function getWeather() {
   const location = document.getElementById("weatherLocation").value || "Delhi";
-  const crop = document.getElementById("weatherCrop").value;
   const btn = document.getElementById("weather-btn");
   const result = document.getElementById("weather-result");
 
-  btn.disabled = true;
-  btn.textContent = "⏳ Loading...";
+  btn.disabled = true; btn.textContent = "⏳ Loading...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching weather...</p></div>`;
 
   try {
-    const res = await fetch(
-      `https://annadatahub-production-a9db.up.railway.app/api/weather?location=${encodeURIComponent(location)}`
-    );
+    const res = await fetch(`${BACKEND}/api/weather?location=${encodeURIComponent(location)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const outer = await res.json();
     if (!outer.success) throw new Error('API error');
     const w = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
-
     const emoji = w.rainfall_chance > 50 ? '🌧️' : w.humidity > 75 ? '☁️' : '☀️';
     const sprayOk = w.spray_suitable;
 
@@ -483,56 +400,35 @@ async function getWeather() {
         <div class="weather-desc">${w.description || 'Current conditions'}</div>
         <div class="weather-location">📍 ${outer.location}</div>
         <div class="weather-grid">
-          <div class="weather-stat">
-            <div class="icon">💧</div>
-            <div class="val">${w.humidity}%</div>
-            <div class="lbl">Humidity</div>
-          </div>
-          <div class="weather-stat">
-            <div class="icon">🌧</div>
-            <div class="val">${w.rainfall_chance}%</div>
-            <div class="lbl">Rain Chance</div>
-          </div>
-          <div class="weather-stat">
-            <div class="icon">⏰</div>
-            <div class="val">${w.best_time_to_work || '6-10am'}</div>
-            <div class="lbl">Best Time</div>
-          </div>
+          <div class="weather-stat"><div class="icon">💧</div><div class="val">${w.humidity}%</div><div class="lbl">Humidity</div></div>
+          <div class="weather-stat"><div class="icon">🌧</div><div class="val">${w.rainfall_chance}%</div><div class="lbl">Rain Chance</div></div>
+          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work || '6-10am'}</div><div class="lbl">Best Time</div></div>
         </div>
       </div>
-      <div class="alert-box ${sprayOk ? 'alert-box.good' : 'alert-box.warning'}" style="margin-top:12px;padding:12px;border-radius:10px;background:${sprayOk ? 'var(--green-light)' : 'var(--earth-light)'}">
+      <div style="margin-top:12px;padding:12px;border-radius:10px;background:${sprayOk?'var(--green-light)':'var(--earth-light)'}">
         <strong>${sprayOk ? '✅ Good for spraying' : '⚠️ Avoid spraying today'}</strong>
         <p style="margin-top:4px;font-size:0.85rem">${w.farming_advice}</p>
         ${w.alert ? `<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>` : ''}
-      </div>
-    `;
+      </div>`;
     showToast("Weather fetched! ✅");
-
   } catch(e) {
-    console.error("Weather error:", e);
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch weather. Please try again.</p></div>`;
     showToast("Error fetching weather", "error");
   }
-
-  btn.disabled = false;
-  btn.textContent = "🌤 Get Weather & Alerts";
+  btn.disabled = false; btn.textContent = "🌤️ Get Weather & Alerts";
 }
 
-// ── GOVERNMENT SCHEMES ────────────────────────────────────────────
+// ── GOVERNMENT SCHEMES ──
 async function getSchemes() {
   const state = document.getElementById("schemeState").value;
   const btn = document.getElementById("schemes-btn");
   const result = document.getElementById("schemes-result");
-  const t = UI_TEXT[currentLang] || UI_TEXT.en;
 
-  btn.disabled = true;
-  btn.textContent = "⏳ Loading...";
+  btn.disabled = true; btn.textContent = "⏳ Loading...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Finding schemes...</p></div>`;
 
   try {
-    const res = await fetch(
-      `https://annadatahub-production-a9db.up.railway.app/api/schemes?state=${encodeURIComponent(state)}`
-    );
+    const res = await fetch(`${BACKEND}/api/schemes?state=${encodeURIComponent(state)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const outer = await res.json();
     if (!outer.success) throw new Error('API error');
@@ -556,43 +452,34 @@ async function getSchemes() {
           <span class="eligible-badge eligible-yes">✅ You are eligible!</span>
           <p>${s.description}</p>
           <strong style="font-size:0.82rem;color:var(--green)">Benefits:</strong>
-          <ul>${s.benefits.map(b => `<li>${b}</li>`).join("")}</ul>
+          <ul>${(s.benefits||[]).map(b => `<li>${b}</li>`).join("")}</ul>
           <div style="margin-top:10px">
             <strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong>
-            <p style="margin-top:4px">${s.documents.join(", ")}</p>
+            <p style="margin-top:4px">${(s.documents||[]).join(", ")}</p>
           </div>
           <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">
             📋 <strong>How to apply:</strong> ${s.how_to_apply}
           </div>
           <a href="${s.apply_url}" target="_blank" class="apply-btn">Apply Now →</a>
         </div>
-      </div>
-    `).join("");
+      </div>`).join("");
 
     result.innerHTML = `
       <div class="advice-box" style="margin-bottom:14px">
         <strong>🎯 Your Eligibility:</strong> ${data.summary}
       </div>
       ${cards}
-      <div style="text-align:center;font-size:0.72rem;color:var(--muted);margin-top:8px">
-        🌾 Always verify at official government websites
-      </div>
-    `;
+      <div class="powered">🌾 Always verify at official government websites</div>`;
     showToast("Schemes loaded! ✅");
-
   } catch(e) {
-    console.error("Schemes error:", e);
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch schemes. Please try again.</p></div>`;
     showToast("Error fetching schemes", "error");
   }
-
-  btn.disabled = false;
-  btn.textContent = "🏛 Find My Eligible Schemes";
+  btn.disabled = false; btn.textContent = "🏛️ Find My Eligible Schemes";
 }
 
 function toggleScheme(i) {
-  const body = document.getElementById("scheme-" + i);
-  body.classList.toggle("open");
+  document.getElementById("scheme-" + i).classList.toggle("open");
 }
 </script>
 </body>
