@@ -17,7 +17,7 @@
   .lang-select{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:6px 10px;border-radius:8px;font-family:'Hind',sans-serif;font-size:0.8rem;cursor:pointer;}
   .lang-select option{background:var(--green);color:white;}
   .tabs{display:flex;background:white;border-bottom:2px solid var(--border);overflow-x:auto;}
-  .tab{flex:1;min-width:100px;padding:12px 8px;border:none;background:none;font-family:'Hind',sans-serif;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .tab{flex:1;min-width:90px;padding:12px 8px;border:none;background:none;font-family:'Hind',sans-serif;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;}
   .tab.active{color:var(--green);border-bottom-color:var(--green);}
   .tab span{font-size:1.3rem;}
   .content{max-width:600px;margin:0 auto;padding:16px;}
@@ -69,12 +69,19 @@
   .scheme-body ul li{font-size:0.84rem;line-height:1.6;color:#374151;margin-bottom:4px;}
   .eligible-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;margin-bottom:10px;background:var(--green-light);color:var(--green);}
   .apply-btn{display:inline-block;background:var(--green);color:white;padding:8px 18px;border-radius:8px;font-size:0.84rem;font-weight:600;text-decoration:none;margin-top:8px;border:none;cursor:pointer;font-family:'Hind',sans-serif;}
-  .scan-zone{background:#1a1a1a;border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:12px;cursor:pointer;max-height:300px;}
-  .scan-zone img{width:100%;height:100%;object-fit:cover;}
-  .scan-placeholder{color:rgba(255,255,255,0.6);text-align:center;}
+
+  /* SCAN ZONE */
+  .scan-zone{background:#1a1a1a;border-radius:16px;min-height:220px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:12px;}
+  .scan-zone img{width:100%;height:100%;object-fit:cover;border-radius:16px;}
+  .scan-placeholder{color:rgba(255,255,255,0.8);text-align:center;padding:24px;}
   .scan-placeholder .big-icon{font-size:3rem;margin-bottom:10px;}
-  .scan-placeholder p{font-size:0.86rem;line-height:1.5;}
+  .scan-placeholder p{font-size:0.88rem;line-height:1.5;margin-bottom:16px;}
+  .scan-btns{display:flex;gap:10px;justify-content:center;}
+  .scan-pick-btn{padding:10px 20px;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:0.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;}
+  .scan-pick-btn.camera{background:var(--green);color:white;}
+  .scan-pick-btn.gallery{background:var(--gold);color:var(--text);}
   .scan-clear{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+
   .disease-result{border-radius:14px;padding:18px;margin-bottom:12px;}
   .disease-healthy{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #16a34a;}
   .disease-sick{background:linear-gradient(135deg,var(--red-light),#fecaca);border:2px solid var(--red);}
@@ -89,9 +96,6 @@
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .powered{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:8px;}
   .hidden{display:none;}
-  .severity-low{color:#16a34a;}
-  .severity-medium{color:var(--gold);}
-  .severity-high{color:var(--red);}
 </style>
 </head>
 <body>
@@ -123,27 +127,32 @@
   <!-- CROP SCANNER -->
   <div class="page active" id="page-scan">
     <div class="card">
-      <div class="card-title" style="color:var(--green)">📷 Crop Disease Scanner</div>
-      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.</p>
-      <input type="file" id="scanFile" accept="image/*" class="hidden" onchange="handleScanPhoto(event)"/>
-<input type="file" id="scanGallery" accept="image/*" class="hidden" onchange="handleScanPhoto(event)"/>
-<div class="scan-zone" id="scanZone">
-  <div class="scan-placeholder" id="scanPlaceholder">
-    <div class="big-icon">📷</div>
-    <p><strong>Choose photo</strong></p>
-    <div style="display:flex;gap:10px;margin-top:12px;justify-content:center">
-      <button onclick="document.getElementById('scanFile').click()" style="background:var(--green);color:white;border:none;padding:8px 16px;border-radius:8px;font-family:'Hind',sans-serif;font-weight:600;font-size:0.84rem;cursor:pointer">📷 Camera</button>
-      <button onclick="document.getElementById('scanGallery').click()" style="background:var(--gold);color:var(--text);border:none;padding:8px 16px;border-radius:8px;font-family:'Hind',sans-serif;font-weight:600;font-size:0.84rem;cursor:pointer">🖼️ Gallery</button>
-    </div>
-  </div>
-</div>
+      <div class="card-title" style="color:var(--green)">📷 <span id="scan-title">Crop Disease Scanner</span></div>
+      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px" id="scan-desc">Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.</p>
+
+      <!-- Hidden file inputs -->
+      <input type="file" id="scanCamera" accept="image/*" capture="environment" class="hidden" onchange="handleScanPhoto(event)"/>
+      <input type="file" id="scanGallery" accept="image/*" class="hidden" onchange="handleScanPhoto(event)"/>
+
+      <!-- Scan zone -->
+      <div class="scan-zone" id="scanZone">
         <div class="scan-placeholder" id="scanPlaceholder">
-          <div class="big-icon">📷</div>
-          <p><strong>Tap to take photo</strong><br/><small>Take photo in good light<br/>Focus on sick leaf/plant part</small></p>
+          <div class="big-icon">🌿</div>
+          <p id="scan-tap-text">Choose how to add your crop photo</p>
+          <div class="scan-btns">
+            <button class="scan-pick-btn camera" onclick="document.getElementById('scanCamera').click()">
+              📷 <span id="btn-camera">Camera</span>
+            </button>
+            <button class="scan-pick-btn gallery" onclick="document.getElementById('scanGallery').click()">
+              🖼️ <span id="btn-gallery">Gallery</span>
+            </button>
+          </div>
         </div>
       </div>
+
       <div class="two-col">
-        <div class="field"><label>Crop Type</label>
+        <div class="field">
+          <label id="lbl-crop-type">Crop Type</label>
           <select id="scanCrop">
             <option value="">Auto-detect</option>
             <option>Wheat</option><option>Rice</option><option>Cotton</option>
@@ -153,7 +162,8 @@
             <option>Banana</option><option>Grapes</option><option>Apple</option>
           </select>
         </div>
-        <div class="field"><label>Language</label>
+        <div class="field">
+          <label id="lbl-lang">Language</label>
           <select id="scanLang">
             <option value="en">English</option><option value="hi">हिंदी</option>
             <option value="pa">ਪੰਜਾਬੀ</option><option value="mr">मराठी</option>
@@ -162,7 +172,7 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-green" onclick="scanCrop()" id="scan-btn">🔍 Scan for Disease</button>
+      <button class="btn btn-green" onclick="scanCrop()" id="scan-btn">🔍 <span id="scan-btn-text">Scan for Disease</span></button>
     </div>
     <div id="scan-result"></div>
   </div>
@@ -170,9 +180,10 @@
   <!-- MANDI PRICES -->
   <div class="page" id="page-mandi">
     <div class="card">
-      <div class="card-title" style="color:var(--green)">📊 Live Mandi Prices</div>
+      <div class="card-title" style="color:var(--green)">📊 <span id="mandi-title">Live Mandi Prices</span></div>
       <div class="two-col">
-        <div class="field"><label>Your Crop</label>
+        <div class="field">
+          <label id="lbl-mandi-crop">Your Crop</label>
           <select id="mandiCrop">
             <option value="Wheat">Wheat (गेहूं)</option><option value="Rice">Rice (धान)</option>
             <option value="Corn">Corn (मक्का)</option><option value="Tomato">Tomato (टमाटर)</option>
@@ -184,7 +195,8 @@
             <option value="Banana">Banana (केला)</option><option value="Mango">Mango (आम)</option>
           </select>
         </div>
-        <div class="field"><label>Your State</label>
+        <div class="field">
+          <label id="lbl-mandi-state">Your State</label>
           <select id="mandiState">
             <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
             <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
@@ -199,7 +211,7 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-green" onclick="getMandiPrices()" id="mandi-btn">📊 Get Today's Prices</button>
+      <button class="btn btn-green" onclick="getMandiPrices()" id="mandi-btn">📊 <span id="mandi-btn-text">Get Today's Prices</span></button>
     </div>
     <div id="mandi-result"></div>
   </div>
@@ -207,10 +219,14 @@
   <!-- WEATHER -->
   <div class="page" id="page-weather">
     <div class="card">
-      <div class="card-title" style="color:var(--sky)">🌦️ Weather & Farm Alerts</div>
+      <div class="card-title" style="color:var(--sky)">🌦️ <span id="weather-title">Weather & Farm Alerts</span></div>
       <div class="two-col">
-        <div class="field"><label>District / City</label><input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik"/></div>
-        <div class="field"><label>Your Crop</label>
+        <div class="field">
+          <label id="lbl-location">District / City</label>
+          <input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik"/>
+        </div>
+        <div class="field">
+          <label id="lbl-weather-crop">Your Crop</label>
           <select id="weatherCrop">
             <option>Wheat</option><option>Rice</option><option>Cotton</option>
             <option>Tomato</option><option>Sugarcane</option><option>Mustard</option>
@@ -218,7 +234,7 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-sky" onclick="getWeather()" id="weather-btn">🌤️ Get Weather & Alerts</button>
+      <button class="btn btn-sky" onclick="getWeather()" id="weather-btn">🌤️ <span id="weather-btn-text">Get Weather & Alerts</span></button>
     </div>
     <div id="weather-result"></div>
   </div>
@@ -226,8 +242,9 @@
   <!-- GOVERNMENT SCHEMES -->
   <div class="page" id="page-schemes">
     <div class="card">
-      <div class="card-title" style="color:var(--earth)">🏛️ Government Schemes</div>
-      <div class="field"><label>Land Size (acres)</label>
+      <div class="card-title" style="color:var(--earth)">🏛️ <span id="schemes-title">Government Schemes</span></div>
+      <div class="field">
+        <label id="lbl-land">Land Size (acres)</label>
         <select id="schemeLand">
           <option value="less than 1 acre">Less than 1 acre</option>
           <option value="1-2 acres">1 - 2 acres</option>
@@ -237,7 +254,8 @@
         </select>
       </div>
       <div class="two-col">
-        <div class="field"><label>State</label>
+        <div class="field">
+          <label id="lbl-scheme-state">State</label>
           <select id="schemeState">
             <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
             <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
@@ -251,7 +269,8 @@
             <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
           </select>
         </div>
-        <div class="field"><label>Main Crop</label>
+        <div class="field">
+          <label id="lbl-scheme-crop">Main Crop</label>
           <select id="schemeCrop">
             <option>Wheat</option><option>Rice</option><option>Cotton</option>
             <option>Sugarcane</option><option>Vegetables</option><option>Fruits</option>
@@ -259,7 +278,7 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">🏛️ Find My Eligible Schemes</button>
+      <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">🏛️ <span id="schemes-btn-text">Find My Eligible Schemes</span></button>
     </div>
     <div id="schemes-result"></div>
   </div>
@@ -270,11 +289,56 @@
 
 <script>
 const BACKEND = "https://annadatahub-production-a9db.up.railway.app";
-const LANG_NAMES = {en:"English",hi:"Hindi",pa:"Punjabi",mr:"Marathi",te:"Telugu",ta:"Tamil",gu:"Gujarati",kn:"Kannada",ml:"Malayalam",bn:"Bengali",ur:"Urdu"};
+
+const LANG = {
+  en:{scan:"Scan",mandi:"Mandi",weather:"Weather",schemes:"Schemes",scan_title:"Crop Disease Scanner",scan_desc:"Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.",scan_tap:"Choose how to add your crop photo",btn_camera:"Camera",btn_gallery:"Gallery",crop_type:"Crop Type",language:"Language",scan_btn:"Scan for Disease",scanning:"AI is analysing your crop photo...",healthy:"Your crop looks healthy!",treatment:"Treatment",medicine:"Medicine",dosage:"Dosage",prevention:"Prevention",urgency:"Urgency",no_photo:"Please take or upload a photo first",mandi_title:"Live Mandi Prices",mandi_crop:"Your Crop",mandi_state:"Your State",mandi_btn:"Get Today's Prices",fetching_prices:"Fetching prices...",weather_title:"Weather & Farm Alerts",location:"District / City",weather_crop:"Your Crop",weather_btn:"Get Weather & Alerts",fetching_weather:"Fetching weather...",humidity:"Humidity",rain:"Rain Chance",best_time:"Best Time",spray_ok:"✅ Good for spraying",spray_no:"⚠️ Avoid spraying today",schemes_title:"Government Schemes",land:"Land Size (acres)",scheme_state:"State",scheme_crop:"Main Crop",schemes_btn:"Find My Eligible Schemes",finding_schemes:"Finding schemes...",eligible:"✅ You are eligible!",apply:"Apply Now →",documents:"Documents needed",how_apply:"How to apply",verify_schemes:"Always verify at official government websites",verify_mandi:"Verify at your local mandi before selling",ai_disclaimer:"AI guidance · Confirm with local KVK"},
+  hi:{scan:"स्कैन",mandi:"मंडी",weather:"मौसम",schemes:"योजनाएं",scan_title:"फसल रोग स्कैनर",scan_desc:"अपनी बीमार फसल की पत्ती की साफ फोटो लें। AI रोग बताएगा और इलाज देगा।",scan_tap:"अपनी फसल की फोटो कैसे जोड़ें चुनें",btn_camera:"कैमरा",btn_gallery:"गैलरी",crop_type:"फसल का प्रकार",language:"भाषा",scan_btn:"रोग के लिए स्कैन करें",scanning:"AI आपकी फसल फोटो का विश्लेषण कर रहा है...",healthy:"आपकी फसल स्वस्थ दिखती है!",treatment:"उपचार",medicine:"दवाई",dosage:"मात्रा",prevention:"बचाव",urgency:"तत्कालता",no_photo:"पहले फोटो लें या अपलोड करें",mandi_title:"लाइव मंडी भाव",mandi_crop:"आपकी फसल",mandi_state:"आपका राज्य",mandi_btn:"आज के भाव देखें",fetching_prices:"भाव आ रहे हैं...",weather_title:"मौसम और फार्म अलर्ट",location:"जिला / शहर",weather_crop:"आपकी फसल",weather_btn:"मौसम और अलर्ट देखें",fetching_weather:"मौसम आ रहा है...",humidity:"नमी",rain:"बारिश की संभावना",best_time:"सबसे अच्छा समय",spray_ok:"✅ छिड़काव के लिए अच्छा दिन",spray_no:"⚠️ आज छिड़काव न करें",schemes_title:"सरकारी योजनाएं",land:"जमीन का आकार (एकड़)",scheme_state:"राज्य",scheme_crop:"मुख्य फसल",schemes_btn:"मेरी पात्र योजनाएं खोजें",finding_schemes:"योजनाएं खोजी जा रही हैं...",eligible:"✅ आप पात्र हैं!",apply:"अभी आवेदन करें →",documents:"जरूरी दस्तावेज",how_apply:"आवेदन कैसे करें",verify_schemes:"हमेशा आधिकारिक सरकारी वेबसाइट पर जांचें",verify_mandi:"बेचने से पहले अपनी स्थानीय मंडी में भाव जांचें",ai_disclaimer:"AI मार्गदर्शन · स्थानीय KVK से पुष्टि करें"},
+  pa:{scan:"ਸਕੈਨ",mandi:"ਮੰਡੀ",weather:"ਮੌਸਮ",schemes:"ਯੋਜਨਾਵਾਂ",scan_title:"ਫਸਲ ਰੋਗ ਸਕੈਨਰ",scan_desc:"ਆਪਣੀ ਬਿਮਾਰ ਫਸਲ ਦੇ ਪੱਤੇ ਦੀ ਸਾਫ਼ ਫੋਟੋ ਲਓ। AI ਰੋਗ ਦੱਸੇਗਾ ਅਤੇ ਇਲਾਜ ਦੇਵੇਗਾ।",scan_tap:"ਆਪਣੀ ਫਸਲ ਦੀ ਫੋਟੋ ਕਿਵੇਂ ਜੋੜਨੀ ਹੈ ਚੁਣੋ",btn_camera:"ਕੈਮਰਾ",btn_gallery:"ਗੈਲਰੀ",crop_type:"ਫਸਲ ਦੀ ਕਿਸਮ",language:"ਭਾਸ਼ਾ",scan_btn:"ਰੋਗ ਲਈ ਸਕੈਨ ਕਰੋ",scanning:"AI ਤੁਹਾਡੀ ਫਸਲ ਫੋਟੋ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰ ਰਿਹਾ ਹੈ...",healthy:"ਤੁਹਾਡੀ ਫਸਲ ਸਿਹਤਮੰਦ ਦਿਖਦੀ ਹੈ!",treatment:"ਇਲਾਜ",medicine:"ਦਵਾਈ",dosage:"ਮਾਤਰਾ",prevention:"ਬਚਾਅ",urgency:"ਜ਼ਰੂਰੀਅਤ",no_photo:"ਪਹਿਲਾਂ ਫੋਟੋ ਲਓ ਜਾਂ ਅਪਲੋਡ ਕਰੋ",mandi_title:"ਲਾਈਵ ਮੰਡੀ ਭਾਅ",mandi_crop:"ਤੁਹਾਡੀ ਫਸਲ",mandi_state:"ਤੁਹਾਡਾ ਰਾਜ",mandi_btn:"ਅੱਜ ਦੇ ਭਾਅ ਦੇਖੋ",fetching_prices:"ਭਾਅ ਆ ਰਹੇ ਹਨ...",weather_title:"ਮੌਸਮ ਅਤੇ ਖੇਤ ਅਲਰਟ",location:"ਜ਼ਿਲ੍ਹਾ / ਸ਼ਹਿਰ",weather_crop:"ਤੁਹਾਡੀ ਫਸਲ",weather_btn:"ਮੌਸਮ ਅਤੇ ਅਲਰਟ ਦੇਖੋ",fetching_weather:"ਮੌਸਮ ਆ ਰਿਹਾ ਹੈ...",humidity:"ਨਮੀ",rain:"ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ",best_time:"ਸਭ ਤੋਂ ਵਧੀਆ ਸਮਾਂ",spray_ok:"✅ ਸਪਰੇਅ ਕਰਨ ਲਈ ਚੰਗਾ ਦਿਨ",spray_no:"⚠️ ਅੱਜ ਸਪਰੇਅ ਨਾ ਕਰੋ",schemes_title:"ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ",land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",scheme_state:"ਰਾਜ",scheme_crop:"ਮੁੱਖ ਫਸਲ",schemes_btn:"ਮੇਰੀਆਂ ਯੋਜਨਾਵਾਂ ਲੱਭੋ",finding_schemes:"ਯੋਜਨਾਵਾਂ ਲੱਭੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ...",eligible:"✅ ਤੁਸੀਂ ਯੋਗ ਹੋ!",apply:"ਹੁਣੇ ਅਰਜ਼ੀ ਦਿਓ →",documents:"ਲੋੜੀਂਦੇ ਦਸਤਾਵੇਜ਼",how_apply:"ਅਰਜ਼ੀ ਕਿਵੇਂ ਦੇਣੀ ਹੈ",verify_schemes:"ਹਮੇਸ਼ਾ ਸਰਕਾਰੀ ਵੈੱਬਸਾਈਟ ਤੇ ਜਾਂਚੋ",verify_mandi:"ਵੇਚਣ ਤੋਂ ਪਹਿਲਾਂ ਆਪਣੀ ਸਥਾਨਕ ਮੰਡੀ ਵਿੱਚ ਭਾਅ ਜਾਂਚੋ",ai_disclaimer:"AI ਮਾਰਗਦਰਸ਼ਨ · ਸਥਾਨਕ KVK ਤੋਂ ਪੁਸ਼ਟੀ ਕਰੋ"},
+  mr:{scan:"स्कॅन",mandi:"मंडी",weather:"हवामान",schemes:"योजना",scan_title:"पीक रोग स्कॅनर",scan_desc:"आपल्या आजारी पिकाच्या पानाचा स्पष्ट फोटो घ्या। AI रोग सांगेल आणि उपचार देईल.",scan_tap:"आपल्या पिकाचा फोटो कसा जोडायचा ते निवडा",btn_camera:"कॅमेरा",btn_gallery:"गॅलरी",crop_type:"पिकाचा प्रकार",language:"भाषा",scan_btn:"रोगासाठी स्कॅन करा",scanning:"AI तुमच्या पिकाच्या फोटोचे विश्लेषण करत आहे...",healthy:"तुमचे पीक निरोगी दिसते!",treatment:"उपचार",medicine:"औषध",dosage:"प्रमाण",prevention:"प्रतिबंध",urgency:"निकड",no_photo:"आधी फोटो घ्या किंवा अपलोड करा",mandi_title:"थेट मंडी भाव",mandi_crop:"तुमचे पीक",mandi_state:"तुमचे राज्य",mandi_btn:"आजचे भाव पहा",fetching_prices:"भाव येत आहेत...",weather_title:"हवामान आणि शेत सूचना",location:"जिल्हा / शहर",weather_crop:"तुमचे पीक",weather_btn:"हवामान आणि सूचना पहा",fetching_weather:"हवामान येत आहे...",humidity:"आर्द्रता",rain:"पावसाची शक्यता",best_time:"सर्वोत्तम वेळ",spray_ok:"✅ फवारणीसाठी चांगला दिवस",spray_no:"⚠️ आज फवारणी करू नका",schemes_title:"सरकारी योजना",land:"जमिनीचा आकार (एकर)",scheme_state:"राज्य",scheme_crop:"मुख्य पीक",schemes_btn:"माझ्या पात्र योजना शोधा",finding_schemes:"योजना शोधल्या जात आहेत...",eligible:"✅ तुम्ही पात्र आहात!",apply:"आता अर्ज करा →",documents:"आवश्यक कागदपत्रे",how_apply:"अर्ज कसा करावा",verify_schemes:"नेहमी अधिकृत सरकारी वेबसाइटवर तपासा",verify_mandi:"विकण्यापूर्वी तुमच्या स्थानिक मंडीत भाव तपासा",ai_disclaimer:"AI मार्गदर्शन · स्थानिक KVK कडून खात्री करा"},
+};
+
 let currentLang = "en";
 let scanImageBase64 = null;
 
-function setLanguage(lang) { currentLang = lang; }
+function T(key) {
+  const d = LANG[currentLang] || LANG.en;
+  return d[key] || LANG.en[key] || key;
+}
+
+function applyLang() {
+  document.getElementById("t-scan").textContent = T("scan");
+  document.getElementById("t-mandi").textContent = T("mandi");
+  document.getElementById("t-weather").textContent = T("weather");
+  document.getElementById("t-schemes").textContent = T("schemes");
+  document.getElementById("scan-title").textContent = T("scan_title");
+  document.getElementById("scan-desc").textContent = T("scan_desc");
+  document.getElementById("scan-tap-text").textContent = T("scan_tap");
+  document.getElementById("btn-camera").textContent = T("btn_camera");
+  document.getElementById("btn-gallery").textContent = T("btn_gallery");
+  document.getElementById("lbl-crop-type").textContent = T("crop_type");
+  document.getElementById("lbl-lang").textContent = T("language");
+  document.getElementById("scan-btn-text").textContent = T("scan_btn");
+  document.getElementById("mandi-title").textContent = T("mandi_title");
+  document.getElementById("lbl-mandi-crop").textContent = T("mandi_crop");
+  document.getElementById("lbl-mandi-state").textContent = T("mandi_state");
+  document.getElementById("mandi-btn-text").textContent = T("mandi_btn");
+  document.getElementById("weather-title").textContent = T("weather_title");
+  document.getElementById("lbl-location").textContent = T("location");
+  document.getElementById("lbl-weather-crop").textContent = T("weather_crop");
+  document.getElementById("weather-btn-text").textContent = T("weather_btn");
+  document.getElementById("schemes-title").textContent = T("schemes_title");
+  document.getElementById("lbl-land").textContent = T("land");
+  document.getElementById("lbl-scheme-state").textContent = T("scheme_state");
+  document.getElementById("lbl-scheme-crop").textContent = T("scheme_crop");
+  document.getElementById("schemes-btn-text").textContent = T("schemes_btn");
+  document.getElementById("weatherLocation").placeholder = T("location");
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  try { localStorage.setItem("annadatahub_lang", lang); } catch(e) {}
+  applyLang();
+}
 
 function showTab(tab) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -293,20 +357,40 @@ function showToast(msg, type="success") {
 function handleScanPhoto(e) {
   const file = e.target.files?.[0];
   if (!file) return;
+
+  // Compress image before sending
   const reader = new FileReader();
   reader.onload = ev => {
-    const full = ev.target.result;
-    scanImageBase64 = full.split(",")[1];
-    const zone = document.getElementById("scanZone");
-    document.getElementById("scanPlaceholder").style.display = "none";
-    const old = zone.querySelector("img"); if (old) old.remove();
-    const img = document.createElement("img"); img.src = full; zone.appendChild(img);
-    if (!zone.querySelector(".scan-clear")) {
-      const clr = document.createElement("button");
-      clr.className = "scan-clear"; clr.textContent = "✕";
-      clr.onclick = ev2 => { ev2.stopPropagation(); clearScan(); };
-      zone.appendChild(clr);
-    }
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = h * MAX / w; w = MAX; }
+      if (h > MAX) { w = w * MAX / h; h = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL("image/jpeg", 0.7);
+      scanImageBase64 = compressed.split(",")[1];
+
+      // Show preview
+      const zone = document.getElementById("scanZone");
+      document.getElementById("scanPlaceholder").style.display = "none";
+      const old = zone.querySelector("img"); if (old) old.remove();
+      const imgEl = document.createElement("img");
+      imgEl.src = compressed;
+      imgEl.style.width = "100%";
+      imgEl.style.borderRadius = "16px";
+      zone.appendChild(imgEl);
+
+      if (!zone.querySelector(".scan-clear")) {
+        const clr = document.createElement("button");
+        clr.className = "scan-clear"; clr.textContent = "✕";
+        clr.onclick = ev2 => { ev2.stopPropagation(); clearScan(); };
+        zone.appendChild(clr);
+      }
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -318,25 +402,29 @@ function clearScan() {
   const clr = zone.querySelector(".scan-clear"); if (clr) clr.remove();
   document.getElementById("scanPlaceholder").style.display = "block";
   document.getElementById("scan-result").innerHTML = "";
+  document.getElementById("scanCamera").value = "";
+  document.getElementById("scanGallery").value = "";
 }
 
 async function scanCrop() {
   if (!scanImageBase64) {
+    showToast(T("no_photo"), "error");
     document.getElementById("scan-result").innerHTML = `
       <div style="background:#fff7ed;border:1px solid var(--gold);border-radius:14px;padding:20px;text-align:center">
         <div style="font-size:2.5rem;margin-bottom:10px">📷</div>
-        <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--earth)">Please take a photo first</div>
-        <div style="font-size:0.86rem;color:#374151;margin-top:8px;line-height:1.5">Tap the dark area above and take a clear photo of your sick crop leaf in good daylight.</div>
+        <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--earth)">${T("no_photo")}</div>
+        <div style="font-size:0.86rem;color:#374151;margin-top:8px">Use the Camera or Gallery button above to add a photo.</div>
       </div>`;
-    showToast("Please take a crop photo first", "error");
     return;
   }
+
   const cropType = document.getElementById("scanCrop").value;
   const lang = document.getElementById("scanLang").value;
   const btn = document.getElementById("scan-btn");
   const result = document.getElementById("scan-result");
-  btn.disabled = true; btn.textContent = "⏳ Analysing...";
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>AI is analysing your crop photo...</p></div>`;
+  btn.disabled = true;
+  btn.innerHTML = `⏳ ${T("scanning")}`;
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${T("scanning")}</p></div>`;
 
   try {
     const token = localStorage.getItem("auth_token");
@@ -346,71 +434,103 @@ async function scanCrop() {
         "Content-Type": "application/json",
         ...(token ? {"Authorization": "Bearer " + token} : {})
       },
-      body: JSON.stringify({image_base64: scanImageBase64, crop_type: cropType || null, language: lang})
+      body: JSON.stringify({
+        image_base64: scanImageBase64,
+        crop_type: cropType || null,
+        language: lang
+      })
     });
+
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const outer = await res.json();
+
     let data;
     try {
       const raw = typeof outer.result === "string" ? outer.result : JSON.stringify(outer.result);
       const clean = raw.replace(/```json|```/g, "").trim();
       data = JSON.parse(clean.match(/\{[\s\S]*\}/)?.[0] || clean);
     } catch(e) {
-      data = {disease: "Please try again", severity: "Unknown", crop: cropType || "Unknown", confidence: 0, treatment: "Take a clearer photo in better light", medicine: "N/A", dosage: "N/A", prevention: "Consult KVK", urgency: "No action needed"};
+      // If JSON parse fails, show raw result
+      data = {
+        disease: outer.result || T("scanning"),
+        severity: "Unknown",
+        crop: cropType || "Unknown",
+        confidence: 70,
+        treatment: outer.result || "Please consult KVK",
+        medicine: "N/A",
+        dosage: "N/A",
+        prevention: "Consult local agricultural officer",
+        urgency: "Within 7 days"
+      };
     }
 
     const isHealthy = (data.disease || "").toLowerCase().includes("health");
-    const sevClass = {"Low":"severity-low","Medium":"severity-medium","High":"severity-high","None":"severity-low"}[data.severity] || "";
+    const sevColor = {"Low":"#16a34a","Medium":"#f5a623","High":"#dc2626","None":"#16a34a"}[data.severity] || "#6b7c6b";
 
     result.innerHTML = `
       <div class="disease-result ${isHealthy ? 'disease-healthy' : 'disease-sick'}">
         <div style="text-align:center;margin-bottom:12px">
           <div style="font-size:2.5rem;margin-bottom:6px">${isHealthy ? '✅' : '⚠️'}</div>
           <div class="disease-name">${data.disease || 'Analysis Result'}</div>
-          <div style="font-size:0.82rem;margin-top:4px;opacity:0.8">${data.crop} · Confidence: ${data.confidence}%</div>
-          ${data.severity !== 'None' && data.severity !== 'Unknown' ? `<div class="severity-badge ${sevClass}" style="margin-top:6px;display:inline-block;padding:3px 12px;border-radius:20px;font-weight:700;font-size:0.8rem">Severity: ${data.severity}</div>` : ''}
+          <div style="font-size:0.82rem;margin-top:4px;opacity:0.8">${data.crop} · ${T("scanning").includes("...") ? "Confidence" : "Confidence"}: ${data.confidence}%</div>
+          ${data.severity && data.severity !== 'None' && data.severity !== 'Unknown' ?
+            `<div style="margin-top:6px;display:inline-block;padding:3px 12px;border-radius:20px;background:${sevColor}22;color:${sevColor};font-weight:700;font-size:0.8rem">${data.severity}</div>` : ''}
         </div>
       </div>
+
       ${!isHealthy ? `
       <div class="card">
-        <div class="card-title" style="color:var(--green)">💊 Treatment</div>
+        <div class="card-title" style="color:var(--green)">💊 ${T("treatment")}</div>
         <div style="font-size:0.86rem;line-height:1.6;color:#374151;margin-bottom:10px">${data.treatment}</div>
-        ${data.medicine !== 'N/A' ? `
+        ${data.medicine && data.medicine !== 'N/A' ? `
         <div style="background:var(--gold-light);border-radius:10px;padding:12px;margin-bottom:10px">
-          <strong style="color:var(--earth)">Medicine:</strong> ${data.medicine}<br/>
-          <strong style="color:var(--earth)">Dosage:</strong> ${data.dosage}
+          <strong style="color:var(--earth)">💊 ${T("medicine")}:</strong> ${data.medicine}<br/>
+          <strong style="color:var(--earth)">📏 ${T("dosage")}:</strong> ${data.dosage}
         </div>` : ''}
         <div style="background:var(--green-light);border-radius:10px;padding:12px;margin-bottom:10px">
-          <strong style="color:var(--green)">🛡️ Prevention:</strong><br/>
+          <strong style="color:var(--green)">🛡️ ${T("prevention")}:</strong>
           <div style="font-size:0.84rem;margin-top:4px">${data.prevention}</div>
         </div>
-        <div style="background:${data.urgency==='Immediate'?'var(--red-light)':'var(--sky-light)'};border-radius:10px;padding:10px;text-align:center;font-weight:700">
-          ⏰ Urgency: ${data.urgency}
+        <div style="background:${data.urgency === 'Immediate' ? 'var(--red-light)' : 'var(--sky-light)'};border-radius:10px;padding:10px;text-align:center;font-weight:700">
+          ⏰ ${T("urgency")}: ${data.urgency}
         </div>
       </div>` : `
       <div class="card">
         <div style="text-align:center;padding:10px">
           <div style="font-size:1.5rem;margin-bottom:6px">🌱</div>
-          <div style="font-weight:700;color:#16a34a">Your crop looks healthy!</div>
+          <div style="font-weight:700;color:#16a34a">${T("healthy")}</div>
           <div style="font-size:0.84rem;color:var(--muted);margin-top:6px">${data.prevention}</div>
         </div>
       </div>`}
-      <div class="powered">🌾 AnnadataHub AI Vision · For serious disease consult local KVK</div>`;
-    showToast(isHealthy ? "Crop is healthy! ✅" : "Disease identified! Check treatment ⚠️", isHealthy ? "success" : "error");
+
+      <div style="background:var(--sky-light);border-radius:12px;padding:12px;margin-bottom:12px;font-size:0.82rem;text-align:center">
+        🏛️ ${T("ai_disclaimer")} · <a href="https://kvk.icar.gov.in" target="_blank" style="color:#0369a1;font-weight:600">kvk.icar.gov.in</a>
+      </div>
+      <div class="powered">🌾 AnnadataHub AI Vision</div>`;
+
+    showToast(isHealthy ? T("healthy") + " ✅" : "⚠️ " + data.disease, isHealthy ? "success" : "error");
+
   } catch(e) {
-    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Analysis failed. Try with a clearer photo in better light.</p></div>`;
+    result.innerHTML = `
+      <div class="empty">
+        <div class="icon">😕</div>
+        <p>Analysis failed. Please try again with a clearer photo in better light.</p>
+      </div>`;
     showToast("Error. Try with better photo.", "error");
   }
-  btn.disabled = false; btn.textContent = "🔍 Scan for Disease";
+
+  btn.disabled = false;
+  btn.innerHTML = `🔍 <span id="scan-btn-text">${T("scan_btn")}</span>`;
 }
 
-// MANDI PRICES
+// MANDI
 async function getMandiPrices() {
   const crop = document.getElementById("mandiCrop").value;
   const state = document.getElementById("mandiState").value;
   const btn = document.getElementById("mandi-btn");
   const result = document.getElementById("mandi-result");
-  btn.disabled = true; btn.textContent = "⏳ Loading...";
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching prices...</p></div>`;
+  btn.disabled = true; btn.innerHTML = `⏳ ${T("fetching_prices")}`;
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${T("fetching_prices")}</p></div>`;
   try {
     const res = await fetch(`${BACKEND}/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`);
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -420,19 +540,19 @@ async function getMandiPrices() {
     result.innerHTML = `
       <div class="card">
         <div class="card-title">${outer.crop} — ${outer.state}</div>
-        <div style="font-size:0.85rem;margin-bottom:8px;color:var(--muted)">MSP: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date}</div>
+        <div style="font-size:0.85rem;margin-bottom:8px;color:var(--muted)">${T("mandi_msp") || "MSP"}: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date}</div>
         <div class="price-grid">
           ${markets.map(m => `<div class="price-card"><div class="price-mandi">${m.market}</div><div class="price-amount">₹${m.price}</div><div class="price-unit">${m.unit}</div></div>`).join("")}
         </div>
-        <div class="advice-box"><strong>💡 Tip:</strong> ${raw.best_selling_tip}</div>
+        <div class="advice-box"><strong>💡 ${T("mandi_tip") || "Tip"}:</strong> ${raw.best_selling_tip}</div>
       </div>
-      <div class="powered">🌾 AnnadataHub AI · Verify at your local mandi before selling</div>`;
-    showToast("Prices fetched! ✅");
+      <div class="powered">🌾 ${T("verify_mandi")}</div>`;
+    showToast("✅ Prices loaded!");
   } catch(e) {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch prices. Try again.</p></div>`;
     showToast("Error fetching prices", "error");
   }
-  btn.disabled = false; btn.textContent = "📊 Get Today's Prices";
+  btn.disabled = false; btn.innerHTML = `📊 <span id="mandi-btn-text">${T("mandi_btn")}</span>`;
 }
 
 // WEATHER
@@ -440,8 +560,8 @@ async function getWeather() {
   const location = document.getElementById("weatherLocation").value || "Delhi";
   const btn = document.getElementById("weather-btn");
   const result = document.getElementById("weather-result");
-  btn.disabled = true; btn.textContent = "⏳ Loading...";
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching weather...</p></div>`;
+  btn.disabled = true; btn.innerHTML = `⏳ ${T("fetching_weather")}`;
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${T("fetching_weather")}</p></div>`;
   try {
     const res = await fetch(`${BACKEND}/api/weather?location=${encodeURIComponent(location)}`);
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -455,31 +575,31 @@ async function getWeather() {
         <div class="weather-desc">${w.description || 'Current conditions'}</div>
         <div class="weather-location">📍 ${outer.location}</div>
         <div class="weather-grid">
-          <div class="weather-stat"><div class="icon">💧</div><div class="val">${w.humidity}%</div><div class="lbl">Humidity</div></div>
-          <div class="weather-stat"><div class="icon">🌧</div><div class="val">${w.rainfall_chance}%</div><div class="lbl">Rain Chance</div></div>
-          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work||'6-10am'}</div><div class="lbl">Best Time</div></div>
+          <div class="weather-stat"><div class="icon">💧</div><div class="val">${w.humidity}%</div><div class="lbl">${T("humidity")}</div></div>
+          <div class="weather-stat"><div class="icon">🌧</div><div class="val">${w.rainfall_chance}%</div><div class="lbl">${T("rain")}</div></div>
+          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work || '6-10am'}</div><div class="lbl">${T("best_time")}</div></div>
         </div>
       </div>
-      <div style="padding:12px;border-radius:10px;background:${w.spray_suitable?'var(--green-light)':'var(--earth-light)'};margin-bottom:12px">
-        <strong>${w.spray_suitable?'✅ Good for spraying':'⚠️ Avoid spraying today'}</strong>
+      <div style="padding:12px;border-radius:10px;background:${w.spray_suitable ? 'var(--green-light)' : 'var(--earth-light)'};margin-bottom:12px">
+        <strong>${w.spray_suitable ? T("spray_ok") : T("spray_no")}</strong>
         <p style="margin-top:4px;font-size:0.85rem">${w.farming_advice}</p>
-        ${w.alert?`<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>`:''}
+        ${w.alert ? `<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>` : ''}
       </div>`;
-    showToast("Weather fetched! ✅");
+    showToast("✅ Weather loaded!");
   } catch(e) {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch weather. Please try again.</p></div>`;
     showToast("Error fetching weather", "error");
   }
-  btn.disabled = false; btn.textContent = "🌤️ Get Weather & Alerts";
+  btn.disabled = false; btn.innerHTML = `🌤️ <span id="weather-btn-text">${T("weather_btn")}</span>`;
 }
 
-// GOVERNMENT SCHEMES
+// SCHEMES
 async function getSchemes() {
   const state = document.getElementById("schemeState").value;
   const btn = document.getElementById("schemes-btn");
   const result = document.getElementById("schemes-result");
-  btn.disabled = true; btn.textContent = "⏳ Loading...";
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Finding schemes...</p></div>`;
+  btn.disabled = true; btn.innerHTML = `⏳ ${T("finding_schemes")}`;
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${T("finding_schemes")}</p></div>`;
   try {
     const res = await fetch(`${BACKEND}/api/schemes?state=${encodeURIComponent(state)}`);
     if (!res.ok) throw new Error("HTTP " + res.status);
@@ -487,7 +607,7 @@ async function getSchemes() {
     const data = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
     const schemes = data.schemes || [];
     result.innerHTML = `
-      <div class="advice-box" style="margin-bottom:14px"><strong>🎯 Your Eligibility:</strong> ${data.summary}</div>
+      <div class="advice-box" style="margin-bottom:14px"><strong>🎯</strong> ${data.summary}</div>
       ${schemes.map((s, i) => `
         <div class="scheme-card">
           <div class="scheme-header" onclick="toggleScheme(${i})">
@@ -496,32 +616,44 @@ async function getSchemes() {
             <div class="scheme-amount"><div class="amt">${s.amount}</div><div class="lbl">${s.amount_label}</div></div>
           </div>
           <div class="scheme-body" id="scheme-${i}">
-            <span class="eligible-badge">✅ You are eligible!</span>
+            <span class="eligible-badge">${T("eligible")}</span>
             <p>${s.description}</p>
             <strong style="font-size:0.82rem;color:var(--green)">Benefits:</strong>
-            <ul>${(s.benefits||[]).map(b=>`<li>${b}</li>`).join("")}</ul>
-            <div style="margin-top:10px"><strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong><p style="margin-top:4px">${(s.documents||[]).join(", ")}</p></div>
-            <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">📋 <strong>How to apply:</strong> ${s.how_to_apply}</div>
-            <a href="${s.apply_url}" target="_blank" class="apply-btn">Apply Now →</a>
+            <ul>${(s.benefits || []).map(b => `<li>${b}</li>`).join("")}</ul>
+            <div style="margin-top:10px">
+              <strong style="font-size:0.82rem;color:var(--green)">${T("documents")}:</strong>
+              <p style="margin-top:4px">${(s.documents || []).join(", ")}</p>
+            </div>
+            <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">
+              📋 <strong>${T("how_apply")}:</strong> ${s.how_to_apply}
+            </div>
+            <a href="${s.apply_url}" target="_blank" class="apply-btn">${T("apply")}</a>
           </div>
         </div>`).join("")}
-      <div class="powered">🌾 Always verify at official government websites</div>`;
-    showToast("Schemes loaded! ✅");
+      <div class="powered">🌾 ${T("verify_schemes")}</div>`;
+    showToast("✅ Schemes loaded!");
   } catch(e) {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch schemes. Please try again.</p></div>`;
     showToast("Error fetching schemes", "error");
   }
-  btn.disabled = false; btn.textContent = "🏛️ Find My Eligible Schemes";
+  btn.disabled = false; btn.innerHTML = `🏛️ <span id="schemes-btn-text">${T("schemes_btn")}</span>`;
 }
 
 function toggleScheme(i) { document.getElementById("scheme-" + i).classList.toggle("open"); }
 
-// Hash navigation — open specific tab from index.html links
+// Hash navigation
 window.addEventListener("load", () => {
-  const hash = window.location.hash.replace("#","");
-  if (hash && document.getElementById("tab-" + hash)) {
-    showTab(hash);
-  }
+  const hash = window.location.hash.replace("#", "");
+  if (hash && document.getElementById("tab-" + hash)) showTab(hash);
+  // Load saved language
+  try {
+    const saved = localStorage.getItem("annadatahub_lang");
+    if (saved) {
+      currentLang = saved;
+      document.getElementById("langSelect").value = saved;
+      applyLang();
+    }
+  } catch(e) {}
 });
 </script>
 </body>
