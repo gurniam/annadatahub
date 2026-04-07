@@ -9,6 +9,7 @@ import httpx
 import json
 import logging
 import hashlib
+import base64
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from typing import Optional
@@ -30,6 +31,7 @@ app.add_middleware(
 MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
 DB_NAME = os.environ.get("DB_NAME", "annadatahub")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
 JWT_SECRET = os.environ.get("JWT_SECRET_KEY")
 if not JWT_SECRET:
@@ -38,7 +40,7 @@ if not JWT_SECRET:
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
-# ── In-memory cache (resets on restart, fine for free tier) ──────
+# ── In-memory cache ──────────────────────────────────────────────
 _cache = {}
 
 def cache_get(key: str):
@@ -147,51 +149,60 @@ async def call_ai(prompt: str, system: str = "") -> Optional[str]:
         return None
 
 
-async def call_ai_vision(image_base64: str, prompt: str) -> Optional[str]:
-    if not GROQ_API_KEY:
+async def call_gemini_vision(image_base64: str, prompt: str) -> Optional[str]:
+    """Use Google Gemini for crop image analysis - more reliable than Groq vision"""
+    if not GEMINI_API_KEY:
+        logger.error("GEMINI_API_KEY is not set")
         return None
     try:
         async with httpx.AsyncClient(timeout=60.0) as c:
             r = await c.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {GROQ_API_KEY}",
-                    "Content-Type": "application/json"
-                },
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}",
+                headers={"Content-Type": "application/json"},
                 json={
-                    "model": "llama-3.2-90b-vision-preview",
-                    "max_tokens": 1024,
-                    "messages": [
+                    "contents": [
                         {
-                            "role": "user",
-                            "content": [
+                            "parts": [
                                 {
-                                    "type": "image_url",
-                                    "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}
+                                    "inline_data": {
+                                        "mime_type": "image/jpeg",
+                                        "data": image_base64
+                                    }
                                 },
-                                {"type": "text", "text": prompt}
+                                {
+                                    "text": prompt
+                                }
                             ]
                         }
-                    ]
+                    ],
+                    "generationConfig": {
+                        "temperature": 0.1,
+                        "maxOutputTokens": 1024
+                    }
                 }
             )
-            if r.status_code == 429:
-                logger.warning("Groq vision rate limit hit")
+            logger.info("Gemini vision status: %s", r.status_code)
+            if r.status_code != 200:
+                logger.error("Gemini vision error: %s", r.text)
                 return None
-            r.raise_for_status()
             data = r.json()
-            if "choices" in data and len(data["choices"]) > 0:
-                return data["choices"][0]["message"]["content"]
+            candidates = data.get("candidates", [])
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts", [])
+                if parts:
+                    return parts[0].get("text", "")
             return None
     except Exception as e:
-        logger.error("Error calling Groq vision: %s", e)
+        logger.error("Error calling Gemini vision: %s", e)
         return None
 
 
 def get_mandi_fallback(crop: str, state: str) -> str:
     prices = {
         "wheat": 2275, "rice": 2183, "maize": 1870,
-        "cotton": 6620, "sugarcane": 315, "soybean": 4600
+        "cotton": 6620, "sugarcane": 315, "soybean": 4600,
+        "mustard": 5650, "groundnut": 6377, "chilli": 5000,
+        "onion": 1500, "potato": 1200, "tomato": 2000
     }
     msp = prices.get(crop.lower(), 2000)
     return json.dumps({
@@ -216,33 +227,18 @@ def get_weather_fallback(location: str) -> str:
     })
 
 
-def get_msp_fallback(crop: str) -> str:
-    msp_data = {"wheat": 2275, "rice": 2183, "maize": 1870, "cotton": 6620, "soybean": 4600}
-    price = msp_data.get(crop.lower(), 2000)
-    return json.dumps({
-        "crop": crop, "msp_price": price,
-        "procurement_agency": "FCI / State agencies",
-        "documents_needed": ["Aadhar card", "Bank passbook", "Land records"],
-        "how_to_sell": "Register on state portal > Get token > Bring crop > Quality check > Payment in 3-5 days",
-        "payment_timeline": "3-5 working days to bank account",
-        "helpline": "Kisan Call Center: 1800-180-1551 (Free)"
-    })
-
-
 FALLBACK_NEWS = [
-    {"category": "price", "title": "Wheat MSP increased to ₹2,275/quintal for 2024-25", "summary": "Government announces minimum support price hike for wheat. Farmers urged to register on state portal before selling.", "detail": "The Cabinet Committee on Economic Affairs approved the MSP for wheat at ₹2,275 per quintal. Farmers in Punjab, Haryana and UP will benefit most from this increase of ₹150 from last year.", "impact": "You can now sell wheat at ₹2,275 minimum. Don't sell below MSP.", "action": "Register on your state mandi portal and get token before bringing crop.", "time_ago": "2 hours ago"},
-    {"category": "scheme", "title": "PM-KISAN installment released — check your account", "summary": "₹2,000 transferred to eligible farmers. Check your bank account or PM-KISAN portal.", "detail": "Over 9 crore farmers will receive ₹2,000 directly in their bank accounts. If you haven't received, check your eKYC status at pmkisan.gov.in.", "impact": "₹2,000 should be in your account within 2-3 days.", "action": "Visit pmkisan.gov.in or call 155261 if not received.", "time_ago": "1 day ago"},
-    {"category": "weather", "title": "Pre-monsoon rains expected — protect rabi harvest", "summary": "IMD warns of unseasonal rains in North India. Farmers should harvest and store crops immediately.", "detail": "The India Meteorological Department has issued advisory for pre-monsoon rains in Punjab, Haryana and UP. Wheat and mustard farmers should accelerate harvesting operations.", "impact": "Unseasonal rain can damage standing wheat crop significantly.", "action": "Harvest immediately if crop is ready. Store in dry place. Cover with tarpaulin.", "time_ago": "3 hours ago"},
-    {"category": "alert", "title": "Fall Armyworm attack in Maize crops — act fast", "summary": "Pest attack spreading across several states. Spray Emamectin benzoate immediately.", "detail": "Fall Armyworm detected in maize crops across Maharashtra, Karnataka and Andhra Pradesh. The pest can destroy 30-50% of crop in 2-3 days if not treated.", "impact": "Can destroy your maize crop if not treated within 3 days.", "action": "Spray Emamectin benzoate 5% SG at 0.4g per litre. Contact KVK for free inspection.", "time_ago": "5 hours ago"},
-    {"category": "scheme", "title": "PM-KUSUM solar pump — 90% subsidy available", "summary": "Solar pumps available at just 10% cost to farmer. Free electricity for irrigation forever.", "detail": "Under PM-KUSUM scheme, farmers can get solar pumps with 90% government subsidy. Over 20 lakh pumps to be installed. Save ₹20,000-50,000 per year on electricity bills.", "impact": "Save ₹20,000-50,000 per year on electricity bills.", "action": "Apply at pmkusum.mnre.gov.in or visit district agriculture office.", "time_ago": "1 day ago"},
+    {"category": "price", "title": "Wheat MSP increased to ₹2,275/quintal for 2024-25", "summary": "Government announces minimum support price hike for wheat.", "detail": "The MSP for wheat has been set at ₹2,275 per quintal for the 2024-25 Rabi season.", "impact": "You can now sell wheat at ₹2,275 minimum.", "action": "Register on your state mandi portal before selling.", "time_ago": "2 hours ago"},
+    {"category": "scheme", "title": "PM-KISAN installment released — check your account", "summary": "₹2,000 transferred to eligible farmers.", "detail": "Over 9 crore farmers will receive ₹2,000 directly in bank accounts.", "impact": "₹2,000 should be in your account within 2-3 days.", "action": "Visit pmkisan.gov.in or call 155261 if not received.", "time_ago": "1 day ago"},
+    {"category": "weather", "title": "Pre-monsoon rains expected — protect rabi harvest", "summary": "IMD warns of unseasonal rains in North India.", "detail": "Wheat and mustard farmers should accelerate harvesting operations.", "impact": "Unseasonal rain can damage standing wheat crop.", "action": "Harvest immediately if ready. Store in dry place.", "time_ago": "3 hours ago"},
+    {"category": "alert", "title": "Fall Armyworm attack in Maize crops — act fast", "summary": "Pest attack spreading across several states.", "detail": "Fall Armyworm detected in maize crops across Maharashtra, Karnataka and AP.", "impact": "Can destroy your maize crop if not treated within 3 days.", "action": "Spray Emamectin benzoate 5% SG at 0.4g per litre.", "time_ago": "5 hours ago"},
+    {"category": "scheme", "title": "PM-KUSUM solar pump — 90% subsidy available", "summary": "Solar pumps available at just 10% cost to farmer.", "detail": "Under PM-KUSUM scheme, farmers can get solar pumps with 90% government subsidy.", "impact": "Save ₹20,000-50,000 per year on electricity bills.", "action": "Apply at pmkusum.mnre.gov.in or visit district agriculture office.", "time_ago": "1 day ago"},
 ]
 
 
 async def fetch_rss_news(state: str) -> list:
-    """Fetch real agriculture news from free RSS feeds"""
     rss_urls = [
         "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=3",
-        "https://agricoop.nic.in/sites/default/files/rss.xml",
     ]
     news_items = []
     for url in rss_urls:
@@ -260,7 +256,7 @@ async def fetch_rss_news(state: str) -> list:
                             if title:
                                 news_items.append({
                                     "category": "general",
-                                    "title": title[:100],
+                                    "title": title[:120],
                                     "summary": desc[:200] if desc else title,
                                     "detail": desc[:400] if desc else title,
                                     "impact": "Stay informed about government agriculture policies.",
@@ -268,8 +264,7 @@ async def fetch_rss_news(state: str) -> list:
                                     "time_ago": pub[:20] if pub else "Recently"
                                 })
         except Exception as e:
-            logger.warning("RSS fetch failed for %s: %s", url, e)
-            continue
+            logger.warning("RSS fetch failed: %s", e)
     return news_items
 
 
@@ -285,7 +280,8 @@ async def health():
         "message": "AnnadataHub backend is live!",
         "ai_enabled": bool(GROQ_API_KEY),
         "ai_provider": "Groq (llama-3.3-70b-versatile)",
-        "vision_provider": "Groq (llama-3.2-11b-vision-preview)"
+        "vision_provider": "Google Gemini (gemini-1.5-flash)",
+        "gemini_enabled": bool(GEMINI_API_KEY)
     }
 
 
@@ -335,34 +331,80 @@ async def login(user: UserLogin):
 @app.post("/api/crop/scan")
 async def scan_crop(request: CropScanRequest, authorization: str = Header(None)):
     lang_map = {
-        "hi": "Respond in Hindi.", "pa": "Respond in Punjabi.",
-        "mr": "Respond in Marathi.", "te": "Respond in Telugu.",
-        "ta": "Respond in Tamil.", "en": "Respond in English."
+        "hi": "Respond in Hindi (हिंदी में जवाब दें).",
+        "pa": "Respond in Punjabi (ਪੰਜਾਬੀ ਵਿੱਚ ਜਵਾਬ ਦਿਓ).",
+        "mr": "Respond in Marathi (मराठीत उत्तर द्या).",
+        "te": "Respond in Telugu (తెలుగులో సమాధానం).",
+        "ta": "Respond in Tamil (தமிழில் பதில்).",
+        "en": "Respond in English."
     }
     lang_instruction = lang_map.get(request.language, "Respond in English.")
 
     prompt = (
-        f'You are an expert agricultural scientist. {lang_instruction} '
-        f'Analyze this crop image carefully and respond ONLY with this exact JSON structure: '
-        f'{{"disease": "disease name or Healthy", "severity": "Low/Medium/High/None", '
-        f'"crop": "identified crop type", "confidence": 85, '
-        f'"treatment": "specific treatment steps", "medicine": "specific medicine name available in India", '
-        f'"dosage": "exact dosage per litre of water", "prevention": "prevention tips", '
-        f'"urgency": "Immediate/Within 7 days/No action needed"}}'
+        f"You are an expert agricultural scientist specializing in Indian crops. {lang_instruction} "
+        f"Carefully analyze this crop/plant image and identify any disease, pest damage, or nutritional deficiency. "
+        f"Return ONLY this exact JSON with no extra text: "
+        f"{{\"disease\": \"specific disease name or Healthy\", \"severity\": \"Low/Medium/High/None\", "
+        f"\"crop\": \"identified crop type\", \"confidence\": 85, "
+        f"\"treatment\": \"specific actionable treatment steps\", "
+        f"\"medicine\": \"specific medicine name available in India\", "
+        f"\"dosage\": \"exact dosage per litre of water\", "
+        f"\"prevention\": \"prevention tips for next season\", "
+        f"\"urgency\": \"Immediate/Within 7 days/No action needed\"}}"
     )
-    result = await call_ai_vision(request.image_base64, prompt)
+
+    # Use Gemini for vision - more reliable than Groq
+    result = await call_gemini_vision(request.image_base64, prompt)
+    logger.info("Gemini vision result: %s", result[:200] if result else "None")
+
+    if not result:
+        logger.warning("Gemini vision returned nothing, trying Groq as fallback")
+        # Fallback to Groq vision
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as c:
+                r = await c.post(
+                    "https://api.groq.com/openai/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {GROQ_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "llama-3.2-11b-vision-preview",
+                        "max_tokens": 1024,
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "image_url",
+                                        "image_url": {"url": f"data:image/jpeg;base64,{request.image_base64}"}
+                                    },
+                                    {"type": "text", "text": prompt}
+                                ]
+                            }
+                        ]
+                    }
+                )
+                if r.status_code == 200:
+                    data = r.json()
+                    if "choices" in data:
+                        result = data["choices"][0]["message"]["content"]
+        except Exception as e:
+            logger.error("Groq vision fallback also failed: %s", e)
+
     if not result:
         result = json.dumps({
             "disease": "Analysis unavailable",
             "severity": "Unknown",
             "crop": request.crop_type or "Unknown",
             "confidence": 0,
-            "treatment": "Please try again with a clearer photo or consult Krishi Vigyan Kendra",
+            "treatment": "Please try again with a clearer photo in good daylight or consult Krishi Vigyan Kendra",
             "medicine": "N/A",
             "dosage": "N/A",
             "prevention": "Consult local agricultural officer",
             "urgency": "No action needed"
         })
+
     if authorization:
         try:
             payload = verify_token(authorization.replace("Bearer ", ""))
@@ -376,16 +418,15 @@ async def scan_crop(request: CropScanRequest, authorization: str = Header(None))
             await db.users.update_one({"_id": payload["user_id"]}, {"$inc": {"scan_count": 1}})
         except Exception as e:
             logger.warning("Could not save scan: %s", e)
+
     return {"success": True, "result": result}
 
 
 @app.post("/api/ai/ask")
 async def ask_ai(query: AIQuery):
-    # Cache check — same question gets cached answer for 6 hours
     cache_key = hashlib.md5(f"{query.question}{query.language}".encode()).hexdigest()
     cached = cache_get(cache_key)
     if cached:
-        logger.info("Cache hit for question")
         return {"success": True, "answer": cached, "powered_by": "AnnadataHub AI", "cached": True}
 
     lang_map = {
@@ -418,16 +459,12 @@ async def ask_ai(query: AIQuery):
 
 @app.get("/api/news")
 async def get_news(state: str = "All India", topic: str = "all"):
-    """Get agriculture news — cached per state per day"""
     cache_key = f"news_{state}_{topic}_{datetime.utcnow().strftime('%Y-%m-%d')}"
     cached = cache_get(cache_key)
     if cached:
         return {"success": True, "news": cached, "source": "cache"}
 
-    # Try RSS first (free, authentic)
     rss_news = await fetch_rss_news(state)
-
-    # Fill remaining slots with AI-generated news
     news = rss_news[:2] if rss_news else []
 
     if len(news) < 5:
@@ -441,16 +478,13 @@ async def get_news(state: str = "All India", topic: str = "all"):
                 match_start = clean.find("{")
                 if match_start >= 0:
                     ai_data = json.loads(clean[match_start:])
-                    ai_news = ai_data.get("news", [])
-                    news.extend(ai_news)
+                    news.extend(ai_data.get("news", []))
         except Exception as e:
             logger.warning("AI news generation failed: %s", e)
 
-    # Always have at least fallback news
     if not news:
         news = FALLBACK_NEWS
 
-    # Cache for 6 hours
     cache_set(cache_key, news, hours=6)
     return {"success": True, "news": news, "source": "live"}
 
@@ -486,7 +520,7 @@ async def weather(location: str = "Punjab"):
             )
             w = r.json()
             if w.get("cod") != 200:
-                raise Exception(f"OpenWeather bad response: {w.get('message')}")
+                raise Exception(f"OpenWeather error: {w.get('message')}")
             temp = w["main"]["temp"]
             humidity = w["main"]["humidity"]
             rain = w.get("rain", {}).get("1h", 0)
@@ -509,38 +543,15 @@ async def weather(location: str = "Punjab"):
 @app.get("/api/schemes")
 async def govt_schemes(state: str = "Punjab"):
     schemes = [
-        {"name": "PM-KISAN", "emoji": "💰", "color": "#2e7d32", "tagline": "₹6,000/year direct to bank", "amount": "₹6,000", "amount_label": "per year", "eligible": True, "description": "Direct income support of Rs.6000 per year to all farmer families with cultivable land.", "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center", "apply_url": "https://pmkisan.gov.in"},
-        {"name": "PM Fasal Bima Yojana", "emoji": "🌾", "color": "#f57c00", "tagline": "Crop insurance at lowest premium", "amount": "1.5-2%", "amount_label": "premium only", "eligible": True, "description": "Comprehensive crop insurance against flood, drought, pest and disease at very low premium.", "benefits": ["Full compensation for crop loss", "Kharif premium only 2%", "Rabi premium only 1.5%"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"], "how_to_apply": "Contact nearest bank before sowing season", "apply_url": "https://pmfby.gov.in"},
-        {"name": "Kisan Credit Card", "emoji": "💳", "color": "#1565c0", "tagline": "Crop loan at 4% interest", "amount": "₹3 lakh", "amount_label": "at 4% interest", "eligible": True, "description": "Easy credit for crop production, post-harvest expenses and allied activities.", "benefits": ["Loan up to Rs.3 lakh", "Interest rate only 4%", "Flexible repayment"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Passport photo"], "how_to_apply": "Apply at nearest SBI, PNB or cooperative bank", "apply_url": "https://www.sbi.co.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card"},
-        {"name": "PM Kisan Maan Dhan Yojana", "emoji": "👴", "color": "#6a1b9a", "tagline": "₹3,000/month pension after 60", "amount": "₹3,000", "amount_label": "per month after 60", "eligible": True, "description": "Pension scheme for small and marginal farmers to secure their old age.", "benefits": ["₹3,000 monthly pension", "Contribute only ₹55-200/month", "Government matches contribution"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Age proof"], "how_to_apply": "Visit nearest CSC center with documents", "apply_url": "https://maandhan.in"},
-        {"name": "Soil Health Card", "emoji": "🌱", "color": "#558b2f", "tagline": "Free soil testing + advice", "amount": "Free", "amount_label": "no cost", "eligible": True, "description": "Free soil testing to get crop-wise recommendations for fertilizers and nutrients.", "benefits": ["Free soil testing", "Fertilizer recommendations", "Reduce input costs by 20%"], "documents": ["Aadhar card", "Land records"], "how_to_apply": "Contact nearest Krishi Vigyan Kendra or agriculture office", "apply_url": "https://soilhealth.dac.gov.in"},
-        {"name": "PM-KUSUM Solar Pump", "emoji": "☀️", "color": "#f57f17", "tagline": "90% subsidy on solar pump", "amount": "90%", "amount_label": "subsidy", "eligible": True, "description": "Solar water pumps with 90% government subsidy. Free electricity for irrigation forever.", "benefits": ["90% subsidy from government", "Save ₹20,000-50,000/year", "Free irrigation electricity"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Electricity bill"], "how_to_apply": "Apply at pmkusum.mnre.gov.in or district agriculture office", "apply_url": "https://pmkusum.mnre.gov.in"},
+        {"name": "PM-KISAN", "emoji": "💰", "color": "#2e7d32", "tagline": "₹6,000/year direct to bank", "amount": "₹6,000", "amount_label": "per year", "description": "Direct income support of Rs.6000 per year to all farmer families.", "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center", "apply_url": "https://pmkisan.gov.in"},
+        {"name": "PM Fasal Bima Yojana", "emoji": "🌾", "color": "#f57c00", "tagline": "Crop insurance at lowest premium", "amount": "1.5-2%", "amount_label": "premium only", "description": "Comprehensive crop insurance against flood, drought, pest and disease.", "benefits": ["Full compensation for crop loss", "Kharif premium only 2%", "Rabi premium only 1.5%"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"], "how_to_apply": "Contact nearest bank before sowing season", "apply_url": "https://pmfby.gov.in"},
+        {"name": "Kisan Credit Card", "emoji": "💳", "color": "#1565c0", "tagline": "Crop loan at 4% interest", "amount": "₹3 lakh", "amount_label": "at 4% interest", "description": "Easy credit for crop production at very low interest rate.", "benefits": ["Loan up to Rs.3 lakh", "Interest rate only 4%", "Flexible repayment"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Passport photo"], "how_to_apply": "Apply at nearest SBI, PNB or cooperative bank", "apply_url": "https://www.sbi.co.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card"},
+        {"name": "PM Kisan Maan Dhan Yojana", "emoji": "👴", "color": "#6a1b9a", "tagline": "₹3,000/month pension after 60", "amount": "₹3,000", "amount_label": "per month after 60", "description": "Pension scheme for small and marginal farmers.", "benefits": ["₹3,000 monthly pension", "Contribute only ₹55-200/month", "Government matches contribution"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Age proof"], "how_to_apply": "Visit nearest CSC center with documents", "apply_url": "https://maandhan.in"},
+        {"name": "Soil Health Card", "emoji": "🌱", "color": "#558b2f", "tagline": "Free soil testing + advice", "amount": "Free", "amount_label": "no cost", "description": "Free soil testing to get crop-wise recommendations for fertilizers.", "benefits": ["Free soil testing", "Fertilizer recommendations", "Reduce input costs by 20%"], "documents": ["Aadhar card", "Land records"], "how_to_apply": "Contact nearest Krishi Vigyan Kendra", "apply_url": "https://soilhealth.dac.gov.in"},
+        {"name": "PM-KUSUM Solar Pump", "emoji": "☀️", "color": "#f57f17", "tagline": "90% subsidy on solar pump", "amount": "90%", "amount_label": "subsidy", "description": "Solar water pumps with 90% government subsidy. Free electricity forever.", "benefits": ["90% subsidy from government", "Save ₹20,000-50,000/year", "Free irrigation electricity"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Electricity bill"], "how_to_apply": "Apply at pmkusum.mnre.gov.in or district agriculture office", "apply_url": "https://pmkusum.mnre.gov.in"},
     ]
-    data = {
-        "summary": f"You are eligible for {len(schemes)} central government schemes. Apply today to get maximum benefits.",
-        "schemes": schemes
-    }
+    data = {"summary": f"You are eligible for {len(schemes)} central government schemes. Apply today!", "schemes": schemes}
     return {"success": True, "data": json.dumps(data)}
-
-
-@app.get("/api/msp")
-async def msp_info(crop: str = "wheat"):
-    cache_key = f"msp_{crop}"
-    cached = cache_get(cache_key)
-    if cached:
-        return {"success": True, "data": cached, "crop": crop}
-
-    prompt = (
-        f'MSP info for {crop} India 2024-25. JSON only: {{"crop": "{crop}", "msp_price": 2275, '
-        f'"procurement_agency": "agency", "documents_needed": ["doc1"], '
-        f'"how_to_sell": "steps", "payment_timeline": "days", "helpline": "number"}}'
-    )
-    result = await call_ai(prompt)
-    if not result:
-        result = get_msp_fallback(crop)
-
-    cache_set(cache_key, result, hours=24)
-    return {"success": True, "data": result, "crop": crop}
 
 
 @app.get("/api/farmgram/posts")
@@ -572,8 +583,7 @@ async def create_post(post: FarmGramPost, authorization: str = Header(None)):
             "crop_type": post.crop_type,
             "location": post.location,
             "image_base64": post.image_base64,
-            "likes": 0,
-            "liked_by": [],
+            "likes": 0, "liked_by": [],
             "created_at": datetime.utcnow().isoformat()
         })
         return {"success": True, "post_id": post_id}
@@ -602,7 +612,6 @@ async def like_post(post_id: str, authorization: str = Header(None)):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("Like error: %s", e)
         raise HTTPException(status_code=500, detail="Could not like post")
 
 
@@ -627,5 +636,4 @@ async def get_profile(authorization: str = Header(None)):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("Profile fetch error: %s", e)
         raise HTTPException(status_code=500, detail="Could not fetch profile")
