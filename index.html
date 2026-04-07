@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AnnadataHub — Farmer App</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
-
 <style>
   :root{--green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;--gold:#f5a623;--gold-light:#fff8ec;--blue:#2563eb;--red:#dc2626;--bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -138,7 +137,10 @@
           <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
           <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
           <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
-          <option>Himachal Pradesh</option><option>Other</option>
+          <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
+          <option>Assam</option><option>Goa</option><option>Sikkim</option>
+          <option>Manipur</option><option>Meghalaya</option><option>Tripura</option>
+          <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
         </select>
       </div>
       <div class="auth-field"><label>🔒 Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password"/></div>
@@ -207,27 +209,29 @@
   <div class="greet-time" id="greetTime">Good Morning ☀️</div>
   <div class="greet-text" id="greetText">Good Morning, Farmer! 🙏</div>
   <div class="greet-sub" id="greetSub">How is your crop today?</div>
-  <div class="weather-pill">🌤️ 28°C · Good weather for spraying today</div>
+  <div class="weather-pill">🌤️ Check weather for your farm →</div>
 </div>
 
 <div class="content">
   <div class="tip-card">
     <div style="font-size:1.3rem">💡</div>
-    <div><div style="font-weight:700;font-size:0.86rem;color:#92400e">Today's Tip</div><div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust this season. Spray Propiconazole immediately if found.</div></div>
+    <div><div style="font-weight:700;font-size:0.86rem;color:#92400e">Today's Tip</div><div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust. Spray Propiconazole immediately if found.</div></div>
   </div>
 
   <div class="section-title">🚀 Most Important</div>
-  <a class="big-btn green" href="farmer-tools.html">
+
+  <!-- Direct links with hash for tab navigation -->
+  <a class="big-btn green" href="farmer-tools.html#scan">
     <div class="btn-icon-wrap" style="background:rgba(255,255,255,0.2)">📷</div>
     <div style="flex:1"><div class="btn-title" style="color:white">Scan Sick Crop</div><div class="btn-desc" style="color:rgba(255,255,255,0.8)">Take photo → AI tells disease + treatment in 30 seconds</div><span class="btn-badge" style="background:var(--gold);color:var(--text)">FREE</span></div>
     <div class="btn-arrow" style="color:rgba(255,255,255,0.7)">→</div>
   </a>
-  <a class="big-btn" href="farmer-tools.html">
+  <a class="big-btn" href="farmer-tools.html#mandi">
     <div class="btn-icon-wrap" style="background:#dcfce7">📊</div>
     <div style="flex:1"><div class="btn-title">Today's Mandi Price</div><div class="btn-desc">Check today's price before selling your crop</div><span class="btn-badge" style="background:#dcfce7;color:#16a34a">UPDATED DAILY</span></div>
     <div class="btn-arrow">→</div>
   </a>
-  <a class="big-btn" href="farmer-tools.html">
+  <a class="big-btn" href="farmer-tools.html#weather">
     <div class="btn-icon-wrap" style="background:#e0f2fe">🌦️</div>
     <div style="flex:1"><div class="btn-title">Weather for My Farm</div><div class="btn-desc">Rain coming? Good day to spray? Check now</div><span class="btn-badge" style="background:#e0f2fe;color:#0369a1">5-DAY FORECAST</span></div>
     <div class="btn-arrow">→</div>
@@ -237,7 +241,7 @@
     <div style="flex:1"><div class="btn-title">MSP vs Mandi Price</div><div class="btn-desc">Check if you are getting fair price for your crop</div><span class="btn-badge" style="background:#fef9c3;color:#92400e">SAVE MONEY</span></div>
     <div class="btn-arrow">→</div>
   </a>
-  <a class="big-btn" href="power-tools.html">
+  <a class="big-btn" href="power-tools.html#voice">
     <div class="btn-icon-wrap" style="background:#f5f3ff">🎙️</div>
     <div style="flex:1"><div class="btn-title">Speak Your Question</div><div class="btn-desc">Can't type? Just speak in your language</div><span class="btn-badge" style="background:#f5f3ff;color:#7c3aed">11 LANGUAGES</span></div>
     <div class="btn-arrow">→</div>
@@ -247,9 +251,9 @@
   <div class="quick-grid">
     <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">📅</div><div class="quick-title">Crop Calendar</div><div class="quick-desc">What to do today on your farm</div></a>
     <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">💊</div><div class="quick-title">Fertilizer Guide</div><div class="quick-desc">Exact quantity for your field</div></a>
-    <a class="quick-btn" href="farmer-tools.html"><div class="quick-icon">🏛️</div><div class="quick-title">Govt Schemes</div><div class="quick-desc">PM-Kisan & other schemes</div></a>
-    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">💰</div><div class="quick-title">Profit Calculator</div><div class="quick-desc">Did you earn or lose?</div></a>
-    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">🌍</div><div class="quick-title">Soil Health</div><div class="quick-desc">AI soil analysis</div></a>
+    <a class="quick-btn" href="farmer-tools.html#schemes"><div class="quick-icon">🏛️</div><div class="quick-title">Govt Schemes</div><div class="quick-desc">PM-Kisan & other schemes</div></a>
+    <a class="quick-btn" href="power-tools.html#profit"><div class="quick-icon">💰</div><div class="quick-title">Profit Calculator</div><div class="quick-desc">Did you earn or lose?</div></a>
+    <a class="quick-btn" href="power-tools.html#soil"><div class="quick-icon">🌍</div><div class="quick-title">Soil Health</div><div class="quick-desc">AI soil analysis with photo</div></a>
     <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🏦</div><div class="quick-title">Loan Calculator</div><div class="quick-desc">Calculate your EMI</div></a>
     <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🧪</div><div class="quick-title">Pesticide Guide</div><div class="quick-desc">Correct dosage for crops</div></a>
     <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🛡️</div><div class="quick-title">Crop Insurance</div><div class="quick-desc">PMFBY calculator</div></a>
@@ -257,24 +261,18 @@
 
   <div class="section-title">🎓 Learn & Connect</div>
   <div class="quick-grid">
-    <a class="quick-btn" href="learn.html"><div class="quick-icon">🌱</div><div class="quick-title">New Techniques</div><div class="quick-desc">Hydroponics, mushroom & more</div></a>
-    <a class="quick-btn" href="learn.html"><div class="quick-icon">💼</div><div class="quick-title">Business Ideas</div><div class="quick-desc">Earn beyond farming</div></a>
-    <a class="quick-btn" href="learn.html"><div class="quick-icon">▶️</div><div class="quick-title">YouTube Videos</div><div class="quick-desc">Learn in your language</div></a>
-    <a class="quick-btn" href="learn.html"><div class="quick-icon">🤖</div><div class="quick-title">Ask AI</div><div class="quick-desc">Get any farming answer</div></a>
+    <a class="quick-btn" href="learn.html#techniques"><div class="quick-icon">🌱</div><div class="quick-title">New Techniques</div><div class="quick-desc">Hydroponics, mushroom & more</div></a>
+    <a class="quick-btn" href="learn.html#business"><div class="quick-icon">💼</div><div class="quick-title">Business Ideas</div><div class="quick-desc">Earn beyond farming</div></a>
+    <a class="quick-btn" href="learn.html#videos"><div class="quick-icon">▶️</div><div class="quick-title">YouTube Videos</div><div class="quick-desc">Learn in your language</div></a>
+    <a class="quick-btn" href="learn.html#ailearn"><div class="quick-icon">🤖</div><div class="quick-title">Ask AI</div><div class="quick-desc">Get any farming answer</div></a>
   </div>
 
   <div class="section-title">👥 Community</div>
   <div class="quick-grid">
     <a class="quick-btn" href="farmgram.html"><div class="quick-icon">📱</div><div class="quick-title">FarmGram</div><div class="quick-desc">Connect with farmers</div></a>
-    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">💬</div><div class="quick-title">Farmer Chat</div><div class="quick-desc">Talk to farmers like you</div></a>
-  </div>
-
-  <div class="section-title">📰 Information</div>
-  <div class="quick-grid">
-    <a class="quick-btn" href="power-tools.html"><div class="quick-icon">📰</div><div class="quick-title">Farm News</div><div class="quick-desc">Latest agri news today</div></a>
+    <a class="quick-btn" href="power-tools.html#news"><div class="quick-icon">📰</div><div class="quick-title">Farm News</div><div class="quick-desc">Latest agri news today</div></a>
+    <a class="quick-btn" href="power-tools.html#chat"><div class="quick-icon">💬</div><div class="quick-title">Farmer Chat</div><div class="quick-desc">Talk to farmers like you</div></a>
     <a class="quick-btn" href="msp.html"><div class="quick-icon">⚖️</div><div class="quick-title">Know Your Rights</div><div class="quick-desc">MSP & farmer rights</div></a>
-    <a class="quick-btn" href="pricing.html"><div class="quick-icon">💳</div><div class="quick-title">Upgrade Plan</div><div class="quick-desc">Basic ₹49 · Premium ₹99</div></a>
-    <a class="quick-btn" href="learn.html"><div class="quick-icon">🎙️</div><div class="quick-title">Give Feedback</div><div class="quick-desc">Help us improve</div></a>
   </div>
 
   <div class="section-title">🚨 Emergency Help</div>
@@ -286,11 +284,10 @@
   <div class="pb"></div>
 </div>
 
-<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span>Home</a>
   <a class="nav-item" href="farmer-tools.html"><span class="nav-icon">📊</span>Prices</a>
-  <a class="nav-scan" href="farmer-tools.html">📷</a>
+  <a class="nav-scan" href="farmer-tools.html#scan">📷</a>
   <a class="nav-item" href="farmgram.html"><span class="nav-icon">📱</span>FarmGram</a>
   <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span>MSP</a>
 </div>
@@ -300,10 +297,9 @@
 <div class="help-modal" id="helpModal">
   <div class="help-sheet">
     <div class="help-title">How can we help? 🙏</div>
-    <a class="help-option" href="power-tools.html"><div style="font-size:1.5rem">🎙️</div><div><div style="font-weight:700;font-size:0.88rem">Speak Your Problem</div><div style="font-size:0.75rem;color:var(--muted)">Tap and speak in your language</div></div></a>
+    <a class="help-option" href="power-tools.html#voice"><div style="font-size:1.5rem">🎙️</div><div><div style="font-weight:700;font-size:0.88rem">Speak Your Problem</div><div style="font-size:0.75rem;color:var(--muted)">Tap and speak in your language</div></div></a>
     <a class="help-option" href="tel:18001801551"><div style="font-size:1.5rem">☎️</div><div><div style="font-weight:700;font-size:0.88rem">Call Free Helpline</div><div style="font-size:0.75rem;color:var(--muted)">1800-180-1551 · Free · Mon-Sat</div></div></a>
     <div class="help-option" onclick="showOnboarding();closeHelp()"><div style="font-size:1.5rem">🔄</div><div><div style="font-weight:700;font-size:0.88rem">See App Guide Again</div><div style="font-size:0.75rem;color:var(--muted)">Step by step tour of the app</div></div></div>
-    <a class="help-option" href="pricing.html"><div style="font-size:1.5rem">💳</div><div><div style="font-weight:700;font-size:0.88rem">View Plans & Pricing</div><div style="font-size:0.75rem;color:var(--muted)">Free · Basic ₹49 · Premium ₹99</div></div></a>
     <button class="help-close" onclick="closeHelp()">Close</button>
   </div>
 </div>
@@ -313,18 +309,18 @@
 <script>
 const API = "https://annadatahub-production-a9db.up.railway.app";
 
-// ── Language system ────────────────────────────────────────────
+// Language system
 const LANG_DATA = {
-  en: { greeting: "Good Morning, Farmer! 🙏", sub: "How is your crop today?" },
-  hi: { greeting: "सुप्रभात किसान! 🙏",        sub: "आज आपकी फसल कैसी है?" },
-  pa: { greeting: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏",  sub: "ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?" },
-  mr: { greeting: "शुभ प्रभात शेतकरी! 🙏",     sub: "आज तुमची शेती कशी आहे?" },
-  te: { greeting: "శుభోదయం రైతు! 🙏",          sub: "ఈరోజు మీ పంట ఎలా ఉంది?" },
-  ta: { greeting: "காலை வணக்கம் விவசாயி! 🙏",  sub: "இன்று உங்கள் பயிர் எப்படி?" },
-  gu: { greeting: "સુ પ્રભાત ખેડૂત! 🙏",       sub: "આજ તમારો પાક કેવો છે?" },
-  bn: { greeting: "শুভ সকাল কৃষক! 🙏",         sub: "আজ আপনার ফসল কেমন?" },
-  kn: { greeting: "ಶುಭೋದಯ ರೈತ! 🙏",            sub: "ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?" },
-  ml: { greeting: "സുപ്രഭാതം കർഷകൻ! 🙏",       sub: "ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?" },
+  en:{greeting:"Good Morning, Farmer! 🙏",sub:"How is your crop today?"},
+  hi:{greeting:"सुप्रभात किसान! 🙏",sub:"आज आपकी फसल कैसी है?"},
+  pa:{greeting:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏",sub:"ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?"},
+  mr:{greeting:"शुभ प्रभात शेतकरी! 🙏",sub:"आज तुमची शेती कशी आहे?"},
+  te:{greeting:"శుభోదయం రైతు! 🙏",sub:"ఈరోజు మీ పంట ఎలా ఉంది?"},
+  ta:{greeting:"காலை வணக்கம் விவசாயி! 🙏",sub:"இன்று உங்கள் பயிர் எப்படி?"},
+  gu:{greeting:"સુ પ્રભાત ખેડૂત! 🙏",sub:"આજ તમારો પાક કેવો છે?"},
+  bn:{greeting:"শুভ সকাল কৃষক! 🙏",sub:"আজ আপনার ফসল কেমন?"},
+  kn:{greeting:"ಶುಭೋದಯ ರೈತ! 🙏",sub:"ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?"},
+  ml:{greeting:"സുപ്രഭാതം കർഷകൻ! 🙏",sub:"ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?"},
 };
 
 function setLang(code) {
@@ -343,19 +339,14 @@ function getCurrentLang() {
   try { return localStorage.getItem("annadatahub_lang") || "en"; } catch(e) { return "en"; }
 }
 
-// ── Token helpers ──────────────────────────────────────────────
-function saveToken(token, user) {
-  try { localStorage.setItem("auth_token", token); localStorage.setItem("auth_user", JSON.stringify(user)); } catch(e) {}
-}
+// Token helpers
+function saveToken(token, user) { try { localStorage.setItem("auth_token", token); localStorage.setItem("auth_user", JSON.stringify(user)); } catch(e) {} }
 function getToken() { try { return localStorage.getItem("auth_token"); } catch(e) { return null; } }
-function getUser()  { try { return JSON.parse(localStorage.getItem("auth_user")); } catch(e) { return null; } }
+function getUser() { try { return JSON.parse(localStorage.getItem("auth_user")); } catch(e) { return null; } }
 function clearToken() { try { localStorage.removeItem("auth_token"); localStorage.removeItem("auth_user"); } catch(e) {} }
 
-// ── Auth modal ─────────────────────────────────────────────────
-function showLoginModal() {
-  if (getToken()) { showProfile(); return; }
-  document.getElementById("authOverlay").classList.remove("hidden");
-}
+// Auth modal
+function showLoginModal() { if (getToken()) { showProfile(); return; } document.getElementById("authOverlay").classList.remove("hidden"); }
 function hideLoginModal() { document.getElementById("authOverlay").classList.add("hidden"); }
 function switchAuthTab(tab) {
   document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
@@ -365,35 +356,29 @@ function switchAuthTab(tab) {
   document.getElementById("loginError").classList.add("hidden");
   document.getElementById("signupError").classList.add("hidden");
 }
-function showAuthError(id, msg) {
-  const el = document.getElementById(id);
-  el.textContent = msg; el.classList.remove("hidden");
-}
+function showAuthError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.remove("hidden"); }
 
 function updateHeaderUI(user) {
   const loginBtn = document.querySelector(".login-btn");
-  const userBtn  = document.querySelector(".user-btn");
+  const userBtn = document.querySelector(".user-btn");
   const userName = document.querySelector(".user-name");
   if (user) {
     if (loginBtn) loginBtn.style.display = "none";
-    if (userBtn)  userBtn.style.display = "flex";
+    if (userBtn) userBtn.style.display = "flex";
     if (userName) userName.textContent = user.full_name.split(" ")[0];
   } else {
     if (loginBtn) loginBtn.style.display = "";
-    if (userBtn)  userBtn.style.display = "none";
+    if (userBtn) userBtn.style.display = "none";
   }
 }
 
 function showProfile() {
-  const user = getUser();
-  if (!user) return;
-  document.getElementById("profileName").textContent  = user.full_name;
+  const user = getUser(); if (!user) return;
+  document.getElementById("profileName").textContent = user.full_name;
   document.getElementById("profileEmail").textContent = user.email;
-  document.getElementById("profilePlan").textContent  = (user.plan || "free").toUpperCase() + " PLAN";
-  fetch(`${API}/api/user/profile`, { headers: { "Authorization": "Bearer " + getToken() } })
-    .then(r => r.json()).then(d => {
-      if (d.user) document.getElementById("profileScans").textContent = d.user.scan_count || 0;
-    }).catch(() => {});
+  document.getElementById("profilePlan").textContent = (user.plan || "free").toUpperCase() + " PLAN";
+  fetch(`${API}/api/user/profile`, {headers:{"Authorization":"Bearer " + getToken()}})
+    .then(r => r.json()).then(d => { if (d.user) document.getElementById("profileScans").textContent = d.user.scan_count || 0; }).catch(() => {});
   document.getElementById("profileModal").classList.add("show");
 }
 
@@ -404,50 +389,38 @@ async function doLogin() {
   const btn = document.getElementById("loginBtn");
   btn.disabled = true; btn.textContent = "Logging in...";
   try {
-    const res = await fetch(`${API}/api/auth/login`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
+    const res = await fetch(`${API}/api/auth/login`, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
     const data = await res.json();
     if (!res.ok) { showAuthError("loginError", data.detail || "Login failed."); return; }
     saveToken(data.token, data.user);
     updateHeaderUI(data.user);
     hideLoginModal();
     showToast("Welcome back, " + data.user.full_name.split(" ")[0] + "! 🙏", "success");
-  } catch(e) {
-    showAuthError("loginError", "Network error. Check your internet.");
-  } finally {
-    btn.disabled = false; btn.textContent = "Login to AnnadataHub";
-  }
+  } catch(e) { showAuthError("loginError", "Network error. Check your internet."); }
+  finally { btn.disabled = false; btn.textContent = "Login to AnnadataHub"; }
 }
 
 async function doSignup() {
   const full_name = document.getElementById("signupName").value.trim();
-  const email     = document.getElementById("signupEmail").value.trim();
-  const phone     = document.getElementById("signupPhone").value.trim();
-  const state     = document.getElementById("signupState").value;
-  const password  = document.getElementById("signupPassword").value;
+  const email = document.getElementById("signupEmail").value.trim();
+  const phone = document.getElementById("signupPhone").value.trim();
+  const state = document.getElementById("signupState").value;
+  const password = document.getElementById("signupPassword").value;
   if (!full_name) { showAuthError("signupError", "Please enter your name."); return; }
-  if (!email)     { showAuthError("signupError", "Please enter your email."); return; }
+  if (!email) { showAuthError("signupError", "Please enter your email."); return; }
   if (!password || password.length < 6) { showAuthError("signupError", "Password must be at least 6 characters."); return; }
   const btn = document.getElementById("signupBtn");
   btn.disabled = true; btn.textContent = "Creating account...";
   try {
-    const res = await fetch(`${API}/api/auth/register`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ full_name, email, password, phone, state })
-    });
+    const res = await fetch(`${API}/api/auth/register`, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({full_name,email,password,phone,state})});
     const data = await res.json();
     if (!res.ok) { showAuthError("signupError", data.detail || "Registration failed."); return; }
     saveToken(data.token, data.user);
     updateHeaderUI(data.user);
     hideLoginModal();
     showToast("Welcome, " + data.user.full_name.split(" ")[0] + "! 🎉", "success");
-  } catch(e) {
-    showAuthError("signupError", "Network error. Check your internet.");
-  } finally {
-    btn.disabled = false; btn.textContent = "Create Free Account 🚀";
-  }
+  } catch(e) { showAuthError("signupError", "Network error. Check your internet."); }
+  finally { btn.disabled = false; btn.textContent = "Create Free Account 🚀"; }
 }
 
 function doLogout() {
@@ -456,27 +429,31 @@ function doLogout() {
   showToast("Logged out successfully.");
 }
 
-// ── App ────────────────────────────────────────────────────────
-const TIPS = ["Check wheat for yellow rust — spray Propiconazole if found.",
-  "Best time to spray: early morning 6-9am or evening 4-7pm. Never in hot afternoon.",
+// App
+const TIPS = [
+  "Check wheat for yellow rust — spray Propiconazole if found.",
+  "Best time to spray: early morning 6-9am. Never in hot afternoon.",
   "Check PM-KISAN status — visit Schemes section.",
-  "Water crops in the morning — plants absorb better. Evening watering causes fungal disease.",
-  "Apply potash fertilizer to flowering crops — improves fruit quality."];
+  "Water crops in the morning — evening watering causes fungal disease.",
+  "Apply potash fertilizer to flowering crops — improves fruit quality.",
+  "Use neem oil spray to control aphids — safe and effective.",
+  "Rotate crops every season to maintain soil health.",
+];
 const hour = new Date().getHours();
 document.getElementById("greetTime").textContent = hour < 12 ? "Good Morning ☀️" : hour < 17 ? "Good Afternoon 🌤️" : "Good Evening 🌙";
 document.getElementById("tipText").textContent = TIPS[new Date().getDay() % TIPS.length];
 
 let currentStep = 1;
 function nextStep(step) {
-  document.getElementById("os" + currentStep).classList.remove("active");
-  document.getElementById("od" + currentStep).classList.remove("active");
+  document.getElementById("os"+currentStep).classList.remove("active");
+  document.getElementById("od"+currentStep).classList.remove("active");
   currentStep = step;
-  document.getElementById("os" + step).classList.add("active");
-  document.getElementById("od" + step).classList.add("active");
+  document.getElementById("os"+step).classList.add("active");
+  document.getElementById("od"+step).classList.add("active");
 }
 function closeOnboarding() {
   document.getElementById("onboarding").style.display = "none";
-  try { localStorage.setItem("onboarded", "1"); } catch(e) {}
+  try { localStorage.setItem("onboarded","1"); } catch(e) {}
 }
 function showOnboarding() {
   currentStep = 1;
@@ -492,18 +469,32 @@ function showHelp() { document.getElementById("helpModal").classList.add("show")
 function closeHelp() { document.getElementById("helpModal").classList.remove("show"); }
 document.getElementById("helpModal").addEventListener("click", e => { if (e.target === document.getElementById("helpModal")) closeHelp(); });
 
-function showToast(msg, type = "") {
+function showToast(msg, type="") {
   const t = document.getElementById("toast");
-  t.textContent = msg; t.className = "toast" + (type ? " " + type : "");
+  t.textContent = msg; t.className = "toast" + (type?" "+type:"");
   t.classList.remove("hidden");
   setTimeout(() => t.classList.add("hidden"), 2500);
 }
 
-// ── Init ───────────────────────────────────────────────────────
+// Handle hash navigation — open specific tab when arriving from index
+window.addEventListener("load", () => {
+  const hash = window.location.hash;
+  if (hash) {
+    const tabName = hash.replace("#","");
+    const tabEl = document.getElementById("tab-"+tabName);
+    if (tabEl) {
+      setTimeout(() => {
+        if (typeof showTab === 'function') showTab(tabName);
+      }, 100);
+    }
+  }
+});
+
+// Init
 document.addEventListener("DOMContentLoaded", () => {
   const user = getUser();
   if (user && getToken()) updateHeaderUI(user);
-  setLang(getCurrentLang()); // apply saved language on every page load
+  setLang(getCurrentLang());
 });
 </script>
 </body>
