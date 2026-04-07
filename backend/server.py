@@ -157,7 +157,7 @@ async def call_gemini_vision(image_base64: str, prompt: str) -> Optional[str]:
     try:
         async with httpx.AsyncClient(timeout=60.0) as c:
             r = await c.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}",
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}",
                 headers={"Content-Type": "application/json"},
                 json={
                     "contents": [
