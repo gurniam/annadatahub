@@ -125,8 +125,18 @@
     <div class="card">
       <div class="card-title" style="color:var(--green)">📷 Crop Disease Scanner</div>
       <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.</p>
-      <input type="file" id="scanFile" accept="image/*"  class="hidden" onchange="handleScanPhoto(event)"/>
-      <div class="scan-zone" onclick="document.getElementById('scanFile').click()" id="scanZone">
+      <input type="file" id="scanFile" accept="image/*" class="hidden" onchange="handleScanPhoto(event)"/>
+<input type="file" id="scanGallery" accept="image/*" class="hidden" onchange="handleScanPhoto(event)"/>
+<div class="scan-zone" id="scanZone">
+  <div class="scan-placeholder" id="scanPlaceholder">
+    <div class="big-icon">📷</div>
+    <p><strong>Choose photo</strong></p>
+    <div style="display:flex;gap:10px;margin-top:12px;justify-content:center">
+      <button onclick="document.getElementById('scanFile').click()" style="background:var(--green);color:white;border:none;padding:8px 16px;border-radius:8px;font-family:'Hind',sans-serif;font-weight:600;font-size:0.84rem;cursor:pointer">📷 Camera</button>
+      <button onclick="document.getElementById('scanGallery').click()" style="background:var(--gold);color:var(--text);border:none;padding:8px 16px;border-radius:8px;font-family:'Hind',sans-serif;font-weight:600;font-size:0.84rem;cursor:pointer">🖼️ Gallery</button>
+    </div>
+  </div>
+</div>
         <div class="scan-placeholder" id="scanPlaceholder">
           <div class="big-icon">📷</div>
           <p><strong>Tap to take photo</strong><br/><small>Take photo in good light<br/>Focus on sick leaf/plant part</small></p>
