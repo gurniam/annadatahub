@@ -159,7 +159,7 @@ async def call_ai_vision(image_base64: str, prompt: str) -> Optional[str]:
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama-3.2-11b-vision-preview",
+                    "model": "llama-3.2-90b-vision-preview",
                     "max_tokens": 1024,
                     "messages": [
                         {
