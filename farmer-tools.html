@@ -125,7 +125,7 @@
     <div class="card">
       <div class="card-title" style="color:var(--green)">📷 Crop Disease Scanner</div>
       <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.</p>
-      <input type="file" id="scanFile" accept="image/*" capture="environment" class="hidden" onchange="handleScanPhoto(event)"/>
+      <input type="file" id="scanFile" accept="image/*"  class="hidden" onchange="handleScanPhoto(event)"/>
       <div class="scan-zone" onclick="document.getElementById('scanFile').click()" id="scanZone">
         <div class="scan-placeholder" id="scanPlaceholder">
           <div class="big-icon">📷</div>
