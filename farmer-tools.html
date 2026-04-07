@@ -6,88 +6,92 @@
 <title>AnnadataHub — Farmer Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --green: #1a5c2e; --green-mid: #2d7a45; --green-light: #e8f5ec;
-    --gold: #f5a623; --gold-light: #fff8ec;
-    --sky: #0ea5e9; --sky-light: #e0f2fe;
-    --earth: #92400e; --earth-light: #fef3c7;
-    --red: #dc2626; --red-light: #fee2e2;
-    --bg: #f0f5f1; --white: #fff; --text: #1a2e1a; --muted: #6b7c6b; --border: #d0e4d4;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Hind', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .header { background: linear-gradient(135deg, var(--green), var(--green-mid)); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon { width: 38px; height: 38px; background: var(--gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
-  .logo-name { font-family: 'Baloo 2', cursive; font-size: 1.3rem; font-weight: 800; color: white; }
-  .logo-name span { color: var(--gold); }
-  .lang-select { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 10px; border-radius: 8px; font-family: 'Hind', sans-serif; font-size: 0.8rem; cursor: pointer; }
-  .lang-select option { background: var(--green); color: white; }
-  .tabs { display: flex; background: white; border-bottom: 2px solid var(--border); overflow-x: auto; }
-  .tab { flex: 1; min-width: 100px; padding: 12px 8px; border: none; background: none; font-family: 'Hind', sans-serif; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .tab.active { color: var(--green); border-bottom-color: var(--green); }
-  .tab span { font-size: 1.3rem; }
-  .content { max-width: 600px; margin: 0 auto; padding: 16px; }
-  .page { display: none; }
-  .page.active { display: block; }
-  .card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-  .card-title { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .field { margin-bottom: 12px; }
-  label { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; display: block; }
-  select, input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Hind', sans-serif; font-size: 0.88rem; background: white; color: var(--text); outline: none; transition: border 0.2s; }
-  select:focus, input:focus { border-color: var(--green); }
-  .btn { width: 100%; padding: 13px; border-radius: 12px; border: none; font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .btn-green { background: var(--green); color: white; box-shadow: 0 4px 14px rgba(26,92,46,0.25); }
-  .btn-green:hover { background: var(--green-mid); }
-  .btn-gold { background: var(--gold); color: var(--text); }
-  .btn-sky { background: var(--sky); color: white; }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .loading { text-align: center; padding: 30px; }
-  .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading p { color: var(--muted); font-size: 0.88rem; }
-  .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-  .price-card { background: var(--green-light); border-radius: 12px; padding: 14px; text-align: center; border: 1px solid var(--border); }
-  .price-mandi { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
-  .price-amount { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 800; color: var(--green); }
-  .price-unit { font-size: 0.72rem; color: var(--muted); }
-  .advice-box { background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; padding: 14px; margin-top: 12px; font-size: 0.88rem; line-height: 1.6; }
-  .advice-box strong { color: var(--earth); }
-  .weather-hero { background: linear-gradient(135deg, #0369a1, #0ea5e9); border-radius: 16px; padding: 22px; color: white; margin-bottom: 14px; text-align: center; }
-  .weather-temp { font-family: 'Baloo 2', cursive; font-size: 3.5rem; font-weight: 800; line-height: 1; }
-  .weather-desc { font-size: 1rem; opacity: 0.9; margin: 6px 0; }
-  .weather-location { font-size: 0.82rem; opacity: 0.7; }
-  .weather-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
-  .weather-stat { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px; text-align: center; }
-  .weather-stat .icon { font-size: 1.3rem; margin-bottom: 4px; }
-  .weather-stat .val { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 700; }
-  .weather-stat .lbl { font-size: 0.7rem; opacity: 0.8; }
-  .scheme-card { background: white; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-  .scheme-header { padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
-  .scheme-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
-  .scheme-name { font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700; color: var(--green); margin-bottom: 2px; }
-  .scheme-tagline { font-size: 0.78rem; color: var(--muted); }
-  .scheme-amount { margin-left: auto; text-align: right; flex-shrink: 0; }
-  .scheme-amount .amt { font-family: 'Baloo 2', cursive; font-size: 1rem; font-weight: 800; color: var(--green); }
-  .scheme-amount .lbl { font-size: 0.7rem; color: var(--muted); }
-  .scheme-body { padding: 0 16px 16px; border-top: 1px solid var(--border); display: none; }
-  .scheme-body.open { display: block; padding-top: 12px; }
-  .scheme-body p { font-size: 0.86rem; line-height: 1.6; color: #374151; margin-bottom: 8px; }
-  .scheme-body ul { padding-left: 16px; }
-  .scheme-body ul li { font-size: 0.84rem; line-height: 1.6; color: #374151; margin-bottom: 4px; }
-  .eligible-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; }
-  .eligible-yes { background: var(--green-light); color: var(--green); }
-  .apply-btn { display: inline-block; background: var(--green); color: white; padding: 8px 18px; border-radius: 8px; font-size: 0.84rem; font-weight: 600; text-decoration: none; margin-top: 8px; border: none; cursor: pointer; font-family: 'Hind', sans-serif; }
-  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty .icon { font-size: 3rem; margin-bottom: 12px; }
-  .empty p { font-size: 0.88rem; }
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 100px; font-size: 0.84rem; z-index: 1000; animation: toastIn 0.3s ease; white-space: nowrap; }
-  .toast.success { background: var(--green); }
-  .toast.error { background: var(--red); }
-  @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-  .divider { height: 1px; background: var(--border); margin: 14px 0; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .powered { text-align: center; font-size: 0.7rem; color: var(--muted); margin-top: 8px; }
+  :root{--green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;--gold:#f5a623;--gold-light:#fff8ec;--sky:#0ea5e9;--sky-light:#e0f2fe;--earth:#92400e;--earth-light:#fef3c7;--red:#dc2626;--red-light:#fee2e2;--bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .header{background:linear-gradient(135deg,var(--green),var(--green-mid));padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-icon{width:38px;height:38px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+  .logo-name{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:white;}
+  .logo-name span{color:var(--gold);}
+  .lang-select{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;padding:6px 10px;border-radius:8px;font-family:'Hind',sans-serif;font-size:0.8rem;cursor:pointer;}
+  .lang-select option{background:var(--green);color:white;}
+  .tabs{display:flex;background:white;border-bottom:2px solid var(--border);overflow-x:auto;}
+  .tab{flex:1;min-width:100px;padding:12px 8px;border:none;background:none;font-family:'Hind',sans-serif;font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .tab.active{color:var(--green);border-bottom-color:var(--green);}
+  .tab span{font-size:1.3rem;}
+  .content{max-width:600px;margin:0 auto;padding:16px;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:white;border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+  .card-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .field{margin-bottom:12px;}
+  label{font-size:0.8rem;font-weight:600;color:var(--muted);margin-bottom:4px;display:block;}
+  select,input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.88rem;background:white;color:var(--text);outline:none;transition:border 0.2s;}
+  select:focus,input:focus{border-color:var(--green);}
+  .btn{width:100%;padding:13px;border-radius:12px;border:none;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-green{background:var(--green);color:white;box-shadow:0 4px 14px rgba(26,92,46,0.25);}
+  .btn-gold{background:var(--gold);color:var(--text);}
+  .btn-sky{background:var(--sky);color:white;}
+  .btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .loading{text-align:center;padding:30px;}
+  .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading p{color:var(--muted);font-size:0.88rem;}
+  .price-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  .price-card{background:var(--green-light);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--border);}
+  .price-mandi{font-size:0.75rem;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;}
+  .price-amount{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--green);}
+  .price-unit{font-size:0.72rem;color:var(--muted);}
+  .advice-box{background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;padding:14px;margin-top:12px;font-size:0.88rem;line-height:1.6;}
+  .advice-box strong{color:var(--earth);}
+  .weather-hero{background:linear-gradient(135deg,#0369a1,#0ea5e9);border-radius:16px;padding:22px;color:white;margin-bottom:14px;text-align:center;}
+  .weather-temp{font-family:'Baloo 2',cursive;font-size:3.5rem;font-weight:800;line-height:1;}
+  .weather-desc{font-size:1rem;opacity:0.9;margin:6px 0;}
+  .weather-location{font-size:0.82rem;opacity:0.7;}
+  .weather-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;}
+  .weather-stat{background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;text-align:center;}
+  .weather-stat .icon{font-size:1.3rem;margin-bottom:4px;}
+  .weather-stat .val{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;}
+  .weather-stat .lbl{font-size:0.7rem;opacity:0.8;}
+  .scheme-card{background:white;border-radius:14px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+  .scheme-header{padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;}
+  .scheme-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+  .scheme-name{font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;color:var(--green);margin-bottom:2px;}
+  .scheme-tagline{font-size:0.78rem;color:var(--muted);}
+  .scheme-amount{margin-left:auto;text-align:right;flex-shrink:0;}
+  .scheme-amount .amt{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;color:var(--green);}
+  .scheme-amount .lbl{font-size:0.7rem;color:var(--muted);}
+  .scheme-body{padding:0 16px 16px;border-top:1px solid var(--border);display:none;}
+  .scheme-body.open{display:block;padding-top:12px;}
+  .scheme-body p{font-size:0.86rem;line-height:1.6;color:#374151;margin-bottom:8px;}
+  .scheme-body ul{padding-left:16px;}
+  .scheme-body ul li{font-size:0.84rem;line-height:1.6;color:#374151;margin-bottom:4px;}
+  .eligible-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;margin-bottom:10px;background:var(--green-light);color:var(--green);}
+  .apply-btn{display:inline-block;background:var(--green);color:white;padding:8px 18px;border-radius:8px;font-size:0.84rem;font-weight:600;text-decoration:none;margin-top:8px;border:none;cursor:pointer;font-family:'Hind',sans-serif;}
+  .scan-zone{background:#1a1a1a;border-radius:16px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:12px;cursor:pointer;max-height:300px;}
+  .scan-zone img{width:100%;height:100%;object-fit:cover;}
+  .scan-placeholder{color:rgba(255,255,255,0.6);text-align:center;}
+  .scan-placeholder .big-icon{font-size:3rem;margin-bottom:10px;}
+  .scan-placeholder p{font-size:0.86rem;line-height:1.5;}
+  .scan-clear{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+  .disease-result{border-radius:14px;padding:18px;margin-bottom:12px;}
+  .disease-healthy{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #16a34a;}
+  .disease-sick{background:linear-gradient(135deg,var(--red-light),#fecaca);border:2px solid var(--red);}
+  .disease-name{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);}
+  .empty .icon{font-size:3rem;margin-bottom:12px;}
+  .empty p{font-size:0.88rem;}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.84rem;z-index:1000;animation:toastIn 0.3s ease;white-space:nowrap;}
+  .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
+  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .powered{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:8px;}
+  .hidden{display:none;}
+  .severity-low{color:#16a34a;}
+  .severity-medium{color:var(--gold);}
+  .severity-high{color:var(--red);}
 </style>
 </head>
 <body>
@@ -98,78 +102,90 @@
     <div class="logo-name">Annadata<span>Hub</span></div>
   </div>
   <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
-    <option value="en">English</option>
-    <option value="hi">हिंदी</option>
-    <option value="bn">বাংলা</option>
-    <option value="te">తెలుగు</option>
-    <option value="mr">मराठी</option>
-    <option value="ta">தமிழ்</option>
-    <option value="gu">ગુજરાતી</option>
-    <option value="kn">ಕನ್ನಡ</option>
-    <option value="ml">മലയാളം</option>
-    <option value="pa">ਪੰਜਾਬੀ</option>
+    <option value="en">English</option><option value="hi">हिंदी</option>
+    <option value="pa">ਪੰਜਾਬੀ</option><option value="mr">मराठी</option>
+    <option value="te">తెలుగు</option><option value="ta">தமிழ்</option>
+    <option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option>
+    <option value="ml">മലയാളം</option><option value="bn">বাংলা</option>
     <option value="ur">اردو</option>
   </select>
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('mandi')" id="tab-mandi">
-    <span>📊</span><span id="t-mandi">Mandi</span>
-  </button>
-  <button class="tab" onclick="showTab('weather')" id="tab-weather">
-    <span>🌦️</span><span id="t-weather">Weather</span>
-  </button>
-  <button class="tab" onclick="showTab('schemes')" id="tab-schemes">
-    <span>🏛️</span><span id="t-schemes">Schemes</span>
-  </button>
+  <button class="tab active" onclick="showTab('scan')" id="tab-scan"><span>📷</span><span id="t-scan">Scan</span></button>
+  <button class="tab" onclick="showTab('mandi')" id="tab-mandi"><span>📊</span><span id="t-mandi">Mandi</span></button>
+  <button class="tab" onclick="showTab('weather')" id="tab-weather"><span>🌦️</span><span id="t-weather">Weather</span></button>
+  <button class="tab" onclick="showTab('schemes')" id="tab-schemes"><span>🏛️</span><span id="t-schemes">Schemes</span></button>
 </div>
 
 <div class="content">
 
-  <!-- MANDI PRICES -->
-  <div class="page active" id="page-mandi">
+  <!-- CROP SCANNER -->
+  <div class="page active" id="page-scan">
     <div class="card">
-      <div class="card-title" style="color:var(--green)">📊 <span id="mandi-title">Live Mandi Prices</span></div>
+      <div class="card-title" style="color:var(--green)">📷 Crop Disease Scanner</div>
+      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px">Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.</p>
+      <input type="file" id="scanFile" accept="image/*" capture="environment" class="hidden" onchange="handleScanPhoto(event)"/>
+      <div class="scan-zone" onclick="document.getElementById('scanFile').click()" id="scanZone">
+        <div class="scan-placeholder" id="scanPlaceholder">
+          <div class="big-icon">📷</div>
+          <p><strong>Tap to take photo</strong><br/><small>Take photo in good light<br/>Focus on sick leaf/plant part</small></p>
+        </div>
+      </div>
       <div class="two-col">
-        <div class="field">
-          <label>Your Crop</label>
-          <select id="mandiCrop">
-            <option value="Wheat">Wheat (गेहूं)</option>
-            <option value="Rice">Rice (धान)</option>
-            <option value="Corn">Corn (मक्का)</option>
-            <option value="Tomato">Tomato (टमाटर)</option>
-            <option value="Potato">Potato (आलू)</option>
-            <option value="Onion">Onion (प्याज)</option>
-            <option value="Cotton">Cotton (कपास)</option>
-            <option value="Soybean">Soybean (सोयाबीन)</option>
-            <option value="Sugarcane">Sugarcane (गन्ना)</option>
-            <option value="Mustard">Mustard (सरसों)</option>
-            <option value="Groundnut">Groundnut (मूंगफली)</option>
-            <option value="Chilli">Chilli (मिर्च)</option>
-            <option value="Turmeric">Turmeric (हल्दी)</option>
-            <option value="Garlic">Garlic (लहसुन)</option>
-            <option value="Banana">Banana (केला)</option>
-            <option value="Mango">Mango (आम)</option>
+        <div class="field"><label>Crop Type</label>
+          <select id="scanCrop">
+            <option value="">Auto-detect</option>
+            <option>Wheat</option><option>Rice</option><option>Cotton</option>
+            <option>Tomato</option><option>Potato</option><option>Onion</option>
+            <option>Sugarcane</option><option>Mustard</option><option>Soybean</option>
+            <option>Maize</option><option>Chilli</option><option>Mango</option>
+            <option>Banana</option><option>Grapes</option><option>Apple</option>
           </select>
         </div>
-        <div class="field">
-          <label>Your State</label>
+        <div class="field"><label>Language</label>
+          <select id="scanLang">
+            <option value="en">English</option><option value="hi">हिंदी</option>
+            <option value="pa">ਪੰਜਾਬੀ</option><option value="mr">मराठी</option>
+            <option value="te">తెలుగు</option><option value="ta">தமிழ்</option>
+            <option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-green" onclick="scanCrop()" id="scan-btn">🔍 Scan for Disease</button>
+    </div>
+    <div id="scan-result"></div>
+  </div>
+
+  <!-- MANDI PRICES -->
+  <div class="page" id="page-mandi">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">📊 Live Mandi Prices</div>
+      <div class="two-col">
+        <div class="field"><label>Your Crop</label>
+          <select id="mandiCrop">
+            <option value="Wheat">Wheat (गेहूं)</option><option value="Rice">Rice (धान)</option>
+            <option value="Corn">Corn (मक्का)</option><option value="Tomato">Tomato (टमाटर)</option>
+            <option value="Potato">Potato (आलू)</option><option value="Onion">Onion (प्याज)</option>
+            <option value="Cotton">Cotton (कपास)</option><option value="Soybean">Soybean (सोयाबीन)</option>
+            <option value="Sugarcane">Sugarcane (गन्ना)</option><option value="Mustard">Mustard (सरसों)</option>
+            <option value="Groundnut">Groundnut (मूंगफली)</option><option value="Chilli">Chilli (मिर्च)</option>
+            <option value="Turmeric">Turmeric (हल्दी)</option><option value="Garlic">Garlic (लहसुन)</option>
+            <option value="Banana">Banana (केला)</option><option value="Mango">Mango (आम)</option>
+          </select>
+        </div>
+        <div class="field"><label>Your State</label>
           <select id="mandiState">
-            <option value="Punjab">Punjab</option>
-            <option value="Haryana">Haryana</option>
-            <option value="Uttar Pradesh">Uttar Pradesh</option>
-            <option value="Maharashtra">Maharashtra</option>
-            <option value="Madhya Pradesh">Madhya Pradesh</option>
-            <option value="Rajasthan">Rajasthan</option>
-            <option value="Gujarat">Gujarat</option>
-            <option value="Bihar">Bihar</option>
-            <option value="West Bengal">West Bengal</option>
-            <option value="Andhra Pradesh">Andhra Pradesh</option>
-            <option value="Tamil Nadu">Tamil Nadu</option>
-            <option value="Karnataka">Karnataka</option>
-            <option value="Kerala">Kerala</option>
-            <option value="Odisha">Odisha</option>
-            <option value="Telangana">Telangana</option>
+            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+            <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
+            <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
+            <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
+            <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
+            <option>Assam</option><option>Goa</option><option>Sikkim</option>
+            <option>Manipur</option><option>Meghalaya</option><option>Tripura</option>
+            <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
           </select>
         </div>
       </div>
@@ -181,25 +197,14 @@
   <!-- WEATHER -->
   <div class="page" id="page-weather">
     <div class="card">
-      <div class="card-title" style="color:var(--sky)">🌦️ <span id="weather-title">Weather & Farm Alerts</span></div>
+      <div class="card-title" style="color:var(--sky)">🌦️ Weather & Farm Alerts</div>
       <div class="two-col">
-        <div class="field">
-          <label>District / City</label>
-          <input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik"/>
-        </div>
-        <div class="field">
-          <label>Your Crop</label>
+        <div class="field"><label>District / City</label><input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik"/></div>
+        <div class="field"><label>Your Crop</label>
           <select id="weatherCrop">
-            <option value="Wheat">Wheat</option>
-            <option value="Rice">Rice</option>
-            <option value="Cotton">Cotton</option>
-            <option value="Tomato">Tomato</option>
-            <option value="Sugarcane">Sugarcane</option>
-            <option value="Mustard">Mustard</option>
-            <option value="Soybean">Soybean</option>
-            <option value="Onion">Onion</option>
-            <option value="Potato">Potato</option>
-            <option value="Mango">Mango</option>
+            <option>Wheat</option><option>Rice</option><option>Cotton</option>
+            <option>Tomato</option><option>Sugarcane</option><option>Mustard</option>
+            <option>Soybean</option><option>Onion</option><option>Potato</option><option>Mango</option>
           </select>
         </div>
       </div>
@@ -211,9 +216,8 @@
   <!-- GOVERNMENT SCHEMES -->
   <div class="page" id="page-schemes">
     <div class="card">
-      <div class="card-title" style="color:var(--earth)">🏛️ <span id="schemes-title">Government Schemes</span></div>
-      <div class="field">
-        <label>Land Size (acres)</label>
+      <div class="card-title" style="color:var(--earth)">🏛️ Government Schemes</div>
+      <div class="field"><label>Land Size (acres)</label>
         <select id="schemeLand">
           <option value="less than 1 acre">Less than 1 acre</option>
           <option value="1-2 acres">1 - 2 acres</option>
@@ -223,34 +227,25 @@
         </select>
       </div>
       <div class="two-col">
-        <div class="field">
-          <label>State</label>
+        <div class="field"><label>State</label>
           <select id="schemeState">
-            <option value="Punjab">Punjab</option>
-            <option value="Haryana">Haryana</option>
-            <option value="Uttar Pradesh">Uttar Pradesh</option>
-            <option value="Maharashtra">Maharashtra</option>
-            <option value="Madhya Pradesh">Madhya Pradesh</option>
-            <option value="Rajasthan">Rajasthan</option>
-            <option value="Gujarat">Gujarat</option>
-            <option value="Bihar">Bihar</option>
-            <option value="West Bengal">West Bengal</option>
-            <option value="Andhra Pradesh">Andhra Pradesh</option>
-            <option value="Tamil Nadu">Tamil Nadu</option>
-            <option value="Karnataka">Karnataka</option>
+            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+            <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
+            <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
+            <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
+            <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
+            <option>Assam</option><option>Goa</option><option>Sikkim</option>
+            <option>Manipur</option><option>Meghalaya</option><option>Tripura</option>
+            <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
           </select>
         </div>
-        <div class="field">
-          <label>Main Crop</label>
+        <div class="field"><label>Main Crop</label>
           <select id="schemeCrop">
-            <option value="Wheat">Wheat</option>
-            <option value="Rice">Rice</option>
-            <option value="Cotton">Cotton</option>
-            <option value="Sugarcane">Sugarcane</option>
-            <option value="Vegetables">Vegetables</option>
-            <option value="Fruits">Fruits</option>
-            <option value="Pulses">Pulses</option>
-            <option value="Oilseeds">Oilseeds</option>
+            <option>Wheat</option><option>Rice</option><option>Cotton</option>
+            <option>Sugarcane</option><option>Vegetables</option><option>Fruits</option>
+            <option>Pulses</option><option>Oilseeds</option>
           </select>
         </div>
       </div>
@@ -265,37 +260,11 @@
 
 <script>
 const BACKEND = "https://annadatahub-production-a9db.up.railway.app";
-
-const LANG_NAMES = {
-  en:"English", hi:"Hindi", bn:"Bengali", te:"Telugu",
-  mr:"Marathi", ta:"Tamil", gu:"Gujarati", kn:"Kannada",
-  ml:"Malayalam", pa:"Punjabi", ur:"Urdu"
-};
-
-// FIX: removed "Claude AI" from all UI text → "AnnadataHub AI"
-const UI_TEXT = {
-  en: { mandi:"Mandi", weather:"Weather", schemes:"Schemes", powered:"Powered by AnnadataHub AI" },
-  hi: { mandi:"मंडी", weather:"मौसम", schemes:"योजनाएं", powered:"AnnadataHub AI द्वारा" },
-  bn: { mandi:"মান্ডি", weather:"আবহাওয়া", schemes:"প্রকল্প", powered:"AnnadataHub AI দ্বারা" },
-  te: { mandi:"మండి", weather:"వాతావరణం", schemes:"పథకాలు", powered:"AnnadataHub AI ద్వారా" },
-  mr: { mandi:"मंडी", weather:"हवामान", schemes:"योजना", powered:"AnnadataHub AI द्वारे" },
-  ta: { mandi:"மண்டி", weather:"வானிலை", schemes:"திட்டங்கள்", powered:"AnnadataHub AI மூலம்" },
-  gu: { mandi:"મંડી", weather:"હવામાન", schemes:"યોજના", powered:"AnnadataHub AI દ્વારા" },
-  kn: { mandi:"ಮಂಡಿ", weather:"ಹವಾಮಾನ", schemes:"ಯೋಜನೆ", powered:"AnnadataHub AI ಮೂಲಕ" },
-  ml: { mandi:"മണ്ടി", weather:"കാലാവസ്ഥ", schemes:"പദ്ധതികൾ", powered:"AnnadataHub AI വഴി" },
-  pa: { mandi:"ਮੰਡੀ", weather:"ਮੌਸਮ", schemes:"ਯੋਜਨਾਵਾਂ", powered:"AnnadataHub AI ਦੁਆਰਾ" },
-  ur: { mandi:"منڈی", weather:"موسم", schemes:"اسکیمیں", powered:"AnnadataHub AI کے ذریعے" },
-};
-
+const LANG_NAMES = {en:"English",hi:"Hindi",pa:"Punjabi",mr:"Marathi",te:"Telugu",ta:"Tamil",gu:"Gujarati",kn:"Kannada",ml:"Malayalam",bn:"Bengali",ur:"Urdu"};
 let currentLang = "en";
+let scanImageBase64 = null;
 
-function setLanguage(lang) {
-  currentLang = lang;
-  const t = UI_TEXT[lang] || UI_TEXT.en;
-  document.getElementById("t-mandi").textContent = t.mandi;
-  document.getElementById("t-weather").textContent = t.weather;
-  document.getElementById("t-schemes").textContent = t.schemes;
-}
+function setLanguage(lang) { currentLang = lang; }
 
 function showTab(tab) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -306,67 +275,148 @@ function showTab(tab) {
 
 function showToast(msg, type="success") {
   const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + type;
-  t.style.display = "block";
+  t.textContent = msg; t.className = "toast " + type; t.style.display = "block";
   setTimeout(() => t.style.display = "none", 3000);
 }
 
-// FIX: renamed from callClaude to callAI
-async function callAI(system, user) {
-  try {
-    const res = await fetch(`${BACKEND}/api/ai/ask`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: user, language: currentLang })
-    });
-    if (!res.ok) throw new Error("API error " + res.status);
-    const data = await res.json();
-    const text = data.answer || "";
-    const clean = text.replace(/```json|```/g, "").trim();
-    const match = clean.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error("No JSON found");
-    return JSON.parse(match[0]);
-  } catch(e) {
-    throw new Error("AI service error: " + e.message);
-  }
+// CROP SCANNER
+function handleScanPhoto(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const full = ev.target.result;
+    scanImageBase64 = full.split(",")[1];
+    const zone = document.getElementById("scanZone");
+    document.getElementById("scanPlaceholder").style.display = "none";
+    const old = zone.querySelector("img"); if (old) old.remove();
+    const img = document.createElement("img"); img.src = full; zone.appendChild(img);
+    if (!zone.querySelector(".scan-clear")) {
+      const clr = document.createElement("button");
+      clr.className = "scan-clear"; clr.textContent = "✕";
+      clr.onclick = ev2 => { ev2.stopPropagation(); clearScan(); };
+      zone.appendChild(clr);
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
-// ── MANDI PRICES ──
+function clearScan() {
+  scanImageBase64 = null;
+  const zone = document.getElementById("scanZone");
+  const img = zone.querySelector("img"); if (img) img.remove();
+  const clr = zone.querySelector(".scan-clear"); if (clr) clr.remove();
+  document.getElementById("scanPlaceholder").style.display = "block";
+  document.getElementById("scan-result").innerHTML = "";
+}
+
+async function scanCrop() {
+  if (!scanImageBase64) {
+    document.getElementById("scan-result").innerHTML = `
+      <div style="background:#fff7ed;border:1px solid var(--gold);border-radius:14px;padding:20px;text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:10px">📷</div>
+        <div style="font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--earth)">Please take a photo first</div>
+        <div style="font-size:0.86rem;color:#374151;margin-top:8px;line-height:1.5">Tap the dark area above and take a clear photo of your sick crop leaf in good daylight.</div>
+      </div>`;
+    showToast("Please take a crop photo first", "error");
+    return;
+  }
+  const cropType = document.getElementById("scanCrop").value;
+  const lang = document.getElementById("scanLang").value;
+  const btn = document.getElementById("scan-btn");
+  const result = document.getElementById("scan-result");
+  btn.disabled = true; btn.textContent = "⏳ Analysing...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>AI is analysing your crop photo...</p></div>`;
+
+  try {
+    const token = localStorage.getItem("auth_token");
+    const res = await fetch(`${BACKEND}/api/crop/scan`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? {"Authorization": "Bearer " + token} : {})
+      },
+      body: JSON.stringify({image_base64: scanImageBase64, crop_type: cropType || null, language: lang})
+    });
+    const outer = await res.json();
+    let data;
+    try {
+      const raw = typeof outer.result === "string" ? outer.result : JSON.stringify(outer.result);
+      const clean = raw.replace(/```json|```/g, "").trim();
+      data = JSON.parse(clean.match(/\{[\s\S]*\}/)?.[0] || clean);
+    } catch(e) {
+      data = {disease: "Please try again", severity: "Unknown", crop: cropType || "Unknown", confidence: 0, treatment: "Take a clearer photo in better light", medicine: "N/A", dosage: "N/A", prevention: "Consult KVK", urgency: "No action needed"};
+    }
+
+    const isHealthy = (data.disease || "").toLowerCase().includes("health");
+    const sevClass = {"Low":"severity-low","Medium":"severity-medium","High":"severity-high","None":"severity-low"}[data.severity] || "";
+
+    result.innerHTML = `
+      <div class="disease-result ${isHealthy ? 'disease-healthy' : 'disease-sick'}">
+        <div style="text-align:center;margin-bottom:12px">
+          <div style="font-size:2.5rem;margin-bottom:6px">${isHealthy ? '✅' : '⚠️'}</div>
+          <div class="disease-name">${data.disease || 'Analysis Result'}</div>
+          <div style="font-size:0.82rem;margin-top:4px;opacity:0.8">${data.crop} · Confidence: ${data.confidence}%</div>
+          ${data.severity !== 'None' && data.severity !== 'Unknown' ? `<div class="severity-badge ${sevClass}" style="margin-top:6px;display:inline-block;padding:3px 12px;border-radius:20px;font-weight:700;font-size:0.8rem">Severity: ${data.severity}</div>` : ''}
+        </div>
+      </div>
+      ${!isHealthy ? `
+      <div class="card">
+        <div class="card-title" style="color:var(--green)">💊 Treatment</div>
+        <div style="font-size:0.86rem;line-height:1.6;color:#374151;margin-bottom:10px">${data.treatment}</div>
+        ${data.medicine !== 'N/A' ? `
+        <div style="background:var(--gold-light);border-radius:10px;padding:12px;margin-bottom:10px">
+          <strong style="color:var(--earth)">Medicine:</strong> ${data.medicine}<br/>
+          <strong style="color:var(--earth)">Dosage:</strong> ${data.dosage}
+        </div>` : ''}
+        <div style="background:var(--green-light);border-radius:10px;padding:12px;margin-bottom:10px">
+          <strong style="color:var(--green)">🛡️ Prevention:</strong><br/>
+          <div style="font-size:0.84rem;margin-top:4px">${data.prevention}</div>
+        </div>
+        <div style="background:${data.urgency==='Immediate'?'var(--red-light)':'var(--sky-light)'};border-radius:10px;padding:10px;text-align:center;font-weight:700">
+          ⏰ Urgency: ${data.urgency}
+        </div>
+      </div>` : `
+      <div class="card">
+        <div style="text-align:center;padding:10px">
+          <div style="font-size:1.5rem;margin-bottom:6px">🌱</div>
+          <div style="font-weight:700;color:#16a34a">Your crop looks healthy!</div>
+          <div style="font-size:0.84rem;color:var(--muted);margin-top:6px">${data.prevention}</div>
+        </div>
+      </div>`}
+      <div class="powered">🌾 AnnadataHub AI Vision · For serious disease consult local KVK</div>`;
+    showToast(isHealthy ? "Crop is healthy! ✅" : "Disease identified! Check treatment ⚠️", isHealthy ? "success" : "error");
+  } catch(e) {
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Analysis failed. Try with a clearer photo in better light.</p></div>`;
+    showToast("Error. Try with better photo.", "error");
+  }
+  btn.disabled = false; btn.textContent = "🔍 Scan for Disease";
+}
+
+// MANDI PRICES
 async function getMandiPrices() {
   const crop = document.getElementById("mandiCrop").value;
   const state = document.getElementById("mandiState").value;
   const btn = document.getElementById("mandi-btn");
   const result = document.getElementById("mandi-result");
-
   btn.disabled = true; btn.textContent = "⏳ Loading...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching prices...</p></div>`;
-
   try {
     const res = await fetch(`${BACKEND}/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const outer = await res.json();
-    if (!outer.success) throw new Error('API error');
-    const raw = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
+    const raw = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
     const markets = raw.markets || [];
-
-    const rows = markets.map(m => `
-      <div class="price-card">
-        <div class="price-mandi">${m.market}</div>
-        <div class="price-amount">₹${m.price}</div>
-        <div class="price-unit">${m.unit}</div>
-      </div>`).join("");
-
     result.innerHTML = `
       <div class="card">
         <div class="card-title">${outer.crop} — ${outer.state}</div>
-        <div style="font-size:0.85rem;margin-bottom:8px">MSP: ₹${raw.msp}/quintal | ${raw.date}</div>
-        <div class="price-grid">${rows}</div>
-        <div class="advice-box" style="margin-top:12px;padding:10px;background:#f0f9f0;border-radius:8px">
-          💡 ${raw.best_selling_tip || ''}
+        <div style="font-size:0.85rem;margin-bottom:8px;color:var(--muted)">MSP: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date}</div>
+        <div class="price-grid">
+          ${markets.map(m => `<div class="price-card"><div class="price-mandi">${m.market}</div><div class="price-amount">₹${m.price}</div><div class="price-unit">${m.unit}</div></div>`).join("")}
         </div>
+        <div class="advice-box"><strong>💡 Tip:</strong> ${raw.best_selling_tip}</div>
       </div>
-      <div class="powered">🌾 AnnadataHub AI · Verify prices at your local mandi before selling</div>`;
+      <div class="powered">🌾 AnnadataHub AI · Verify at your local mandi before selling</div>`;
     showToast("Prices fetched! ✅");
   } catch(e) {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not fetch prices. Try again.</p></div>`;
@@ -375,24 +425,19 @@ async function getMandiPrices() {
   btn.disabled = false; btn.textContent = "📊 Get Today's Prices";
 }
 
-// ── WEATHER ──
+// WEATHER
 async function getWeather() {
   const location = document.getElementById("weatherLocation").value || "Delhi";
   const btn = document.getElementById("weather-btn");
   const result = document.getElementById("weather-result");
-
   btn.disabled = true; btn.textContent = "⏳ Loading...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching weather...</p></div>`;
-
   try {
     const res = await fetch(`${BACKEND}/api/weather?location=${encodeURIComponent(location)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const outer = await res.json();
-    if (!outer.success) throw new Error('API error');
-    const w = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
+    const w = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
     const emoji = w.rainfall_chance > 50 ? '🌧️' : w.humidity > 75 ? '☁️' : '☀️';
-    const sprayOk = w.spray_suitable;
-
     result.innerHTML = `
       <div class="weather-hero">
         <div style="font-size:3rem;margin-bottom:6px">${emoji}</div>
@@ -402,13 +447,13 @@ async function getWeather() {
         <div class="weather-grid">
           <div class="weather-stat"><div class="icon">💧</div><div class="val">${w.humidity}%</div><div class="lbl">Humidity</div></div>
           <div class="weather-stat"><div class="icon">🌧</div><div class="val">${w.rainfall_chance}%</div><div class="lbl">Rain Chance</div></div>
-          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work || '6-10am'}</div><div class="lbl">Best Time</div></div>
+          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work||'6-10am'}</div><div class="lbl">Best Time</div></div>
         </div>
       </div>
-      <div style="margin-top:12px;padding:12px;border-radius:10px;background:${sprayOk?'var(--green-light)':'var(--earth-light)'}">
-        <strong>${sprayOk ? '✅ Good for spraying' : '⚠️ Avoid spraying today'}</strong>
+      <div style="padding:12px;border-radius:10px;background:${w.spray_suitable?'var(--green-light)':'var(--earth-light)'};margin-bottom:12px">
+        <strong>${w.spray_suitable?'✅ Good for spraying':'⚠️ Avoid spraying today'}</strong>
         <p style="margin-top:4px;font-size:0.85rem">${w.farming_advice}</p>
-        ${w.alert ? `<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>` : ''}
+        ${w.alert?`<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>`:''}
       </div>`;
     showToast("Weather fetched! ✅");
   } catch(e) {
@@ -418,57 +463,38 @@ async function getWeather() {
   btn.disabled = false; btn.textContent = "🌤️ Get Weather & Alerts";
 }
 
-// ── GOVERNMENT SCHEMES ──
+// GOVERNMENT SCHEMES
 async function getSchemes() {
   const state = document.getElementById("schemeState").value;
   const btn = document.getElementById("schemes-btn");
   const result = document.getElementById("schemes-result");
-
   btn.disabled = true; btn.textContent = "⏳ Loading...";
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Finding schemes...</p></div>`;
-
   try {
     const res = await fetch(`${BACKEND}/api/schemes?state=${encodeURIComponent(state)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const outer = await res.json();
-    if (!outer.success) throw new Error('API error');
-    const data = typeof outer.data === 'string' ? JSON.parse(outer.data) : outer.data;
+    const data = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
     const schemes = data.schemes || [];
-
-    const cards = schemes.map((s, i) => `
-      <div class="scheme-card">
-        <div class="scheme-header" onclick="toggleScheme(${i})">
-          <div class="scheme-icon" style="background:${s.color}22">${s.emoji}</div>
-          <div style="flex:1">
-            <div class="scheme-name">${s.name}</div>
-            <div class="scheme-tagline">${s.tagline}</div>
-          </div>
-          <div class="scheme-amount">
-            <div class="amt">${s.amount}</div>
-            <div class="lbl">${s.amount_label}</div>
-          </div>
-        </div>
-        <div class="scheme-body" id="scheme-${i}">
-          <span class="eligible-badge eligible-yes">✅ You are eligible!</span>
-          <p>${s.description}</p>
-          <strong style="font-size:0.82rem;color:var(--green)">Benefits:</strong>
-          <ul>${(s.benefits||[]).map(b => `<li>${b}</li>`).join("")}</ul>
-          <div style="margin-top:10px">
-            <strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong>
-            <p style="margin-top:4px">${(s.documents||[]).join(", ")}</p>
-          </div>
-          <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">
-            📋 <strong>How to apply:</strong> ${s.how_to_apply}
-          </div>
-          <a href="${s.apply_url}" target="_blank" class="apply-btn">Apply Now →</a>
-        </div>
-      </div>`).join("");
-
     result.innerHTML = `
-      <div class="advice-box" style="margin-bottom:14px">
-        <strong>🎯 Your Eligibility:</strong> ${data.summary}
-      </div>
-      ${cards}
+      <div class="advice-box" style="margin-bottom:14px"><strong>🎯 Your Eligibility:</strong> ${data.summary}</div>
+      ${schemes.map((s, i) => `
+        <div class="scheme-card">
+          <div class="scheme-header" onclick="toggleScheme(${i})">
+            <div class="scheme-icon" style="background:${s.color}22">${s.emoji}</div>
+            <div style="flex:1"><div class="scheme-name">${s.name}</div><div class="scheme-tagline">${s.tagline}</div></div>
+            <div class="scheme-amount"><div class="amt">${s.amount}</div><div class="lbl">${s.amount_label}</div></div>
+          </div>
+          <div class="scheme-body" id="scheme-${i}">
+            <span class="eligible-badge">✅ You are eligible!</span>
+            <p>${s.description}</p>
+            <strong style="font-size:0.82rem;color:var(--green)">Benefits:</strong>
+            <ul>${(s.benefits||[]).map(b=>`<li>${b}</li>`).join("")}</ul>
+            <div style="margin-top:10px"><strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong><p style="margin-top:4px">${(s.documents||[]).join(", ")}</p></div>
+            <div style="margin-top:8px;padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem">📋 <strong>How to apply:</strong> ${s.how_to_apply}</div>
+            <a href="${s.apply_url}" target="_blank" class="apply-btn">Apply Now →</a>
+          </div>
+        </div>`).join("")}
       <div class="powered">🌾 Always verify at official government websites</div>`;
     showToast("Schemes loaded! ✅");
   } catch(e) {
@@ -478,9 +504,15 @@ async function getSchemes() {
   btn.disabled = false; btn.textContent = "🏛️ Find My Eligible Schemes";
 }
 
-function toggleScheme(i) {
-  document.getElementById("scheme-" + i).classList.toggle("open");
-}
+function toggleScheme(i) { document.getElementById("scheme-" + i).classList.toggle("open"); }
+
+// Hash navigation — open specific tab from index.html links
+window.addEventListener("load", () => {
+  const hash = window.location.hash.replace("#","");
+  if (hash && document.getElementById("tab-" + hash)) {
+    showTab(hash);
+  }
+});
 </script>
 </body>
 </html>
