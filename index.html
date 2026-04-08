@@ -22,8 +22,8 @@
   .greet-time{font-size:0.82rem;opacity:0.75;margin-bottom:3px;}
   .greet-text{font-family:'Baloo 2',cursive;font-size:1.4rem;font-weight:800;margin-bottom:3px;}
   .greet-sub{font-size:0.84rem;opacity:0.85;}
-  .weather-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:20px;font-size:0.78rem;margin-top:8px;}
-  .content{padding:14px;}
+  .weather-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);padding:5px 12px;border-radius:20px;font-size:0.78rem;margin-top:8px;cursor:pointer;}
+  .content{padding:14px;padding-bottom:75px;}
   .tip-card{background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;gap:10px;}
   .section-title{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;color:var(--green);margin:16px 0 10px;display:flex;align-items:center;gap:6px;}
   .big-btn{background:white;border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.05);display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text);}
@@ -46,30 +46,9 @@
   .nav-item.active{color:var(--green);}
   .nav-icon{font-size:1.2rem;}
   .nav-scan{width:48px;height:48px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-top:-16px;box-shadow:0 4px 14px rgba(26,92,46,0.4);cursor:pointer;text-decoration:none;}
-  .pb{height:75px;}
-  .onboard-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
-  .onboard-box{background:white;border-radius:20px;padding:28px;max-width:360px;width:100%;text-align:center;}
-  .onboard-step{display:none;}
-  .onboard-step.active{display:block;}
-  .onboard-icon{font-size:3.5rem;margin-bottom:12px;}
-  .onboard-title{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green);margin-bottom:8px;}
-  .onboard-text{font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:18px;}
-  .onboard-next{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;}
-  .onboard-skip{background:none;border:none;color:var(--muted);font-size:0.82rem;cursor:pointer;margin-top:10px;display:block;width:100%;}
-  .onboard-dots{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
-  .dot.active{background:var(--green);}
-  .help-btn{position:fixed;bottom:80px;right:16px;width:50px;height:50px;background:var(--green);color:white;border-radius:50%;border:none;font-size:1.3rem;cursor:pointer;box-shadow:0 4px 16px rgba(26,92,46,0.4);z-index:90;display:flex;align-items:center;justify-content:center;}
-  .help-modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:none;align-items:flex-end;justify-content:center;}
-  .help-modal.show{display:flex;}
-  .help-sheet{background:white;border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;}
-  .help-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin-bottom:14px;text-align:center;}
-  .help-option{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--bg);margin-bottom:8px;cursor:pointer;border:1px solid var(--border);text-decoration:none;color:var(--text);}
-  .help-close{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;margin-top:6px;}
-  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.83rem;z-index:1000;animation:toastIn 0.3s ease;white-space:nowrap;max-width:90vw;text-align:center;}
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:white;padding:10px 20px;border-radius:100px;font-size:0.83rem;z-index:1000;white-space:nowrap;max-width:90vw;text-align:center;}
   .toast.success{background:var(--green);}
   .toast.error{background:var(--red);}
-  @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
   .hidden{display:none;}
   .auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;}
   .auth-overlay.hidden{display:none!important;}
@@ -80,28 +59,15 @@
   .auth-tab.active{background:white;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,0.1);}
   .auth-field{margin-bottom:12px;}
   .auth-field label{font-size:0.75rem;font-weight:600;color:var(--muted);margin-bottom:4px;display:block;}
-  .auth-field input,.auth-field select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.88rem;outline:none;transition:border 0.2s;}
+  .auth-field input,.auth-field select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.88rem;outline:none;}
   .auth-field input:focus,.auth-field select:focus{border-color:var(--green);}
-  .auth-btn{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity 0.2s;}
+  .auth-btn{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer;margin-top:4px;}
   .auth-btn:disabled{opacity:0.6;cursor:not-allowed;}
   .auth-error{background:#fee2e2;color:#dc2626;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-bottom:10px;}
   .auth-error.hidden{display:none;}
-  .auth-benefits{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
-  .auth-benefit{font-size:0.72rem;color:var(--muted);background:var(--green-light);border-radius:8px;padding:6px 8px;}
 </style>
 </head>
 <body>
-
-<!-- ONBOARDING -->
-<div class="onboard-overlay" id="onboarding">
-  <div class="onboard-box">
-    <div class="onboard-dots"><div class="dot active" id="od1"></div><div class="dot" id="od2"></div><div class="dot" id="od3"></div><div class="dot" id="od4"></div></div>
-    <div class="onboard-step active" id="os1"><div class="onboard-icon">🌾</div><div class="onboard-title">Welcome to AnnadataHub!</div><div class="onboard-text">Your AI farming assistant. Built for Indian farmers. Works in 11 languages.</div><button class="onboard-next" onclick="nextStep(2)">Next →</button><button class="onboard-skip" onclick="closeOnboarding()">Skip</button></div>
-    <div class="onboard-step" id="os2"><div class="onboard-icon">📷</div><div class="onboard-title">Scan Your Sick Crop</div><div class="onboard-text">Take a photo of your crop. AI tells you exactly what disease it has and how to treat it!</div><button class="onboard-next" onclick="nextStep(3)">Next →</button><button class="onboard-skip" onclick="closeOnboarding()">Skip</button></div>
-    <div class="onboard-step" id="os3"><div class="onboard-icon">🎙️</div><div class="onboard-title">Speak — Don't Type!</div><div class="onboard-text">Tap the mic and speak your question in Hindi, Punjabi, Tamil or any language!</div><button class="onboard-next" onclick="nextStep(4)">Next →</button><button class="onboard-skip" onclick="closeOnboarding()">Skip</button></div>
-    <div class="onboard-step" id="os4"><div class="onboard-icon">✅</div><div class="onboard-title">You're Ready!</div><div class="onboard-text">AnnadataHub is free to start. All features available for Indian farmers!</div><button class="onboard-next" onclick="closeOnboarding()" style="background:var(--gold);color:var(--text)">Start Using App 🚀</button></div>
-  </div>
-</div>
 
 <!-- AUTH MODAL -->
 <div class="auth-overlay hidden" id="authOverlay">
@@ -110,25 +76,23 @@
     <div style="text-align:center;margin-bottom:18px">
       <div style="font-size:2.5rem">🌾</div>
       <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--green)">AnnadataHub</div>
-      <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">India's Farmer App</div>
     </div>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Login</button>
-      <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')">Sign Up</button>
+      <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')" id="tab-login-btn">Login</button>
+      <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')" id="tab-signup-btn">Sign Up</button>
     </div>
     <div id="loginForm">
-      <div class="auth-field"><label>📧 Email</label><input type="email" id="loginEmail" placeholder="your@email.com" autocomplete="email"/></div>
-      <div class="auth-field"><label>🔒 Password</label><input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password"/></div>
+      <div class="auth-field"><label>📧 Email</label><input type="email" id="loginEmail" placeholder="your@email.com"/></div>
+      <div class="auth-field"><label>🔒 Password</label><input type="password" id="loginPassword" placeholder="Enter password"/></div>
       <div class="auth-error hidden" id="loginError"></div>
       <button class="auth-btn" id="loginBtn" onclick="doLogin()">Login to AnnadataHub</button>
       <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">New farmer? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('signup')">Create free account</span></div>
     </div>
     <div id="signupForm" class="hidden">
-      <div class="auth-field"><label>👤 Full Name</label><input type="text" id="signupName" placeholder="e.g. Gurnam Singh" autocomplete="name"/></div>
-      <div class="auth-field"><label>📧 Email</label><input type="email" id="signupEmail" placeholder="your@email.com" autocomplete="email"/></div>
-      <div class="auth-field"><label>📱 Phone (optional)</label><input type="tel" id="signupPhone" placeholder="9876543210" autocomplete="tel"/></div>
-      <div class="auth-field">
-        <label>📍 State</label>
+      <div class="auth-field"><label>👤 Full Name</label><input type="text" id="signupName" placeholder="e.g. Gurnam Singh"/></div>
+      <div class="auth-field"><label>📧 Email</label><input type="email" id="signupEmail" placeholder="your@email.com"/></div>
+      <div class="auth-field"><label>📱 Phone (optional)</label><input type="tel" id="signupPhone" placeholder="9876543210"/></div>
+      <div class="auth-field"><label>📍 State</label>
         <select id="signupState">
           <option value="">Select your state</option>
           <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
@@ -143,37 +107,11 @@
           <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
         </select>
       </div>
-      <div class="auth-field"><label>🔒 Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password"/></div>
+      <div class="auth-field"><label>🔒 Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters"/></div>
       <div class="auth-error hidden" id="signupError"></div>
       <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Free Account 🚀</button>
       <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">Already have account? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('login')">Login</span></div>
     </div>
-    <div class="auth-benefits">
-      <div class="auth-benefit">✅ Free crop disease scanner</div>
-      <div class="auth-benefit">✅ Save your farm history</div>
-      <div class="auth-benefit">✅ Post on FarmGram</div>
-      <div class="auth-benefit">✅ Get personalized advice</div>
-    </div>
-  </div>
-</div>
-
-<!-- PROFILE SHEET -->
-<div class="help-modal" id="profileModal">
-  <div class="help-sheet">
-    <div class="help-title">👤 My Profile</div>
-    <div style="text-align:center;margin-bottom:16px">
-      <div style="width:64px;height:64px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 8px">🧑‍🌾</div>
-      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:700" id="profileName">Farmer</div>
-      <div style="font-size:0.78rem;color:var(--muted)" id="profileEmail"></div>
-      <div style="display:inline-block;padding:3px 12px;background:var(--green-light);color:var(--green);border-radius:20px;font-size:0.72rem;font-weight:700;margin-top:4px" id="profilePlan">FREE PLAN</div>
-    </div>
-    <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-around;text-align:center">
-      <div><div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green)" id="profileScans">0</div><div style="font-size:0.72rem;color:var(--muted)">Crop Scans</div></div>
-      <div style="width:1px;background:var(--border)"></div>
-      <div><div style="font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:var(--green)">Free</div><div style="font-size:0.72rem;color:var(--muted)">Plan</div></div>
-    </div>
-    <button class="help-close" style="background:var(--red);margin-bottom:8px" onclick="doLogout()">🚪 Logout</button>
-    <button class="help-close" onclick="document.getElementById('profileModal').classList.remove('show')">Close</button>
   </div>
 </div>
 
@@ -181,18 +119,16 @@
 <div class="header">
   <div class="logo"><div class="logo-icon">🌾</div><div class="logo-name">Annadata<span>Hub</span></div></div>
   <div style="display:flex;align-items:center;gap:8px">
-    <button class="login-btn" onclick="showLoginModal()" style="background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:6px 12px;font-family:'Baloo 2',cursive;font-size:0.8rem;font-weight:700;cursor:pointer">👤 Login</button>
-    <div class="user-btn" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;display:none;align-items:center;gap:6px;cursor:pointer" onclick="showProfile()">
-      <span style="font-size:1rem">🧑‍🌾</span>
-      <span class="user-name" style="color:white;font-size:0.8rem;font-weight:600">Farmer</span>
+    <button class="login-btn" onclick="showLoginModal()" style="background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:6px 12px;font-family:'Baloo 2',cursive;font-size:0.8rem;font-weight:700;cursor:pointer">👤 <span id="hdr-login">Login</span></button>
+    <div class="user-btn hidden" style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;display:flex;align-items:center;gap:6px;cursor:pointer" onclick="showProfile()">
+      <span>🧑‍🌾</span><span class="user-name" style="color:white;font-size:0.8rem;font-weight:600">Farmer</span>
     </div>
-    <div style="width:34px;height:34px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:white;cursor:pointer" onclick="showHelp()">❓</div>
   </div>
 </div>
 
 <!-- LANGUAGE BAR -->
 <div class="lang-bar">
-  <button class="lang-btn" data-lang="en" onclick="setLang('en')">English</button>
+  <button class="lang-btn active" data-lang="en" onclick="setLang('en')">English</button>
   <button class="lang-btn" data-lang="hi" onclick="setLang('hi')">हिंदी</button>
   <button class="lang-btn" data-lang="pa" onclick="setLang('pa')">ਪੰਜਾਬੀ</button>
   <button class="lang-btn" data-lang="mr" onclick="setLang('mr')">मराठी</button>
@@ -209,99 +145,114 @@
   <div class="greet-time" id="greetTime">Good Morning ☀️</div>
   <div class="greet-text" id="greetText">Good Morning, Farmer! 🙏</div>
   <div class="greet-sub" id="greetSub">How is your crop today?</div>
-  <div class="weather-pill">🌤️ Check weather for your farm →</div>
+  <div class="weather-pill" onclick="location.href='farmer-tools.html#weather'">🌤️ <span id="weather-check">Check weather for your farm →</span></div>
 </div>
 
 <div class="content">
   <div class="tip-card">
     <div style="font-size:1.3rem">💡</div>
-    <div><div style="font-weight:700;font-size:0.86rem;color:#92400e">Today's Tip</div><div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust. Spray Propiconazole immediately if found.</div></div>
+    <div>
+      <div style="font-weight:700;font-size:0.86rem;color:#92400e" id="tip-label">Today's Tip</div>
+      <div style="font-size:0.78rem;color:#374141;line-height:1.4;margin-top:2px" id="tipText">Check your wheat crop for yellow rust. Spray Propiconazole immediately if found.</div>
+    </div>
   </div>
 
-  <div class="section-title">🚀 Most Important</div>
+  <div class="section-title" id="sec-important">🚀 Most Important</div>
 
-  <!-- Direct links with hash for tab navigation -->
-  <a class="big-btn green" href="farmer-tools.html#scan">
+  <a class="big-btn green" href="farmer-tools.html#scan" id="btn-scan">
     <div class="btn-icon-wrap" style="background:rgba(255,255,255,0.2)">📷</div>
-    <div style="flex:1"><div class="btn-title" style="color:white">Scan Sick Crop</div><div class="btn-desc" style="color:rgba(255,255,255,0.8)">Take photo → AI tells disease + treatment in 30 seconds</div><span class="btn-badge" style="background:var(--gold);color:var(--text)">FREE</span></div>
+    <div style="flex:1">
+      <div class="btn-title" style="color:white" id="scan-title">Scan Sick Crop</div>
+      <div class="btn-desc" style="color:rgba(255,255,255,0.8)" id="scan-desc">Take photo → AI tells disease + treatment in 30 seconds</div>
+      <span class="btn-badge" style="background:var(--gold);color:var(--text)" id="scan-badge">FREE</span>
+    </div>
     <div class="btn-arrow" style="color:rgba(255,255,255,0.7)">→</div>
   </a>
-  <a class="big-btn" href="farmer-tools.html#mandi">
+
+  <a class="big-btn" href="farmer-tools.html#mandi" id="btn-mandi">
     <div class="btn-icon-wrap" style="background:#dcfce7">📊</div>
-    <div style="flex:1"><div class="btn-title">Today's Mandi Price</div><div class="btn-desc">Check today's price before selling your crop</div><span class="btn-badge" style="background:#dcfce7;color:#16a34a">UPDATED DAILY</span></div>
+    <div style="flex:1">
+      <div class="btn-title" id="mandi-title">Today's Mandi Price</div>
+      <div class="btn-desc" id="mandi-desc">Check today's price before selling your crop</div>
+      <span class="btn-badge" style="background:#dcfce7;color:#16a34a" id="mandi-badge">UPDATED DAILY</span>
+    </div>
     <div class="btn-arrow">→</div>
   </a>
-  <a class="big-btn" href="farmer-tools.html#weather">
+
+  <a class="big-btn" href="farmer-tools.html#weather" id="btn-weather">
     <div class="btn-icon-wrap" style="background:#e0f2fe">🌦️</div>
-    <div style="flex:1"><div class="btn-title">Weather for My Farm</div><div class="btn-desc">Rain coming? Good day to spray? Check now</div><span class="btn-badge" style="background:#e0f2fe;color:#0369a1">5-DAY FORECAST</span></div>
+    <div style="flex:1">
+      <div class="btn-title" id="weather-title">Weather for My Farm</div>
+      <div class="btn-desc" id="weather-desc">Rain coming? Good day to spray? Check now</div>
+      <span class="btn-badge" style="background:#e0f2fe;color:#0369a1" id="weather-badge">5-DAY FORECAST</span>
+    </div>
     <div class="btn-arrow">→</div>
   </a>
-  <a class="big-btn" href="msp.html">
+
+  <a class="big-btn" href="msp.html" id="btn-msp">
     <div class="btn-icon-wrap" style="background:#fef9c3">📊</div>
-    <div style="flex:1"><div class="btn-title">MSP vs Mandi Price</div><div class="btn-desc">Check if you are getting fair price for your crop</div><span class="btn-badge" style="background:#fef9c3;color:#92400e">SAVE MONEY</span></div>
+    <div style="flex:1">
+      <div class="btn-title" id="msp-title">MSP vs Mandi Price</div>
+      <div class="btn-desc" id="msp-desc">Check if you are getting fair price for your crop</div>
+      <span class="btn-badge" style="background:#fef9c3;color:#92400e" id="msp-badge">SAVE MONEY</span>
+    </div>
     <div class="btn-arrow">→</div>
   </a>
-  <a class="big-btn" href="power-tools.html#voice">
+
+  <a class="big-btn" href="power-tools.html#voice" id="btn-voice">
     <div class="btn-icon-wrap" style="background:#f5f3ff">🎙️</div>
-    <div style="flex:1"><div class="btn-title">Speak Your Question</div><div class="btn-desc">Can't type? Just speak in your language</div><span class="btn-badge" style="background:#f5f3ff;color:#7c3aed">11 LANGUAGES</span></div>
+    <div style="flex:1">
+      <div class="btn-title" id="voice-title">Speak Your Question</div>
+      <div class="btn-desc" id="voice-desc">Can't type? Just speak in your language</div>
+      <span class="btn-badge" style="background:#f5f3ff;color:#7c3aed" id="voice-badge">11 LANGUAGES</span>
+    </div>
     <div class="btn-arrow">→</div>
   </a>
 
-  <div class="section-title">🌾 Farming Tools</div>
+  <div class="section-title" id="sec-tools">🌾 Farming Tools</div>
   <div class="quick-grid">
-    <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">📅</div><div class="quick-title">Crop Calendar</div><div class="quick-desc">What to do today on your farm</div></a>
-    <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">💊</div><div class="quick-title">Fertilizer Guide</div><div class="quick-desc">Exact quantity for your field</div></a>
-    <a class="quick-btn" href="farmer-tools.html#schemes"><div class="quick-icon">🏛️</div><div class="quick-title">Govt Schemes</div><div class="quick-desc">PM-Kisan & other schemes</div></a>
-    <a class="quick-btn" href="power-tools.html#profit"><div class="quick-icon">💰</div><div class="quick-title">Profit Calculator</div><div class="quick-desc">Did you earn or lose?</div></a>
-    <a class="quick-btn" href="power-tools.html#soil"><div class="quick-icon">🌍</div><div class="quick-title">Soil Health</div><div class="quick-desc">AI soil analysis with photo</div></a>
-    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🏦</div><div class="quick-title">Loan Calculator</div><div class="quick-desc">Calculate your EMI</div></a>
-    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🧪</div><div class="quick-title">Pesticide Guide</div><div class="quick-desc">Correct dosage for crops</div></a>
-    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🛡️</div><div class="quick-title">Crop Insurance</div><div class="quick-desc">PMFBY calculator</div></a>
+    <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">📅</div><div class="quick-title" id="q-calendar">Crop Calendar</div><div class="quick-desc" id="q-calendar-d">What to do today on your farm</div></a>
+    <a class="quick-btn" href="crop-tools.html"><div class="quick-icon">💊</div><div class="quick-title" id="q-fertilizer">Fertilizer Guide</div><div class="quick-desc" id="q-fertilizer-d">Exact quantity for your field</div></a>
+    <a class="quick-btn" href="farmer-tools.html#schemes"><div class="quick-icon">🏛️</div><div class="quick-title" id="q-schemes">Govt Schemes</div><div class="quick-desc" id="q-schemes-d">PM-Kisan & other schemes</div></a>
+    <a class="quick-btn" href="power-tools.html#profit"><div class="quick-icon">💰</div><div class="quick-title" id="q-profit">Profit Calculator</div><div class="quick-desc" id="q-profit-d">Did you earn or lose?</div></a>
+    <a class="quick-btn" href="power-tools.html#soil"><div class="quick-icon">🌍</div><div class="quick-title" id="q-soil">Soil Health</div><div class="quick-desc" id="q-soil-d">AI soil analysis with photo</div></a>
+    <a class="quick-btn" href="finance-tools.html"><div class="quick-icon">🏦</div><div class="quick-title" id="q-loan">Loan Calculator</div><div class="quick-desc" id="q-loan-d">Calculate your EMI</div></a>
   </div>
 
-  <div class="section-title">🎓 Learn & Connect</div>
+  <div class="section-title" id="sec-learn">🎓 Learn & Connect</div>
   <div class="quick-grid">
-    <a class="quick-btn" href="learn.html#techniques"><div class="quick-icon">🌱</div><div class="quick-title">New Techniques</div><div class="quick-desc">Hydroponics, mushroom & more</div></a>
-    <a class="quick-btn" href="learn.html#business"><div class="quick-icon">💼</div><div class="quick-title">Business Ideas</div><div class="quick-desc">Earn beyond farming</div></a>
-    <a class="quick-btn" href="learn.html#videos"><div class="quick-icon">▶️</div><div class="quick-title">YouTube Videos</div><div class="quick-desc">Learn in your language</div></a>
-    <a class="quick-btn" href="learn.html#ailearn"><div class="quick-icon">🤖</div><div class="quick-title">Ask AI</div><div class="quick-desc">Get any farming answer</div></a>
+    <a class="quick-btn" href="learn.html#techniques"><div class="quick-icon">🌱</div><div class="quick-title" id="q-tech">New Techniques</div><div class="quick-desc" id="q-tech-d">Hydroponics, mushroom & more</div></a>
+    <a class="quick-btn" href="learn.html#business"><div class="quick-icon">💼</div><div class="quick-title" id="q-biz">Business Ideas</div><div class="quick-desc" id="q-biz-d">Earn beyond farming</div></a>
+    <a class="quick-btn" href="learn.html#videos"><div class="quick-icon">▶️</div><div class="quick-title" id="q-videos">YouTube Videos</div><div class="quick-desc" id="q-videos-d">Learn in your language</div></a>
+    <a class="quick-btn" href="learn.html#ailearn"><div class="quick-icon">🤖</div><div class="quick-title" id="q-ai">Ask AI</div><div class="quick-desc" id="q-ai-d">Get any farming answer</div></a>
   </div>
 
-  <div class="section-title">👥 Community</div>
+  <div class="section-title" id="sec-community">👥 Community</div>
   <div class="quick-grid">
-    <a class="quick-btn" href="farmgram.html"><div class="quick-icon">📱</div><div class="quick-title">FarmGram</div><div class="quick-desc">Connect with farmers</div></a>
-    <a class="quick-btn" href="power-tools.html#news"><div class="quick-icon">📰</div><div class="quick-title">Farm News</div><div class="quick-desc">Latest agri news today</div></a>
-    <a class="quick-btn" href="power-tools.html#chat"><div class="quick-icon">💬</div><div class="quick-title">Farmer Chat</div><div class="quick-desc">Talk to farmers like you</div></a>
-    <a class="quick-btn" href="msp.html"><div class="quick-icon">⚖️</div><div class="quick-title">Know Your Rights</div><div class="quick-desc">MSP & farmer rights</div></a>
+    <a class="quick-btn" href="farmgram.html"><div class="quick-icon">📱</div><div class="quick-title" id="q-farmgram">FarmGram</div><div class="quick-desc" id="q-farmgram-d">Connect with farmers</div></a>
+    <a class="quick-btn" href="power-tools.html#news"><div class="quick-icon">📰</div><div class="quick-title" id="q-news">Farm News</div><div class="quick-desc" id="q-news-d">Latest agri news today</div></a>
+    <a class="quick-btn" href="power-tools.html#chat"><div class="quick-icon">💬</div><div class="quick-title" id="q-chat">Farmer Chat</div><div class="quick-desc" id="q-chat-d">Talk to farmers like you</div></a>
+    <a class="quick-btn" href="msp.html"><div class="quick-icon">⚖️</div><div class="quick-title" id="q-rights">Know Your Rights</div><div class="quick-desc" id="q-rights-d">MSP & farmer rights</div></a>
   </div>
 
-  <div class="section-title">🚨 Emergency Help</div>
+  <div class="section-title" id="sec-emergency">🚨 Emergency Help</div>
   <a class="emergency-btn" href="tel:18001801551">
     <div style="font-size:1.5rem">☎️</div>
-    <div style="flex:1"><div style="font-weight:700;font-size:0.9rem;color:var(--red)">Call Kisan Helpline — FREE</div><div style="font-size:0.75rem;color:var(--muted)">1800-180-1551 · Hindi & regional languages</div></div>
+    <div style="flex:1">
+      <div style="font-weight:700;font-size:0.9rem;color:var(--red)" id="helpline-title">Call Kisan Helpline — FREE</div>
+      <div style="font-size:0.75rem;color:var(--muted)" id="helpline-desc">1800-180-1551 · Hindi & regional languages</div>
+    </div>
     <div style="color:var(--red)">→</div>
   </a>
-  <div class="pb"></div>
 </div>
 
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span>Home</a>
-  <a class="nav-item" href="farmer-tools.html"><span class="nav-icon">📊</span>Prices</a>
+  <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span><span id="nav-home">Home</span></a>
+  <a class="nav-item" href="farmer-tools.html"><span class="nav-icon">📊</span><span id="nav-prices">Prices</span></a>
   <a class="nav-scan" href="farmer-tools.html#scan">📷</a>
-  <a class="nav-item" href="farmgram.html"><span class="nav-icon">📱</span>FarmGram</a>
-  <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span>MSP</a>
-</div>
-
-<button class="help-btn" onclick="showHelp()">❓</button>
-
-<div class="help-modal" id="helpModal">
-  <div class="help-sheet">
-    <div class="help-title">How can we help? 🙏</div>
-    <a class="help-option" href="power-tools.html#voice"><div style="font-size:1.5rem">🎙️</div><div><div style="font-weight:700;font-size:0.88rem">Speak Your Problem</div><div style="font-size:0.75rem;color:var(--muted)">Tap and speak in your language</div></div></a>
-    <a class="help-option" href="tel:18001801551"><div style="font-size:1.5rem">☎️</div><div><div style="font-weight:700;font-size:0.88rem">Call Free Helpline</div><div style="font-size:0.75rem;color:var(--muted)">1800-180-1551 · Free · Mon-Sat</div></div></a>
-    <div class="help-option" onclick="showOnboarding();closeHelp()"><div style="font-size:1.5rem">🔄</div><div><div style="font-weight:700;font-size:0.88rem">See App Guide Again</div><div style="font-size:0.75rem;color:var(--muted)">Step by step tour of the app</div></div></div>
-    <button class="help-close" onclick="closeHelp()">Close</button>
-  </div>
+  <a class="nav-item" href="farmgram.html"><span class="nav-icon">📱</span><span id="nav-farmgram">FarmGram</span></a>
+  <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span><span id="nav-msp">MSP</span></a>
 </div>
 
 <div id="toast" class="toast hidden"></div>
@@ -309,45 +260,403 @@
 <script>
 const API = "https://annadatahub-production-a9db.up.railway.app";
 
-// Language system
-const LANG_DATA = {
-  en:{greeting:"Good Morning, Farmer! 🙏",sub:"How is your crop today?"},
-  hi:{greeting:"सुप्रभात किसान! 🙏",sub:"आज आपकी फसल कैसी है?"},
-  pa:{greeting:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏",sub:"ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?"},
-  mr:{greeting:"शुभ प्रभात शेतकरी! 🙏",sub:"आज तुमची शेती कशी आहे?"},
-  te:{greeting:"శుభోదయం రైతు! 🙏",sub:"ఈరోజు మీ పంట ఎలా ఉంది?"},
-  ta:{greeting:"காலை வணக்கம் விவசாயி! 🙏",sub:"இன்று உங்கள் பயிர் எப்படி?"},
-  gu:{greeting:"સુ પ્રભાત ખેડૂત! 🙏",sub:"આજ તમારો પાક કેવો છે?"},
-  bn:{greeting:"শুভ সকাল কৃষক! 🙏",sub:"আজ আপনার ফসল কেমন?"},
-  kn:{greeting:"ಶುಭೋದಯ ರೈತ! 🙏",sub:"ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?"},
-  ml:{greeting:"സുപ്രഭാതം കർഷകൻ! 🙏",sub:"ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?"},
+// ── COMPLETE TRANSLATIONS ─────────────────────────────────────────
+const T = {
+  en: {
+    greet_morning:"Good Morning, Farmer! 🙏", greet_afternoon:"Good Afternoon, Farmer! 🙏", greet_evening:"Good Evening, Farmer! 🙏",
+    greet_sub:"How is your crop today?", greet_time_m:"Good Morning ☀️", greet_time_a:"Good Afternoon 🌤️", greet_time_e:"Good Evening 🌙",
+    weather_check:"Check weather for your farm →",
+    tip_label:"Today's Tip",
+    sec_important:"🚀 Most Important", sec_tools:"🌾 Farming Tools", sec_learn:"🎓 Learn & Connect", sec_community:"👥 Community", sec_emergency:"🚨 Emergency Help",
+    scan_title:"Scan Sick Crop", scan_desc:"Take photo → AI tells disease + treatment in 30 seconds", scan_badge:"FREE",
+    mandi_title:"Today's Mandi Price", mandi_desc:"Check today's price before selling your crop", mandi_badge:"UPDATED DAILY",
+    weather_title:"Weather for My Farm", weather_desc:"Rain coming? Good day to spray? Check now", weather_badge:"5-DAY FORECAST",
+    msp_title:"MSP vs Mandi Price", msp_desc:"Check if you are getting fair price for your crop", msp_badge:"SAVE MONEY",
+    voice_title:"Speak Your Question", voice_desc:"Can't type? Just speak in your language", voice_badge:"11 LANGUAGES",
+    q_calendar:"Crop Calendar", q_calendar_d:"What to do today on your farm",
+    q_fertilizer:"Fertilizer Guide", q_fertilizer_d:"Exact quantity for your field",
+    q_schemes:"Govt Schemes", q_schemes_d:"PM-Kisan & other schemes",
+    q_profit:"Profit Calculator", q_profit_d:"Did you earn or lose?",
+    q_soil:"Soil Health", q_soil_d:"AI soil analysis with photo",
+    q_loan:"Loan Calculator", q_loan_d:"Calculate your EMI",
+    q_tech:"New Techniques", q_tech_d:"Hydroponics, mushroom & more",
+    q_biz:"Business Ideas", q_biz_d:"Earn beyond farming",
+    q_videos:"YouTube Videos", q_videos_d:"Learn in your language",
+    q_ai:"Ask AI", q_ai_d:"Get any farming answer",
+    q_farmgram:"FarmGram", q_farmgram_d:"Connect with farmers",
+    q_news:"Farm News", q_news_d:"Latest agri news today",
+    q_chat:"Farmer Chat", q_chat_d:"Talk to farmers like you",
+    q_rights:"Know Your Rights", q_rights_d:"MSP & farmer rights",
+    helpline_title:"Call Kisan Helpline — FREE", helpline_desc:"1800-180-1551 · Hindi & regional languages",
+    nav_home:"Home", nav_prices:"Prices", nav_farmgram:"FarmGram", nav_msp:"MSP",
+    hdr_login:"Login",
+    tips:["Check your wheat crop for yellow rust. Spray Propiconazole immediately if found.","Best time to spray: early morning 6-9am. Never in hot afternoon.","Check PM-KISAN status — visit Schemes section.","Water crops in the morning — evening watering causes fungal disease.","Apply potash fertilizer to flowering crops — improves fruit quality."]
+  },
+  hi: {
+    greet_morning:"सुप्रभात किसान! 🙏", greet_afternoon:"नमस्ते किसान! 🙏", greet_evening:"शुभ संध्या किसान! 🙏",
+    greet_sub:"आज आपकी फसल कैसी है?", greet_time_m:"सुप्रभात ☀️", greet_time_a:"नमस्ते 🌤️", greet_time_e:"शुभ संध्या 🌙",
+    weather_check:"अपने खेत का मौसम देखें →",
+    tip_label:"आज की सलाह",
+    sec_important:"🚀 सबसे जरूरी", sec_tools:"🌾 खेती के औजार", sec_learn:"🎓 सीखें और जुड़ें", sec_community:"👥 किसान समुदाय", sec_emergency:"🚨 आपातकालीन सहायता",
+    scan_title:"बीमार फसल स्कैन करें", scan_desc:"फोटो लें → AI 30 सेकंड में रोग और इलाज बताएगा", scan_badge:"मुफ्त",
+    mandi_title:"आज का मंडी भाव", mandi_desc:"बेचने से पहले आज का भाव देखें", mandi_badge:"रोज अपडेट",
+    weather_title:"मेरे खेत का मौसम", weather_desc:"बारिश आएगी? छिड़काव के लिए अच्छा दिन? अभी देखें", weather_badge:"5 दिन का पूर्वानुमान",
+    msp_title:"MSP बनाम मंडी भाव", msp_desc:"क्या आपको सही दाम मिल रहा है?", msp_badge:"पैसे बचाएं",
+    voice_title:"अपना सवाल बोलें", voice_desc:"टाइप नहीं कर सकते? अपनी भाषा में बोलें", voice_badge:"11 भाषाएं",
+    q_calendar:"फसल कैलेंडर", q_calendar_d:"आज खेत में क्या करें",
+    q_fertilizer:"खाद गाइड", q_fertilizer_d:"अपने खेत के लिए सही मात्रा",
+    q_schemes:"सरकारी योजनाएं", q_schemes_d:"PM-किसान और अन्य योजनाएं",
+    q_profit:"मुनाफा कैलकुलेटर", q_profit_d:"आपने कमाया या नुकसान हुआ?",
+    q_soil:"मिट्टी की जाँच", q_soil_d:"फोटो से AI मिट्टी विश्लेषण",
+    q_loan:"लोन कैलकुलेटर", q_loan_d:"अपनी EMI गणना करें",
+    q_tech:"नई तकनीकें", q_tech_d:"हाइड्रोपोनिक्स, मशरूम और अधिक",
+    q_biz:"व्यापार के विचार", q_biz_d:"खेती के अलावा भी कमाएं",
+    q_videos:"YouTube वीडियो", q_videos_d:"अपनी भाषा में सीखें",
+    q_ai:"AI से पूछें", q_ai_d:"कोई भी खेती का जवाब पाएं",
+    q_farmgram:"फार्मग्राम", q_farmgram_d:"किसानों से जुड़ें",
+    q_news:"खेती समाचार", q_news_d:"आज की ताजा खबरें",
+    q_chat:"किसान चैट", q_chat_d:"अपने जैसे किसानों से बात करें",
+    q_rights:"अपने अधिकार जानें", q_rights_d:"MSP और किसान अधिकार",
+    helpline_title:"किसान हेल्पलाइन — मुफ्त कॉल करें", helpline_desc:"1800-180-1551 · हिंदी और क्षेत्रीय भाषाएं",
+    nav_home:"होम", nav_prices:"मंडी", nav_farmgram:"फार्मग्राम", nav_msp:"MSP",
+    hdr_login:"लॉगिन",
+    tips:["अपनी गेहूं की फसल में पीला रस्ट देखें। मिलने पर Propiconazole का छिड़काव करें।","छिड़काव का सबसे अच्छा समय: सुबह 6-9 बजे। दोपहर की गर्मी में कभी नहीं।","PM-किसान की स्थिति जांचें — योजनाएं सेक्शन में जाएं।","सुबह फसल को पानी दें — शाम को पानी देने से फफूंद रोग होता है।","फूल वाली फसलों पर पोटाश डालें — फल की गुणवत्ता बढ़ेगी।"]
+  },
+  pa: {
+    greet_morning:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਕਿਸਾਨ! 🙏", greet_afternoon:"ਨਮਸਕਾਰ ਕਿਸਾਨ! 🙏", greet_evening:"ਸ਼ੁਭ ਸੰਧਿਆ ਕਿਸਾਨ! 🙏",
+    greet_sub:"ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਕਿਵੇਂ ਹੈ?", greet_time_m:"ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ☀️", greet_time_a:"ਨਮਸਕਾਰ 🌤️", greet_time_e:"ਸ਼ੁਭ ਸੰਧਿਆ 🌙",
+    weather_check:"ਆਪਣੇ ਖੇਤ ਦਾ ਮੌਸਮ ਦੇਖੋ →",
+    tip_label:"ਅੱਜ ਦੀ ਸਲਾਹ",
+    sec_important:"🚀 ਸਭ ਤੋਂ ਜ਼ਰੂਰੀ", sec_tools:"🌾 ਖੇਤੀ ਸੰਦ", sec_learn:"🎓 ਸਿੱਖੋ ਅਤੇ ਜੁੜੋ", sec_community:"👥 ਕਿਸਾਨ ਭਾਈਚਾਰਾ", sec_emergency:"🚨 ਐਮਰਜੈਂਸੀ ਮਦਦ",
+    scan_title:"ਬਿਮਾਰ ਫਸਲ ਸਕੈਨ ਕਰੋ", scan_desc:"ਫੋਟੋ ਲਓ → AI 30 ਸਕਿੰਟ ਵਿੱਚ ਰੋਗ ਦੱਸੇਗਾ", scan_badge:"ਮੁਫ਼ਤ",
+    mandi_title:"ਅੱਜ ਦਾ ਮੰਡੀ ਭਾਅ", mandi_desc:"ਵੇਚਣ ਤੋਂ ਪਹਿਲਾਂ ਅੱਜ ਦਾ ਭਾਅ ਦੇਖੋ", mandi_badge:"ਰੋਜ਼ ਅਪਡੇਟ",
+    weather_title:"ਮੇਰੇ ਖੇਤ ਦਾ ਮੌਸਮ", weather_desc:"ਮੀਂਹ ਆਵੇਗਾ? ਸਪਰੇਅ ਲਈ ਚੰਗਾ ਦਿਨ? ਹੁਣੇ ਦੇਖੋ", weather_badge:"5 ਦਿਨ ਦੀ ਭਵਿੱਖਬਾਣੀ",
+    msp_title:"MSP ਬਨਾਮ ਮੰਡੀ ਭਾਅ", msp_desc:"ਕੀ ਤੁਹਾਨੂੰ ਸਹੀ ਕੀਮਤ ਮਿਲ ਰਹੀ ਹੈ?", msp_badge:"ਪੈਸੇ ਬਚਾਓ",
+    voice_title:"ਆਪਣਾ ਸਵਾਲ ਬੋਲੋ", voice_desc:"ਟਾਈਪ ਨਹੀਂ ਕਰ ਸਕਦੇ? ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਬੋਲੋ", voice_badge:"11 ਭਾਸ਼ਾਵਾਂ",
+    q_calendar:"ਫਸਲ ਕੈਲੰਡਰ", q_calendar_d:"ਅੱਜ ਖੇਤ ਵਿੱਚ ਕੀ ਕਰਨਾ ਹੈ",
+    q_fertilizer:"ਖਾਦ ਗਾਈਡ", q_fertilizer_d:"ਤੁਹਾਡੇ ਖੇਤ ਲਈ ਸਹੀ ਮਾਤਰਾ",
+    q_schemes:"ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ", q_schemes_d:"PM-ਕਿਸਾਨ ਅਤੇ ਹੋਰ ਯੋਜਨਾਵਾਂ",
+    q_profit:"ਮੁਨਾਫਾ ਕੈਲਕੁਲੇਟਰ", q_profit_d:"ਤੁਸੀਂ ਕਮਾਇਆ ਜਾਂ ਨੁਕਸਾਨ ਹੋਇਆ?",
+    q_soil:"ਮਿੱਟੀ ਦੀ ਜਾਂਚ", q_soil_d:"ਫੋਟੋ ਨਾਲ AI ਮਿੱਟੀ ਵਿਸ਼ਲੇਸ਼ਣ",
+    q_loan:"ਲੋਨ ਕੈਲਕੁਲੇਟਰ", q_loan_d:"ਆਪਣੀ EMI ਗਣਨਾ ਕਰੋ",
+    q_tech:"ਨਵੀਆਂ ਤਕਨੀਕਾਂ", q_tech_d:"ਹਾਈਡ੍ਰੋਪੋਨਿਕਸ, ਮਸ਼ਰੂਮ ਅਤੇ ਹੋਰ",
+    q_biz:"ਕਾਰੋਬਾਰੀ ਵਿਚਾਰ", q_biz_d:"ਖੇਤੀ ਤੋਂ ਅੱਗੇ ਕਮਾਓ",
+    q_videos:"YouTube ਵੀਡੀਓ", q_videos_d:"ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਸਿੱਖੋ",
+    q_ai:"AI ਤੋਂ ਪੁੱਛੋ", q_ai_d:"ਕੋਈ ਵੀ ਖੇਤੀ ਦਾ ਜਵਾਬ ਪਾਓ",
+    q_farmgram:"ਫਾਰਮਗ੍ਰਾਮ", q_farmgram_d:"ਕਿਸਾਨਾਂ ਨਾਲ ਜੁੜੋ",
+    q_news:"ਖੇਤੀ ਖ਼ਬਰਾਂ", q_news_d:"ਅੱਜ ਦੀਆਂ ਤਾਜ਼ਾ ਖ਼ਬਰਾਂ",
+    q_chat:"ਕਿਸਾਨ ਚੈਟ", q_chat_d:"ਆਪਣੇ ਵਰਗੇ ਕਿਸਾਨਾਂ ਨਾਲ ਗੱਲ ਕਰੋ",
+    q_rights:"ਆਪਣੇ ਅਧਿਕਾਰ ਜਾਣੋ", q_rights_d:"MSP ਅਤੇ ਕਿਸਾਨ ਅਧਿਕਾਰ",
+    helpline_title:"ਕਿਸਾਨ ਹੈਲਪਲਾਈਨ — ਮੁਫ਼ਤ ਕਾਲ", helpline_desc:"1800-180-1551 · ਪੰਜਾਬੀ ਅਤੇ ਹੋਰ ਭਾਸ਼ਾਵਾਂ",
+    nav_home:"ਘਰ", nav_prices:"ਮੰਡੀ", nav_farmgram:"ਫਾਰਮਗ੍ਰਾਮ", nav_msp:"MSP",
+    hdr_login:"ਲੌਗਇਨ",
+    tips:["ਆਪਣੀ ਕਣਕ ਦੀ ਫਸਲ ਵਿੱਚ ਪੀਲਾ ਕੁੰਗੀ ਦੇਖੋ। ਮਿਲਣ 'ਤੇ Propiconazole ਦਾ ਛਿੜਕਾਅ ਕਰੋ।","ਛਿੜਕਾਅ ਦਾ ਸਭ ਤੋਂ ਵਧੀਆ ਸਮਾਂ: ਸਵੇਰੇ 6-9 ਵਜੇ।","PM-ਕਿਸਾਨ ਦੀ ਸਥਿਤੀ ਜਾਂਚੋ।","ਸਵੇਰੇ ਫਸਲਾਂ ਨੂੰ ਪਾਣੀ ਦਿਓ — ਸ਼ਾਮ ਨੂੰ ਪਾਣੀ ਦੇਣ ਨਾਲ ਉੱਲੀ ਰੋਗ ਹੁੰਦਾ ਹੈ।","ਫੁੱਲ ਵਾਲੀਆਂ ਫਸਲਾਂ 'ਤੇ ਪੋਟਾਸ਼ ਪਾਓ।"]
+  },
+  mr: {
+    greet_morning:"शुभ प्रभात शेतकरी! 🙏", greet_afternoon:"नमस्कार शेतकरी! 🙏", greet_evening:"शुभ संध्या शेतकरी! 🙏",
+    greet_sub:"आज तुमची शेती कशी आहे?", greet_time_m:"शुभ प्रभात ☀️", greet_time_a:"नमस्कार 🌤️", greet_time_e:"शुभ संध्या 🌙",
+    weather_check:"तुमच्या शेतीचे हवामान पाहा →",
+    tip_label:"आजची टीप",
+    sec_important:"🚀 सर्वात महत्त्वाचे", sec_tools:"🌾 शेती साधने", sec_learn:"🎓 शिका आणि जोडा", sec_community:"👥 शेतकरी समुदाय", sec_emergency:"🚨 आपत्कालीन मदत",
+    scan_title:"आजारी पीक स्कॅन करा", scan_desc:"फोटो घ्या → AI 30 सेकंदात रोग सांगेल", scan_badge:"मोफत",
+    mandi_title:"आजचा मंडी भाव", mandi_desc:"विकण्यापूर्वी आजचा भाव पाहा", mandi_badge:"दररोज अपडेट",
+    weather_title:"माझ्या शेताचे हवामान", weather_desc:"पाऊस येणार? फवारणीचा चांगला दिवस?", weather_badge:"5 दिवसांचा अंदाज",
+    msp_title:"MSP विरुद्ध मंडी भाव", msp_desc:"तुम्हाला योग्य किंमत मिळत आहे का?", msp_badge:"पैसे वाचवा",
+    voice_title:"तुमचा प्रश्न बोला", voice_desc:"टाइप करता येत नाही? तुमच्या भाषेत बोला", voice_badge:"11 भाषा",
+    q_calendar:"पीक कॅलेंडर", q_calendar_d:"आज शेतात काय करायचे",
+    q_fertilizer:"खत मार्गदर्शक", q_fertilizer_d:"तुमच्या शेतासाठी योग्य प्रमाण",
+    q_schemes:"सरकारी योजना", q_schemes_d:"PM-किसान व इतर योजना",
+    q_profit:"नफा कॅल्क्युलेटर", q_profit_d:"तुम्ही कमावले की तोटा झाला?",
+    q_soil:"माती आरोग्य", q_soil_d:"फोटोसह AI माती विश्लेषण",
+    q_loan:"कर्ज कॅल्क्युलेटर", q_loan_d:"तुमची EMI मोजा",
+    q_tech:"नवीन तंत्रे", q_tech_d:"हायड्रोपोनिक्स, मशरूम आणि बरेच",
+    q_biz:"व्यवसाय कल्पना", q_biz_d:"शेतीच्या पलीकडे कमवा",
+    q_videos:"YouTube व्हिडिओ", q_videos_d:"तुमच्या भाषेत शिका",
+    q_ai:"AI ला विचारा", q_ai_d:"कोणताही शेती उत्तर मिळवा",
+    q_farmgram:"फार्मग्राम", q_farmgram_d:"शेतकऱ्यांशी जोडा",
+    q_news:"शेती बातम्या", q_news_d:"आजच्या ताज्या बातम्या",
+    q_chat:"शेतकरी चॅट", q_chat_d:"तुमच्यासारख्या शेतकऱ्यांशी बोला",
+    q_rights:"तुमचे अधिकार जाणा", q_rights_d:"MSP आणि शेतकरी अधिकार",
+    helpline_title:"किसान हेल्पलाइन — मोफत कॉल", helpline_desc:"1800-180-1551 · मराठी व इतर भाषा",
+    nav_home:"मुख्यपृष्ठ", nav_prices:"मंडी", nav_farmgram:"फार्मग्राम", nav_msp:"MSP",
+    hdr_login:"लॉगिन",
+    tips:["तुमच्या गहू पिकात पिवळा गंज पाहा. आढळल्यास Propiconazole फवारा.","फवारणीचा सर्वोत्तम वेळ: सकाळी 6-9 वाजता.","PM-किसान स्थिती तपासा.","सकाळी पिकांना पाणी द्या — संध्याकाळी दिल्यास बुरशी रोग होतो.","फुलांच्या पिकांवर पोटॅश द्या — फळाची गुणवत्ता वाढेल."]
+  },
+  te: {
+    greet_morning:"శుభోదయం రైతు! 🙏", greet_afternoon:"నమస్కారం రైతు! 🙏", greet_evening:"శుభ సాయంత్రం రైతు! 🙏",
+    greet_sub:"ఈరోజు మీ పంట ఎలా ఉంది?", greet_time_m:"శుభోదయం ☀️", greet_time_a:"నమస్కారం 🌤️", greet_time_e:"శుభ సాయంత్రం 🌙",
+    weather_check:"మీ పొలం వాతావరణం చూడండి →",
+    tip_label:"నేటి చిట్కా",
+    sec_important:"🚀 అతి ముఖ్యమైనది", sec_tools:"🌾 వ్యవసాయ సాధనాలు", sec_learn:"🎓 నేర్చుకోండి", sec_community:"👥 రైతు సమాజం", sec_emergency:"🚨 అత్యవసర సహాయం",
+    scan_title:"జబ్బు పంటను స్కాన్ చేయండి", scan_desc:"ఫోటో తీయండి → AI 30 సెకన్లలో వ్యాధి చెప్పుతుంది", scan_badge:"ఉచితం",
+    mandi_title:"నేటి మండి ధర", mandi_desc:"అమ్మేముందు నేటి ధర చూడండి", mandi_badge:"రోజూ అప్‌డేట్",
+    weather_title:"నా పొలం వాతావరణం", weather_desc:"వర్షం వస్తుందా? స్ప్రే చేయడానికి మంచి రోజా?", weather_badge:"5 రోజుల అంచనా",
+    msp_title:"MSP vs మండి ధర", msp_desc:"మీకు న్యాయమైన ధర వస్తుందా?", msp_badge:"డబ్బు ఆదా చేయండి",
+    voice_title:"మీ ప్రశ్న చెప్పండి", voice_desc:"టైప్ చేయలేరా? మీ భాషలో మాట్లాడండి", voice_badge:"11 భాషలు",
+    q_calendar:"పంట క్యాలెండర్", q_calendar_d:"నేడు పొలంలో ఏం చేయాలి",
+    q_fertilizer:"ఎరువుల గైడ్", q_fertilizer_d:"మీ పొలానికి సరైన పరిమాణం",
+    q_schemes:"ప్రభుత్వ పథకాలు", q_schemes_d:"PM-కిసాన్ & ఇతర పథకాలు",
+    q_profit:"లాభ కాల్క్యులేటర్", q_profit_d:"మీరు సంపాదించారా లేదా నష్టమా?",
+    q_soil:"నేల ఆరోగ్యం", q_soil_d:"ఫోటోతో AI నేల విశ్లేషణ",
+    q_loan:"రుణ కాల్క్యులేటర్", q_loan_d:"మీ EMI లెక్కించండి",
+    q_tech:"కొత్త పద్ధతులు", q_tech_d:"హైడ్రోపోనిక్స్, పుట్టగొడుగులు & మరిన్ని",
+    q_biz:"వ్యాపార ఆలోచనలు", q_biz_d:"వ్యవసాయానికి మించి సంపాదించండి",
+    q_videos:"YouTube వీడియోలు", q_videos_d:"మీ భాషలో నేర్చుకోండి",
+    q_ai:"AI అడగండి", q_ai_d:"ఏ వ్యవసాయ సమాధానమైనా పొందండి",
+    q_farmgram:"ఫార్మ్‌గ్రామ్", q_farmgram_d:"రైతులతో కనెక్ట్ అవ్వండి",
+    q_news:"వ్యవసాయ వార్తలు", q_news_d:"నేటి తాజా వార్తలు",
+    q_chat:"రైతు చాట్", q_chat_d:"మీలాంటి రైతులతో మాట్లాడండి",
+    q_rights:"మీ హక్కులు తెలుసుకోండి", q_rights_d:"MSP & రైతు హక్కులు",
+    helpline_title:"కిసాన్ హెల్ప్‌లైన్ — ఉచిత కాల్", helpline_desc:"1800-180-1551 · తెలుగు & ఇతర భాషలు",
+    nav_home:"హోమ్", nav_prices:"ధరలు", nav_farmgram:"ఫార్మ్‌గ్రామ్", nav_msp:"MSP",
+    hdr_login:"లాగిన్",
+    tips:["మీ గోధుమ పంటలో పసుపు తుప్పు చూడండి. కనిపిస్తే వెంటనే Propiconazole పిచికారీ చేయండి.","పిచికారీ చేయడానికి అత్యుత్తమ సమయం: తెల్లవారుజామున 6-9 గంటలు.","PM-కిసాన్ స్థితి తనిఖీ చేయండి.","ఉదయం పంటలకు నీరు పెట్టండి — సాయంత్రం నీరు పెడితే శిలీంధ్ర వ్యాధి వస్తుంది.","పూలు వచ్చే పంటలకు పొటాష్ వేయండి — పండు నాణ్యత పెరుగుతుంది."]
+  },
+  ta: {
+    greet_morning:"காலை வணக்கம் விவசாயி! 🙏", greet_afternoon:"வணக்கம் விவசாயி! 🙏", greet_evening:"மாலை வணக்கம் விவசாயி! 🙏",
+    greet_sub:"இன்று உங்கள் பயிர் எப்படி?", greet_time_m:"காலை வணக்கம் ☀️", greet_time_a:"வணக்கம் 🌤️", greet_time_e:"மாலை வணக்கம் 🌙",
+    weather_check:"உங்கள் வயல் வானிலை பாருங்கள் →",
+    tip_label:"இன்றைய குறிப்பு",
+    sec_important:"🚀 மிக முக்கியம்", sec_tools:"🌾 விவசாய கருவிகள்", sec_learn:"🎓 கற்றுக்கொள்ளுங்கள்", sec_community:"👥 விவசாயி சமூகம்", sec_emergency:"🚨 அவசர உதவி",
+    scan_title:"நோயுற்ற பயிரை ஸ்கேன் செய்யுங்கள்", scan_desc:"புகைப்படம் எடுங்கள் → AI 30 வினாடியில் நோய் சொல்லும்", scan_badge:"இலவசம்",
+    mandi_title:"இன்றைய மண்டி விலை", mandi_desc:"விற்கும் முன் இன்றைய விலை பாருங்கள்", mandi_badge:"தினமும் புதுப்பிப்பு",
+    weather_title:"என் வயல் வானிலை", weather_desc:"மழை வருமா? தெளிப்பதற்கு நல்ல நாளா?", weather_badge:"5 நாள் முன்னறிவிப்பு",
+    msp_title:"MSP vs மண்டி விலை", msp_desc:"நீங்கள் நியாயமான விலை பெறுகிறீர்களா?", msp_badge:"பணம் சேமியுங்கள்",
+    voice_title:"உங்கள் கேள்வி சொல்லுங்கள்", voice_desc:"தட்டச்சு செய்ய முடியவில்லையா? உங்கள் மொழியில் பேசுங்கள்", voice_badge:"11 மொழிகள்",
+    q_calendar:"பயிர் நாட்காட்டி", q_calendar_d:"இன்று வயலில் என்ன செய்வது",
+    q_fertilizer:"உர வழிகாட்டி", q_fertilizer_d:"உங்கள் வயலுக்கு சரியான அளவு",
+    q_schemes:"அரசு திட்டங்கள்", q_schemes_d:"PM-கிசான் & பிற திட்டங்கள்",
+    q_profit:"லாப கால்குலேட்டர்", q_profit_d:"நீங்கள் சம்பாதித்தீர்களா இழந்தீர்களா?",
+    q_soil:"மண் ஆரோக்கியம்", q_soil_d:"புகைப்படத்துடன் AI மண் பகுப்பாய்வு",
+    q_loan:"கடன் கால்குலேட்டர்", q_loan_d:"உங்கள் EMI கணக்கிடுங்கள்",
+    q_tech:"புதிய நுட்பங்கள்", q_tech_d:"நீர்வழி சாகுபடி, காளான் & மேலும்",
+    q_biz:"வணிக யோசனைகள்", q_biz_d:"விவசாயத்திற்கு அப்பால் சம்பாதியுங்கள்",
+    q_videos:"YouTube வீடியோக்கள்", q_videos_d:"உங்கள் மொழியில் கற்றுக்கொள்ளுங்கள்",
+    q_ai:"AI கேளுங்கள்", q_ai_d:"எந்த விவசாய பதிலும் பெறுங்கள்",
+    q_farmgram:"பார்ம்கிராம்", q_farmgram_d:"விவசாயிகளுடன் இணையுங்கள்",
+    q_news:"விவசாய செய்திகள்", q_news_d:"இன்றைய புதிய செய்திகள்",
+    q_chat:"விவசாயி அரட்டை", q_chat_d:"உங்களைப் போன்ற விவசாயிகளுடன் பேசுங்கள்",
+    q_rights:"உங்கள் உரிமைகளை அறியுங்கள்", q_rights_d:"MSP & விவசாயி உரிமைகள்",
+    helpline_title:"கிசான் ஹெல்ப்லைன் — இலவச அழைப்பு", helpline_desc:"1800-180-1551 · தமிழ் & பிற மொழிகள்",
+    nav_home:"முகப்பு", nav_prices:"விலைகள்", nav_farmgram:"பார்ம்கிராம்", nav_msp:"MSP",
+    hdr_login:"உள்நுழைய",
+    tips:["உங்கள் கோதுமை பயிரில் மஞ்சள் துரு பாருங்கள். கண்டால் உடனே Propiconazole தெளியுங்கள்.","தெளிப்பதற்கு சிறந்த நேரம்: அதிகாலை 6-9 மணி.","PM-கிசான் நிலையை சரிபாருங்கள்.","காலையில் பயிர்களுக்கு தண்ணீர் பாய்ச்சுங்கள்.","பூக்கும் பயிர்களுக்கு பொட்டாஷ் போடுங்கள்."]
+  },
+  gu: {
+    greet_morning:"સુ પ્રભાત ખેડૂત! 🙏", greet_afternoon:"નમસ્કાર ખેડૂત! 🙏", greet_evening:"શુભ સંધ્યા ખેડૂત! 🙏",
+    greet_sub:"આજ તમારો પાક કેવો છે?", greet_time_m:"સુ પ્રભાત ☀️", greet_time_a:"નમસ્કાર 🌤️", greet_time_e:"શુભ સંધ્યા 🌙",
+    weather_check:"તમારા ખેતરનું હવામાન જુઓ →",
+    tip_label:"આજની ટિપ",
+    sec_important:"🚀 સૌથી જ઼રૂરી", sec_tools:"🌾 ખેતી સાધનો", sec_learn:"🎓 શીખો અને જોડાઓ", sec_community:"👥 ખેડૂત સમુદાય", sec_emergency:"🚨 કટોકટી સહાય",
+    scan_title:"બીમાર પાક સ્કેન કરો", scan_desc:"ફોટો લો → AI 30 સેકન્ડમાં રોગ અને ઈલાજ બતાવશે", scan_badge:"મફત",
+    mandi_title:"આજનો મંડી ભાવ", mandi_desc:"વેચતા પહેલા આજનો ભાવ જુઓ", mandi_badge:"રોજ અપડેટ",
+    weather_title:"મારા ખેતરનું હવામાન", weather_desc:"વરસાદ આવશે? છંટકાવ માટે સારો દિવસ?", weather_badge:"5 દિવસની આગાહી",
+    msp_title:"MSP વિ. મંડી ભાવ", msp_desc:"શું તમને યોગ્ય ભાવ મળી રહ્યો છે?", msp_badge:"પૈસા બચાવો",
+    voice_title:"તમારો સવાલ બોલો", voice_desc:"ટાઈપ નથી થઈ શકતું? તમારી ભાષામાં બોલો", voice_badge:"11 ભાષાઓ",
+    q_calendar:"પાક કૅલેન્ડર", q_calendar_d:"આજ ખેતરમાં શું કરવું",
+    q_fertilizer:"ખાતર માર્ગદર્શિકા", q_fertilizer_d:"તમારા ખેત માટે સાચી માત્રા",
+    q_schemes:"સરકારી યોજનાઓ", q_schemes_d:"PM-કિસાન અને અન્ય યોજનાઓ",
+    q_profit:"નફો કૅલ્ક્યુલેટર", q_profit_d:"તમે કમાયા કે નુકસાન થયું?",
+    q_soil:"માટી આરોગ્ય", q_soil_d:"ફોટો સાથે AI માટી વિશ્લેષણ",
+    q_loan:"લોન કૅલ્ક્યુલેટર", q_loan_d:"તમારી EMI ગણો",
+    q_tech:"નવી ટેક્નિક", q_tech_d:"હાઇડ્રોપોનિક્સ, મશરૂમ અને વધુ",
+    q_biz:"વ્યવસાયના વિચારો", q_biz_d:"ખેતી ઉપરાંત કમાઓ",
+    q_videos:"YouTube વીડિઓ", q_videos_d:"તમારી ભાષામાં શીખો",
+    q_ai:"AI ને પૂછો", q_ai_d:"કોઈ પણ ખેતી જવાબ મેળવો",
+    q_farmgram:"ફાર્મગ્રામ", q_farmgram_d:"ખેડૂતો સાથે જોડાઓ",
+    q_news:"ખેતી સમાચાર", q_news_d:"આજના તાજા સમાચાર",
+    q_chat:"ખેડૂત ચેટ", q_chat_d:"તમારા જેવા ખેડૂતો સાથે વાત કરો",
+    q_rights:"તમારા અધિકારો જાણો", q_rights_d:"MSP અને ખેડૂત અધિકારો",
+    helpline_title:"કિસાન હેલ્પલાઈન — મફત કૉલ", helpline_desc:"1800-180-1551 · ગુજરાતી અને અન્ય ભાષાઓ",
+    nav_home:"હોમ", nav_prices:"મંડી", nav_farmgram:"ફાર્મગ્રામ", nav_msp:"MSP",
+    hdr_login:"લૉગિન",
+    tips:["તમારા ઘઉંના પાકમાં પીળો કટ જુઓ. મળ્યા ઉપર Propiconazole છંટકાવ કરો.","છંટકાવ માટે સૌથી સારો સમય: સવારે 6-9 વાગ્યા.","PM-કિસાન સ્ટેટસ ચેક કરો.","સવારે પાકને પાણી આપો — સાંજે આપવાથી ફૂગ રોગ થાય.","ફૂલ વાળા પાક ઉપર પોટાશ આપો."]
+  },
+  bn: {
+    greet_morning:"শুভ সকাল কৃষক! 🙏", greet_afternoon:"নমস্কার কৃষক! 🙏", greet_evening:"শুভ সন্ধ্যা কৃষক! 🙏",
+    greet_sub:"আজ আপনার ফসল কেমন?", greet_time_m:"শুভ সকাল ☀️", greet_time_a:"নমস্কার 🌤️", greet_time_e:"শুভ সন্ধ্যা 🌙",
+    weather_check:"আপনার ক্ষেতের আবহাওয়া দেখুন →",
+    tip_label:"আজকের টিপস",
+    sec_important:"🚀 সবচেয়ে গুরুত্বপূর্ণ", sec_tools:"🌾 কৃষি সরঞ্জাম", sec_learn:"🎓 শিখুন এবং সংযুক্ত হন", sec_community:"👥 কৃষক সমাজ", sec_emergency:"🚨 জরুরি সাহায্য",
+    scan_title:"অসুস্থ ফসল স্ক্যান করুন", scan_desc:"ছবি তুলুন → AI ৩০ সেকেন্ডে রোগ বলবে", scan_badge:"বিনামূল্যে",
+    mandi_title:"আজকের মান্ডি দাম", mandi_desc:"বিক্রির আগে আজকের দাম দেখুন", mandi_badge:"প্রতিদিন আপডেট",
+    weather_title:"আমার ক্ষেতের আবহাওয়া", weather_desc:"বৃষ্টি আসবে? স্প্রে করার ভালো দিন?", weather_badge:"৫ দিনের পূর্বাভাস",
+    msp_title:"MSP বনাম মান্ডি দাম", msp_desc:"আপনি ন্যায্য মূল্য পাচ্ছেন কি?", msp_badge:"টাকা বাঁচান",
+    voice_title:"আপনার প্রশ্ন বলুন", voice_desc:"টাইপ করতে পারছেন না? আপনার ভাষায় বলুন", voice_badge:"১১ ভাষা",
+    q_calendar:"ফসল ক্যালেন্ডার", q_calendar_d:"আজ মাঠে কী করতে হবে",
+    q_fertilizer:"সার গাইড", q_fertilizer_d:"আপনার মাঠের জন্য সঠিক পরিমাণ",
+    q_schemes:"সরকারি প্রকল্প", q_schemes_d:"PM-কিষান ও অন্যান্য প্রকল্প",
+    q_profit:"লাভ ক্যালকুলেটর", q_profit_d:"আপনি আয় করেছেন নাকি ক্ষতি হয়েছে?",
+    q_soil:"মাটির স্বাস্থ্য", q_soil_d:"ছবিসহ AI মাটি বিশ্লেষণ",
+    q_loan:"ঋণ ক্যালকুলেটর", q_loan_d:"আপনার EMI হিসাব করুন",
+    q_tech:"নতুন কৌশল", q_tech_d:"হাইড্রোপনিক্স, মাশরুম ও আরও",
+    q_biz:"ব্যবসার ধারণা", q_biz_d:"কৃষির বাইরে আয় করুন",
+    q_videos:"YouTube ভিডিও", q_videos_d:"আপনার ভাষায় শিখুন",
+    q_ai:"AI কে জিজ্ঞেস করুন", q_ai_d:"যেকোনো কৃষি উত্তর পান",
+    q_farmgram:"ফার্মগ্রাম", q_farmgram_d:"কৃষকদের সাথে সংযুক্ত হন",
+    q_news:"কৃষি সংবাদ", q_news_d:"আজকের সর্বশেষ সংবাদ",
+    q_chat:"কৃষক চ্যাট", q_chat_d:"আপনার মতো কৃষকদের সাথে কথা বলুন",
+    q_rights:"আপনার অধিকার জানুন", q_rights_d:"MSP ও কৃষক অধিকার",
+    helpline_title:"কিষান হেল্পলাইন — বিনামূল্যে কল", helpline_desc:"1800-180-1551 · বাংলা ও অন্যান্য ভাষা",
+    nav_home:"হোম", nav_prices:"দাম", nav_farmgram:"ফার্মগ্রাম", nav_msp:"MSP",
+    hdr_login:"লগইন",
+    tips:["আপনার গম ফসলে হলুদ মরিচা দেখুন। পেলে Propiconazole স্প্রে করুন।","স্প্রে করার সেরা সময়: ভোর ৬-৯টা।","PM-কিষান স্ট্যাটাস চেক করুন।","সকালে ফসলে পানি দিন — সন্ধ্যায় দিলে ছত্রাক রোগ হয়।","ফুলন্ত ফসলে পটাশ দিন।"]
+  },
+  kn: {
+    greet_morning:"ಶುಭೋದಯ ರೈತ! 🙏", greet_afternoon:"ನಮಸ್ಕಾರ ರೈತ! 🙏", greet_evening:"ಶುಭ ಸಂಜೆ ರೈತ! 🙏",
+    greet_sub:"ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?", greet_time_m:"ಶುಭೋದಯ ☀️", greet_time_a:"ನಮಸ್ಕಾರ 🌤️", greet_time_e:"ಶುಭ ಸಂಜೆ 🌙",
+    weather_check:"ನಿಮ್ಮ ಹೊಲದ ಹವಾಮಾನ ನೋಡಿ →",
+    tip_label:"ಇಂದಿನ ಸಲಹೆ",
+    sec_important:"🚀 ಅತಿ ಮುಖ್ಯ", sec_tools:"🌾 ಕೃಷಿ ಸಾಧನಗಳು", sec_learn:"🎓 ಕಲಿಯಿರಿ", sec_community:"👥 ರೈತ ಸಮುದಾಯ", sec_emergency:"🚨 ತುರ್ತು ಸಹಾಯ",
+    scan_title:"ರೋಗಿಷ್ಠ ಬೆಳೆ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ", scan_desc:"ಫೋಟೋ ತೆಗೆಯಿರಿ → AI 30 ಸೆಕೆಂಡ್‌ನಲ್ಲಿ ರೋಗ ಹೇಳುತ್ತದೆ", scan_badge:"ಉಚಿತ",
+    mandi_title:"ಇಂದಿನ ಮಂಡಿ ಬೆಲೆ", mandi_desc:"ಮಾರಾಟ ಮಾಡುವ ಮೊದಲು ಇಂದಿನ ಬೆಲೆ ನೋಡಿ", mandi_badge:"ಪ್ರತಿದಿನ ಅಪ್‌ಡೇಟ್",
+    weather_title:"ನನ್ನ ಹೊಲದ ಹವಾಮಾನ", weather_desc:"ಮಳೆ ಬರುತ್ತದೆಯೇ? ಸಿಂಪಡಿಸಲು ಒಳ್ಳೆಯ ದಿನವೇ?", weather_badge:"5 ದಿನದ ಮುನ್ಸೂಚನೆ",
+    msp_title:"MSP vs ಮಂಡಿ ಬೆಲೆ", msp_desc:"ನಿಮಗೆ ನ್ಯಾಯಯುತ ಬೆಲೆ ಸಿಗುತ್ತಿದೆಯೇ?", msp_badge:"ಹಣ ಉಳಿಸಿ",
+    voice_title:"ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಹೇಳಿ", voice_desc:"ಟೈಪ್ ಮಾಡಲಾಗುತ್ತಿಲ್ಲವೇ? ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಮಾತಾಡಿ", voice_badge:"11 ಭಾಷೆಗಳು",
+    q_calendar:"ಬೆಳೆ ಕ್ಯಾಲೆಂಡರ್", q_calendar_d:"ಇಂದು ಹೊಲದಲ್ಲಿ ಏನು ಮಾಡಬೇಕು",
+    q_fertilizer:"ಗೊಬ್ಬರ ಮಾರ್ಗದರ್ಶಿ", q_fertilizer_d:"ನಿಮ್ಮ ಹೊಲಕ್ಕೆ ಸರಿಯಾದ ಪ್ರಮಾಣ",
+    q_schemes:"ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", q_schemes_d:"PM-ಕಿಸಾನ್ & ಇತರ ಯೋಜನೆಗಳು",
+    q_profit:"ಲಾಭ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್", q_profit_d:"ನೀವು ಸಂಪಾದಿಸಿದಿರಾ ಅಥವಾ ನಷ್ಟವಾಯಿತಾ?",
+    q_soil:"ಮಣ್ಣಿನ ಆರೋಗ್ಯ", q_soil_d:"ಫೋಟೋದೊಂದಿಗೆ AI ಮಣ್ಣಿನ ವಿಶ್ಲೇಷಣೆ",
+    q_loan:"ಸಾಲ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್", q_loan_d:"ನಿಮ್ಮ EMI ಲೆಕ್ಕ ಹಾಕಿ",
+    q_tech:"ಹೊಸ ತಂತ್ರಗಳು", q_tech_d:"ಹೈಡ್ರೋಪೋನಿಕ್ಸ್, ಅಣಬೆ & ಇನ್ನಷ್ಟು",
+    q_biz:"ವ್ಯಾಪಾರ ಆಲೋಚನೆಗಳು", q_biz_d:"ಕೃಷಿಯ ಹೊರತಾಗಿ ಸಂಪಾದಿಸಿ",
+    q_videos:"YouTube ವೀಡಿಯೊಗಳು", q_videos_d:"ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಕಲಿಯಿರಿ",
+    q_ai:"AI ಕೇಳಿ", q_ai_d:"ಯಾವುದೇ ಕೃಷಿ ಉತ್ತರ ಪಡೆಯಿರಿ",
+    q_farmgram:"ಫಾರ್ಮ್‌ಗ್ರಾಮ್", q_farmgram_d:"ರೈತರೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಿ",
+    q_news:"ಕೃಷಿ ಸುದ್ದಿ", q_news_d:"ಇಂದಿನ ತಾಜಾ ಸುದ್ದಿ",
+    q_chat:"ರೈತ ಚಾಟ್", q_chat_d:"ನಿಮ್ಮಂತಹ ರೈತರೊಂದಿಗೆ ಮಾತಾಡಿ",
+    q_rights:"ನಿಮ್ಮ ಹಕ್ಕುಗಳನ್ನು ತಿಳಿಯಿರಿ", q_rights_d:"MSP & ರೈತ ಹಕ್ಕುಗಳು",
+    helpline_title:"ಕಿಸಾನ್ ಹೆಲ್ಪ್‌ಲೈನ್ — ಉಚಿತ ಕರೆ", helpline_desc:"1800-180-1551 · ಕನ್ನಡ & ಇತರ ಭಾಷೆಗಳು",
+    nav_home:"ಮನೆ", nav_prices:"ಬೆಲೆಗಳು", nav_farmgram:"ಫಾರ್ಮ್‌ಗ್ರಾಮ್", nav_msp:"MSP",
+    hdr_login:"ಲಾಗಿನ್",
+    tips:["ನಿಮ್ಮ ಗೋಧಿ ಬೆಳೆಯಲ್ಲಿ ಹಳದಿ ತುಕ್ಕು ನೋಡಿ. ಕಂಡರೆ ತಕ್ಷಣ Propiconazole ಸಿಂಪಡಿಸಿ.","ಸಿಂಪಡಿಸಲು ಉತ್ತಮ ಸಮಯ: ಬೆಳಿಗ್ಗೆ 6-9 ಗಂಟೆ.","PM-ಕಿಸಾನ್ ಸ್ಥಿತಿ ಪರಿಶೀಲಿಸಿ.","ಬೆಳಿಗ್ಗೆ ಬೆಳೆಗಳಿಗೆ ನೀರು ಹಾಕಿ.","ಹೂ ಬಿಡುವ ಬೆಳೆಗಳಿಗೆ ಪೊಟ್ಯಾಷ್ ಹಾಕಿ."]
+  },
+  ml: {
+    greet_morning:"സുപ്രഭാതം കർഷകൻ! 🙏", greet_afternoon:"നമസ്കാരം കർഷകൻ! 🙏", greet_evening:"ശുഭ സന്ധ്യ കർഷകൻ! 🙏",
+    greet_sub:"ഇന്ന് നിങ്ങളുടെ വിള എങ്ങനെ?", greet_time_m:"സുപ്രഭാതം ☀️", greet_time_a:"നമസ്കാരം 🌤️", greet_time_e:"ശുഭ സന്ധ്യ 🌙",
+    weather_check:"നിങ്ങളുടെ കൃഷിയിടത്തിന്റെ കാലാവസ്ഥ കാണുക →",
+    tip_label:"ഇന്നത്തെ നുറുങ്ങ്",
+    sec_important:"🚀 ഏറ്റവും പ്രധാനം", sec_tools:"🌾 കൃഷി ഉപകരണങ്ങൾ", sec_learn:"🎓 പഠിക്കുക", sec_community:"👥 കർഷക സമൂഹം", sec_emergency:"🚨 അടിയന്തര സഹായം",
+    scan_title:"രോഗബാധിത വിള സ്കാൻ ചെയ്യുക", scan_desc:"ഫോട്ടോ എടുക്കുക → AI 30 സെക്കൻഡിൽ രോഗം പറയും", scan_badge:"സൗജന്യം",
+    mandi_title:"ഇന്നത്തെ മണ്ടി വില", mandi_desc:"വിൽക്കുന്നതിന് മുമ്പ് ഇന്നത്തെ വില നോക്കുക", mandi_badge:"ദിവസവും അപ്‌ഡേറ്റ്",
+    weather_title:"എന്റെ കൃഷിയിടത്തിന്റെ കാലാവസ്ഥ", weather_desc:"മഴ വരുമോ? തളിക്കാൻ നല്ല ദിവസമോ?", weather_badge:"5 ദിവസ പ്രവചനം",
+    msp_title:"MSP vs മണ്ടി വില", msp_desc:"നിങ്ങൾക്ക് ന്യായമായ വില കിട്ടുന്നുണ്ടോ?", msp_badge:"പണം ലാഭിക്കുക",
+    voice_title:"നിങ്ങളുടെ ചോദ്യം പറയുക", voice_desc:"ടൈപ്പ് ചെയ്യാൻ കഴിയുന്നില്ലേ? നിങ്ങളുടെ ഭാഷയിൽ സംസാരിക്കുക", voice_badge:"11 ഭാഷകൾ",
+    q_calendar:"വിള കലണ്ടർ", q_calendar_d:"ഇന്ന് കൃഷിയിടത്തിൽ എന്ത് ചെയ്യണം",
+    q_fertilizer:"വളം ഗൈഡ്", q_fertilizer_d:"നിങ്ങളുടെ വയലിന് ശരിയായ അളവ്",
+    q_schemes:"സർക്കാർ പദ്ധതികൾ", q_schemes_d:"PM-കിസാൻ & മറ്റ് പദ്ധതികൾ",
+    q_profit:"ലാഭ കാൽക്കുലേറ്റർ", q_profit_d:"നിങ്ങൾ സമ്പാദിച്ചോ നഷ്ടമായോ?",
+    q_soil:"മണ്ണ് ആരോഗ്യം", q_soil_d:"ഫോട്ടോ ഉപയോഗിച്ച് AI മണ്ണ് വിശകലനം",
+    q_loan:"ലോൺ കാൽക്കുലേറ്റർ", q_loan_d:"നിങ്ങളുടെ EMI കണക്കാക്കുക",
+    q_tech:"പുതിയ സാങ്കേതിക വിദ്യകൾ", q_tech_d:"ഹൈഡ്രോപോണിക്സ്, കൂൺ & കൂടുതൽ",
+    q_biz:"ബിസിനസ് ആശയങ്ങൾ", q_biz_d:"കൃഷിക്കപ്പുറം സമ്പാദിക്കുക",
+    q_videos:"YouTube വീഡിയോകൾ", q_videos_d:"നിങ്ങളുടെ ഭാഷയിൽ പഠിക്കുക",
+    q_ai:"AI ചോദിക്കുക", q_ai_d:"ഏത് കൃഷി ഉത്തരവും നേടുക",
+    q_farmgram:"ഫാർംഗ്രാം", q_farmgram_d:"കർഷകരുമായി ബന്ധപ്പെടുക",
+    q_news:"കൃഷി വാർത്ത", q_news_d:"ഇന്നത്തെ പുതിയ വാർത്ത",
+    q_chat:"കർഷക ചാറ്റ്", q_chat_d:"നിങ്ങളെപ്പോലുള്ള കർഷകരുമായി സംസാരിക്കുക",
+    q_rights:"നിങ്ങളുടെ അവകാശങ്ങൾ അറിയുക", q_rights_d:"MSP & കർഷക അവകാശങ്ങൾ",
+    helpline_title:"കിസാൻ ഹെൽപ്‌ലൈൻ — സൗജന്യ കോൾ", helpline_desc:"1800-180-1551 · മലയാളം & മറ്റ് ഭാഷകൾ",
+    nav_home:"ഹോം", nav_prices:"വിലകൾ", nav_farmgram:"ഫാർംഗ്രാം", nav_msp:"MSP",
+    hdr_login:"ലോഗിൻ",
+    tips:["നിങ്ങളുടെ ഗോതമ്പ് വിളയിൽ മഞ്ഞ തുരുമ്പ് നോക്കുക. കണ്ടാൽ ഉടൻ Propiconazole തളിക്കുക.","തളിക്കാൻ ഏറ്റവും നല്ല സമയം: രാവിലെ 6-9 മണി.","PM-കിസാൻ സ്ഥിതി പരിശോധിക്കുക.","രാവിലെ വിളകൾക്ക് വെള്ളം കൊടുക്കുക.","പൂക്കുന്ന വിളകൾക്ക് പൊട്ടാഷ് കൊടുക്കുക."]
+  }
 };
 
-function setLang(code) {
-  try { localStorage.setItem("annadatahub_lang", code); } catch(e) {}
-  const lang = LANG_DATA[code] || LANG_DATA.en;
-  const gt = document.getElementById("greetText");
-  const gs = document.getElementById("greetSub");
-  if (gt) gt.textContent = lang.greeting;
-  if (gs) gs.textContent = lang.sub;
-  document.querySelectorAll(".lang-btn").forEach(btn => {
-    btn.classList.toggle("active", btn.getAttribute("data-lang") === code);
-  });
+// ── APPLY TRANSLATIONS ─────────────────────────────────────────
+function applyLang(lang) {
+  const t = T[lang] || T.en;
+  const hour = new Date().getHours();
+  const isMorning = hour < 12, isAfternoon = hour < 17;
+
+  document.getElementById("greetTime").textContent = isMorning ? t.greet_time_m : isAfternoon ? t.greet_time_a : t.greet_time_e;
+  document.getElementById("greetText").textContent = isMorning ? t.greet_morning : isAfternoon ? t.greet_afternoon : t.greet_evening;
+  document.getElementById("greetSub").textContent = t.greet_sub;
+  document.getElementById("weather-check").textContent = t.weather_check;
+  document.getElementById("tip-label").textContent = t.tip_label;
+  document.getElementById("sec-important").textContent = t.sec_important;
+  document.getElementById("sec-tools").textContent = t.sec_tools;
+  document.getElementById("sec-learn").textContent = t.sec_learn;
+  document.getElementById("sec-community").textContent = t.sec_community;
+  document.getElementById("sec-emergency").textContent = t.sec_emergency;
+  document.getElementById("scan-title").textContent = t.scan_title;
+  document.getElementById("scan-desc").textContent = t.scan_desc;
+  document.getElementById("scan-badge").textContent = t.scan_badge;
+  document.getElementById("mandi-title").textContent = t.mandi_title;
+  document.getElementById("mandi-desc").textContent = t.mandi_desc;
+  document.getElementById("mandi-badge").textContent = t.mandi_badge;
+  document.getElementById("weather-title").textContent = t.weather_title;
+  document.getElementById("weather-desc").textContent = t.weather_desc;
+  document.getElementById("weather-badge").textContent = t.weather_badge;
+  document.getElementById("msp-title").textContent = t.msp_title;
+  document.getElementById("msp-desc").textContent = t.msp_desc;
+  document.getElementById("msp-badge").textContent = t.msp_badge;
+  document.getElementById("voice-title").textContent = t.voice_title;
+  document.getElementById("voice-desc").textContent = t.voice_desc;
+  document.getElementById("voice-badge").textContent = t.voice_badge;
+  document.getElementById("q-calendar").textContent = t.q_calendar;
+  document.getElementById("q-calendar-d").textContent = t.q_calendar_d;
+  document.getElementById("q-fertilizer").textContent = t.q_fertilizer;
+  document.getElementById("q-fertilizer-d").textContent = t.q_fertilizer_d;
+  document.getElementById("q-schemes").textContent = t.q_schemes;
+  document.getElementById("q-schemes-d").textContent = t.q_schemes_d;
+  document.getElementById("q-profit").textContent = t.q_profit;
+  document.getElementById("q-profit-d").textContent = t.q_profit_d;
+  document.getElementById("q-soil").textContent = t.q_soil;
+  document.getElementById("q-soil-d").textContent = t.q_soil_d;
+  document.getElementById("q-loan").textContent = t.q_loan;
+  document.getElementById("q-loan-d").textContent = t.q_loan_d;
+  document.getElementById("q-tech").textContent = t.q_tech;
+  document.getElementById("q-tech-d").textContent = t.q_tech_d;
+  document.getElementById("q-biz").textContent = t.q_biz;
+  document.getElementById("q-biz-d").textContent = t.q_biz_d;
+  document.getElementById("q-videos").textContent = t.q_videos;
+  document.getElementById("q-videos-d").textContent = t.q_videos_d;
+  document.getElementById("q-ai").textContent = t.q_ai;
+  document.getElementById("q-ai-d").textContent = t.q_ai_d;
+  document.getElementById("q-farmgram").textContent = t.q_farmgram;
+  document.getElementById("q-farmgram-d").textContent = t.q_farmgram_d;
+  document.getElementById("q-news").textContent = t.q_news;
+  document.getElementById("q-news-d").textContent = t.q_news_d;
+  document.getElementById("q-chat").textContent = t.q_chat;
+  document.getElementById("q-chat-d").textContent = t.q_chat_d;
+  document.getElementById("q-rights").textContent = t.q_rights;
+  document.getElementById("q-rights-d").textContent = t.q_rights_d;
+  document.getElementById("helpline-title").textContent = t.helpline_title;
+  document.getElementById("helpline-desc").textContent = t.helpline_desc;
+  document.getElementById("nav-home").textContent = t.nav_home;
+  document.getElementById("nav-prices").textContent = t.nav_prices;
+  document.getElementById("nav-farmgram").textContent = t.nav_farmgram;
+  document.getElementById("nav-msp").textContent = t.nav_msp;
+  document.getElementById("hdr-login").textContent = t.hdr_login;
+  // Tip of the day
+  const tips = t.tips || T.en.tips;
+  document.getElementById("tipText").textContent = tips[new Date().getDay() % tips.length];
 }
 
-function getCurrentLang() {
+function setLang(lang) {
+  try { localStorage.setItem("annadatahub_lang", lang); } catch(e) {}
+  document.querySelectorAll(".lang-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-lang") === lang));
+  applyLang(lang);
+}
+
+function getSavedLang() {
   try { return localStorage.getItem("annadatahub_lang") || "en"; } catch(e) { return "en"; }
 }
 
-// Token helpers
+// ── AUTH ─────────────────────────────────────────────────────
 function saveToken(token, user) { try { localStorage.setItem("auth_token", token); localStorage.setItem("auth_user", JSON.stringify(user)); } catch(e) {} }
 function getToken() { try { return localStorage.getItem("auth_token"); } catch(e) { return null; } }
 function getUser() { try { return JSON.parse(localStorage.getItem("auth_user")); } catch(e) { return null; } }
 function clearToken() { try { localStorage.removeItem("auth_token"); localStorage.removeItem("auth_user"); } catch(e) {} }
 
-// Auth modal
-function showLoginModal() { if (getToken()) { showProfile(); return; } document.getElementById("authOverlay").classList.remove("hidden"); }
+function showLoginModal() {
+  if (getToken()) { return; }
+  document.getElementById("authOverlay").classList.remove("hidden");
+}
 function hideLoginModal() { document.getElementById("authOverlay").classList.add("hidden"); }
+
 function switchAuthTab(tab) {
   document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
   document.getElementById("signupForm").classList.toggle("hidden", tab !== "signup");
@@ -356,6 +665,7 @@ function switchAuthTab(tab) {
   document.getElementById("loginError").classList.add("hidden");
   document.getElementById("signupError").classList.add("hidden");
 }
+
 function showAuthError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.remove("hidden"); }
 
 function updateHeaderUI(user) {
@@ -364,22 +674,12 @@ function updateHeaderUI(user) {
   const userName = document.querySelector(".user-name");
   if (user) {
     if (loginBtn) loginBtn.style.display = "none";
-    if (userBtn) userBtn.style.display = "flex";
+    if (userBtn) { userBtn.classList.remove("hidden"); userBtn.style.display = "flex"; }
     if (userName) userName.textContent = user.full_name.split(" ")[0];
   } else {
     if (loginBtn) loginBtn.style.display = "";
-    if (userBtn) userBtn.style.display = "none";
+    if (userBtn) userBtn.classList.add("hidden");
   }
-}
-
-function showProfile() {
-  const user = getUser(); if (!user) return;
-  document.getElementById("profileName").textContent = user.full_name;
-  document.getElementById("profileEmail").textContent = user.email;
-  document.getElementById("profilePlan").textContent = (user.plan || "free").toUpperCase() + " PLAN";
-  fetch(`${API}/api/user/profile`, {headers:{"Authorization":"Bearer " + getToken()}})
-    .then(r => r.json()).then(d => { if (d.user) document.getElementById("profileScans").textContent = d.user.scan_count || 0; }).catch(() => {});
-  document.getElementById("profileModal").classList.add("show");
 }
 
 async function doLogin() {
@@ -389,13 +689,13 @@ async function doLogin() {
   const btn = document.getElementById("loginBtn");
   btn.disabled = true; btn.textContent = "Logging in...";
   try {
-    const res = await fetch(`${API}/api/auth/login`, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+    const res = await fetch(`${API}/api/auth/login`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email, password})});
     const data = await res.json();
     if (!res.ok) { showAuthError("loginError", data.detail || "Login failed."); return; }
     saveToken(data.token, data.user);
     updateHeaderUI(data.user);
     hideLoginModal();
-    showToast("Welcome back, " + data.user.full_name.split(" ")[0] + "! 🙏", "success");
+    showToast("Welcome back, " + data.user.full_name.split(" ")[0] + "! 🙏");
   } catch(e) { showAuthError("loginError", "Network error. Check your internet."); }
   finally { btn.disabled = false; btn.textContent = "Login to AnnadataHub"; }
 }
@@ -412,89 +712,32 @@ async function doSignup() {
   const btn = document.getElementById("signupBtn");
   btn.disabled = true; btn.textContent = "Creating account...";
   try {
-    const res = await fetch(`${API}/api/auth/register`, {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({full_name,email,password,phone,state})});
+    const res = await fetch(`${API}/api/auth/register`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({full_name, email, password, phone, state})});
     const data = await res.json();
     if (!res.ok) { showAuthError("signupError", data.detail || "Registration failed."); return; }
     saveToken(data.token, data.user);
     updateHeaderUI(data.user);
     hideLoginModal();
-    showToast("Welcome, " + data.user.full_name.split(" ")[0] + "! 🎉", "success");
+    showToast("Welcome, " + data.user.full_name.split(" ")[0] + "! 🎉");
   } catch(e) { showAuthError("signupError", "Network error. Check your internet."); }
   finally { btn.disabled = false; btn.textContent = "Create Free Account 🚀"; }
 }
 
-function doLogout() {
-  clearToken(); updateHeaderUI(null);
-  document.getElementById("profileModal").classList.remove("show");
-  showToast("Logged out successfully.");
-}
+function showProfile() {}
 
-// App
-const TIPS = [
-  "Check wheat for yellow rust — spray Propiconazole if found.",
-  "Best time to spray: early morning 6-9am. Never in hot afternoon.",
-  "Check PM-KISAN status — visit Schemes section.",
-  "Water crops in the morning — evening watering causes fungal disease.",
-  "Apply potash fertilizer to flowering crops — improves fruit quality.",
-  "Use neem oil spray to control aphids — safe and effective.",
-  "Rotate crops every season to maintain soil health.",
-];
-const hour = new Date().getHours();
-document.getElementById("greetTime").textContent = hour < 12 ? "Good Morning ☀️" : hour < 17 ? "Good Afternoon 🌤️" : "Good Evening 🌙";
-document.getElementById("tipText").textContent = TIPS[new Date().getDay() % TIPS.length];
-
-let currentStep = 1;
-function nextStep(step) {
-  document.getElementById("os"+currentStep).classList.remove("active");
-  document.getElementById("od"+currentStep).classList.remove("active");
-  currentStep = step;
-  document.getElementById("os"+step).classList.add("active");
-  document.getElementById("od"+step).classList.add("active");
-}
-function closeOnboarding() {
-  document.getElementById("onboarding").style.display = "none";
-  try { localStorage.setItem("onboarded","1"); } catch(e) {}
-}
-function showOnboarding() {
-  currentStep = 1;
-  document.querySelectorAll(".onboard-step").forEach(s => s.classList.remove("active"));
-  document.querySelectorAll(".dot").forEach(d => d.classList.remove("active"));
-  document.getElementById("os1").classList.add("active");
-  document.getElementById("od1").classList.add("active");
-  document.getElementById("onboarding").style.display = "flex";
-}
-try { if (localStorage.getItem("onboarded")) document.getElementById("onboarding").style.display = "none"; } catch(e) {}
-
-function showHelp() { document.getElementById("helpModal").classList.add("show"); }
-function closeHelp() { document.getElementById("helpModal").classList.remove("show"); }
-document.getElementById("helpModal").addEventListener("click", e => { if (e.target === document.getElementById("helpModal")) closeHelp(); });
-
-function showToast(msg, type="") {
+function showToast(msg, type="success") {
   const t = document.getElementById("toast");
-  t.textContent = msg; t.className = "toast" + (type?" "+type:"");
-  t.classList.remove("hidden");
+  t.textContent = msg; t.className = "toast " + type; t.classList.remove("hidden");
   setTimeout(() => t.classList.add("hidden"), 2500);
 }
 
-// Handle hash navigation — open specific tab when arriving from index
-window.addEventListener("load", () => {
-  const hash = window.location.hash;
-  if (hash) {
-    const tabName = hash.replace("#","");
-    const tabEl = document.getElementById("tab-"+tabName);
-    if (tabEl) {
-      setTimeout(() => {
-        if (typeof showTab === 'function') showTab(tabName);
-      }, 100);
-    }
-  }
-});
-
-// Init
+// ── INIT ─────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
+  const lang = getSavedLang();
+  document.querySelectorAll(".lang-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-lang") === lang));
+  applyLang(lang);
   const user = getUser();
   if (user && getToken()) updateHeaderUI(user);
-  setLang(getCurrentLang());
 });
 </script>
 </body>
