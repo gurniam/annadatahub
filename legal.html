@@ -1,445 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Annadatahub – Legal Policies</title>
+<title>AnnadataHub — Legal & Disclaimer</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --green:      #1a5c2e;
-    --green-mid:  #2d7a45;
-    --green-light:#e8f5ec;
-    --gold:       #f5a623;
-    --bg:         #f4f7f4;
-    --white:      #ffffff;
-    --text:       #1a2e1a;
-    --muted:      #6b7c6b;
-    --border:     #d0e4d4;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Hind', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  /* HEADER */
-  header {
-    background: linear-gradient(135deg, var(--green), var(--green-mid));
-    padding: 28px 20px;
-    text-align: center;
-  }
-  .logo {
-    display: inline-flex; align-items: center; gap: 10px;
-    margin-bottom: 8px; text-decoration: none;
-  }
-  .logo-icon {
-    width: 42px; height: 42px; background: var(--gold);
-    border-radius: 12px; display: flex; align-items: center;
-    justify-content: center; font-size: 1.4rem;
-  }
-  .logo-name {
-    font-family: 'Baloo 2', cursive; font-size: 1.5rem;
-    font-weight: 800; color: white;
-  }
-  .logo-name span { color: var(--gold); }
-  header p { color: rgba(255,255,255,0.7); font-size: 0.88rem; }
-
-  /* NAV TABS */
-  .tab-bar {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    display: flex; justify-content: center; gap: 0;
-    position: sticky; top: 0; z-index: 100;
-  }
-  .tab-btn {
-    padding: 14px 28px;
-    background: none; border: none;
-    font-family: 'Hind', sans-serif; font-size: 0.92rem; font-weight: 600;
-    color: var(--muted); cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-  }
-  .tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
-  .tab-btn:hover { color: var(--green); }
-
-  /* CONTENT */
-  .content {
-    max-width: 780px; margin: 0 auto;
-    padding: 36px 20px 60px;
-  }
-  .policy-section { display: none; }
-  .policy-section.active { display: block; }
-
-  .page-title {
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.7rem; font-weight: 800;
-    color: var(--green); margin-bottom: 6px;
-  }
-  .page-date {
-    font-size: 0.82rem; color: var(--muted);
-    margin-bottom: 28px;
-  }
-
-  .section-block {
-    background: white; border-radius: 16px;
-    padding: 24px; margin-bottom: 16px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 10px rgba(26,92,46,0.06);
-  }
-  .section-block h2 {
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.1rem; font-weight: 700;
-    color: var(--green); margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .section-block p {
-    font-size: 0.9rem; line-height: 1.7;
-    color: #374151; margin-bottom: 10px;
-  }
-  .section-block p:last-child { margin-bottom: 0; }
-  .section-block ul {
-    padding-left: 18px; margin-top: 6px;
-  }
-  .section-block ul li {
-    font-size: 0.9rem; line-height: 1.7;
-    color: #374151; margin-bottom: 6px;
-  }
-
-  .highlight-box {
-    background: var(--green-light);
-    border-left: 4px solid var(--green);
-    border-radius: 0 10px 10px 0;
-    padding: 14px 16px;
-    margin: 12px 0;
-    font-size: 0.88rem;
-    color: var(--green);
-    line-height: 1.6;
-  }
-
-  .gold-box {
-    background: #fff8ec;
-    border-left: 4px solid var(--gold);
-    border-radius: 0 10px 10px 0;
-    padding: 14px 16px;
-    margin: 12px 0;
-    font-size: 0.88rem;
-    color: #7c5c2e;
-    line-height: 1.6;
-  }
-
-  table {
-    width: 100%; border-collapse: collapse;
-    margin: 12px 0; font-size: 0.88rem;
-  }
-  th {
-    background: var(--green-light); color: var(--green);
-    padding: 10px 14px; text-align: left; font-weight: 700;
-    border: 1px solid var(--border);
-  }
-  td {
-    padding: 10px 14px; border: 1px solid var(--border);
-    color: #374151; line-height: 1.5;
-  }
-  tr:nth-child(even) td { background: #fafffe; }
-
-  .contact-card {
-    background: linear-gradient(135deg, var(--green), var(--green-mid));
-    border-radius: 16px; padding: 24px;
-    color: white; text-align: center;
-    margin-top: 24px;
-  }
-  .contact-card h3 {
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.1rem; margin-bottom: 8px;
-  }
-  .contact-card p { font-size: 0.88rem; opacity: 0.85; margin-bottom: 4px; }
-  .contact-card a { color: var(--gold); text-decoration: none; font-weight: 600; }
-
-  /* FOOTER */
-  footer {
-    background: var(--green);
-    color: rgba(255,255,255,0.7);
-    text-align: center;
-    padding: 18px;
-    font-size: 0.8rem;
-  }
-  footer span { color: var(--gold); }
+  :root{--green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;--gold:#f5a623;--gold-light:#fff8ec;--red:#dc2626;--red-light:#fee2e2;--blue:#2563eb;--blue-light:#eff6ff;--bg:#f0f5f1;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  .header{background:linear-gradient(135deg,var(--green),var(--green-mid));padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-icon{width:38px;height:38px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+  .logo-name{font-family:'Baloo 2',cursive;font-size:1.3rem;font-weight:800;color:white;}
+  .logo-name span{color:var(--gold);}
+  .tabs{display:flex;background:white;border-bottom:2px solid var(--border);overflow-x:auto;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{flex-shrink:0;padding:12px 14px;border:none;background:none;font-family:'Hind',sans-serif;font-size:0.8rem;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;}
+  .tab.active{color:var(--green);border-bottom-color:var(--green);}
+  .content{max-width:600px;margin:0 auto;padding:16px;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:white;border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+  .card-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:14px;color:var(--green);}
+  .section{margin-bottom:18px;}
+  .section-title{font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;color:var(--green);margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid var(--green-light);}
+  p{font-size:0.86rem;line-height:1.8;color:#374151;margin-bottom:10px;}
+  ul{padding-left:18px;margin-bottom:10px;}
+  ul li{font-size:0.86rem;line-height:1.7;color:#374151;margin-bottom:4px;}
+  .warning-box{background:var(--red-light);border:1px solid var(--red);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .warning-box .title{font-weight:700;color:var(--red);margin-bottom:6px;font-size:0.9rem;}
+  .info-box{background:var(--green-light);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;}
+  .info-box .title{font-weight:700;color:var(--green);margin-bottom:6px;font-size:0.9rem;}
+  .law-badge{display:inline-block;background:var(--blue-light);color:var(--blue);padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:700;margin-bottom:6px;}
+  .contact-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start;}
+  .contact-item:last-child{border:none;}
+  .last-updated{font-size:0.75rem;color:var(--muted);text-align:center;margin-top:20px;padding:10px;}
+  .lang-note{background:var(--gold-light);border:1px solid var(--gold);border-radius:10px;padding:10px;font-size:0.82rem;margin-bottom:14px;color:#92400e;}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header>
+<div class="header">
   <div class="logo">
-    <div class="logo-icon">🌾</div>
+    <div class="logo-icon">⚖️</div>
     <div class="logo-name">Annadata<span>Hub</span></div>
   </div>
-  <p>Legal Policies &amp; Terms</p>
-</header>
-
-<!-- TAB BAR -->
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="showTab('refund')">↩️ Refund Policy</button>
-  <button class="tab-btn" onclick="showTab('terms')">📋 Terms &amp; Conditions</button>
-  <button class="tab-btn" onclick="showTab('privacy')">🔒 Privacy Policy</button>
+  <a href="index.html" style="color:white;font-size:0.82rem;font-weight:600;text-decoration:none;background:rgba(255,255,255,0.15);padding:6px 12px;border-radius:8px">← Back</a>
 </div>
 
-<!-- CONTENT -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('disclaimer', this)">⚠️ Disclaimer</button>
+  <button class="tab" onclick="showTab('terms', this)">📋 Terms</button>
+  <button class="tab" onclick="showTab('privacy', this)">🔒 Privacy</button>
+  <button class="tab" onclick="showTab('contact', this)">📞 Contact</button>
+</div>
+
 <div class="content">
 
-  <!-- ══ REFUND POLICY ══════════════════════════════════════════ -->
-  <div class="policy-section active" id="refund">
-    <div class="page-title">↩️ Refund &amp; Cancellation Policy</div>
-    <div class="page-date">Last updated: March 2026</div>
+  <!-- DISCLAIMER -->
+  <div class="page active" id="page-disclaimer">
 
-    <div class="highlight-box">
-      <strong>Simple version:</strong> If you are not happy with AnnadataHub within 7 days of payment, we will refund you — no questions asked.
+    <div class="lang-note">
+      🇮🇳 यह सेवा भारत में संचालित है। यह जानकारी केवल सामान्य जागरूकता के लिए है।<br/>
+      This service operates in India. Information is for general awareness only.
     </div>
 
-    <div class="section-block">
-      <h2>✅ When You Get a Full Refund</h2>
-      <p>You are eligible for a full refund if:</p>
-      <ul>
-        <li>You request a refund within <strong>7 days</strong> of your first payment</li>
-        <li>The app was not working properly due to a technical issue on our side</li>
-        <li>You were charged twice for the same subscription</li>
-        <li>You did not receive the service you paid for</li>
-      </ul>
-      <div class="gold-box">
-        📞 To request a refund, simply email us or WhatsApp us within 7 days. We process refunds within 5–7 business days back to your original payment method.
+    <div class="warning-box">
+      <div class="title">⚠️ Important Disclaimer — Please Read Before Using</div>
+      <p style="color:#374151;font-size:0.86rem;margin:0">AnnadataHub provides general agricultural information and AI-assisted guidance only. It is NOT a substitute for professional agricultural advice from qualified experts.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚠️ Disclaimer</div>
+
+      <div class="section">
+        <div class="section-title">AI-Generated Information</div>
+        <p>AnnadataHub uses Artificial Intelligence (AI) to generate farming advice including crop disease analysis, fertilizer recommendations, mandi price estimates, weather farming advice, crop calendars and agricultural news.</p>
+        <p><strong>This AI-generated information:</strong></p>
+        <ul>
+          <li>Is for general awareness and guidance only — not professional advice</li>
+          <li>May not be accurate for your specific field, soil or local conditions</li>
+          <li>Must be verified with your local Krishi Vigyan Kendra (KVK) or agricultural officer before acting</li>
+          <li>Should not be the sole basis for major farming or financial decisions</li>
+          <li>Accuracy may vary — AI systems can make mistakes</li>
+        </ul>
       </div>
-    </div>
 
-    <div class="section-block">
-      <h2>❌ When Refunds Are Not Applicable</h2>
-      <ul>
-        <li>Refund request made after 7 days of payment</li>
-        <li>You have used more than 10 crop scans in the billing period</li>
-        <li>Subscription was purchased during a special discount or offer</li>
-        <li>Account was terminated due to violation of our Terms of Service</li>
-      </ul>
-    </div>
+      <div class="section">
+        <div class="section-title">Crop Disease Scanner</div>
+        <p>The AI crop disease scanner analyzes photos to suggest possible diseases. This is an assistive tool — not a certified agricultural diagnosis.</p>
+        <ul>
+          <li>Results depend heavily on photo quality, lighting and angle</li>
+          <li>Always confirm with a trained agricultural scientist or KVK officer</li>
+          <li>Do not apply pesticides or chemicals based solely on AI diagnosis</li>
+          <li>Wrong diagnosis could damage your crop — always verify first</li>
+          <li>For urgent crop disease, call Kisan Helpline: 1800-180-1551 (Free)</li>
+        </ul>
+      </div>
 
-    <div class="section-block">
-      <h2>🔄 How to Cancel Your Subscription</h2>
-      <p>You can cancel your subscription at any time — no penalty, no hidden charges.</p>
-      <ul>
-        <li>Go to your <strong>Profile → Subscription → Cancel Plan</strong></li>
-        <li>Or email us at <strong>annadattahub@gmail.com</strong></li>
-        <li>Or WhatsApp us at <strong>+91 XXXXX XXXXX</strong></li>
-      </ul>
-      <p>After cancellation, you keep access until the end of your current billing period. You will not be charged again after that.</p>
-    </div>
+      <div class="section">
+        <div class="section-title">Mandi Prices</div>
+        <p>Mandi prices shown are AI estimates based on historical data. These are NOT live prices from APMC mandis or AGMARKNET.</p>
+        <ul>
+          <li>Actual prices may be significantly different from estimates shown</li>
+          <li>Always verify at your local mandi before selling your crop</li>
+          <li>For official live prices visit: <strong>agmarknet.gov.in</strong> (Government of India)</li>
+          <li>Do not take financial decisions based on our price estimates alone</li>
+        </ul>
+      </div>
 
-    <div class="section-block">
-      <h2>📊 Subscription Plans Summary</h2>
-      <table>
-        <tr><th>Plan</th><th>Price</th><th>Refund Window</th><th>Cancellation</th></tr>
-        <tr><td>Free</td><td>₹0</td><td>N/A</td><td>Anytime</td></tr>
-        <tr><td>Basic Monthly</td><td>₹49/month</td><td>7 days</td><td>Anytime</td></tr>
-        <tr><td>Basic Yearly</td><td>₹411/year</td><td>7 days</td><td>Anytime</td></tr>
-        <tr><td>Premium Monthly</td><td>₹99/month</td><td>7 days</td><td>Anytime</td></tr>
-        <tr><td>Premium Yearly</td><td>₹831/year</td><td>7 days</td><td>Anytime</td></tr>
-      </table>
-    </div>
+      <div class="section">
+        <div class="section-title">Government Schemes Information</div>
+        <p>Scheme information (PM-KISAN, PMFBY, KCC, PM-KUSUM etc.) is provided for awareness only.</p>
+        <ul>
+          <li>Scheme terms, eligibility and amounts may change — verify at official websites</li>
+          <li>AnnadataHub is NOT affiliated with any government department or ministry</li>
+          <li>We are a private digital service — not a government portal</li>
+          <li>For official scheme information always visit official government websites</li>
+        </ul>
+      </div>
 
-    <div class="contact-card">
-      <h3>Need a Refund? Contact Us</h3>
-      <p>📧 Email: <a href="mailto:annadattahub@gmail.com">annadattahub@gmail.com</a></p>
-      <p>📱 WhatsApp: <a href="#">+91 XXXXX XXXXX</a></p>
-      <p style="margin-top:8px; font-size:0.8rem;">We respond within 24 hours on working days</p>
+      <div class="section">
+        <div class="section-title">Limitation of Liability</div>
+        <div class="law-badge">Information Technology Act, 2000 — Section 79</div>
+        <p>AnnadataHub is an intermediary platform under the Information Technology Act, 2000. We are not liable for:</p>
+        <ul>
+          <li>Crop losses or damages based on AI-generated advice</li>
+          <li>Financial losses based on mandi price estimates</li>
+          <li>Any direct, indirect or consequential damages from use of this app</li>
+          <li>Inaccuracy, incompleteness or outdated AI-generated content</li>
+          <li>Actions taken by farmers based on information from this app</li>
+        </ul>
+        <p>Users use this application at their own risk and discretion.</p>
+      </div>
+
+      <div class="info-box">
+        <div class="title">🌾 Our Commitment to Indian Farmers</div>
+        <p style="margin:0;font-size:0.84rem">We are committed to providing accurate, honest and helpful information to Indian farmers. We always recommend verifying important farming decisions with qualified agricultural experts, KVK officers and official government sources. Your success as a farmer is our mission.</p>
+      </div>
     </div>
   </div>
 
-  <!-- ══ TERMS & CONDITIONS ═════════════════════════════════════ -->
-  <div class="policy-section" id="terms">
-    <div class="page-title">📋 Terms &amp; Conditions</div>
-    <div class="page-date">Last updated: March 2026</div>
+  <!-- TERMS OF USE -->
+  <div class="page" id="page-terms">
+    <div class="card">
+      <div class="card-title">📋 Terms of Use</div>
 
-    <div class="section-block">
-      <h2>📌 1. About AnnadataHub</h2>
-      <p>AnnadataHub ("we", "us", "our") is an AI-powered crop disease detection and farm advisory platform built for Indian farmers. By using our website or app, you agree to these terms.</p>
-      <p>Our service is available at <strong>www.annadatahub.com</strong> and as a mobile web application.</p>
-    </div>
-
-    <div class="section-block">
-      <h2>👤 2. Who Can Use This Service</h2>
-      <ul>
-        <li>You must be at least 18 years old to create an account</li>
-        <li>You must provide accurate name, phone number and email address</li>
-        <li>One person can only have one free account</li>
-        <li>You are responsible for keeping your password safe</li>
-      </ul>
-    </div>
-
-    <div class="section-block">
-      <h2>🌾 3. Our Service</h2>
-      <p>AnnadataHub provides:</p>
-      <ul>
-        <li>AI-powered crop disease detection from photos</li>
-        <li>Treatment and prevention recommendations</li>
-        <li>Personalized farming advice in regional languages</li>
-        <li>Community forums for farmers</li>
-        <li>Early warning alerts for pest and disease outbreaks</li>
-        <li>Post-harvest storage guidance</li>
-      </ul>
-      <div class="gold-box">
-        ⚠️ <strong>Important:</strong> Our AI advice is for guidance only. Always consult a qualified agricultural expert or Krishi Vigyan Kendra (KVK) before making major farming decisions. We are not responsible for crop losses based solely on our recommendations.
+      <div class="section">
+        <div class="section-title">Acceptance of Terms</div>
+        <div class="law-badge">Consumer Protection Act, 2019</div>
+        <p>By accessing or using AnnadataHub (annadatahub.com), you agree to these Terms of Use. These terms constitute a legally binding agreement under Indian law. If you do not agree, please stop using this application.</p>
       </div>
-    </div>
 
-    <div class="section-block">
-      <h2>💳 4. Payments &amp; Subscriptions</h2>
-      <ul>
-        <li>All payments are processed securely through <strong>Razorpay</strong></li>
-        <li>Prices are in Indian Rupees (₹) and include applicable taxes</li>
-        <li>Subscriptions renew automatically unless cancelled</li>
-        <li>We will send you a reminder email before renewal</li>
-        <li>You can cancel anytime — see our Refund Policy</li>
-      </ul>
-    </div>
+      <div class="section">
+        <div class="section-title">About AnnadataHub</div>
+        <p>AnnadataHub is a digital agricultural information platform operated from Pithoragarh, Uttarakhand, India. We provide AI-assisted farming guidance, price information, government scheme information and community features for Indian farmers.</p>
+        <p>AnnadataHub is a private service — not a government portal or official agricultural authority.</p>
+      </div>
 
-    <div class="section-block">
-      <h2>🚫 5. What You Must Not Do</h2>
-      <ul>
-        <li>Share your account with others</li>
-        <li>Use our service for any illegal activity</li>
-        <li>Upload fake, misleading or inappropriate photos</li>
-        <li>Try to hack, damage or overload our systems</li>
-        <li>Copy or resell our AI analysis or content</li>
-        <li>Post spam or abusive content in the community forum</li>
-      </ul>
-    </div>
+      <div class="section">
+        <div class="section-title">Eligibility</div>
+        <ul>
+          <li>You must be 18 years or older to create an account</li>
+          <li>You must be a resident of India or have interest in Indian agriculture</li>
+          <li>You must provide accurate information when registering</li>
+          <li>One account per person — multiple accounts are not allowed</li>
+        </ul>
+      </div>
 
-    <div class="section-block">
-      <h2>📷 6. Your Photos &amp; Data</h2>
-      <p>When you upload a crop photo for analysis:</p>
-      <ul>
-        <li>You give us permission to process it using AI</li>
-        <li>We do not sell your photos to anyone</li>
-        <li>Photos may be used (anonymously) to improve our AI model</li>
-        <li>You can request deletion of your data anytime</li>
-      </ul>
-    </div>
+      <div class="section">
+        <div class="section-title">User Responsibilities</div>
+        <ul>
+          <li>Keep your login credentials secure</li>
+          <li>You are responsible for all activity on your account</li>
+          <li>Report any unauthorized access to your account immediately</li>
+          <li>Do not share your account with others</li>
+        </ul>
+      </div>
 
-    <div class="section-block">
-      <h2>⚖️ 7. Limitation of Liability</h2>
-      <p>AnnadataHub is not liable for:</p>
-      <ul>
-        <li>Any crop losses or damages based on our recommendations</li>
-        <li>Service interruptions due to maintenance or technical issues</li>
-        <li>Losses due to incorrect information provided by users</li>
-      </ul>
-      <p>Our maximum liability is limited to the amount you paid us in the last 3 months.</p>
-    </div>
+      <div class="section">
+        <div class="section-title">FarmGram Community Rules</div>
+        <p>When posting on FarmGram community feed:</p>
+        <ul>
+          <li>Post only genuine farming-related content</li>
+          <li>Do not post false, misleading or harmful agricultural advice</li>
+          <li>Do not post offensive, abusive, defamatory or illegal content</li>
+          <li>Do not post content that violates any Indian law</li>
+          <li>Do not post commercial advertisements or spam</li>
+          <li>Respect fellow farmers — no harassment or bullying</li>
+          <li>We reserve the right to remove any violating content without notice</li>
+          <li>Repeated violations may result in account termination</li>
+        </ul>
+      </div>
 
-    <div class="section-block">
-      <h2>🏛️ 8. Governing Law</h2>
-      <p>These terms are governed by the laws of <strong>India</strong>. Any disputes will be resolved in the courts of <strong>[Your City], India</strong>. We follow all applicable Indian laws including the IT Act 2000 and Consumer Protection Act 2019.</p>
-    </div>
+      <div class="section">
+        <div class="section-title">Prohibited Uses</div>
+        <p>You must NOT use AnnadataHub to:</p>
+        <ul>
+          <li>Spread false agricultural information that could harm farmers</li>
+          <li>Commit any activity that violates Indian law including IT Act 2000, IPC</li>
+          <li>Attempt to hack, disrupt or damage our systems</li>
+          <li>Scrape or copy our data without permission</li>
+          <li>Impersonate government agencies or agricultural authorities</li>
+        </ul>
+      </div>
 
-    <div class="section-block">
-      <h2>✏️ 9. Changes to These Terms</h2>
-      <p>We may update these terms from time to time. We will notify you by email or in-app notification before any major changes take effect. Continued use of the service means you accept the updated terms.</p>
-    </div>
+      <div class="section">
+        <div class="section-title">Payments and Subscriptions</div>
+        <div class="law-badge">Consumer Protection (E-Commerce) Rules, 2020</div>
+        <p>When paid features are introduced:</p>
+        <ul>
+          <li>All prices will be displayed clearly in Indian Rupees (₹) including GST</li>
+          <li>Payments processed securely through Razorpay (RBI licensed payment gateway)</li>
+          <li>Refund policy will be clearly stated before any purchase</li>
+          <li>You will be notified of any price changes with 30 days advance notice</li>
+          <li>GST receipts will be provided for all paid transactions</li>
+        </ul>
+      </div>
 
-    <div class="contact-card">
-      <h3>Questions About Our Terms?</h3>
-      <p>📧 Email: <a href="mailto:annadattahub@gmail.com">annadattahub@gmail.com</a></p>
-      <p>📱 WhatsApp: <a href="#">+91 XXXXX XXXXX</a></p>
+      <div class="section">
+        <div class="section-title">Intellectual Property</div>
+        <div class="law-badge">Copyright Act, 1957</div>
+        <p>All content, design, code and technology of AnnadataHub is protected under Indian copyright law. You may not copy, reproduce, modify or distribute our content without written permission.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Termination</div>
+        <p>We reserve the right to suspend or terminate accounts that violate these terms, applicable Indian laws, or that engage in activity harmful to farmers or our platform.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Governing Law and Jurisdiction</div>
+        <div class="law-badge">Indian Contract Act, 1872</div>
+        <p>These terms are governed exclusively by the laws of India. Any disputes arising from use of AnnadataHub shall be subject to the exclusive jurisdiction of courts in <strong>Pithoragarh, Uttarakhand, India</strong>.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Changes to Terms</div>
+        <p>We may update these terms with 15 days advance notice. Continued use after the effective date constitutes acceptance of new terms.</p>
+      </div>
     </div>
   </div>
 
-  <!-- ══ PRIVACY POLICY ═════════════════════════════════════════ -->
-  <div class="policy-section" id="privacy">
-    <div class="page-title">🔒 Privacy Policy</div>
-    <div class="page-date">Last updated: March 2026</div>
+  <!-- PRIVACY POLICY -->
+  <div class="page" id="page-privacy">
+    <div class="card">
+      <div class="card-title">🔒 Privacy Policy</div>
 
-    <div class="highlight-box">
-      <strong>Simple version:</strong> We only collect what we need to run the service. We never sell your personal data. You can delete your account and data anytime.
+      <div class="section">
+        <div class="section-title">Applicable Indian Law</div>
+        <div class="law-badge">Digital Personal Data Protection Act, 2023 (DPDP Act)</div>
+        <div class="law-badge">Information Technology Act, 2000</div>
+        <p>This Privacy Policy is in compliance with India's Digital Personal Data Protection Act, 2023 (DPDP Act) and the Information Technology (Reasonable Security Practices) Rules, 2011.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Data Fiduciary</div>
+        <p>AnnadataHub, operated from Pithoragarh, Uttarakhand, India, is the Data Fiduciary responsible for processing your personal data as defined under India's DPDP Act, 2023.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">What Personal Data We Collect</div>
+        <p>We collect only data that is necessary to provide our service:</p>
+        <ul>
+          <li><strong>Account data:</strong> Name, email address, phone number (optional), state</li>
+          <li><strong>Usage data:</strong> Questions asked, features used, language preference</li>
+          <li><strong>Crop scan photos:</strong> Processed for disease analysis only — not stored permanently</li>
+          <li><strong>FarmGram posts:</strong> Content you choose to post publicly</li>
+          <li><strong>Device data:</strong> Browser type for technical purposes only</li>
+        </ul>
+        <p>We do NOT collect: Financial details, Aadhaar numbers, biometric data, location tracking.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Purpose of Data Collection</div>
+        <p>Under DPDP Act 2023, we collect your data only for these specific purposes:</p>
+        <ul>
+          <li>To provide personalized farming advice based on your state and crops</li>
+          <li>To maintain your account and provide customer support</li>
+          <li>To send important farming alerts and government scheme notifications</li>
+          <li>To improve accuracy of AI for Indian farming conditions</li>
+          <li>To process payments when paid features are introduced</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Your Rights Under DPDP Act 2023</div>
+        <p>As an Indian citizen, you have the following rights under India's DPDP Act:</p>
+        <ul>
+          <li><strong>Right to Access:</strong> Know what personal data we hold about you</li>
+          <li><strong>Right to Correction:</strong> Update or correct your personal data</li>
+          <li><strong>Right to Erasure:</strong> Request deletion of your account and data</li>
+          <li><strong>Right to Grievance Redressal:</strong> Raise concerns about data processing</li>
+          <li><strong>Right to Nominate:</strong> Nominate someone to exercise rights on your behalf</li>
+        </ul>
+        <p>To exercise any right, contact: <strong>support@annadatahub.com</strong></p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Data Storage and Security</div>
+        <ul>
+          <li>Data stored on secure servers (MongoDB Atlas)</li>
+          <li>Passwords are encrypted using bcrypt — never stored in plain text</li>
+          <li>All communications use HTTPS encryption</li>
+          <li>We implement reasonable security measures as per IT Rules 2011</li>
+          <li>Data breach will be reported to affected users promptly</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Data Sharing</div>
+        <p>We do NOT sell, rent or trade your personal data to any third party.</p>
+        <p>We may share data only in these cases:</p>
+        <ul>
+          <li>With payment processors (Razorpay) for processing payments — only necessary transaction data</li>
+          <li>If required by Indian law, court order or government authority</li>
+          <li>To protect rights, safety and security of our users and platform</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Data Retention</div>
+        <ul>
+          <li>Account data retained as long as account is active</li>
+          <li>Deleted accounts: data removed within 30 days</li>
+          <li>Crop scan photos: deleted immediately after analysis</li>
+          <li>AI questions: may be retained for up to 12 months to improve service</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Grievance Officer</div>
+        <div class="law-badge">IT Act 2000 — Rule 5(9)</div>
+        <p>As required under IT Act 2000, our Grievance Officer for data-related complaints:</p>
+        <div style="background:var(--green-light);border-radius:10px;padding:12px;font-size:0.86rem">
+          <strong>Name:</strong> AnnadataHub Support Team<br/>
+          <strong>Email:</strong> support@annadatahub.com<br/>
+          <strong>Address:</strong> Pithoragarh, Uttarakhand, India<br/>
+          <strong>Response Time:</strong> Within 30 days as per IT Act
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="title">🔒 Our Promise to Indian Farmers</div>
+        <p style="margin:0;font-size:0.84rem">हम आपका डेटा कभी नहीं बेचेंगे। AnnadataHub किसानों के लिए बना है।<br/>We will never sell your data. AnnadataHub is built for Indian farmers. Your privacy is sacred to us.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="page" id="page-contact">
+    <div class="card">
+      <div class="card-title">📞 Contact AnnadataHub</div>
+
+      <div class="contact-item">
+        <div style="font-size:1.3rem">📧</div>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem">Email — General Support</div>
+          <a href="mailto:support@annadatahub.com" style="color:var(--green);font-size:0.84rem;font-weight:600">support@annadatahub.com</a>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">We respond within 48 hours · Hindi and English</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div style="font-size:1.3rem">📧</div>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem">Email — Data Privacy / DPDP Complaints</div>
+          <a href="mailto:privacy@annadatahub.com" style="color:var(--green);font-size:0.84rem;font-weight:600">privacy@annadatahub.com</a>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">For data access, correction, deletion requests</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div style="font-size:1.3rem">📍</div>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem">Registered Address</div>
+          <div style="font-size:0.84rem;color:var(--muted)">Pithoragarh, Uttarakhand — 262501, India</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div style="font-size:1.3rem">🌐</div>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem">Website</div>
+          <a href="https://www.annadatahub.com" style="color:var(--green);font-size:0.84rem;font-weight:600">www.annadatahub.com</a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div style="font-size:1.3rem">☎️</div>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem">Government Kisan Helpline (NOT AnnadataHub)</div>
+          <a href="tel:18001801551" style="color:var(--green);font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800">1800-180-1551</a>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Free · For farming advice from government experts</div>
+        </div>
+      </div>
     </div>
 
-    <div class="section-block">
-      <h2>📋 1. What Information We Collect</h2>
-      <table>
-        <tr><th>Information</th><th>Why We Collect It</th></tr>
-        <tr><td>Name, email, phone</td><td>To create your account</td></tr>
-        <tr><td>Crop photos</td><td>To run AI disease analysis</td></tr>
-        <tr><td>Location (optional)</td><td>For regional pest alerts</td></tr>
-        <tr><td>Payment info</td><td>Processed by Razorpay — we don't store card details</td></tr>
-        <tr><td>Device &amp; usage data</td><td>To improve the app</td></tr>
-      </table>
+    <div class="card">
+      <div class="card-title">🐛 Report Wrong Information</div>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px">Found wrong or misleading information? Help us improve for all Indian farmers.</p>
+      <a href="mailto:support@annadatahub.com?subject=Wrong Information Report&body=Page: %0AWhat is wrong: %0AWhat should be correct: " style="display:block;background:var(--green);color:white;padding:12px;border-radius:12px;text-align:center;font-family:'Baloo 2',cursive;font-weight:700;text-decoration:none;font-size:0.95rem;margin-bottom:8px">📧 Report Wrong Information</a>
+      <a href="mailto:support@annadatahub.com?subject=Bug Report&body=Page: %0AProblem: " style="display:block;background:var(--blue);color:white;padding:12px;border-radius:12px;text-align:center;font-family:'Baloo 2',cursive;font-weight:700;text-decoration:none;font-size:0.95rem">🐛 Report Technical Bug</a>
     </div>
 
-    <div class="section-block">
-      <h2>🔐 2. How We Protect Your Data</h2>
-      <ul>
-        <li>All data is encrypted in transit (HTTPS/SSL)</li>
-        <li>Passwords are stored in encrypted form — even we cannot read them</li>
-        <li>We use secure cloud servers hosted in India</li>
-        <li>Payment data is handled entirely by Razorpay — PCI DSS compliant</li>
-        <li>We regularly review our security practices</li>
-      </ul>
-    </div>
-
-    <div class="section-block">
-      <h2>🤝 3. Who We Share Data With</h2>
-      <ul>
-        <li><strong>Razorpay</strong> — for processing payments</li>
-        <li><strong>Anthropic Claude AI</strong> — for analyzing crop photos (no personal data shared)</li>
-        <li><strong>MongoDB Atlas</strong> — for storing your account data securely</li>
-      </ul>
-      <p>We do <strong>not</strong> sell, rent or share your personal data with advertisers or third parties for marketing.</p>
-    </div>
-
-    <div class="section-block">
-      <h2>✅ 4. Your Rights</h2>
-      <ul>
-        <li><strong>Access:</strong> Ask us what data we have about you</li>
-        <li><strong>Correction:</strong> Update your name, email or phone anytime</li>
-        <li><strong>Deletion:</strong> Delete your account and all data permanently</li>
-        <li><strong>Download:</strong> Request a copy of your data</li>
-        <li><strong>Opt-out:</strong> Unsubscribe from marketing emails anytime</li>
-      </ul>
-      <p>To exercise any of these rights, email us at <strong>annadattahub@gmail.com</strong></p>
-    </div>
-
-    <div class="section-block">
-      <h2>🍪 5. Cookies</h2>
-      <p>We use only essential cookies to keep you logged in and remember your preferences. We do not use advertising or tracking cookies.</p>
-    </div>
-
-    <div class="section-block">
-      <h2>👶 6. Children's Privacy</h2>
-      <p>AnnadataHub is not intended for children under 18. We do not knowingly collect data from minors. If you believe a minor has created an account, please contact us and we will delete it immediately.</p>
-    </div>
-
-    <div class="contact-card">
-      <h3>Privacy Questions?</h3>
-      <p>📧 Email: <a href="mailto:annadattahub@gmail.com">annadattahub@gmail.com</a></p>
-      <p>📱 WhatsApp: <a href="#">+91 XXXXX XXXXX</a></p>
-      <p style="margin-top:8px; font-size:0.8rem;">We respond within 48 hours</p>
+    <div class="last-updated">
+      Last Updated: April 2026<br/>
+      AnnadataHub · Pithoragarh, Uttarakhand, India<br/>
+      Governed by Laws of India
     </div>
   </div>
 
 </div>
 
-<!-- FOOTER -->
-<footer>
-  © 2026 <span>AnnadataHub</span> · Made with ❤️ for Indian Farmers · All rights reserved
-</footer>
-
 <script>
-  function showTab(tab) {
-    document.querySelectorAll(".policy-section").forEach(s => s.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById(tab).classList.add("active");
-    event.target.classList.add("active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+function showTab(tab, btn) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("page-" + tab).classList.add("active");
+  if (btn) btn.classList.add("active");
+}
 </script>
 </body>
 </html>
