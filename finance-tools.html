@@ -6,15 +6,7 @@
 <title>AnnadataHub — Farmer Finance Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root{
-    --green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;
-    --gold:#f5a623;--gold-light:#fff8ec;
-    --blue:#2563eb;--blue-light:#eff6ff;
-    --red:#dc2626;--red-light:#fee2e2;
-    --purple:#7c3aed;--purple-light:#f5f3ff;
-    --orange:#ea580c;--orange-light:#fff7ed;
-    --bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;
-  }
+  :root{--green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;--gold:#f5a623;--gold-light:#fff8ec;--blue:#2563eb;--blue-light:#eff6ff;--red:#dc2626;--red-light:#fee2e2;--purple:#7c3aed;--purple-light:#f5f3ff;--orange:#ea580c;--orange-light:#fff7ed;--bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;}
   .header{background:linear-gradient(135deg,var(--green),var(--green-mid));padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
@@ -38,26 +30,21 @@
   select,input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.86rem;background:white;color:var(--text);outline:none;transition:border 0.2s;}
   select:focus,input:focus{border-color:var(--green);}
   .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
   .btn{width:100%;padding:12px;border-radius:12px;border:none;font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
   .btn-green{background:var(--green);color:white;}
   .btn-gold{background:var(--gold);color:var(--text);}
   .btn-blue{background:var(--blue);color:white;}
   .btn-purple{background:var(--purple);color:white;}
-  .btn-sm{padding:7px 14px;font-size:0.78rem;width:auto;border-radius:8px;}
   .btn:disabled{opacity:0.6;cursor:not-allowed;}
   .spinner{width:34px;height:34px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .loading{text-align:center;padding:28px;}
-
-  /* LOAN CALCULATOR */
   .loan-hero{background:linear-gradient(135deg,var(--blue),#1d4ed8);border-radius:16px;padding:18px;margin-bottom:14px;color:white;text-align:center;}
   .loan-hero-title{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:4px;}
   .loan-hero-sub{font-size:0.78rem;opacity:0.85;}
   .result-card{border-radius:14px;padding:18px;margin-bottom:12px;}
   .result-card.blue{background:linear-gradient(135deg,#dbeafe,#bfdbfe);border:2px solid var(--blue);}
   .result-card.green{background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #16a34a;}
-  .result-card.gold{background:linear-gradient(135deg,#fef9c3,#fde68a);border:2px solid var(--gold);}
   .result-amount{font-family:'Baloo 2',cursive;font-size:2rem;font-weight:800;line-height:1;}
   .result-label{font-size:0.78rem;color:var(--muted);margin-top:3px;}
   .emi-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
@@ -66,13 +53,10 @@
   .emi-value{font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem;}
   .scheme-card{background:white;border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:8px;}
   .scheme-name{font-family:'Baloo 2',cursive;font-size:0.92rem;font-weight:700;color:var(--green);margin-bottom:3px;}
-  .scheme-detail{font-size:0.8rem;color:#374141;line-height:1.5;}
   .scheme-tag{display:inline-block;background:var(--green-light);color:var(--green);padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;margin-right:4px;}
   .range-slider{width:100%;margin:8px 0;}
   .range-display{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--muted);}
   .range-value{text-align:center;font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);margin:4px 0;}
-
-  /* PESTICIDE */
   .pest-search{padding:12px;background:white;border-bottom:1px solid var(--border);}
   .search-inp{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:24px;font-family:'Hind',sans-serif;font-size:0.86rem;outline:none;}
   .search-inp:focus{border-color:var(--green);}
@@ -95,8 +79,6 @@
   .filter-tags{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;background:white;border-bottom:1px solid var(--border);}
   .filter-tag{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:0.75rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all 0.15s;}
   .filter-tag.active{background:var(--green);color:white;border-color:var(--green);}
-
-  /* INSURANCE */
   .ins-hero{background:linear-gradient(135deg,var(--purple),#6d28d9);border-radius:16px;padding:18px;margin-bottom:14px;color:white;text-align:center;}
   .premium-display{background:linear-gradient(135deg,var(--green),var(--green-mid));border-radius:14px;padding:18px;color:white;text-align:center;margin-bottom:12px;}
   .premium-amount{font-family:'Baloo 2',cursive;font-size:2.2rem;font-weight:800;color:var(--gold);}
@@ -105,17 +87,12 @@
   .ins-stat{background:rgba(255,255,255,0.15);border-radius:10px;padding:10px;text-align:center;}
   .ins-stat-val{font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;}
   .ins-stat-lbl{font-size:0.62rem;opacity:0.8;margin-top:2px;}
-  .ins-card{background:white;border-radius:12px;border:1px solid var(--border);padding:14px;margin-bottom:10px;}
-  .ins-name{font-family:'Baloo 2',cursive;font-size:0.92rem;font-weight:700;color:var(--purple);margin-bottom:4px;}
-  .ins-detail{font-size:0.82rem;line-height:1.5;color:#374141;}
   .ins-feature{padding:5px 0;border-bottom:1px solid var(--border);font-size:0.8rem;display:flex;gap:8px;}
   .ins-feature:last-child{border:none;}
-  .step-list{counter-reset:step;}
   .step-item{display:flex;gap:10px;margin-bottom:10px;font-size:0.84rem;}
   .step-num{width:24px;height:24px;background:var(--purple);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.75rem;flex-shrink:0;}
   .helpline{background:var(--blue-light);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;}
   .helpline-num{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--blue);}
-
   .info-box{border-radius:10px;padding:12px 14px;font-size:0.84rem;line-height:1.6;margin-bottom:10px;}
   .info-green{background:var(--green-light);border-left:3px solid var(--green);}
   .info-gold{background:var(--gold-light);border-left:3px solid var(--gold);color:#92400e;}
@@ -126,8 +103,6 @@
   .badge-red{background:var(--red-light);color:var(--red);}
   .badge-gold{background:var(--gold-light);color:#92400e;}
   .badge-blue{background:var(--blue-light);color:var(--blue);}
-  .ai-box{background:white;border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px;}
-  .ai-label{font-size:0.7rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:8px;}
   .powered{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:8px;}
   .empty{text-align:center;padding:36px 20px;color:var(--muted);}
   .empty .icon{font-size:2.5rem;margin-bottom:10px;}
@@ -142,7 +117,6 @@
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="logo">
     <div class="logo-icon">🌾</div>
@@ -156,30 +130,38 @@
     <option value="te">తెలుగు</option>
     <option value="ta">தமிழ்</option>
     <option value="gu">ગુજરાતી</option>
+    <option value="kn">ಕನ್ನಡ</option>
+    <option value="ml">മലയാളം</option>
+    <option value="bn">বাংলা</option>
   </select>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
   <button class="tab active" onclick="showTab('loan')" id="tab-loan"><span class="icon">🏦</span><span id="t1">Loan Calc</span></button>
   <button class="tab" onclick="showTab('pesticide')" id="tab-pesticide"><span class="icon">🧪</span><span id="t2">Pesticide</span></button>
   <button class="tab" onclick="showTab('insurance')" id="tab-insurance"><span class="icon">🛡️</span><span id="t3">Insurance</span></button>
 </div>
 
-<!-- ══ LOAN CALCULATOR ══════════════════════════════════════════ -->
+<!-- ALL 29 STATES TEMPLATE — reused across dropdowns -->
+<script>
+const ALL_STATES = ["Punjab","Haryana","Uttar Pradesh","Bihar","Rajasthan","Madhya Pradesh","Maharashtra","Gujarat","Karnataka","Andhra Pradesh","Telangana","Tamil Nadu","Kerala","West Bengal","Odisha","Jharkhand","Chhattisgarh","Uttarakhand","Himachal Pradesh","Jammu and Kashmir","Assam","Goa","Sikkim","Manipur","Meghalaya","Tripura","Nagaland","Mizoram","Arunachal Pradesh"];
+function stateOptions(selectedState) {
+  return ALL_STATES.map(s => `<option value="${s}" ${s===selectedState?"selected":""}>${s}</option>`).join("");
+}
+</script>
+
+<!-- LOAN CALCULATOR -->
 <div class="page active" id="page-loan">
   <div class="content">
     <div class="loan-hero">
       <div style="font-size:1.8rem;margin-bottom:6px">🏦</div>
-      <div class="loan-hero-title">Farmer Loan Calculator</div>
-      <div class="loan-hero-sub">Calculate EMI · Find best scheme · Know eligibility</div>
+      <div class="loan-hero-title" id="loan-title">Farmer Loan Calculator</div>
+      <div class="loan-hero-sub" id="loan-sub">Calculate EMI · Find best scheme · Know eligibility</div>
     </div>
-
     <div class="card">
-      <div class="card-title" style="color:var(--blue)">📊 Calculate Your Loan EMI</div>
-
+      <div class="card-title" style="color:var(--blue)">📊 <span id="emi-title">Calculate Your Loan EMI</span></div>
       <div class="field">
-        <label>Loan Type</label>
+        <label id="lbl-loan-type">Loan Type</label>
         <select id="loanType" onchange="updateLoanType()">
           <option value="kcc">Kisan Credit Card (KCC) — 4% interest</option>
           <option value="agri">Agriculture Term Loan — 7% interest</option>
@@ -187,46 +169,37 @@
           <option value="custom">Custom Interest Rate</option>
         </select>
       </div>
-
       <div class="field">
-        <label>Loan Amount (₹)</label>
+        <label id="lbl-loan-amt">Loan Amount (₹)</label>
         <input type="range" id="loanAmt" min="10000" max="500000" step="5000" value="100000" oninput="updateLoanCalc()" class="range-slider"/>
         <div class="range-display"><span>₹10,000</span><span>₹5,00,000</span></div>
         <div class="range-value" id="loanAmtDisplay">₹1,00,000</div>
       </div>
-
       <div class="field">
-        <label>Loan Tenure (Months)</label>
+        <label id="lbl-loan-tenure">Loan Tenure (Months)</label>
         <input type="range" id="loanTenure" min="6" max="84" step="6" value="36" oninput="updateLoanCalc()" class="range-slider"/>
         <div class="range-display"><span>6 months</span><span>84 months</span></div>
         <div class="range-value" id="loanTenureDisplay">36 months (3 years)</div>
       </div>
-
       <div class="field" id="customRateField" style="display:none">
-        <label>Interest Rate (% per year)</label>
+        <label id="lbl-custom-rate">Interest Rate (% per year)</label>
         <input type="number" id="customRate" value="7" min="1" max="24" oninput="updateLoanCalc()"/>
       </div>
-
       <div class="field">
-        <label>Land Size (acres) — for eligibility</label>
+        <label id="lbl-land-size">Land Size (acres) — for eligibility</label>
         <input type="number" id="landSize" value="2" min="0.5" oninput="updateLoanCalc()"/>
       </div>
     </div>
-
-    <!-- RESULTS -->
     <div id="loanResults"></div>
-
-    <!-- GOVT SCHEMES -->
     <div class="card">
-      <div class="card-title" style="color:var(--green)">🏛️ Best Loan Schemes for You</div>
+      <div class="card-title" style="color:var(--green)">🏛️ <span id="schemes-title">Best Loan Schemes for You</span></div>
       <div id="loanSchemes"></div>
     </div>
-
     <div class="pb"></div>
   </div>
 </div>
 
-<!-- ══ PESTICIDE DOSAGE ════════════════════════════════════════ -->
+<!-- PESTICIDE -->
 <div class="page" id="page-pesticide">
   <div class="pest-search">
     <input class="search-inp" id="pestSearch" placeholder="🔍 Search by crop, pest or pesticide name..." oninput="filterPesticides(this.value)"/>
@@ -234,13 +207,12 @@
   <div class="filter-tags" id="filterTags"></div>
   <div style="padding:14px;padding-bottom:0" id="pesticideList"></div>
   <div style="padding:14px">
-    <!-- CUSTOM CALCULATOR -->
     <div class="card">
-      <div class="card-title" style="color:var(--blue)">🧮 Pesticide Quantity Calculator</div>
-      <div class="info-blue" style="margin-bottom:12px">Enter your field size → get exact quantity needed</div>
+      <div class="card-title" style="color:var(--blue)">🧮 <span id="qty-calc-title">Pesticide Quantity Calculator</span></div>
+      <div class="info-blue" style="margin-bottom:12px" id="qty-calc-desc">Enter your field size → get exact quantity needed</div>
       <div class="two-col">
         <div class="field">
-          <label>Select Pesticide</label>
+          <label id="lbl-select-pest">Select Pesticide</label>
           <select id="calcPesticide">
             <option value="mancozeb">Mancozeb 75WP</option>
             <option value="imidacloprid">Imidacloprid 17.8SL</option>
@@ -251,12 +223,12 @@
           </select>
         </div>
         <div class="field">
-          <label>Field Size (acres)</label>
+          <label id="lbl-field-size">Field Size (acres)</label>
           <input type="number" id="calcAcres" value="2" min="0.5" oninput="calcPesticideQty()"/>
         </div>
       </div>
       <div class="field">
-        <label>Water per acre (litres)</label>
+        <label id="lbl-water">Water per acre (litres)</label>
         <input type="number" id="calcWater" value="200" oninput="calcPesticideQty()"/>
       </div>
       <div id="calcResult" class="calc-box" style="display:none">
@@ -268,20 +240,19 @@
   </div>
 </div>
 
-<!-- ══ CROP INSURANCE ══════════════════════════════════════════ -->
+<!-- INSURANCE -->
 <div class="page" id="page-insurance">
   <div class="content">
     <div class="ins-hero">
       <div style="font-size:1.8rem;margin-bottom:6px">🛡️</div>
-      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:4px">Crop Insurance Calculator</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;margin-bottom:4px" id="ins-title">Crop Insurance Calculator</div>
       <div style="font-size:0.78rem;opacity:0.85">PMFBY · Pradhan Mantri Fasal Bima Yojana</div>
     </div>
-
     <div class="card">
-      <div class="card-title" style="color:var(--purple)">🧮 Calculate Your Premium</div>
+      <div class="card-title" style="color:var(--purple)">🧮 <span id="premium-title">Calculate Your Premium</span></div>
       <div class="two-col">
         <div class="field">
-          <label>Crop</label>
+          <label id="lbl-ins-crop">Crop</label>
           <select id="insCrop" onchange="calcInsurance()">
             <option value="wheat_rabi">Wheat (Rabi)</option>
             <option value="paddy_kharif">Paddy/Rice (Kharif)</option>
@@ -296,44 +267,34 @@
           </select>
         </div>
         <div class="field">
-          <label>Land Size (acres)</label>
+          <label id="lbl-ins-land">Land Size (acres)</label>
           <input type="number" id="insLand" value="2" min="0.5" step="0.5" oninput="calcInsurance()"/>
         </div>
       </div>
       <div class="two-col">
         <div class="field">
-          <label>State</label>
-          <select id="insState" onchange="calcInsurance()">
-            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
-            <option>Maharashtra</option><option>Madhya Pradesh</option><option>Gujarat</option>
-            <option>Rajasthan</option><option>Bihar</option><option>West Bengal</option>
-            <option>Andhra Pradesh</option><option>Tamil Nadu</option><option>Karnataka</option>
-          </select>
+          <label id="lbl-ins-state">State</label>
+          <select id="insState" onchange="calcInsurance()"></select>
         </div>
         <div class="field">
-          <label>Sum Insured (₹/acre)</label>
+          <label id="lbl-sum-insured">Sum Insured (₹/acre)</label>
           <input type="number" id="insSumInsured" value="30000" oninput="calcInsurance()"/>
         </div>
       </div>
-      <button class="btn btn-purple" onclick="calcInsurance()">🛡️ Calculate My Premium</button>
+      <button class="btn btn-purple" onclick="calcInsurance()">🛡️ <span id="ins-btn-text">Calculate My Premium</span></button>
     </div>
-
     <div id="insuranceResult"></div>
 
-    <!-- HOW TO APPLY -->
     <div class="card">
       <div class="card-title" style="color:var(--purple)">📋 How to Apply for PMFBY</div>
-      <div class="step-list">
-        <div class="step-item"><div class="step-num">1</div><div>Visit nearest bank, CSC (Common Service Centre) or go to <strong>pmfby.gov.in</strong></div></div>
-        <div class="step-item"><div class="step-num">2</div><div>Bring: <strong>Aadhaar card, Land records (Khasra/Khatauni), Bank account details, Crop sowing certificate</strong></div></div>
-        <div class="step-item"><div class="step-num">3</div><div>Fill PMFBY form — deadline is usually <strong>last date of sowing month</strong></div></div>
-        <div class="step-item"><div class="step-num">4</div><div>Pay your small premium — bank deducts automatically if you have KCC</div></div>
-        <div class="step-item"><div class="step-num">5</div><div>If crop fails — file claim within <strong>72 hours</strong> of loss</div></div>
-        <div class="step-item"><div class="step-num">6</div><div>Money comes to your bank account within <strong>15-20 days</strong> of claim approval</div></div>
-      </div>
+      <div class="step-item"><div class="step-num">1</div><div>Visit nearest bank, CSC or <strong>pmfby.gov.in</strong></div></div>
+      <div class="step-item"><div class="step-num">2</div><div>Bring: <strong>Aadhaar, Land records (Khasra/Khatauni), Bank details, Sowing certificate</strong></div></div>
+      <div class="step-item"><div class="step-num">3</div><div>Fill PMFBY form — deadline is <strong>last date of sowing month</strong></div></div>
+      <div class="step-item"><div class="step-num">4</div><div>Pay premium — bank deducts automatically if you have KCC</div></div>
+      <div class="step-item"><div class="step-num">5</div><div>If crop fails — file claim within <strong>72 hours</strong> of loss</div></div>
+      <div class="step-item"><div class="step-num">6</div><div>Money credited to bank within <strong>15-20 days</strong> of approval</div></div>
     </div>
 
-    <!-- WHAT IS COVERED -->
     <div class="card">
       <div class="card-title" style="color:var(--purple)">✅ What PMFBY Covers</div>
       <div class="ins-feature"><span>✅</span>Natural disasters (flood, drought, cyclone, hailstorm)</div>
@@ -344,7 +305,6 @@
       <div class="ins-feature"><span>❌</span>Intentional damage by farmer</div>
     </div>
 
-    <!-- HELPLINE -->
     <div class="helpline">
       <div style="font-size:1.5rem">📞</div>
       <div style="flex:1">
@@ -354,7 +314,6 @@
       </div>
       <button onclick="window.location.href='tel:14447'" style="background:var(--blue);color:white;border:none;border-radius:8px;padding:8px 12px;font-family:'Baloo 2',cursive;font-weight:700;cursor:pointer;font-size:0.82rem">Call Now</button>
     </div>
-
     <div class="pb"></div>
   </div>
 </div>
@@ -362,112 +321,33 @@
 <div id="toast" class="toast hidden"></div>
 
 <script>
-// ── DATA ─────────────────────────────────────────────────────────
-const LANG_NAMES={en:"English",hi:"Hindi",pa:"Punjabi",mr:"Marathi",te:"Telugu",ta:"Tamil",gu:"Gujarati"};
+const LANG_LABELS = {
+  en:["Loan Calc","Pesticide","Insurance"],
+  hi:["लोन कैलक्युलेटर","कीटनाशक","बीमा"],
+  pa:["ਕਰਜ਼ਾ ਕੈਲਕੁਲੇਟਰ","ਕੀਟਨਾਸ਼ਕ","ਬੀਮਾ"],
+  mr:["कर्ज कॅल्क्युलेटर","कीटकनाशक","विमा"],
+  te:["రుణ కాల్క్యులేటర్","క్రిమిసంహారకం","బీమా"],
+  ta:["கடன் கணக்கீடு","பூச்சிக்கொல்லி","காப்பீடு"],
+  gu:["લોન કૅલ્ક્યુલેટર","જંતુનાશક","વીમો"],
+  kn:["ಸಾಲ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್","ಕ್ರಿಮಿನಾಶಕ","ವಿಮೆ"],
+  ml:["ലോൺ കാൽക്കുലേറ്റർ","കീടനാശിനി","ഇൻഷുറൻസ്"],
+  bn:["ঋণ ক্যালকুলেটর","কীটনাশক","বীমা"],
+};
 
 const LOAN_SCHEMES = [
-  {name:"Kisan Credit Card (KCC)",icon:"💳",interest:"4%",max:"₹3 lakh",tenure:"12 months (revolving)",eligibility:"All farmers with land record",benefits:["Withdraw anytime like ATM","No collateral up to ₹1.6 lakh","Government pays 3% interest subsidy","Can use for seeds, fertilizer, equipment"],apply:"Nearest bank or CSC"},
+  {name:"Kisan Credit Card (KCC)",icon:"💳",interest:"4%",max:"₹3 lakh",tenure:"12 months (revolving)",eligibility:"All farmers with land record",benefits:["Withdraw anytime like ATM","No collateral up to ₹1.6 lakh","Govt pays 3% interest subsidy","Use for seeds, fertilizer, equipment"],apply:"Nearest bank or CSC"},
   {name:"PM Kisan Samman Nidhi Loan",icon:"🏛️",interest:"4%",max:"₹1.6 lakh",tenure:"24 months",eligibility:"PM-KISAN beneficiaries",benefits:["Based on PM-KISAN registration","Fast approval — 3-5 days","No guarantor needed","Can link to existing KCC"],apply:"pmkisan.gov.in or bank"},
   {name:"NABARD Agriculture Loan",icon:"🏦",interest:"7-8%",max:"₹50 lakh",tenure:"7 years",eligibility:"Farmers, FPOs, Agri enterprises",benefits:["For large land holdings","Equipment and infrastructure","Cold storage and processing","Drip irrigation installation"],apply:"NABARD district office"},
   {name:"Agriculture Infrastructure Fund",icon:"🌾",interest:"3% subsidy",max:"₹2 crore",tenure:"10 years",eligibility:"Farmers, FPOs, Agri cooperatives",benefits:["Post-harvest infrastructure","Cold chain setup","Warehouse construction","Processing unit"],apply:"agriinfra.dac.gov.in"},
 ];
 
 const PESTICIDES = [
-  {
-    id:1, name:"Mancozeb 75WP", category:"fungicide", icon:"🍄", color:"#dcfce7",
-    type:"Contact Fungicide", active:"Mancozeb 75%",
-    targets:["Early Blight","Late Blight","Leaf Spot","Downy Mildew","Rust"],
-    crops:["Tomato","Potato","Grape","Wheat","Onion","Groundnut"],
-    dosage:[
-      {crop:"Tomato/Potato",rate:"2-2.5 g/litre",interval:"7-10 days",max_sprays:"4"},
-      {crop:"Wheat",rate:"2 g/litre",interval:"10-14 days",max_sprays:"3"},
-      {crop:"Grape",rate:"2.5 g/litre",interval:"7 days",max_sprays:"5"},
-    ],
-    per_acre_qty:"400-600g",
-    warnings:["Do not mix with alkaline pesticides","Avoid spraying in rain","Wear gloves and mask"],
-    safety:"PHI (Pre-Harvest Interval): 3-7 days",
-    cost:"₹180-220 per kg",
-    calc_rate:2.25
-  },
-  {
-    id:2, name:"Imidacloprid 17.8SL", category:"insecticide", icon:"🐛", color:"#ffe4e6",
-    type:"Systemic Insecticide", active:"Imidacloprid 17.8%",
-    targets:["Aphids","Whiteflies","Jassids","Thrips","Brown Plant Hopper"],
-    crops:["Cotton","Rice","Vegetables","Mustard","Sunflower"],
-    dosage:[
-      {crop:"Cotton",rate:"0.3-0.5 ml/litre",interval:"15-20 days",max_sprays:"2"},
-      {crop:"Rice",rate:"0.3 ml/litre",interval:"15 days",max_sprays:"2"},
-      {crop:"Vegetables",rate:"0.25-0.3 ml/litre",interval:"10-15 days",max_sprays:"2"},
-    ],
-    per_acre_qty:"100-150ml",
-    warnings:["Highly toxic to bees — do not spray during flowering","Maximum 2 sprays per season","Do not use near water bodies"],
-    safety:"PHI: 7-14 days. Wear full protective gear.",
-    cost:"₹350-450 per 250ml",
-    calc_rate:0.35
-  },
-  {
-    id:3, name:"Chlorpyrifos 20EC", category:"insecticide", icon:"🌿", color:"#fef9c3",
-    type:"Broad Spectrum Insecticide", active:"Chlorpyrifos 20%",
-    targets:["Stem Borer","Cutworm","Termites","Root Grub","Army Worm"],
-    crops:["Wheat","Corn","Cotton","Sugarcane","Vegetables"],
-    dosage:[
-      {crop:"Wheat/Corn",rate:"2.5 ml/litre",interval:"15-20 days",max_sprays:"2"},
-      {crop:"Sugarcane",rate:"3 ml/litre (soil drench)",interval:"Once",max_sprays:"1"},
-      {crop:"Vegetables",rate:"2 ml/litre",interval:"14 days",max_sprays:"2"},
-    ],
-    per_acre_qty:"300-400ml",
-    warnings:["Moderately toxic — wear mask","Avoid contact with skin","Store away from food"],
-    safety:"PHI: 14-21 days",
-    cost:"₹280-350 per litre",
-    calc_rate:2.5
-  },
-  {
-    id:4, name:"Propiconazole 25EC", category:"fungicide", icon:"🌾", color:"#dcfce7",
-    type:"Systemic Fungicide", active:"Propiconazole 25%",
-    targets:["Yellow Rust","Brown Rust","Sheath Blight","Powdery Mildew","Leaf Blight"],
-    crops:["Wheat","Rice","Barley","Groundnut","Banana"],
-    dosage:[
-      {crop:"Wheat",rate:"1 ml/litre",interval:"14-21 days",max_sprays:"2"},
-      {crop:"Rice",rate:"1 ml/litre",interval:"14 days",max_sprays:"2"},
-      {crop:"Groundnut",rate:"1-1.5 ml/litre",interval:"14 days",max_sprays:"3"},
-    ],
-    per_acre_qty:"200-250ml",
-    warnings:["Do not use during grain filling","Use within 7 days if diluted"],
-    safety:"PHI: 21 days for wheat",
-    cost:"₹420-500 per 250ml",
-    calc_rate:1
-  },
-  {
-    id:5, name:"Neem Oil (Organic)", category:"organic", icon:"🌿", color:"#dcfce7",
-    type:"Organic Bio-pesticide", active:"Azadirachtin 1500ppm",
-    targets:["Aphids","Whiteflies","Mites","Leafhoppers","Caterpillars"],
-    crops:["All crops","Vegetables","Fruits","Pulses","Oilseeds"],
-    dosage:[
-      {crop:"All crops",rate:"5 ml/litre + 1ml soap",interval:"7-10 days",max_sprays:"Unlimited"},
-      {crop:"Vegetables",rate:"4 ml/litre",interval:"5-7 days",max_sprays:"Unlimited"},
-    ],
-    per_acre_qty:"500ml-1 litre",
-    warnings:["Spray in evening — sunlight degrades neem","Mix with soap for better sticking","Shake well before use"],
-    safety:"Safe for humans, animals and bees. No PHI required.",
-    cost:"₹200-300 per litre",
-    calc_rate:5
-  },
-  {
-    id:6, name:"Cypermethrin 10EC", category:"insecticide", icon:"🐜", color:"#fef3c7",
-    type:"Contact & Stomach Insecticide", active:"Cypermethrin 10%",
-    targets:["Bollworm","Helicoverpa","Spodoptera","Leaf Eating Caterpillar","Diamond Back Moth"],
-    crops:["Cotton","Cabbage","Cauliflower","Tomato","Groundnut"],
-    dosage:[
-      {crop:"Cotton",rate:"1 ml/litre",interval:"14-21 days",max_sprays:"3"},
-      {crop:"Vegetables",rate:"0.75-1 ml/litre",interval:"10-14 days",max_sprays:"3"},
-      {crop:"Groundnut",rate:"1 ml/litre",interval:"14 days",max_sprays:"2"},
-    ],
-    per_acre_qty:"150-200ml",
-    warnings:["Toxic to fish — avoid near ponds","Do not mix with alkaline compounds","Resistance can develop — rotate with other chemicals"],
-    safety:"PHI: 7 days",
-    cost:"₹280-350 per 500ml",
-    calc_rate:0.9
-  },
+  {id:1,name:"Mancozeb 75WP",category:"fungicide",icon:"🍄",color:"#dcfce7",type:"Contact Fungicide",active:"Mancozeb 75%",targets:["Early Blight","Late Blight","Leaf Spot","Downy Mildew","Rust"],crops:["Tomato","Potato","Grape","Wheat","Onion","Groundnut"],dosage:[{crop:"Tomato/Potato",rate:"2-2.5 g/litre",interval:"7-10 days",max_sprays:"4"},{crop:"Wheat",rate:"2 g/litre",interval:"10-14 days",max_sprays:"3"},{crop:"Grape",rate:"2.5 g/litre",interval:"7 days",max_sprays:"5"}],per_acre_qty:"400-600g",warnings:["Do not mix with alkaline pesticides","Avoid spraying in rain","Wear gloves and mask"],safety:"PHI (Pre-Harvest Interval): 3-7 days",cost:"₹180-220 per kg",calc_rate:2.25},
+  {id:2,name:"Imidacloprid 17.8SL",category:"insecticide",icon:"🐛",color:"#ffe4e6",type:"Systemic Insecticide",active:"Imidacloprid 17.8%",targets:["Aphids","Whiteflies","Jassids","Thrips","Brown Plant Hopper"],crops:["Cotton","Rice","Vegetables","Mustard","Sunflower"],dosage:[{crop:"Cotton",rate:"0.3-0.5 ml/litre",interval:"15-20 days",max_sprays:"2"},{crop:"Rice",rate:"0.3 ml/litre",interval:"15 days",max_sprays:"2"},{crop:"Vegetables",rate:"0.25-0.3 ml/litre",interval:"10-15 days",max_sprays:"2"}],per_acre_qty:"100-150ml",warnings:["Highly toxic to bees — do not spray during flowering","Maximum 2 sprays per season","Do not use near water bodies"],safety:"PHI: 7-14 days. Wear full protective gear.",cost:"₹350-450 per 250ml",calc_rate:0.35},
+  {id:3,name:"Chlorpyrifos 20EC",category:"insecticide",icon:"🌿",color:"#fef9c3",type:"Broad Spectrum Insecticide",active:"Chlorpyrifos 20%",targets:["Stem Borer","Cutworm","Termites","Root Grub","Army Worm"],crops:["Wheat","Corn","Cotton","Sugarcane","Vegetables"],dosage:[{crop:"Wheat/Corn",rate:"2.5 ml/litre",interval:"15-20 days",max_sprays:"2"},{crop:"Sugarcane",rate:"3 ml/litre (soil drench)",interval:"Once",max_sprays:"1"},{crop:"Vegetables",rate:"2 ml/litre",interval:"14 days",max_sprays:"2"}],per_acre_qty:"300-400ml",warnings:["Moderately toxic — wear mask","Avoid contact with skin","Store away from food"],safety:"PHI: 14-21 days",cost:"₹280-350 per litre",calc_rate:2.5},
+  {id:4,name:"Propiconazole 25EC",category:"fungicide",icon:"🌾",color:"#dcfce7",type:"Systemic Fungicide",active:"Propiconazole 25%",targets:["Yellow Rust","Brown Rust","Sheath Blight","Powdery Mildew","Leaf Blight"],crops:["Wheat","Rice","Barley","Groundnut","Banana"],dosage:[{crop:"Wheat",rate:"1 ml/litre",interval:"14-21 days",max_sprays:"2"},{crop:"Rice",rate:"1 ml/litre",interval:"14 days",max_sprays:"2"},{crop:"Groundnut",rate:"1-1.5 ml/litre",interval:"14 days",max_sprays:"3"}],per_acre_qty:"200-250ml",warnings:["Do not use during grain filling","Use within 7 days if diluted"],safety:"PHI: 21 days for wheat",cost:"₹420-500 per 250ml",calc_rate:1},
+  {id:5,name:"Neem Oil (Organic)",category:"organic",icon:"🌿",color:"#dcfce7",type:"Organic Bio-pesticide",active:"Azadirachtin 1500ppm",targets:["Aphids","Whiteflies","Mites","Leafhoppers","Caterpillars"],crops:["All crops","Vegetables","Fruits","Pulses","Oilseeds"],dosage:[{crop:"All crops",rate:"5 ml/litre + 1ml soap",interval:"7-10 days",max_sprays:"Unlimited"},{crop:"Vegetables",rate:"4 ml/litre",interval:"5-7 days",max_sprays:"Unlimited"}],per_acre_qty:"500ml-1 litre",warnings:["Spray in evening — sunlight degrades neem","Mix with soap for better sticking","Shake well before use"],safety:"Safe for humans, animals and bees. No PHI required.",cost:"₹200-300 per litre",calc_rate:5},
+  {id:6,name:"Cypermethrin 10EC",category:"insecticide",icon:"🐜",color:"#fef3c7",type:"Contact & Stomach Insecticide",active:"Cypermethrin 10%",targets:["Bollworm","Helicoverpa","Spodoptera","Leaf Eating Caterpillar","Diamond Back Moth"],crops:["Cotton","Cabbage","Cauliflower","Tomato","Groundnut"],dosage:[{crop:"Cotton",rate:"1 ml/litre",interval:"14-21 days",max_sprays:"3"},{crop:"Vegetables",rate:"0.75-1 ml/litre",interval:"10-14 days",max_sprays:"3"},{crop:"Groundnut",rate:"1 ml/litre",interval:"14 days",max_sprays:"2"}],per_acre_qty:"150-200ml",warnings:["Toxic to fish — avoid near ponds","Do not mix with alkaline compounds","Resistance can develop — rotate chemicals"],safety:"PHI: 7 days",cost:"₹280-350 per 500ml",calc_rate:0.9},
 ];
 
 const INS_DATA = {
@@ -483,74 +363,65 @@ const INS_DATA = {
   onion_annual:{rate:5,season:"Annual",name:"Onion"},
 };
 
-const CALC_RATES = {
-  mancozeb:2.25, imidacloprid:0.35, chlorpyrifos:2.5,
-  propiconazole:1, cypermethrin:0.9, neem:5
-};
+const CALC_RATES = {mancozeb:2.25,imidacloprid:0.35,chlorpyrifos:2.5,propiconazole:1,cypermethrin:0.9,neem:5};
 
 let activeFilter = "all";
 let currentLang = "en";
 
-// ── LANGUAGE ─────────────────────────────────────────────────────
-function setLang(l){
-  currentLang=l;
-  const lb={en:["Loan Calc","Pesticide","Insurance"],hi:["लोन कैलक्युलेटर","कीटनाशक","बीमा"],pa:["ਕਰਜ਼ਾ","ਕੀਟਨਾਸ਼ਕ","ਬੀਮਾ"],mr:["कर्ज","कीटकनाशक","विमा"],te:["రుణం","క్రిమిసంహారకం","బీమా"],ta:["கடன்","பூச்சிக்கொல்லி","காப்பீடு"],gu:["લોન","જંતુનાશક","વીમો"]};
-  const t=lb[l]||lb.en;
-  ["t1","t2","t3"].forEach((id,i)=>document.getElementById(id).textContent=t[i]);
+function setLang(l) {
+  currentLang = l;
+  try { localStorage.setItem("annadatahub_lang", l); } catch(e) {}
+  const t = (LANG_LABELS[l] || LANG_LABELS.en);
+  document.getElementById("t1").textContent = t[0];
+  document.getElementById("t2").textContent = t[1];
+  document.getElementById("t3").textContent = t[2];
 }
 
-function showTab(tab){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById("page-"+tab).classList.add("active");
-  document.getElementById("tab-"+tab).classList.add("active");
+function showTab(tab) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("page-" + tab).classList.add("active");
+  document.getElementById("tab-" + tab).classList.add("active");
 }
 
-function showToast(msg,type="success"){
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.className="toast "+type;t.classList.remove("hidden");
-  setTimeout(()=>t.classList.add("hidden"),3000);
+function showToast(msg, type="success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = "toast " + type; t.classList.remove("hidden");
+  setTimeout(() => t.classList.add("hidden"), 3000);
 }
 
-// ── LOAN CALCULATOR ───────────────────────────────────────────────
-function updateLoanType(){
-  const type=document.getElementById("loanType").value;
-  document.getElementById("customRateField").style.display=type==="custom"?"block":"none";
+// LOAN
+function updateLoanType() {
+  const type = document.getElementById("loanType").value;
+  document.getElementById("customRateField").style.display = type === "custom" ? "block" : "none";
   updateLoanCalc();
 }
 
-function getLoanRate(){
-  const type=document.getElementById("loanType").value;
-  const rates={kcc:4,agri:7,allied:8,custom:parseFloat(document.getElementById("customRate")?.value||7)};
-  return rates[type]||7;
+function getLoanRate() {
+  const type = document.getElementById("loanType").value;
+  const rates = {kcc:4, agri:7, allied:8, custom:parseFloat(document.getElementById("customRate")?.value || 7)};
+  return rates[type] || 7;
 }
 
-function updateLoanCalc(){
-  const amt=parseInt(document.getElementById("loanAmt").value);
-  const tenure=parseInt(document.getElementById("loanTenure").value);
-  const rate=getLoanRate();
-  const land=parseFloat(document.getElementById("landSize").value)||1;
+function updateLoanCalc() {
+  const amt = parseInt(document.getElementById("loanAmt").value);
+  const tenure = parseInt(document.getElementById("loanTenure").value);
+  const rate = getLoanRate();
+  const land = parseFloat(document.getElementById("landSize").value) || 1;
 
-  document.getElementById("loanAmtDisplay").textContent="₹"+amt.toLocaleString("en-IN");
-  document.getElementById("loanTenureDisplay").textContent=`${tenure} months (${(tenure/12).toFixed(1)} years)`;
+  document.getElementById("loanAmtDisplay").textContent = "₹" + amt.toLocaleString("en-IN");
+  document.getElementById("loanTenureDisplay").textContent = `${tenure} months (${(tenure/12).toFixed(1)} years)`;
 
-  // EMI Calculation
-  const r=rate/(12*100);
-  const emi=r===0?amt/tenure:Math.round(amt*(r*Math.pow(1+r,tenure))/(Math.pow(1+r,tenure)-1));
-  const totalPay=emi*tenure;
-  const totalInterest=totalPay-amt;
-  const govtSubsidy=rate<=4?Math.round(totalInterest*0.3):0;
+  const r = rate / (12 * 100);
+  const emi = r === 0 ? amt / tenure : Math.round(amt * (r * Math.pow(1+r, tenure)) / (Math.pow(1+r, tenure) - 1));
+  const totalPay = emi * tenure;
+  const totalInterest = totalPay - amt;
+  const govtSubsidy = rate <= 4 ? Math.round(totalInterest * 0.3) : 0;
 
-  document.getElementById("loanResults").innerHTML=`
+  document.getElementById("loanResults").innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-      <div class="result-card blue">
-        <div class="result-amount" style="color:var(--blue)">₹${emi.toLocaleString("en-IN")}</div>
-        <div class="result-label">Monthly EMI</div>
-      </div>
-      <div class="result-card green">
-        <div class="result-amount" style="color:#16a34a">₹${amt.toLocaleString("en-IN")}</div>
-        <div class="result-label">Loan Amount</div>
-      </div>
+      <div class="result-card blue"><div class="result-amount" style="color:var(--blue)">₹${emi.toLocaleString("en-IN")}</div><div class="result-label">Monthly EMI</div></div>
+      <div class="result-card green"><div class="result-amount" style="color:#16a34a">₹${amt.toLocaleString("en-IN")}</div><div class="result-label">Loan Amount</div></div>
     </div>
     <div class="card">
       <div class="card-title" style="color:var(--blue)">📊 Complete Breakdown</div>
@@ -559,16 +430,12 @@ function updateLoanCalc(){
       <div class="emi-row"><span class="emi-label">Loan Tenure</span><span class="emi-value">${tenure} months</span></div>
       <div class="emi-row"><span class="emi-label">Total Payment</span><span class="emi-value">₹${totalPay.toLocaleString("en-IN")}</span></div>
       <div class="emi-row"><span class="emi-label">Total Interest</span><span class="emi-value" style="color:var(--red)">₹${totalInterest.toLocaleString("en-IN")}</span></div>
-      ${govtSubsidy>0?`<div class="emi-row"><span class="emi-label">Govt Interest Subsidy</span><span class="emi-value" style="color:#16a34a">-₹${govtSubsidy.toLocaleString("en-IN")}</span></div>`:""}
-      <div class="emi-row" style="border-top:2px solid var(--border);margin-top:4px"><span class="emi-label" style="font-weight:700">Net Amount You Pay</span><span class="emi-value" style="color:var(--green)">₹${(totalPay-govtSubsidy).toLocaleString("en-IN")}</span></div>
+      ${govtSubsidy > 0 ? `<div class="emi-row"><span class="emi-label">Govt Interest Subsidy</span><span class="emi-value" style="color:#16a34a">-₹${govtSubsidy.toLocaleString("en-IN")}</span></div>` : ""}
+      <div class="emi-row" style="border-top:2px solid var(--border);margin-top:4px"><span class="emi-label" style="font-weight:700">Net Amount You Pay</span><span class="emi-value" style="color:var(--green)">₹${(totalPay - govtSubsidy).toLocaleString("en-IN")}</span></div>
     </div>
-    <div class="info-gold">
-      💡 <strong>Eligibility:</strong> Based on ${land} acres land — you may be eligible for up to <strong>₹${Math.round(land*50000).toLocaleString("en-IN")}</strong> under KCC scheme.
-    </div>
-  `;
+    <div class="info-gold">💡 <strong>Eligibility:</strong> Based on ${land} acres — eligible for up to <strong>₹${Math.round(land * 50000).toLocaleString("en-IN")}</strong> under KCC.</div>`;
 
-  // Schemes
-  document.getElementById("loanSchemes").innerHTML=LOAN_SCHEMES.map(s=>`
+  document.getElementById("loanSchemes").innerHTML = LOAN_SCHEMES.map(s => `
     <div class="scheme-card">
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">
         <div style="font-size:1.4rem">${s.icon}</div>
@@ -581,16 +448,15 @@ function updateLoanCalc(){
           </div>
         </div>
       </div>
-      <div class="scheme-detail"><strong>Eligibility:</strong> ${s.eligibility}</div>
-      <div style="margin:6px 0">${s.benefits.map(b=>`<div style="font-size:0.78rem;padding:2px 0">✓ ${b}</div>`).join("")}</div>
-      <div style="font-size:0.78px;color:var(--muted)">📍 Apply at: ${s.apply}</div>
-    </div>
-  `).join("");
+      <div style="font-size:0.8rem;color:#374141;margin-bottom:4px"><strong>Eligibility:</strong> ${s.eligibility}</div>
+      <div>${s.benefits.map(b => `<div style="font-size:0.78rem;padding:2px 0">✓ ${b}</div>`).join("")}</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">📍 Apply at: ${s.apply}</div>
+    </div>`).join("");
 }
 
-// ── PESTICIDES ────────────────────────────────────────────────────
-function renderPesticides(data){
-  document.getElementById("pesticideList").innerHTML=data.map((p,i)=>`
+// PESTICIDES
+function renderPesticides(data) {
+  document.getElementById("pesticideList").innerHTML = data.map(p => `
     <div class="pest-card">
       <div class="pest-header" onclick="togglePest(${p.id})">
         <div class="pest-icon" style="background:${p.color}">${p.icon}</div>
@@ -598,28 +464,25 @@ function renderPesticides(data){
           <div class="pest-name">${p.name}</div>
           <div class="pest-type">${p.type}</div>
           <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">
-            <span class="badge ${p.category==="fungicide"?"badge-green":p.category==="organic"?"badge-green":"badge-red"}">${p.category}</span>
+            <span class="badge ${p.category==="fungicide"||p.category==="organic"?"badge-green":"badge-red"}">${p.category}</span>
             <span style="font-size:0.68rem;color:var(--muted)">${p.cost}</span>
           </div>
         </div>
         <div style="font-size:1rem;color:var(--muted)">▼</div>
       </div>
       <div class="pest-body" id="pest-${p.id}">
-        <div style="margin-bottom:8px">
-          <div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">🎯 Controls</div>
-          <div>${p.targets.map(t=>`<span class="badge badge-red" style="margin:2px">${t}</span>`).join("")}</div>
-        </div>
-        <div style="margin-bottom:8px">
-          <div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">🌾 Crops</div>
-          <div>${p.crops.map(c=>`<span class="badge badge-green" style="margin:2px">${c}</span>`).join("")}</div>
-        </div>
+        <div style="margin-bottom:8px"><div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">🎯 Controls</div><div>${p.targets.map(t => `<span class="badge badge-red" style="margin:2px">${t}</span>`).join("")}</div></div>
+        <div style="margin-bottom:8px"><div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">🌾 Crops</div><div>${p.crops.map(c => `<span class="badge badge-green" style="margin:2px">${c}</span>`).join("")}</div></div>
         <div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:6px">💊 Recommended Dosage</div>
         <table class="dosage-table">
           <tr><th>Crop</th><th>Rate/Litre</th><th>Interval</th><th>Max Sprays</th></tr>
-          ${p.dosage.map(d=>`<tr><td>${d.crop}</td><td><strong>${d.rate}</strong></td><td>${d.interval}</td><td>${d.max_sprays}</td></tr>`).join("")}
+          ${p.dosage.map(d => `<tr><td>${d.crop}</td><td><strong>${d.rate}</strong></td><td>${d.interval}</td><td>${d.max_sprays}</td></tr>`).join("")}
         </table>
-        <div class="warning-box">⚠️ <strong>Warnings:</strong><br/>${p.warnings.map(w=>`• ${w}`).join("<br/>")}</div>
+        <div class="warning-box">⚠️ <strong>Warnings:</strong><br/>${p.warnings.map(w => `• ${w}`).join("<br/>")}</div>
         <div class="safety-box">🛡️ <strong>Safety:</strong> ${p.safety}</div>
+        <div style="background:#fff8ec;border:1px solid var(--gold);border-radius:8px;padding:8px;font-size:0.78rem;color:#92400e;margin-bottom:10px">
+          ⚠️ AI guidance only. Confirm dosage with your local KVK or agricultural officer before use.
+        </div>
         <div class="calc-box">
           <div class="calc-title">🧮 Quick Quantity Calc</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -632,68 +495,63 @@ function renderPesticides(data){
           </div>
         </div>
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
 }
 
-function togglePest(id){document.getElementById("pest-"+id).classList.toggle("open");}
+function togglePest(id) { document.getElementById("pest-" + id).classList.toggle("open"); }
 
-function quickCalc(id,rate){
-  const acres=parseFloat(document.getElementById(`quick-acres-${id}`).value)||1;
-  const water=200;
-  const totalWater=acres*water;
-  const qty=(rate*totalWater/1000).toFixed(2);
-  document.getElementById(`quick-result-${id}`).style.display="block";
-  document.getElementById(`quick-val-${id}`).innerHTML=`${qty} ${rate<2?"litres/ml":"grams"} total for ${acres} acres<br/><span style="font-size:0.72rem;color:var(--muted)">(${water}L water per acre)</span>`;
+function quickCalc(id, rate) {
+  const acres = parseFloat(document.getElementById(`quick-acres-${id}`).value) || 1;
+  const totalWater = acres * 200;
+  const qty = (rate * totalWater / 1000).toFixed(2);
+  document.getElementById(`quick-result-${id}`).style.display = "block";
+  document.getElementById(`quick-val-${id}`).innerHTML = `${qty} ${rate < 2 ? "ml" : "grams"} total for ${acres} acres<br/><span style="font-size:0.72rem;color:var(--muted)">(200L water per acre)</span>`;
 }
 
-function filterPesticides(search){
-  let data=PESTICIDES;
-  if(activeFilter!=="all") data=data.filter(p=>p.category===activeFilter);
-  if(search) data=data.filter(p=>p.name.toLowerCase().includes(search.toLowerCase())||p.targets.some(t=>t.toLowerCase().includes(search.toLowerCase()))||p.crops.some(c=>c.toLowerCase().includes(search.toLowerCase())));
+function filterPesticides(search) {
+  let data = PESTICIDES;
+  if (activeFilter !== "all") data = data.filter(p => p.category === activeFilter);
+  if (search) data = data.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.targets.some(t => t.toLowerCase().includes(search.toLowerCase())) || p.crops.some(c => c.toLowerCase().includes(search.toLowerCase())));
   renderPesticides(data);
 }
 
-function setFilter(cat,el){
-  activeFilter=cat;
-  document.querySelectorAll(".filter-tag").forEach(t=>t.classList.remove("active"));
+function setFilter(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll(".filter-tag").forEach(t => t.classList.remove("active"));
   el.classList.add("active");
   filterPesticides(document.getElementById("pestSearch").value);
 }
 
-function calcPesticideQty(){
-  const pest=document.getElementById("calcPesticide").value;
-  const acres=parseFloat(document.getElementById("calcAcres").value)||1;
-  const water=parseFloat(document.getElementById("calcWater").value)||200;
-  const rate=CALC_RATES[pest]||2;
-  const totalWater=acres*water;
-  const qty=(rate*totalWater/1000).toFixed(2);
-  const unit=rate<2?"ml":"g";
-  document.getElementById("calcResult").style.display="block";
-  document.getElementById("calcResultContent").innerHTML=`
+function calcPesticideQty() {
+  const pest = document.getElementById("calcPesticide").value;
+  const acres = parseFloat(document.getElementById("calcAcres").value) || 1;
+  const water = parseFloat(document.getElementById("calcWater").value) || 200;
+  const rate = CALC_RATES[pest] || 2;
+  const totalWater = acres * water;
+  const qty = (rate * totalWater / 1000).toFixed(2);
+  const unit = rate < 2 ? "ml" : "g";
+  document.getElementById("calcResult").style.display = "block";
+  document.getElementById("calcResultContent").innerHTML = `
     <div class="calc-result">${qty} ${unit} pesticide</div>
     <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">+ ${totalWater.toLocaleString()} litres of water for ${acres} acres</div>
-    <div style="font-size:0.78rem;color:var(--green);margin-top:4px;font-weight:600">✅ Mix well before spraying</div>
-  `;
+    <div style="font-size:0.78rem;color:var(--green);margin-top:4px;font-weight:600">✅ Mix well before spraying</div>`;
 }
 
-// ── INSURANCE CALCULATOR ──────────────────────────────────────────
-function calcInsurance(){
-  const cropKey=document.getElementById("insCrop").value;
-  const land=parseFloat(document.getElementById("insLand").value)||1;
-  const state=document.getElementById("insState").value;
-  const sumInsured=parseFloat(document.getElementById("insSumInsured").value)||30000;
-  const ins=INS_DATA[cropKey];
-  if(!ins) return;
+// INSURANCE
+function calcInsurance() {
+  const cropKey = document.getElementById("insCrop").value;
+  const land = parseFloat(document.getElementById("insLand").value) || 1;
+  const state = document.getElementById("insState").value;
+  const sumInsured = parseFloat(document.getElementById("insSumInsured").value) || 30000;
+  const ins = INS_DATA[cropKey];
+  if (!ins) return;
 
-  const totalSum=sumInsured*land;
-  const farmerRate=ins.rate;
-  const govtRate=farmerRate==="5"?45:ins.season==="Rabi"?88.5:98;
-  const farmerPremium=Math.round(totalSum*farmerRate/100);
-  const govtPremium=Math.round(totalSum*(100-farmerRate)/100);
-  const totalPremium=totalSum;
+  const totalSum = sumInsured * land;
+  const farmerRate = ins.rate;
+  const farmerPremium = Math.round(totalSum * farmerRate / 100);
+  const govtPremium = Math.round(totalSum * (100 - farmerRate) / 100);
 
-  document.getElementById("insuranceResult").innerHTML=`
+  document.getElementById("insuranceResult").innerHTML = `
     <div class="premium-display">
       <div style="font-size:0.82rem;opacity:0.85;margin-bottom:4px">YOU PAY ONLY</div>
       <div class="premium-amount">₹${farmerPremium.toLocaleString("en-IN")}</div>
@@ -705,7 +563,6 @@ function calcInsurance(){
         <div class="ins-stat"><div class="ins-stat-val">${ins.season}</div><div class="ins-stat-lbl">Season</div></div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title" style="color:var(--purple)">💰 Payment Breakdown</div>
       <div class="emi-row"><span class="emi-label">Sum Insured (${land} acres)</span><span class="emi-value">₹${totalSum.toLocaleString("en-IN")}</span></div>
@@ -714,23 +571,32 @@ function calcInsurance(){
       <div class="emi-row"><span class="emi-label">If Crop Fails — You Get</span><span class="emi-value" style="color:var(--green)">₹${totalSum.toLocaleString("en-IN")}</span></div>
       <div class="emi-row"><span class="emi-label">Return on Premium</span><span class="emi-value" style="color:var(--gold)">${Math.round(totalSum/farmerPremium)}x your money</span></div>
     </div>
-
-    <div class="info-green">
-      <strong>✅ Great Deal!</strong> You pay only ₹${farmerPremium.toLocaleString("en-IN")} but get ₹${totalSum.toLocaleString("en-IN")} coverage. That is <strong>${Math.round(totalSum/farmerPremium)}x return</strong> if crop fails!
-    </div>
-    <div class="powered">✨ Based on PMFBY premium rates · Actual premium may vary by state</div>
-  `;
+    <div class="info-green"><strong>✅ Great Deal!</strong> You pay ₹${farmerPremium.toLocaleString("en-IN")} but get ₹${totalSum.toLocaleString("en-IN")} coverage — <strong>${Math.round(totalSum/farmerPremium)}x return</strong> if crop fails!</div>
+    <div class="powered">🌾 Based on PMFBY premium rates · Actual premium may vary by state</div>`;
 }
 
-// ── INIT ─────────────────────────────────────────────────────────
-// Filter tags
-document.getElementById("filterTags").innerHTML=[
-  ["all","🌾 All"],["fungicide","🍄 Fungicide"],["insecticide","🐛 Insecticide"],["organic","🌿 Organic"]
-].map(([cat,label])=>`<div class="filter-tag ${cat==="all"?"active":""}" onclick="setFilter('${cat}',this)">${label}</div>`).join("");
+// INIT
+window.addEventListener("load", () => {
+  // Populate all 29 states in insurance dropdown
+  document.getElementById("insState").innerHTML = stateOptions("Punjab");
 
-renderPesticides(PESTICIDES);
-updateLoanCalc();
-calcInsurance();
+  // Filter tags
+  document.getElementById("filterTags").innerHTML = [
+    ["all","🌾 All"],["fungicide","🍄 Fungicide"],["insecticide","🐛 Insecticide"],["organic","🌿 Organic"]
+  ].map(([cat, label]) => `<div class="filter-tag ${cat==="all"?"active":""}" onclick="setFilter('${cat}',this)">${label}</div>`).join("");
+
+  renderPesticides(PESTICIDES);
+  updateLoanCalc();
+  calcInsurance();
+
+  // Load saved language
+  try {
+    const saved = localStorage.getItem("annadatahub_lang") || "en";
+    currentLang = saved;
+    document.getElementById("langSel").value = saved;
+    setLang(saved);
+  } catch(e) {}
+});
 </script>
 </body>
 </html>
