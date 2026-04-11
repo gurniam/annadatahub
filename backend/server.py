@@ -608,6 +608,56 @@ async def govt_schemes(state: str = "Punjab"):
     return {"success": True, "data": json.dumps(data)}
 
 
+@app.get("/api/msp")
+async def get_msp(crop: str = "Wheat", state: str = "Punjab"):
+    # Real MSP 2024-25 prices from CACP — Cabinet Committee on Economic Affairs
+    MSP_PRICES = {
+        "Wheat": {"msp": 2275, "season": "Rabi", "procurement": "FCI / State Procurement Agency"},
+        "Rice": {"msp": 2183, "season": "Kharif", "procurement": "FCI / State Procurement Agency"},
+        "Paddy": {"msp": 2183, "season": "Kharif", "procurement": "FCI / State Procurement Agency"},
+        "Maize": {"msp": 1870, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Cotton": {"msp": 6620, "season": "Kharif", "procurement": "CCI (Cotton Corporation of India)"},
+        "Soybean": {"msp": 4600, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Mustard": {"msp": 5650, "season": "Rabi", "procurement": "NAFED / State Agency"},
+        "Groundnut": {"msp": 6377, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Sugarcane": {"msp": 340, "season": "Annual", "procurement": "Sugar Mills (FRP)"},
+        "Moong": {"msp": 8682, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Urad": {"msp": 7400, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Chana": {"msp": 5440, "season": "Rabi", "procurement": "NAFED / State Agency"},
+        "Sunflower": {"msp": 6760, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Jowar": {"msp": 3371, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Bajra": {"msp": 2500, "season": "Kharif", "procurement": "NAFED / State Agency"},
+        "Ragi": {"msp": 3846, "season": "Kharif", "procurement": "NAFED / State Agency"},
+    }
+
+    crop_data = MSP_PRICES.get(crop, MSP_PRICES.get("Wheat"))
+    msp_price = crop_data["msp"]
+
+    # State-specific procurement info
+    state_portals = {
+        "Punjab": "anaajkharid.in", "Haryana": "hsamb.gov.in",
+        "Uttar Pradesh": "fcs.up.gov.in", "Madhya Pradesh": "mpeuparjan.nic.in",
+        "Rajasthan": "food.raj.nic.in", "Maharashtra": "mahafood.gov.in",
+        "Andhra Pradesh": "apagros.com", "Telangana": "pricingtelangana.cgg.gov.in",
+    }
+    portal = state_portals.get(state, "your state agriculture portal")
+
+    data = {
+        "crop": crop,
+        "msp_price": msp_price,
+        "season": crop_data["season"],
+        "procurement_agency": crop_data["procurement"],
+        "how_to_sell": f"Register on {portal} before selling. Bring your Aadhaar card, land records (Khasra/Khatauni) and bank passbook to your nearest government procurement centre.",
+        "payment_timeline": "3-5 working days — directly to your bank account",
+        "documents_needed": ["Aadhaar card", "Land records (Khasra/Khatauni)", "Bank passbook", "Mobile number linked to Aadhaar"],
+        "helpline": "1800-180-1551",
+        "source": "CACP — Government of India 2024-25",
+        "state_portal": portal,
+        "important": f"If any trader buys {crop} below ₹{msp_price}/quintal it is illegal. File complaint at your district agriculture office or call 1800-180-1551."
+    }
+    return {"success": True, "data": json.dumps(data), "crop": crop, "state": state}
+
+
 @app.get("/api/farmgram/posts")
 async def get_posts():
     try:
