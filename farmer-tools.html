@@ -383,6 +383,28 @@ function updateCropDropdowns(lang) {
   setOptions("mandiCrop", mandiCropMap, null);
   setOptions("weatherCrop", weatherCropMap, null);
   setOptions("schemeCrop", schemeCropMap, se);
+
+  // Translate land size dropdown
+  const landSizes = {
+    en:["Less than 1 acre","1 - 2 acres","2 - 5 acres","5 - 10 acres","More than 10 acres"],
+    hi:["1 एकड़ से कम","1 - 2 एकड़","2 - 5 एकड़","5 - 10 एकड़","10 एकड़ से अधिक"],
+    pa:["1 ਏਕੜ ਤੋਂ ਘੱਟ","1 - 2 ਏਕੜ","2 - 5 ਏਕੜ","5 - 10 ਏਕੜ","10 ਏਕੜ ਤੋਂ ਵੱਧ"],
+    mr:["1 एकरपेक्षा कमी","1 - 2 एकर","2 - 5 एकर","5 - 10 एकर","10 एकरपेक्षा जास्त"],
+    te:["1 ఎకరా కంటే తక్కువ","1 - 2 ఎకరాలు","2 - 5 ఎకరాలు","5 - 10 ఎకరాలు","10 ఎకరాల కంటే ఎక్కువ"],
+    ta:["1 ஏக்கரில் குறைவு","1 - 2 ஏக்கர்","2 - 5 ஏக்கர்","5 - 10 ஏக்கர்","10 ஏக்கருக்கு மேல்"],
+    kn:["1 ಎಕರೆಗಿಂತ ಕಡಿಮೆ","1 - 2 ಎಕರೆ","2 - 5 ಎಕರೆ","5 - 10 ಎಕರೆ","10 ಎಕರೆಗಿಂತ ಹೆಚ್ಚು"],
+    ml:["1 ഏക്കറിൽ കുറവ്","1 - 2 ഏക്കർ","2 - 5 ഏക്കർ","5 - 10 ഏക്കർ","10 ഏക്കറിൽ കൂടുതൽ"],
+    gu:["1 એકર કરતાં ઓછું","1 - 2 એકર","2 - 5 એકર","5 - 10 એકર","10 એકર કરતાં વધુ"],
+    bn:["১ একরের কম","১ - ২ একর","২ - ৫ একর","৫ - ১০ একর","১০ একরের বেশি"],
+  };
+  const landVals = ["less than 1 acre","1-2 acres","2-5 acres","5-10 acres","more than 10 acres"];
+  const lsEl = document.getElementById("schemeLand");
+  if (lsEl) {
+    const curVal = lsEl.value;
+    const labels = landSizes[lang] || landSizes.en;
+    lsEl.innerHTML = labels.map((lbl, i) => `<option value="${landVals[i]}">${lbl}</option>`).join("");
+    lsEl.value = curVal;
+  }
 }
 
 function applyLang() {
