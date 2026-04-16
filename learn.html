@@ -820,14 +820,14 @@ window.addEventListener("load", () => {
     const saved = localStorage.getItem("annadatahub_lang") || "en";
     currentLang = saved;
     document.getElementById("langSel").value = saved;
-    applyLang(saved);
-  } catch(e) { applyLang("en"); }
+    applyLang(saved); // This already calls renderTechniques + renderBusiness
+  } catch(e) {
+    applyLang("en");
+  }
 
   const hash = window.location.hash.replace("#", "");
   if (hash && document.getElementById("tab-" + hash)) showTab(hash);
 
-  renderTechniques(TECHNIQUES);
-  renderBusiness(BUSINESSES);
   renderVideos(VIDEOS);
   renderFeedback();
 });
