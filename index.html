@@ -3,6 +3,42 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AnnadataHub — AI Farming App for Indian Farmers | किसान AI ऐप</title>
+<meta name="description" content="AnnadataHub is a free AI farming app for Indian farmers. Get crop disease scanner, live mandi prices, weather alerts, government schemes, fertilizer calculator and more in 10 regional languages. किसानों के लिए मुफ्त AI ऐप।"/>
+<meta name="keywords" content="farming app india, kisan app, crop disease scanner, mandi prices, government schemes for farmers, fertilizer calculator, weather alert farmers, AI farming, kisaan app, खेती ऐप, किसान ऐप, फसल रोग, मंडी भाव"/>
+<meta name="author" content="AnnadataHub"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://www.annadatahub.com/"/>
+
+<!-- Open Graph / WhatsApp / Facebook -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://www.annadatahub.com/"/>
+<meta property="og:title" content="AnnadataHub — Free AI Farming App for Indian Farmers"/>
+<meta property="og:description" content="Crop disease scanner, live mandi prices, weather alerts, government schemes — all free, in your language. 10 Indian languages supported."/>
+<meta property="og:image" content="https://www.annadatahub.com/og-image.png"/>
+<meta property="og:locale" content="en_IN"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="AnnadataHub — Free AI Farming App"/>
+<meta name="twitter:description" content="Free AI app for Indian farmers. Crop scanner, mandi prices, weather, schemes — in 10 languages."/>
+<meta name="twitter:image" content="https://www.annadatahub.com/og-image.png"/>
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "AnnadataHub",
+  "url": "https://www.annadatahub.com",
+  "description": "Free AI farming app for Indian farmers with crop disease scanner, mandi prices, weather alerts and government schemes in 10 regional languages",
+  "applicationCategory": "AgricultureApplication",
+  "operatingSystem": "Any",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"},
+  "availableLanguage": ["Hindi","Punjabi","Marathi","Telugu","Tamil","Kannada","Malayalam","Gujarati","Bengali","English"],
+  "author": {"@type": "Organization", "name": "AnnadataHub"}
+}
+</script>
 <title>AnnadataHub — Farmer App</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -630,6 +666,11 @@ function applyLang(lang) {
   document.getElementById("nav-farmgram").textContent = t.nav_farmgram;
   document.getElementById("nav-msp").textContent = t.nav_msp;
   document.getElementById("hdr-login").textContent = t.hdr_login;
+  // Login/Signup buttons
+  const lb = document.getElementById("loginBtn");
+  if (lb) lb.textContent = t.login_btn || "Login to AnnadataHub";
+  const sb = document.getElementById("signupBtn");
+  if (sb) sb.textContent = t.signup_btn || "Create Free Account 🚀";
   // Tip of the day
   const tips = t.tips || T.en.tips;
   document.getElementById("tipText").textContent = tips[new Date().getDay() % tips.length];
@@ -687,7 +728,7 @@ async function doLogin() {
   const password = document.getElementById("loginPassword").value;
   if (!email || !password) { showAuthError("loginError", "Please enter email and password."); return; }
   const btn = document.getElementById("loginBtn");
-  btn.disabled = true; btn.textContent = "Logging in...";
+  btn.disabled = true; btn.textContent = (T[getSavedLang()]||T.en).logging_in;
   try {
     const res = await fetch(`${API}/api/auth/login`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email, password})});
     const data = await res.json();
@@ -697,7 +738,7 @@ async function doLogin() {
     hideLoginModal();
     showToast("Welcome back, " + data.user.full_name.split(" ")[0] + "! 🙏");
   } catch(e) { showAuthError("loginError", "Network error. Check your internet."); }
-  finally { btn.disabled = false; btn.textContent = "Login to AnnadataHub"; }
+  finally { btn.disabled = false; btn.textContent = (T[getSavedLang()]||T.en).login_btn; }
 }
 
 async function doSignup() {
@@ -710,7 +751,7 @@ async function doSignup() {
   if (!email) { showAuthError("signupError", "Please enter your email."); return; }
   if (!password || password.length < 6) { showAuthError("signupError", "Password must be at least 6 characters."); return; }
   const btn = document.getElementById("signupBtn");
-  btn.disabled = true; btn.textContent = "Creating account...";
+  btn.disabled = true; btn.textContent = (T[getSavedLang()]||T.en).creating;
   try {
     const res = await fetch(`${API}/api/auth/register`, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({full_name, email, password, phone, state})});
     const data = await res.json();
@@ -720,7 +761,7 @@ async function doSignup() {
     hideLoginModal();
     showToast("Welcome, " + data.user.full_name.split(" ")[0] + "! 🎉");
   } catch(e) { showAuthError("signupError", "Network error. Check your internet."); }
-  finally { btn.disabled = false; btn.textContent = "Create Free Account 🚀"; }
+  finally { btn.disabled = false; btn.textContent = (T[getSavedLang()]||T.en).signup_btn; }
 }
 
 function showProfile() {}
