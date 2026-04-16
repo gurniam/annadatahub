@@ -459,9 +459,9 @@ function applyLang(l) {
   qt.innerHTML = t.topics.map((topic, i) =>
     `<div style="background:var(--blue-light);border-radius:20px;padding:5px 12px;font-size:0.75rem;cursor:pointer;color:var(--blue);font-weight:500" onclick="setLearnQ('${t.q_templates[i]}')">${topic}</div>`
   ).join("");
-  // Re-render technique cards with new translate button text
-  renderTechniques(currentTechData);
-  renderBusiness(currentBizData);
+  // Re-render technique cards with new language
+  renderTechniques(typeof currentTechData !== "undefined" ? currentTechData : TECHNIQUES);
+  renderBusiness(typeof currentBizData !== "undefined" ? currentBizData : BUSINESSES);
 }
 
 function setLang(l) {
@@ -816,20 +816,24 @@ function renderFeedback() {
 
 // ── INIT ─────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
+  // Render videos and feedback first (no lang dependency)
+  renderVideos(VIDEOS);
+  renderFeedback();
+
+  // Load saved language and apply
   try {
     const saved = localStorage.getItem("annadatahub_lang") || "en";
     currentLang = saved;
-    document.getElementById("langSel").value = saved;
-    applyLang(saved); // This already calls renderTechniques + renderBusiness
+    const sel = document.getElementById("langSel");
+    if (sel) sel.value = saved;
+    applyLang(saved); // calls renderTechniques + renderBusiness with correct lang
   } catch(e) {
-    applyLang("en");
+    renderTechniques(TECHNIQUES);
+    renderBusiness(BUSINESSES);
   }
 
   const hash = window.location.hash.replace("#", "");
   if (hash && document.getElementById("tab-" + hash)) showTab(hash);
-
-  renderVideos(VIDEOS);
-  renderFeedback();
 });
 </script>
 </body>
