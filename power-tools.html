@@ -151,11 +151,11 @@
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('voice')" id="tab-voice"><span class="icon">🎙️</span><span>Voice</span></button>
-  <button class="tab" onclick="showTab('profit')" id="tab-profit"><span class="icon">💰</span><span>Profit</span></button>
-  <button class="tab" onclick="showTab('soil')" id="tab-soil"><span class="icon">🌍</span><span>Soil</span></button>
-  <button class="tab" onclick="showTab('news')" id="tab-news"><span class="icon">📰</span><span>News</span></button>
-  <button class="tab" onclick="showTab('chat')" id="tab-chat"><span class="icon">🤝</span><span>Chat</span></button>
+  <button class="tab active" onclick="showTab('voice')" id="tab-voice"><span class="icon">🎙️</span><span id="t-voice">Voice</span></button>
+  <button class="tab" onclick="showTab('profit')" id="tab-profit"><span class="icon">💰</span><span id="t-profit">Profit</span></button>
+  <button class="tab" onclick="showTab('soil')" id="tab-soil"><span class="icon">🌍</span><span id="t-soil">Soil</span></button>
+  <button class="tab" onclick="showTab('news')" id="tab-news"><span class="icon">📰</span><span id="t-news">News</span></button>
+  <button class="tab" onclick="showTab('chat')" id="tab-chat"><span class="icon">🤝</span><span id="t-chat">Chat</span></button>
 </div>
 
 <div class="content">
@@ -163,8 +163,8 @@
   <!-- VOICE ASSISTANT -->
   <div class="page active" id="page-voice">
     <div class="card" style="text-align:center">
-      <div class="card-title" style="justify-content:center;color:var(--green)">🎙️ Voice Assistant</div>
-      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:20px">Speak in your language — get instant farming answers</p>
+      <div class="card-title" style="justify-content:center;color:var(--green)">🎙️ <span id="voice-title">Voice Assistant</span></div>
+      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:20px" id="voice-sub">Speak in your language — get instant farming answers</p>
       <div class="voice-circle" id="voiceCircle" onclick="toggleVoice()">
         <span class="voice-icon" id="voiceIcon">🎙️</span>
       </div>
@@ -175,7 +175,7 @@
         <div id="answerText"></div>
       </div>
       <div class="divider"></div>
-      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;font-weight:600">Or tap a quick question:</div>
+      <div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;font-weight:600" id="quick-q-label">Or tap a quick question:</div>
       <div class="quick-questions" id="quickQuestions"></div>
     </div>
     <div class="card">
@@ -197,9 +197,9 @@
   <!-- PROFIT CALCULATOR -->
   <div class="page" id="page-profit">
     <div class="card">
-      <div class="card-title" style="color:#16a34a">💰 Profit & Loss Calculator</div>
+      <div class="card-title" style="color:#16a34a">💰 <span id="profit-title">Profit & Loss Calculator</span></div>
       <div class="two-col">
-        <div class="field"><label>Crop</label>
+        <div class="field"><label id="lbl-prof-crop">Crop</label>
           <select id="profCrop">
             <option>Wheat</option><option>Rice</option><option>Cotton</option>
             <option>Sugarcane</option><option>Tomato</option><option>Potato</option>
@@ -207,23 +207,23 @@
             <option>Corn</option><option>Groundnut</option><option>Chilli</option>
           </select>
         </div>
-        <div class="field"><label>Land (acres)</label><input type="number" id="profLand" value="2" min="0.5"/></div>
+        <div class="field"><label id="lbl-prof-land">Land (acres)</label><input type="number" id="profLand" value="2" min="0.5"/></div>
       </div>
-      <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase">Your Expenses (₹)</div>
+      <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase" id="lbl-expenses">Your Expenses (₹)</div>
       <div class="three-col">
-        <div class="field"><label>Seeds</label><input type="number" id="profSeeds" placeholder="0"/></div>
-        <div class="field"><label>Fertilizer</label><input type="number" id="profFertilizer" placeholder="0"/></div>
-        <div class="field"><label>Pesticide</label><input type="number" id="profPesticide" placeholder="0"/></div>
-        <div class="field"><label>Labour</label><input type="number" id="profLabour" placeholder="0"/></div>
-        <div class="field"><label>Irrigation</label><input type="number" id="profIrrigation" placeholder="0"/></div>
-        <div class="field"><label>Other</label><input type="number" id="profOther" placeholder="0"/></div>
+        <div class="field"><label id="lbl-seeds">Seeds</label><input type="number" id="profSeeds" placeholder="0"/></div>
+        <div class="field"><label id="lbl-fert">Fertilizer</label><input type="number" id="profFertilizer" placeholder="0"/></div>
+        <div class="field"><label id="lbl-pest">Pesticide</label><input type="number" id="profPesticide" placeholder="0"/></div>
+        <div class="field"><label id="lbl-labour">Labour</label><input type="number" id="profLabour" placeholder="0"/></div>
+        <div class="field"><label id="lbl-irr">Irrigation</label><input type="number" id="profIrrigation" placeholder="0"/></div>
+        <div class="field"><label id="lbl-other">Other</label><input type="number" id="profOther" placeholder="0"/></div>
       </div>
-      <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase">Your Income (₹)</div>
+      <div style="font-size:0.8rem;font-weight:700;color:var(--muted);margin:8px 0 6px;text-transform:uppercase" id="lbl-income">Your Income (₹)</div>
       <div class="two-col">
-        <div class="field"><label>Selling Price (₹/quintal)</label><input type="number" id="profPrice" placeholder="e.g. 2000"/></div>
-        <div class="field"><label>Total Yield (quintals)</label><input type="number" id="profYield" placeholder="e.g. 20"/></div>
+        <div class="field"><label id="lbl-sell-price">Selling Price (₹/quintal)</label><input type="number" id="profPrice" placeholder="e.g. 2000"/></div>
+        <div class="field"><label id="lbl-yield">Total Yield (quintals)</label><input type="number" id="profYield" placeholder="e.g. 20"/></div>
       </div>
-      <button class="btn btn-green" onclick="calcProfit()">💰 Calculate Profit/Loss</button>
+      <button class="btn btn-green" onclick="calcProfit()">💰 <span id="profit-btn-text">Calculate Profit/Loss</span></button>
     </div>
     <div id="profit-result"></div>
   </div>
@@ -231,8 +231,8 @@
   <!-- SOIL CHECKER — requires photo -->
   <div class="page" id="page-soil">
     <div class="card">
-      <div class="card-title" style="color:var(--brown)">🌍 Soil Health Checker</div>
-      <div style="background:var(--sky-light);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.83rem;line-height:1.5">
+      <div class="card-title" style="color:var(--brown)">🌍 <span id="soil-title">Soil Health Checker</span></div>
+      <div style="background:var(--sky-light);border-radius:10px;padding:12px;margin-bottom:12px;font-size:0.83rem;line-height:1.5" id="soil-photo-text">
         📸 <strong>Photo required</strong> — Take a clear photo of your soil in sunlight for accurate analysis.
         Or get <strong>free government soil testing</strong> at your nearest KVK →
         <a href="https://soilhealth.dac.gov.in" target="_blank" style="color:var(--blue);font-weight:600">soilhealth.dac.gov.in</a>
@@ -241,11 +241,11 @@
       <div class="soil-zone" onclick="document.getElementById('soilFile').click()" id="soilZone">
         <div class="soil-placeholder" id="soilPlaceholder">
           <div class="big-icon">📸</div>
-          <p><strong>Tap to take soil photo</strong><br/><small style="opacity:0.6">Dig 6 inches deep, take in daylight</small></p>
+          <p id="soil-tap-text"><strong>Tap to take soil photo</strong><br/><small style="opacity:0.6">Dig 6 inches deep, take in daylight</small></p>
         </div>
       </div>
       <div class="two-col">
-        <div class="field"><label>Crop to grow</label>
+        <div class="field"><label id="lbl-soil-crop">Crop to grow</label>
           <select id="soilCrop">
             <option>Wheat</option><option>Rice</option><option>Cotton</option>
             <option>Tomato</option><option>Potato</option><option>Vegetables</option>
@@ -267,7 +267,7 @@
           </select>
         </div>
       </div>
-      <button class="btn btn-gold" onclick="checkSoil()" id="soil-btn">🔬 Analyse My Soil</button>
+      <button class="btn btn-gold" onclick="checkSoil()" id="soil-btn">🔬 <span id="soil-btn-text">Analyse My Soil</span></button>
     </div>
     <div id="soil-result"></div>
   </div>
@@ -275,11 +275,11 @@
   <!-- AGRICULTURE NEWS -->
   <div class="page" id="page-news">
     <div class="card">
-      <div class="card-title" style="color:var(--blue)">📰 Agriculture News</div>
+      <div class="card-title" style="color:var(--blue)">📰 <span id="news-title">Agriculture News</span></div>
       <div class="two-col">
-        <div class="field"><label>Your State</label>
+        <div class="field"><label id="lbl-news-state">Your State</label>
           <select id="newsState">
-            <option value="All India">All India</option>
+            <option value="All India" id="opt-all-india">All India</option>
             <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
             <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
             <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
@@ -292,18 +292,18 @@
             <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
           </select>
         </div>
-        <div class="field"><label>Topic</label>
+        <div class="field"><label id="lbl-topic">Topic</label>
           <select id="newsTopic">
-            <option value="all">All News</option>
-            <option value="MSP and mandi prices">MSP & Mandi Prices</option>
-            <option value="government schemes">Government Schemes</option>
-            <option value="weather and monsoon">Weather & Monsoon</option>
-            <option value="pest and disease alerts">Pest Alerts</option>
-            <option value="new farming technology">New Technology</option>
+            <option value="all" id="opt-all-news">All News</option>
+            <option value="MSP and mandi prices" id="opt-msp-news">MSP & Mandi Prices</option>
+            <option value="government schemes" id="opt-schemes-news">Government Schemes</option>
+            <option value="weather and monsoon" id="opt-weather-news">Weather & Monsoon</option>
+            <option value="pest and disease alerts" id="opt-pest-news">Pest Alerts</option>
+            <option value="new farming technology" id="opt-tech-news">New Technology</option>
           </select>
         </div>
       </div>
-      <button class="btn btn-blue" onclick="getNews()" id="news-btn">📰 Get Latest News</button>
+      <button class="btn btn-blue" onclick="getNews()" id="news-btn">📰 <span id="news-btn-text">Get Latest News</span></button>
     </div>
     <div id="news-result"></div>
   </div>
@@ -311,9 +311,9 @@
   <!-- FARMER CHAT -->
   <div class="page" id="page-chat">
     <div class="card" style="padding-bottom:14px">
-      <div class="card-title" style="color:var(--green)">🤝 Farmer Community Chat</div>
+      <div class="card-title" style="color:var(--green)">🤝 <span id="chat-title">Farmer Community Chat</span></div>
       <div class="online-count"><div class="online-dot"></div><span id="onlineCount">247 farmers online</span></div>
-      <div style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:6px">Trending Topics:</div>
+      <div style="font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:6px" id="trending-label">Trending Topics:</div>
       <div class="chat-topics" id="chatTopics"></div>
       <div class="chat-area" id="chatArea"></div>
       <div class="two-col" style="margin-bottom:8px">
@@ -363,7 +363,98 @@ function showTab(tab) {
   document.getElementById("tab-" + tab).classList.add("active");
 }
 
-function setLang(l) { currentLang = l; renderQuickQuestions(); }
+const POWER_LABELS = {
+  en:{voice:"Voice",profit:"Profit",soil:"Soil",news:"News",chat:"Chat",voice_title:"Voice Assistant",voice_sub:"Speak in your language — get instant farming answers",tap_mic:"Tap the mic to speak",quick_q:"Or tap a quick question:",type_q:"Type Your Question",get_ans:"Get Answer",profit_title:"Profit & Loss Calculator",crop:"Crop",land:"Land (acres)",expenses:"YOUR EXPENSES (₹)",seeds:"Seeds",fert:"Fertilizer",pest:"Pesticide",labour:"Labour",irr:"Irrigation",other:"Other",income:"YOUR INCOME (₹)",sell_price:"Selling Price (₹/quintal)",yield:"Total Yield (quintals)",calc_profit:"Calculate Profit/Loss",news_title:"Agriculture News",your_state:"Your State",topic:"Topic",all_india:"All India",all_news:"All News",msp_news:"MSP & Mandi Prices",schemes_news:"Government Schemes",weather_news:"Weather & Monsoon",pest_news:"Pest Alerts",tech_news:"New Technology",get_news:"Get Latest News",chat_title:"Farmer Community Chat",trending:"Trending Topics:",chat_placeholder:"Ask other farmers...",soil_title:"Soil Health Checker",soil_photo:"📸 Photo required — Take a clear photo of your soil in sunlight for accurate analysis.",soil_tap:"Tap to take soil photo",soil_crop:"Crop to grow",analyse_btn:"Analyse My Soil",analysing:"⏳ Analysing...",analysing_soil:"Analysing your soil photo...",getting_news:"⏳ Getting news...",no_voice:"Could not hear. Try again.",type_q:"Please type a question",upload_soil:"Please upload a soil photo first"},
+  hi:{voice:"आवाज़",profit:"मुनाफा",soil:"मिट्टी",news:"समाचार",chat:"चैट",voice_title:"वॉयस असिस्टेंट",voice_sub:"अपनी भाषा में बोलें — तुरंत खेती के जवाब पाएं",tap_mic:"बोलने के लिए माइक टैप करें",quick_q:"या एक जल्दी सवाल टैप करें:",type_q:"अपना सवाल टाइप करें",get_ans:"जवाब पाएं",profit_title:"लाभ और हानि कैलकुलेटर",crop:"फसल",land:"जमीन (एकड़)",expenses:"आपके खर्च (₹)",seeds:"बीज",fert:"खाद",pest:"कीटनाशक",labour:"मजदूरी",irr:"सिंचाई",other:"अन्य",income:"आपकी आमदनी (₹)",sell_price:"बिक्री मूल्य (₹/क्विंटल)",yield:"कुल उपज (क्विंटल)",calc_profit:"लाभ/हानि की गणना करें",news_title:"कृषि समाचार",your_state:"आपका राज्य",topic:"विषय",all_india:"सम्पूर्ण भारत",all_news:"सभी समाचार",msp_news:"MSP और मंडी भाव",schemes_news:"सरकारी योजनाएं",weather_news:"मौसम और मानसून",pest_news:"कीट और रोग अलर्ट",tech_news:"नई तकनीक",get_news:"ताजा समाचार देखें",chat_title:"किसान समुदाय चैट",trending:"ट्रेंडिंग विषय:",chat_placeholder:"अन्य किसानों से पूछें...",soil_title:"मिट्टी स्वास्थ्य जांच",soil_photo:"📸 फोटो जरूरी — सूरज की रोशनी में मिट्टी की साफ फोटो लें।",soil_tap:"मिट्टी की फोटो लेने के लिए टैप करें",soil_crop:"उगाने की फसल",analyse_btn:"मेरी मिट्टी जांचें",analysing:"⏳ विश्लेषण हो रहा है...",analysing_soil:"आपकी मिट्टी की फोटो का विश्लेषण हो रहा है...",getting_news:"⏳ समाचार आ रहे हैं...",no_voice:"सुनाई नहीं दिया। फिर कोशिश करें।",type_q:"कृपया एक सवाल टाइप करें",upload_soil:"पहले मिट्टी की फोटो अपलोड करें"},
+  pa:{voice:"ਆਵਾਜ਼",profit:"ਮੁਨਾਫਾ",soil:"ਮਿੱਟੀ",news:"ਖ਼ਬਰਾਂ",chat:"ਚੈਟ",voice_title:"ਵੌਇਸ ਅਸਿਸਟੈਂਟ",voice_sub:"ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਬੋਲੋ — ਤੁਰੰਤ ਖੇਤੀ ਜਵਾਬ ਪਾਓ",tap_mic:"ਬੋਲਣ ਲਈ ਮਾਈਕ ਟੈਪ ਕਰੋ",quick_q:"ਜਾਂ ਇੱਕ ਜਲਦੀ ਸਵਾਲ ਟੈਪ ਕਰੋ:",type_q:"ਆਪਣਾ ਸਵਾਲ ਟਾਈਪ ਕਰੋ",get_ans:"ਜਵਾਬ ਪਾਓ",profit_title:"ਮੁਨਾਫਾ ਅਤੇ ਨੁਕਸਾਨ ਕੈਲਕੁਲੇਟਰ",crop:"ਫਸਲ",land:"ਜ਼ਮੀਨ (ਏਕੜ)",expenses:"ਤੁਹਾਡੇ ਖਰਚੇ (₹)",seeds:"ਬੀਜ",fert:"ਖਾਦ",pest:"ਕੀਟਨਾਸ਼ਕ",labour:"ਮਜ਼ਦੂਰੀ",irr:"ਸਿੰਚਾਈ",other:"ਹੋਰ",income:"ਤੁਹਾਡੀ ਆਮਦਨ (₹)",sell_price:"ਵਿਕਰੀ ਕੀਮਤ (₹/ਕੁਇੰਟਲ)",yield:"ਕੁੱਲ ਪੈਦਾਵਾਰ (ਕੁਇੰਟਲ)",calc_profit:"ਮੁਨਾਫਾ/ਨੁਕਸਾਨ ਦੀ ਗਣਨਾ ਕਰੋ",news_title:"ਖੇਤੀਬਾੜੀ ਖ਼ਬਰਾਂ",your_state:"ਤੁਹਾਡਾ ਰਾਜ",topic:"ਵਿਸ਼ਾ",all_india:"ਸਾਰਾ ਭਾਰਤ",all_news:"ਸਾਰੀਆਂ ਖ਼ਬਰਾਂ",msp_news:"MSP ਅਤੇ ਮੰਡੀ ਭਾਅ",schemes_news:"ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ",weather_news:"ਮੌਸਮ ਅਤੇ ਮੌਨਸੂਨ",pest_news:"ਕੀੜੇ ਅਤੇ ਰੋਗ ਅਲਰਟ",tech_news:"ਨਵੀਂ ਤਕਨੀਕ",get_news:"ਤਾਜ਼ੀਆਂ ਖ਼ਬਰਾਂ ਦੇਖੋ",chat_title:"ਕਿਸਾਨ ਭਾਈਚਾਰਾ ਚੈਟ",trending:"ਟ੍ਰੈਂਡਿੰਗ ਵਿਸ਼ੇ:",chat_placeholder:"ਦੂਜੇ ਕਿਸਾਨਾਂ ਤੋਂ ਪੁੱਛੋ...",soil_title:"ਮਿੱਟੀ ਸਿਹਤ ਜਾਂਚ",soil_photo:"📸 ਫੋਟੋ ਜਰੂਰੀ — ਧੁੱਪ ਵਿੱਚ ਮਿੱਟੀ ਦੀ ਸਾਫ਼ ਫੋਟੋ ਲਓ।",soil_tap:"ਮਿੱਟੀ ਦੀ ਫੋਟੋ ਲੈਣ ਲਈ ਟੈਪ ਕਰੋ",soil_crop:"ਉਗਾਉਣ ਦੀ ਫਸਲ",analyse_btn:"ਮੇਰੀ ਮਿੱਟੀ ਜਾਂਚੋ",analysing:"⏳ ਵਿਸ਼ਲੇਸ਼ਣ ਹੋ ਰਿਹਾ ਹੈ...",analysing_soil:"ਤੁਹਾਡੀ ਮਿੱਟੀ ਦੀ ਫੋਟੋ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਹੋ ਰਿਹਾ ਹੈ...",getting_news:"⏳ ਖ਼ਬਰਾਂ ਆ ਰਹੀਆਂ ਹਨ...",no_voice:"ਸੁਣਾਈ ਨਹੀਂ ਦਿੱਤਾ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",type_q:"ਕਿਰਪਾ ਕਰਕੇ ਸਵਾਲ ਟਾਈਪ ਕਰੋ",upload_soil:"ਪਹਿਲਾਂ ਮਿੱਟੀ ਦੀ ਫੋਟੋ ਅਪਲੋਡ ਕਰੋ"},
+  mr:{voice:"आवाज",profit:"नफा",soil:"माती",news:"बातम्या",chat:"चॅट",voice_title:"व्हॉइस असिस्टंट",voice_sub:"आपल्या भाषेत बोला — तत्काळ शेती उत्तरे मिळवा",tap_mic:"बोलण्यासाठी माइक टॅप करा",quick_q:"किंवा एक जलद प्रश्न टॅप करा:",type_q:"आपला प्रश्न टाइप करा",get_ans:"उत्तर मिळवा",profit_title:"नफा आणि तोटा कॅल्क्युलेटर",crop:"पीक",land:"जमीन (एकर)",expenses:"तुमचे खर्च (₹)",seeds:"बियाणे",fert:"खत",pest:"कीटकनाशक",labour:"मजुरी",irr:"सिंचन",other:"इतर",income:"तुमचे उत्पन्न (₹)",sell_price:"विक्री दर (₹/क्विंटल)",yield:"एकूण उत्पादन (क्विंटल)",calc_profit:"नफा/तोटा मोजा",news_title:"कृषी बातम्या",your_state:"तुमचे राज्य",topic:"विषय",all_india:"संपूर्ण भारत",all_news:"सर्व बातम्या",msp_news:"MSP आणि मंडी दर",schemes_news:"सरकारी योजना",weather_news:"हवामान आणि मान्सून",pest_news:"कीड आणि रोग अलर्ट",tech_news:"नवीन तंत्रज्ञान",get_news:"ताज्या बातम्या पहा",chat_title:"शेतकरी समुदाय चॅट",trending:"ट्रेंडिंग विषय:",chat_placeholder:"इतर शेतकऱ्यांना विचारा...",soil_title:"मातीचे आरोग्य तपासणी",soil_photo:"📸 फोटो आवश्यक — उन्हात मातीचा स्पष्ट फोटो घ्या।",soil_tap:"माती फोटो घेण्यासाठी टॅप करा",soil_crop:"उगवायचे पीक",analyse_btn:"माझी माती तपासा",analysing:"⏳ विश्लेषण होत आहे...",analysing_soil:"तुमच्या मातीच्या फोटोचे विश्लेषण होत आहे...",getting_news:"⏳ बातम्या येत आहेत...",no_voice:"ऐकू आले नाही. पुन्हा प्रयत्न करा.",type_q:"कृपया एक प्रश्न टाइप करा",upload_soil:"आधी मातीचा फोटो अपलोड करा"},
+  te:{voice:"వాయిస్",profit:"లాభం",soil:"నేల",news:"వార్తలు",chat:"చాట్",voice_title:"వాయిస్ అసిస్టెంట్",voice_sub:"మీ భాషలో మాట్లాడండి — తక్షణ వ్యవసాయ సమాధానాలు పొందండి",tap_mic:"మాట్లాడటానికి మైక్ నొక్కండి",quick_q:"లేదా ఒక త్వరిత ప్రశ్న నొక్కండి:",type_q:"మీ ప్రశ్న టైప్ చేయండి",get_ans:"సమాధానం పొందండి",profit_title:"లాభం మరియు నష్టం కాల్క్యులేటర్",crop:"పంట",land:"భూమి (ఎకరాలు)",expenses:"మీ ఖర్చులు (₹)",seeds:"విత్తనాలు",fert:"ఎరువు",pest:"క్రిమిసంహారకం",labour:"కూలి",irr:"నీటిపారుదల",other:"ఇతర",income:"మీ ఆదాయం (₹)",sell_price:"విక్రయ ధర (₹/క్వింటల్)",yield:"మొత్తం దిగుబడి (క్వింటళ్ళు)",calc_profit:"లాభం/నష్టం లెక్కించండి",news_title:"వ్యవసాయ వార్తలు",your_state:"మీ రాష్ట్రం",topic:"అంశం",all_india:"మొత్తం భారత దేశం",all_news:"అన్ని వార్తలు",msp_news:"MSP మరియు మండి ధరలు",schemes_news:"ప్రభుత్వ పథకాలు",weather_news:"వాతావరణం మరియు రుతుపవనాలు",pest_news:"తెగులు మరియు వ్యాధి హెచ్చరికలు",tech_news:"కొత్త సాంకేతికత",get_news:"తాజా వార్తలు చూడండి",chat_title:"రైతు కమ్యూనిటీ చాట్",trending:"ట్రెండింగ్ విషయాలు:",chat_placeholder:"ఇతర రైతులను అడగండి...",soil_title:"నేల ఆరోగ్య తనిఖీ",soil_photo:"📸 ఫోటో అవసరం — ఎండలో నేల స్పష్టమైన ఫోటో తీయండి.",soil_tap:"నేల ఫోటో తీయడానికి నొక్కండి",soil_crop:"పెంచాల్సిన పంట",analyse_btn:"నా నేల విశ్లేషించండి",analysing:"⏳ విశ్లేషిస్తోంది...",analysing_soil:"మీ నేల ఫోటో విశ్లేషిస్తోంది...",getting_news:"⏳ వార్తలు వస్తున్నాయి...",no_voice:"వినపడలేదు. మళ్ళీ ప్రయత్నించండి.",type_q:"దయచేసి ఒక ప్రశ్న టైప్ చేయండి",upload_soil:"ముందు నేల ఫోటో అప్‌లోడ్ చేయండి"},
+  ta:{voice:"குரல்",profit:"லாபம்",soil:"மண்",news:"செய்திகள்",chat:"அரட்டை",voice_title:"குரல் உதவியாளர்",voice_sub:"உங்கள் மொழியில் பேசுங்கள் — உடனடி விவசாய பதில்கள் பெறுங்கள்",tap_mic:"பேசுவதற்கு மைக்கை தட்டுங்கள்",quick_q:"அல்லது ஒரு விரைவான கேள்வியை தட்டுங்கள்:",type_q:"உங்கள் கேள்வியை தட்டச்சு செய்யுங்கள்",get_ans:"பதில் பெறுங்கள்",profit_title:"லாபம் மற்றும் நட்டம் கணக்கீடு",crop:"பயிர்",land:"நிலம் (ஏக்கர்)",expenses:"உங்கள் செலவுகள் (₹)",seeds:"விதைகள்",fert:"உரம்",pest:"பூச்சிக்கொல்லி",labour:"கூலி",irr:"நீர்ப்பாசனம்",other:"மற்றவை",income:"உங்கள் வருமானம் (₹)",sell_price:"விற்பனை விலை (₹/குவிண்டால்)",yield:"மொத்த விளைச்சல் (குவிண்டால்கள்)",calc_profit:"லாபம்/நட்டம் கணக்கிடுங்கள்",news_title:"வேளாண் செய்திகள்",your_state:"உங்கள் மாநிலம்",topic:"தலைப்பு",all_india:"முழு இந்தியா",all_news:"அனைத்து செய்திகள்",msp_news:"MSP மற்றும் மண்டி விலைகள்",schemes_news:"அரசு திட்டங்கள்",weather_news:"வானிலை மற்றும் பருவமழை",pest_news:"பூச்சி மற்றும் நோய் எச்சரிக்கை",tech_news:"புதிய தொழில்நுட்பம்",get_news:"சமீபத்திய செய்திகளை காணுங்கள்",chat_title:"விவசாயி சமூக அரட்டை",trending:"பிரபலமான தலைப்புகள்:",chat_placeholder:"மற்ற விவசாயிகளிடம் கேளுங்கள்...",soil_title:"மண் ஆரோக்கிய சோதனை",soil_photo:"📸 புகைப்படம் தேவை — வெயிலில் மண்ணின் தெளிவான படம் எடுங்கள்.",soil_tap:"மண் படம் எடுக்க தட்டுங்கள்",soil_crop:"வளர்க்கும் பயிர்",analyse_btn:"என் மண்ணை பகுப்பாய்வு செய்யுங்கள்",analysing:"⏳ பகுப்பாய்வு செய்கிறது...",analysing_soil:"உங்கள் மண் புகைப்படம் பகுப்பாய்வு செய்கிறது...",getting_news:"⏳ செய்திகள் வருகின்றன...",no_voice:"கேட்கவில்லை. மீண்டும் முயற்சிக்கவும்.",type_q:"ஒரு கேள்வி தட்டச்சு செய்யுங்கள்",upload_soil:"முதலில் மண் புகைப்படம் பதிவேற்றுங்கள்"},
+  kn:{voice:"ಧ್ವನಿ",profit:"ಲಾಭ",soil:"ಮಣ್ಣು",news:"ಸುದ್ದಿ",chat:"ಚಾಟ್",voice_title:"ವಾಯ್ಸ್ ಅಸಿಸ್ಟೆಂಟ್",voice_sub:"ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಮಾತಾಡಿ — ತಕ್ಷಣ ಕೃಷಿ ಉತ್ತರಗಳನ್ನು ಪಡೆಯಿರಿ",tap_mic:"ಮಾತಾಡಲು ಮೈಕ್ ಟ್ಯಾಪ್ ಮಾಡಿ",quick_q:"ಅಥವಾ ತ್ವರಿತ ಪ್ರಶ್ನೆ ಟ್ಯಾಪ್ ಮಾಡಿ:",type_q:"ನಿಮ್ಮ ಪ್ರಶ್ನೆ ಟೈಪ್ ಮಾಡಿ",get_ans:"ಉತ್ತರ ಪಡೆಯಿರಿ",profit_title:"ಲಾಭ ಮತ್ತು ನಷ್ಟ ಕ್ಯಾಲ್ಕುಲೇಟರ್",crop:"ಬೆಳೆ",land:"ಭೂಮಿ (ಎಕರೆ)",expenses:"ನಿಮ್ಮ ಖರ್ಚುಗಳು (₹)",seeds:"ಬೀಜ",fert:"ಗೊಬ್ಬರ",pest:"ಕ್ರಿಮಿನಾಶಕ",labour:"ಕೂಲಿ",irr:"ನೀರಾವರಿ",other:"ಇತರ",income:"ನಿಮ್ಮ ಆದಾಯ (₹)",sell_price:"ಮಾರಾಟ ಬೆಲೆ (₹/ಕ್ವಿಂಟಲ್)",yield:"ಒಟ್ಟು ಉತ್ಪಾದನೆ (ಕ್ವಿಂಟಲ್)",calc_profit:"ಲಾಭ/ನಷ್ಟ ಲೆಕ್ಕ ಹಾಕಿ",news_title:"ಕೃಷಿ ಸುದ್ದಿ",your_state:"ನಿಮ್ಮ ರಾಜ್ಯ",topic:"ವಿಷಯ",all_india:"ಇಡೀ ಭಾರತ",all_news:"ಎಲ್ಲ ಸುದ್ದಿ",msp_news:"MSP ಮತ್ತು ಮಂಡಿ ಬೆಲೆ",schemes_news:"ಸರ್ಕಾರಿ ಯೋಜನೆ",weather_news:"ಹವಾಮಾನ ಮತ್ತು ಮುಂಗಾರು",pest_news:"ಕೀಟ ಮತ್ತು ರೋಗ ಎಚ್ಚರಿಕೆ",tech_news:"ಹೊಸ ತಂತ್ರಜ್ಞಾನ",get_news:"ತಾಜಾ ಸುದ್ದಿ ನೋಡಿ",chat_title:"ರೈತ ಸಮುದಾಯ ಚಾಟ್",trending:"ಟ್ರೆಂಡಿಂಗ್ ವಿಷಯ:",chat_placeholder:"ಇತರ ರೈತರನ್ನು ಕೇಳಿ...",soil_title:"ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಪರೀಕ್ಷೆ",soil_photo:"📸 ಫೋಟೋ ಅಗತ್ಯ — ಬಿಸಿಲಿನಲ್ಲಿ ಮಣ್ಣಿನ ಸ್ಪಷ್ಟ ಫೋಟೋ ತೆಗೆಯಿರಿ.",soil_tap:"ಮಣ್ಣಿನ ಫೋಟೋ ತೆಗೆಯಲು ಟ್ಯಾಪ್ ಮಾಡಿ",soil_crop:"ಬೆಳೆಯಬೇಕಾದ ಬೆಳೆ",analyse_btn:"ನನ್ನ ಮಣ್ಣು ವಿಶ್ಲೇಷಿಸಿ",analysing:"⏳ ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...",analysing_soil:"ನಿಮ್ಮ ಮಣ್ಣಿನ ಫೋಟೋ ವಿಶ್ಲೇಷಿಸಲಾಗುತ್ತಿದೆ...",getting_news:"⏳ ಸುದ್ದಿ ಬರುತ್ತಿದೆ...",no_voice:"ಕೇಳಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",type_q:"ದಯವಿಟ್ಟು ಒಂದು ಪ್ರಶ್ನೆ ಟೈಪ್ ಮಾಡಿ",upload_soil:"ಮೊದಲು ಮಣ್ಣಿನ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ"},
+  ml:{voice:"ശബ്ദം",profit:"ലാഭം",soil:"മണ്ണ്",news:"വാർത്ത",chat:"ചാറ്റ്",voice_title:"വോയ്സ് അസിസ്റ്റന്റ്",voice_sub:"നിങ്ങളുടെ ഭാഷയിൽ സംസാരിക്കൂ — ഉടൻ കൃഷി ഉത്തരങ്ങൾ നേടൂ",tap_mic:"സംസാരിക്കാൻ മൈക് ടാപ്പ് ചേയ്യൂ",quick_q:"അല്ലെങ്കിൽ ഒരു ദ്രുത ചോദ്യം ടാപ്പ് ചേയ്യൂ:",type_q:"നിങ്ങളുടെ ചോദ്യം ടൈപ്പ് ചേയ്യൂ",get_ans:"ഉത്തരം നേടൂ",profit_title:"ലാഭം & നഷ്ടം കാൽക്കുലേറ്റർ",crop:"വിള",land:"ഭൂമി (ഏക്കർ)",expenses:"നിങ്ങളുടെ ചെലവുകൾ (₹)",seeds:"വിത്ത്",fert:"വളം",pest:"കീടനാശിനി",labour:"കൂലി",irr:"ജലസേചനം",other:"മറ്റുള്ളവ",income:"നിങ്ങളുടെ വരുമാനം (₹)",sell_price:"വിൽപ്പന വില (₹/ക്വിന്റൽ)",yield:"ആകെ വിളവ് (ക്വിന്റൽ)",calc_profit:"ലാഭം/നഷ്ടം കണക്കാക്കൂ",news_title:"കൃഷി വാർത്ത",your_state:"നിങ്ങളുടെ സംസ്ഥാനം",topic:"വിഷയം",all_india:"ഇന്ത്യ മൊത്തം",all_news:"എല്ലാ വാർത്തകളും",msp_news:"MSP & മണ്ടി വിലകൾ",schemes_news:"സർക്കാർ പദ്ധതികൾ",weather_news:"കാലാവസ്ഥ & മൺസൂൺ",pest_news:"കീട & രോഗ ഒര്‍മ്മിപ്പിക്കൽ",tech_news:"പുതിയ സാങ്കേതികത",get_news:"ഏറ്റവും പുതിയ വാർത്ത",chat_title:"കർഷക കമ്മ്യൂണിറ്റി ചാറ്റ്",trending:"ട്രെൻഡിംഗ് വിഷയങ്ങൾ:",chat_placeholder:"മറ്റ് കർഷകരോട് ചോദിക്കൂ...",soil_title:"മണ്ണ് ആരോഗ്യ പരിശോധന",soil_photo:"📸 ഫോട്ടോ ആവശ്യം — വെളിച്ചത്തിൽ മണ്ണിന്റെ വ്യക്തമായ ഫോട്ടോ എടുക്കൂ.",soil_tap:"മണ്ണ് ഫോട്ടോ എടുക്കാൻ ടാപ്പ് ചേയ്യൂ",soil_crop:"കൃഷി ചേയ്യേണ്ട വിള",analyse_btn:"എന്റെ മണ്ണ് പരിശോധിക്കൂ",analysing:"⏳ വിശകലനം ചേയ്യുന്നു...",analysing_soil:"നിങ്ങളുടെ മണ്ണ് ഫോട്ടോ വിശകലനം ചേയ്യുന്നു...",getting_news:"⏳ വാർത്ത വരുന്നു...",no_voice:"കേൾക്കാനായില്ല. വീണ്ടും ശ്രമിക്കൂ.",type_q:"ദയവായി ഒരു ചോദ്യം ടൈപ്പ് ചേയ്യൂ",upload_soil:"ആദ്യം മണ്ണ് ഫോട്ടോ അപ്‌ലോഡ് ചേയ്യൂ"},
+  gu:{voice:"અવાજ",profit:"નફો",soil:"માટી",news:"સમાચાર",chat:"ચેટ",voice_title:"વૉઇસ આસિસ્ટન્ટ",voice_sub:"તમારી ભાષામાં બોલો — તુરંત ખેતી જવાબો મેળવો",tap_mic:"બોલવા માટે માઇક ટૅપ કરો",quick_q:"અથવા એક ઝડપી પ્રશ્ન ટૅપ કરો:",type_q:"તમારો પ્રશ્ન ટાઇપ કરો",get_ans:"જવાબ મેળવો",profit_title:"નફો અને નુકસાન કૅલ્ક્યુલેટર",crop:"પાક",land:"જમીન (એકર)",expenses:"તમારા ખર્ચ (₹)",seeds:"બીજ",fert:"ખાતર",pest:"જંતુનાશક",labour:"મજૂરી",irr:"સિંચાઈ",other:"અન્ય",income:"તમારી આવક (₹)",sell_price:"વેચાણ ભાવ (₹/ક્વિન્ટલ)",yield:"કુલ ઉત્પાદન (ક્વિન્ટલ)",calc_profit:"નફો/નુકસાન ગણો",news_title:"કૃષિ સમાચાર",your_state:"તમારું રાજ્ય",topic:"વિષય",all_india:"સમગ્ર ભારત",all_news:"બધા સમાચાર",msp_news:"MSP અને મંડી ભાવ",schemes_news:"સરકારી યોજનાઓ",weather_news:"હવામાન અને ચોમાસું",pest_news:"જીવાત અને રોગ ચેતવણી",tech_news:"નવી ટેક્નોલોજી",get_news:"તાજા સમાચાર જુઓ",chat_title:"ખેડૂત સમુદાય ચેટ",trending:"ટ્રેન્ડિંગ વિષયો:",chat_placeholder:"અન્ય ખેડૂતોને પૂછો...",soil_title:"માટી આરોગ્ય તપાસ",soil_photo:"📸 ફોટો જરૂરી — તડકામાં માટીનો સ્પષ્ટ ફોટો લો.",soil_tap:"માટી ફોટો લેવા ટૅپ ​​કરો",soil_crop:"ઉગાડવાનો પાક",analyse_btn:"મારી માટી તપાસો",analysing:"⏳ વિશ્લેષણ થઈ રહ્યું છે...",analysing_soil:"તમારી માટીના ફોટોનું વિશ્લેષણ થઈ રહ્યું છે...",getting_news:"⏳ સમાચાર આવી રહ્યા છે...",no_voice:"સંભળાયું નહીં. ફરી પ્રયાસ કરો.",type_q:"કૃपया એક પ્રશ્ન ટાઇپ કરો",upload_soil:"પહેલા માટીનો ફોટો અpload કરો"},
+  bn:{voice:"ভয়েস",profit:"মুনাফা",soil:"মাটি",news:"সংবাদ",chat:"চ্যাট",voice_title:"ভয়েস অ্যাসিস্ট্যান্ট",voice_sub:"আপনার ভাষায় কথা বলুন — তাৎক্ষণিক কৃষি উত্তর পান",tap_mic:"বলতে মাইক ট্যাপ করুন",quick_q:"অথবা একটি দ্রুত প্রশ্ন ট্যাপ করুন:",type_q:"আপনার প্রশ্ন টাইপ করুন",get_ans:"উত্তর পান",profit_title:"লাভ ও লোকসান ক্যালকুলেটর",crop:"ফসল",land:"জমি (একর)",expenses:"আপনার খরচ (₹)",seeds:"বীজ",fert:"সার",pest:"কীটনাশক",labour:"মজুরি",irr:"সেচ",other:"অন্যান্য",income:"আপনার আয় (₹)",sell_price:"বিক্রয় মূল্য (₹/কুইন্টাল)",yield:"মোট উৎপাদন (কুইন্টাল)",calc_profit:"লাভ/লোকসান গণনা করুন",news_title:"কৃষি সংবাদ",your_state:"আপনার রাজ্য",topic:"বিষয়",all_india:"সমগ্র ভারত",all_news:"সব সংবাদ",msp_news:"MSP এবং মান্ডি দাম",schemes_news:"সরকারি প্রকল্প",weather_news:"আবহাওয়া ও বর্ষা",pest_news:"পোকামাকড় ও রোগ সতর্কতা",tech_news:"নতুন প্রযুক্তি",get_news:"সর্বশেষ সংবাদ দেখুন",chat_title:"কৃষক কমিউনিটি চ্যাট",trending:"ট্রেন্ডিং বিষয়:",chat_placeholder:"অন্য কৃষকদের জিজ্ঞাসা করুন...",soil_title:"মাটির স্বাস্থ্য পরীক্ষা",soil_photo:"📸 ছবি প্রয়োজন — রোদে মাটির স্পষ্ট ছবি তুলুন।",soil_tap:"মাটির ছবি তুলতে ট্যাপ করুন",soil_crop:"চাষ করার ফসল",analyse_btn:"আমার মাটি বিশ্লেষণ করুন",analysing:"⏳ বিশ্লেষণ হচ্ছে...",analysing_soil:"আপনার মাটির ছবি বিশ্লেষণ হচ্ছে...",getting_news:"⏳ সংবাদ আসছে...",no_voice:"শোনা যায়নি। আবার চেষ্টা করুন।",type_q:"অনুগ্রহ করে একটি প্রশ্ন টাইপ করুন",upload_soil:"প্রথমে মাটির ছবি আপলোড করুন"},
+};
+
+function setLang(l) {
+  currentLang = l;
+  try { localStorage.setItem("annadatahub_lang", l); } catch(e) {}
+  const lb = POWER_LABELS[l] || POWER_LABELS.en;
+  // Tabs
+  document.getElementById("t-voice").textContent = lb.voice;
+  document.getElementById("t-profit").textContent = lb.profit;
+  document.getElementById("t-soil").textContent = lb.soil;
+  document.getElementById("t-news").textContent = lb.news;
+  document.getElementById("t-chat").textContent = lb.chat;
+  // Voice
+  document.getElementById("voice-title").textContent = lb.voice_title;
+  document.getElementById("voice-sub").textContent = lb.voice_sub;
+  document.getElementById("voiceStatus").textContent = lb.tap_mic;
+  document.getElementById("quick-q-label").textContent = lb.quick_q;
+  // Profit
+  document.getElementById("profit-title").textContent = lb.profit_title;
+  document.getElementById("lbl-prof-crop").textContent = lb.crop;
+  document.getElementById("lbl-prof-land").textContent = lb.land;
+  document.getElementById("lbl-expenses").textContent = lb.expenses;
+  document.getElementById("lbl-seeds").textContent = lb.seeds;
+  document.getElementById("lbl-fert").textContent = lb.fert;
+  document.getElementById("lbl-pest").textContent = lb.pest;
+  document.getElementById("lbl-labour").textContent = lb.labour;
+  document.getElementById("lbl-irr").textContent = lb.irr;
+  document.getElementById("lbl-other").textContent = lb.other;
+  document.getElementById("lbl-income").textContent = lb.income;
+  document.getElementById("lbl-sell-price").textContent = lb.sell_price;
+  document.getElementById("lbl-yield").textContent = lb.yield;
+  document.getElementById("profit-btn-text").textContent = lb.calc_profit;
+  // News
+  document.getElementById("news-title").textContent = lb.news_title;
+  document.getElementById("lbl-news-state").textContent = lb.your_state;
+  document.getElementById("lbl-topic").textContent = lb.topic;
+  document.getElementById("opt-all-india").textContent = lb.all_india;
+  document.getElementById("opt-all-news").textContent = lb.all_news;
+  document.getElementById("opt-msp-news").textContent = lb.msp_news;
+  document.getElementById("opt-schemes-news").textContent = lb.schemes_news;
+  document.getElementById("opt-weather-news").textContent = lb.weather_news;
+  document.getElementById("opt-pest-news").textContent = lb.pest_news;
+  document.getElementById("opt-tech-news").textContent = lb.tech_news;
+  document.getElementById("news-btn-text").textContent = lb.get_news;
+  // Chat
+  document.getElementById("chat-title").textContent = lb.chat_title;
+  document.getElementById("trending-label").textContent = lb.trending;
+  document.getElementById("chatInput").placeholder = lb.chat_placeholder;
+  // Soil section
+  if (document.getElementById("soil-title")) document.getElementById("soil-title").textContent = lb.soil_title;
+  if (document.getElementById("soil-btn-text")) document.getElementById("soil-btn-text").textContent = lb.analyse_btn;
+  if (document.getElementById("lbl-soil-crop")) document.getElementById("lbl-soil-crop").textContent = lb.soil_crop;
+  if (document.getElementById("soil-tap-text")) document.getElementById("soil-tap-text").innerHTML = `<strong>${lb.soil_tap}</strong><br/><small style="opacity:0.6">Dig 6 inches deep, take in daylight</small>`;
+  // Soil crop dropdown
+  const SOIL_CROP_KEYS = ["wheat","rice","cotton","tomato","potato","vegetables","sugarcane","mustard"];
+  const SOIL_CROP_VALS = ["Wheat","Rice","Cotton","Tomato","Potato","Vegetables","Sugarcane","Mustard"];
+  const SOIL_CROP_TRANS = {
+    en:["Wheat","Rice","Cotton","Tomato","Potato","Vegetables","Sugarcane","Mustard"],
+    hi:["गेहूं","धान","कपास","टमाटर","आलू","सब्जियां","गन्ना","सरसों"],
+    pa:["ਕਣਕ","ਝੋਨਾ","ਕਪਾਹ","ਟਮਾਟਰ","ਆਲੂ","ਸਬਜ਼ੀਆਂ","ਗੰਨਾ","ਸਰ੍ਹੋਂ"],
+    mr:["गहू","भात","कापूस","टोमॅटो","बटाटा","भाज्या","ऊस","मोहरी"],
+    te:["గోధుమ","వరి","పత్తి","టమాటా","బంగాళదుంప","కూరగాయలు","చెరకు","ఆవాలు"],
+    ta:["கோதுமை","நெல்","பருத்தி","தக்காளி","உருளைக்கிழங்கு","காய்கறிகள்","கரும்பு","கடுகு"],
+    kn:["ಗೋಧಿ","ಭತ್ತ","ಹತ್ತಿ","ಟೊಮೇಟೊ","ಆಲೂಗಡ್ಡೆ","ತರಕಾರಿ","ಕಬ್ಬು","ಸಾಸಿವೆ"],
+    ml:["ഗോതമ്പ്","നെല്ല്","പഞ്ഞി","തക്കാളി","ഉരുളക്കിഴങ്ങ്","പച്ചക്കറി","കരിമ്പ്","കടുക്"],
+    gu:["ઘઉં","ડાંગર","કપાસ","ટામેટા","બટાટા","શાકભાજી","શેરડી","સરસવ"],
+    bn:["গম","ধান","তুলা","টমেটো","আলু","সবজি","আখ","সরিষা"],
+  };
+  const soilCropEl = document.getElementById("soilCrop");
+  if (soilCropEl) {
+    const cur = soilCropEl.value;
+    const opts = SOIL_CROP_TRANS[l] || SOIL_CROP_TRANS.en;
+    soilCropEl.innerHTML = SOIL_CROP_VALS.map((v, i) => `<option value="${v}">${opts[i]}</option>`).join("");
+    soilCropEl.value = cur || "Wheat";
+  }
+  // Sync voiceLang
+  const vl = document.getElementById("voiceLang");
+  if (vl) vl.value = l;
+  // Re-render quick questions
+  renderQuickQuestions();
+}
 
 function showToast(msg, type="success") {
   const t = document.getElementById("toast");
@@ -393,8 +484,15 @@ async function callAIJSON(user, system) {
 // VOICE
 const QUICK_QUESTIONS = {
   en:["When to irrigate wheat?","Best fertilizer for rice?","How to control aphids?","What is MSP today?","Rain coming this week?"],
-  hi:["गेहूं में पानी कब दें?","धान के लिए खाद?","माहू कैसे भगाएं?","आज MSP क्या है?","इस हफ्ते बारिश?"],
-  pa:["ਕਣਕ ਨੂੰ ਪਾਣੀ ਕਦੋਂ?","ਝੋਨੇ ਲਈ ਖਾਦ?","ਤੇਲਾ ਕਿਵੇਂ ਭਜਾਓ?","ਅੱਜ MSP?","ਇਸ ਹਫ਼ਤੇ ਮੀਂਹ?"],
+  hi:["गेहूं में पानी कब दें?","धान के लिए सबसे अच्छी खाद?","माहू कैसे भगाएं?","आज MSP क्या है?","इस हफ्ते बारिश आएगी?"],
+  pa:["ਕਣਕ ਨੂੰ ਪਾਣੀ ਕਦੋਂ ਦੇਣਾ?","ਝੋਨੇ ਲਈ ਸਭ ਤੋਂ ਵਧੀਆ ਖਾਦ?","ਤੇਲਾ ਕਿਵੇਂ ਭਜਾਓ?","ਅੱਜ MSP ਕੀ ਹੈ?","ਇਸ ਹਫ਼ਤੇ ਮੀਂਹ ਆਵੇਗਾ?"],
+  mr:["गव्हाला पाणी कधी द्यायचे?","भाताकरिता सर्वोत्तम खत?","माव्याचे नियंत्रण कसे करावे?","आज MSP काय आहे?","या आठवड्यात पाऊस येणार?"],
+  te:["గోధుమకు నీరు ఎప్పుడు పెట్టాలి?","వరికి ఉత్తమ ఎరువు?","తేనటీలను ఎలా నియంత్రించాలి?","ఈరోజు MSP ఏమిటి?","ఈ వారం వర్షం వస్తుందా?"],
+  ta:["கோதுமைக்கு எப்போது நீர்ப்பாசனம்?","நெல்லுக்கு சிறந்த உரம்?","அசுவினி எவ்வாறு கட்டுப்படுத்துவது?","இன்று MSP என்ன?","இந்த வாரம் மழை வருமா?"],
+  kn:["ಗೋಧಿಗೆ ನೀರು ಯಾವಾಗ?","ಭತ್ತಕ್ಕೆ ಉತ್ತಮ ಗೊಬ್ಬರ?","ಜಿಗಿಹುಳುಗಳನ್ನು ಹೇಗೆ ನಿಯಂತ್ರಿಸುವುದು?","ಇಂದು MSP ಎಷ್ಟು?","ಈ ವಾರ ಮಳೆ ಬರುತ್ತಾ?"],
+  ml:["ഗോതമ്പിന് എപ്പോൾ ജലസേചനം?","നെല്ലിന് ഏറ്റവും നല്ല വളം?","കൃമികളെ എങ്ങനെ നിയന്ത്രിക്കാം?","ഇന്ന് MSP എന്ത്?","ഈ ആഴ്ച മഴ വരുമോ?"],
+  gu:["ઘઉંને ક્યારે પાણી?","ડાંગર માટે સૌથી સારું ખાતર?","ખડમાખી કેવી રીતે ભગાવો?","આજે MSP શું છે?","આ અઠવાડિયે વરસાદ?"],
+  bn:["গমে কখন জল দেবেন?","ধানের জন্য সেরা সার?","জাব কীভাবে নিয়ন্ত্রণ করবেন?","আজ MSP কত?","এই সপ্তাহে বৃষ্টি হবে?"],
 };
 
 function renderQuickQuestions() {
@@ -432,7 +530,7 @@ function startListening() {
     document.getElementById("voiceTranscript").textContent = "🎙️ " + t;
     if (e.results[e.results.length - 1].isFinal) askQuestion(t);
   };
-  recognition.onerror = () => { stopListening(); showToast("Could not hear. Try again.", "error"); };
+  recognition.onerror = () => { stopListening(); showToast((POWER_LABELS[currentLang]||POWER_LABELS.en).no_voice, "error"); };
   recognition.onend = () => stopListening();
   recognition.start();
 }
@@ -450,7 +548,7 @@ function stopListening() {
 
 async function askTyped() {
   const q = document.getElementById("typedQuestion").value.trim();
-  if (!q) { showToast("Please type a question", "error"); return; }
+  if (!q) { showToast((POWER_LABELS[currentLang]||POWER_LABELS.en).type_q, "error"); return; }
   await askQuestion(q);
 }
 
@@ -595,7 +693,7 @@ async function checkSoil() {
           <a href="https://soilhealth.dac.gov.in" target="_blank" style="color:#0369a1;font-weight:700">soilhealth.dac.gov.in →</a>
         </div>
       </div>`;
-    showToast("Please upload a soil photo first", "error");
+    showToast((POWER_LABELS[currentLang]||POWER_LABELS.en).upload_soil, "error");
     return;
   }
 
@@ -604,8 +702,8 @@ async function checkSoil() {
   const lang = LANG_NAMES[currentLang] || "English";
   const btn = document.getElementById("soil-btn");
   const result = document.getElementById("soil-result");
-  btn.disabled = true; btn.textContent = "⏳ Analysing...";
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Analysing your soil photo...</p></div>`;
+  btn.disabled = true; btn.textContent = (POWER_LABELS[currentLang]||POWER_LABELS.en).analysing;
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${(POWER_LABELS[currentLang]||POWER_LABELS.en).analysing_soil}</p></div>`;
 
   try {
     const res = await fetch(`${BACKEND}/api/crop/scan`, {
@@ -655,7 +753,7 @@ async function checkSoil() {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Analysis failed. Try with a clearer photo in better light.</p></div>`;
     showToast("Error. Try with better photo.", "error");
   }
-  btn.disabled = false; btn.textContent = "🔬 Analyse My Soil";
+  btn.disabled = false; btn.innerHTML = `🔬 <span id="soil-btn-text">${(POWER_LABELS[currentLang]||POWER_LABELS.en).analyse_btn}</span>`;
 }
 
 // NEWS — uses /api/news endpoint with caching
@@ -663,7 +761,7 @@ async function getNews() {
   const state = document.getElementById("newsState").value;
   const topic = document.getElementById("newsTopic").value;
   const btn = document.getElementById("news-btn");
-  btn.disabled = true; btn.textContent = "⏳ Getting news...";
+  btn.disabled = true; btn.textContent = (POWER_LABELS[currentLang]||POWER_LABELS.en).getting_news;
   document.getElementById("news-result").innerHTML = `<div class="loading"><div class="spinner"></div><p>Fetching latest news...</p></div>`;
   try {
     const res = await fetch(`${BACKEND}/api/news?state=${encodeURIComponent(state)}&topic=${encodeURIComponent(topic)}`);
@@ -684,7 +782,7 @@ async function getNews() {
     ], state);
     showToast("Latest news loaded ✅");
   }
-  btn.disabled = false; btn.textContent = "📰 Get Latest News";
+  btn.disabled = false; btn.innerHTML = `📰 <span id="news-btn-text">${(POWER_LABELS[currentLang]||POWER_LABELS.en).get_news}</span>`;
 }
 
 function renderNews(items, state) {
@@ -763,6 +861,17 @@ async function sendChat() {
 
 renderQuickQuestions();
 initChat();
+
+// Load saved language
+try {
+  const saved = localStorage.getItem("annadatahub_lang");
+  if (saved && saved !== "en") {
+    currentLang = saved;
+    const sel = document.getElementById("langSel");
+    if (sel) sel.value = saved;
+    setLang(saved);
+  }
+} catch(e) {}
 </script>
 </body>
 </html>
