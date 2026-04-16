@@ -70,6 +70,34 @@ def check_rate_limit(ip: str, limit_type: str = "default"):
 
 # ── END RATE LIMITER ──────────────────────────────────────────────────────────
 
+# ── FEATURE USAGE LOGGER ─────────────────────────────────────────────────────
+async def log_feature(feature: str, extra: dict = None):
+    """Log feature usage for admin analytics"""
+    try:
+        await db.feature_logs.insert_one({
+            "_id": str(uuid.uuid4()),
+            "feature": feature,
+            "extra": extra or {},
+            "date": datetime.utcnow().strftime("%Y-%m-%d"),
+            "created_at": datetime.utcnow().isoformat()
+        })
+    except Exception:
+        pass
+
+async def log_error(endpoint: str, error: str, extra: dict = None):
+    """Log API errors for admin monitoring"""
+    try:
+        await db.error_logs.insert_one({
+            "_id": str(uuid.uuid4()),
+            "endpoint": endpoint,
+            "error": str(error)[:500],
+            "extra": extra or {},
+            "created_at": datetime.utcnow().isoformat()
+        })
+    except Exception:
+        pass
+# ── END FEATURE LOGGER ────────────────────────────────────────────────────────
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -536,6 +564,7 @@ async def scan_crop(scan_request: CropScanRequest, request: Request, authorizati
         except Exception as e:
             logger.warning("Could not save scan: %s", e)
 
+    await log_feature("crop_scan", {"crop": scan_request.crop_type, "language": scan_request.language})
     return {"success": True, "result": result}
 
 
@@ -611,6 +640,7 @@ async def get_news(request: Request, state: str = "All India", topic: str = "all
         news = FALLBACK_NEWS
 
     cache_set(cache_key, news, hours=6)
+    await log_feature("news", {"state": state, "topic": topic})
     return {"success": True, "news": news, "source": "live"}
 
 
@@ -629,6 +659,7 @@ async def mandi_prices(request: Request, crop: str = "wheat", state: str = "Punj
         result = get_mandi_fallback(crop, state)
 
     cache_set(cache_key, result, hours=4)
+    await log_feature("mandi_prices", {"crop": crop, "state": state})
     return {"success": True, "data": result, "crop": crop, "state": state}
 
 
@@ -661,6 +692,7 @@ async def weather(request: Request, location: str = "Punjab"):
     except Exception as e:
         logger.warning("OpenWeather failed: %s", e)
         result = get_weather_fallback(location)
+    await log_feature("weather", {"location": location})
     return {"success": True, "data": result, "location": location}
 
 
@@ -676,6 +708,7 @@ async def govt_schemes(request: Request, state: str = "Punjab"):
         {"name": "PM-KUSUM Solar Pump", "emoji": "☀️", "color": "#f57f17", "tagline": "90% subsidy on solar pump", "amount": "90%", "amount_label": "subsidy", "description": "Solar water pumps with 90% government subsidy.", "benefits": ["90% subsidy", "Save ₹20,000-50,000/year", "Free irrigation electricity"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Electricity bill"], "how_to_apply": "Apply at pmkusum.mnre.gov.in or district agriculture office", "apply_url": "https://pmkusum.mnre.gov.in"},
     ]
     data = {"summary": f"You are eligible for {len(schemes)} central government schemes.", "schemes": schemes}
+    await log_feature("schemes", {"state": state})
     return {"success": True, "data": json.dumps(data)}
 
 
@@ -899,3 +932,123 @@ async def admin_posts(request: Request, password: str = "", limit: int = 50):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 # ── END ADMIN ─────────────────────────────────────────────────────────────────
+
+
+# ── PHASE 2 ADMIN ENDPOINTS ───────────────────────────────────────────────────
+
+@app.get("/api/admin/feature-usage")
+async def admin_feature_usage(request: Request, password: str = "", days: int = 7):
+    verify_admin(password)
+    try:
+        # Usage per feature
+        feature_pipeline = [
+            {"$group": {"_id": "$feature", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        features = await db.feature_logs.aggregate(feature_pipeline).to_list(20)
+
+        # Daily usage last N days
+        from_date = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
+        daily_pipeline = [
+            {"$match": {"date": {"$gte": from_date}}},
+            {"$group": {"_id": "$date", "count": {"$sum": 1}}},
+            {"$sort": {"_id": 1}}
+        ]
+        daily = await db.feature_logs.aggregate(daily_pipeline).to_list(30)
+
+        # Top crops scanned
+        crop_pipeline = [
+            {"$match": {"feature": "crop_scan"}},
+            {"$group": {"_id": "$extra.crop", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}},
+            {"$limit": 10}
+        ]
+        top_crops = await db.feature_logs.aggregate(crop_pipeline).to_list(10)
+
+        # Most active states
+        state_pipeline = [
+            {"$match": {"extra.state": {"$exists": True}}},
+            {"$group": {"_id": "$extra.state", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}},
+            {"$limit": 10}
+        ]
+        active_states = await db.feature_logs.aggregate(state_pipeline).to_list(10)
+
+        return {
+            "success": True,
+            "features": features,
+            "daily": daily,
+            "top_crops": top_crops,
+            "active_states": active_states,
+            "total_events": sum(f["count"] for f in features)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/admin/errors")
+async def admin_errors(request: Request, password: str = "", limit: int = 50):
+    verify_admin(password)
+    try:
+        errors = await db.error_logs.find().sort("created_at", -1).limit(limit).to_list(limit)
+        for e in errors:
+            e["id"] = e.pop("_id")
+
+        # Error counts by endpoint
+        err_pipeline = [
+            {"$group": {"_id": "$endpoint", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        err_summary = await db.error_logs.aggregate(err_pipeline).to_list(20)
+
+        return {
+            "success": True,
+            "errors": errors,
+            "summary": err_summary,
+            "total": len(errors)
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/admin/growth")
+async def admin_growth(request: Request, password: str = "", days: int = 30):
+    verify_admin(password)
+    try:
+        # Daily farmer registrations
+        from_date = (datetime.utcnow() - timedelta(days=days)).isoformat()[:10]
+        farmers_raw = await db.users.find(
+            {"created_at": {"$gte": from_date}},
+            {"created_at": 1}
+        ).to_list(1000)
+
+        # Group by date
+        daily_map = {}
+        for f in farmers_raw:
+            date = f.get("created_at", "")[:10]
+            if date:
+                daily_map[date] = daily_map.get(date, 0) + 1
+
+        # Fill missing dates with 0
+        from datetime import date as dt_date
+        result_days = []
+        for i in range(days):
+            d = (datetime.utcnow() - timedelta(days=days-1-i)).strftime("%Y-%m-%d")
+            result_days.append({"date": d, "count": daily_map.get(d, 0)})
+
+        # Running total
+        total = await db.users.count_documents({})
+        running = total - sum(daily_map.values())
+        for day in result_days:
+            running += day["count"]
+            day["total"] = running
+
+        return {
+            "success": True,
+            "daily": result_days,
+            "total_farmers": total,
+            "new_in_period": sum(daily_map.values())
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+# ── END PHASE 2 ADMIN ─────────────────────────────────────────────────────────
