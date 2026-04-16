@@ -286,17 +286,17 @@ function stateOptions(selectedState) {
     <div id="insuranceResult"></div>
 
     <div class="card">
-      <div class="card-title" style="color:var(--purple)">📋 How to Apply for PMFBY</div>
-      <div class="step-item"><div class="step-num">1</div><div>Visit nearest bank, CSC or <strong>pmfby.gov.in</strong></div></div>
-      <div class="step-item"><div class="step-num">2</div><div>Bring: <strong>Aadhaar, Land records (Khasra/Khatauni), Bank details, Sowing certificate</strong></div></div>
-      <div class="step-item"><div class="step-num">3</div><div>Fill PMFBY form — deadline is <strong>last date of sowing month</strong></div></div>
-      <div class="step-item"><div class="step-num">4</div><div>Pay premium — bank deducts automatically if you have KCC</div></div>
-      <div class="step-item"><div class="step-num">5</div><div>If crop fails — file claim within <strong>72 hours</strong> of loss</div></div>
-      <div class="step-item"><div class="step-num">6</div><div>Money credited to bank within <strong>15-20 days</strong> of approval</div></div>
+      <div class="card-title" style="color:var(--purple)" id="how-apply-title">📋 How to Apply for PMFBY</div>
+      <div class="step-item"><div class="step-num">1</div><div class="ins-step-text">Visit nearest bank, CSC or pmfby.gov.in</div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="ins-step-text">Bring: Aadhaar, Land records (Khasra/Khatauni), Bank details, Sowing certificate</div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="ins-step-text">Fill PMFBY form — deadline is last date of sowing month</div></div>
+      <div class="step-item"><div class="step-num">4</div><div class="ins-step-text">Pay premium — bank deducts automatically if you have KCC</div></div>
+      <div class="step-item"><div class="step-num">5</div><div class="ins-step-text">If crop fails — file claim within 72 hours of loss</div></div>
+      <div class="step-item"><div class="step-num">6</div><div class="ins-step-text">Money credited to bank within 15-20 days of approval</div></div>
     </div>
 
     <div class="card">
-      <div class="card-title" style="color:var(--purple)">✅ What PMFBY Covers</div>
+      <div class="card-title" style="color:var(--purple)" id="what-covers-title">✅ What PMFBY Covers</div>
       <div class="ins-feature"><span>✅</span>Natural disasters (flood, drought, cyclone, hailstorm)</div>
       <div class="ins-feature"><span>✅</span>Pest and disease attacks on standing crop</div>
       <div class="ins-feature"><span>✅</span>Post-harvest losses (within 14 days of harvest)</div>
@@ -322,16 +322,46 @@ function stateOptions(selectedState) {
 
 <script>
 const LANG_LABELS = {
-  en:["Loan Calc","Pesticide","Insurance"],
-  hi:["लोन कैलक्युलेटर","कीटनाशक","बीमा"],
-  pa:["ਕਰਜ਼ਾ ਕੈਲਕੁਲੇਟਰ","ਕੀਟਨਾਸ਼ਕ","ਬੀਮਾ"],
-  mr:["कर्ज कॅल्क्युलेटर","कीटकनाशक","विमा"],
-  te:["రుణ కాల్క్యులేటర్","క్రిమిసంహారకం","బీమా"],
-  ta:["கடன் கணக்கீடு","பூச்சிக்கொல்லி","காப்பீடு"],
-  gu:["લોન કૅલ્ક્યુલેટર","જંતુનાશક","વીમો"],
-  kn:["ಸಾಲ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್","ಕ್ರಿಮಿನಾಶಕ","ವಿಮೆ"],
-  ml:["ലോൺ കാൽക്കുലേറ്റർ","കീടനാശിനി","ഇൻഷുറൻസ്"],
-  bn:["ঋণ ক্যালকুলেটর","কীটনাশক","বীমা"],
+  en:{t1:"Loan Calc",t2:"Pesticide",t3:"Insurance",loan_title:"Farmer Loan Calculator",loan_sub:"Calculate EMI · Find best scheme · Know eligibility",emi_title:"Calculate Your Loan EMI",lbl_loan_type:"Loan Type",lbl_loan_amt:"Loan Amount (₹)",lbl_tenure:"Loan Tenure (Months)",lbl_custom_rate:"Interest Rate (% per year)",lbl_land:"Land Size (acres) — for eligibility",schemes_title:"Best Loan Schemes for You",qty_title:"Pesticide Quantity Calculator",qty_desc:"Enter your field size → get exact quantity needed",lbl_pest:"Select Pesticide",lbl_field:"Field Size (acres)",lbl_water:"Water per acre (litres)",ins_title:"Crop Insurance Calculator",premium_title:"Calculate Your Premium",lbl_ins_crop:"Crop",lbl_ins_land:"Land Size (acres)",lbl_ins_state:"State",lbl_sum:"Sum Insured (₹/acre)",ins_btn:"Calculate My Premium",how_apply:"📋 How to Apply for PMFBY",what_covers:"✅ What PMFBY Covers",search_placeholder:"🔍 Search by crop, pest or pesticide name...",filter_all:"🌾 All",filter_fungicide:"🍄 Fungicide",filter_insecticide:"🐛 Insecticide",filter_organic:"🌿 Organic",
+  ins_steps:["Visit nearest bank, CSC or pmfby.gov.in","Bring: Aadhaar, Land records (Khasra/Khatauni), Bank details, Sowing certificate","Fill PMFBY form — deadline is last date of sowing month","Pay premium — bank deducts automatically if you have KCC","If crop fails — file claim within 72 hours of loss","Money credited to bank within 15-20 days of approval"],
+  ins_crops:["Wheat (Rabi)","Paddy/Rice (Kharif)","Corn (Kharif)","Mustard (Rabi)","Soybean (Kharif)","Cotton (Kharif)","Groundnut (Kharif)","Gram/Chana (Rabi)","Tomato (Annual)","Onion (Annual)"],
+  loan_types:["Kisan Credit Card (KCC) — 4% interest","Agriculture Term Loan — 7% interest","Allied Activities Loan — 8% interest","Custom Interest Rate"]},
+  hi:{t1:"लोन कैलक्युलेटर",t2:"कीटनाशक",t3:"बीमा",loan_title:"किसान लोन कैलकुलेटर",loan_sub:"EMI कैलकुलेट करें · सबसे अच्छी योजना खोजें · पात्रता जानें",emi_title:"अपना लोन EMI कैलकुलेट करें",lbl_loan_type:"लोन का प्रकार",lbl_loan_amt:"लोन राशि (₹)",lbl_tenure:"लोन अवधि (महीने)",lbl_custom_rate:"ब्याज दर (% प्रति वर्ष)",lbl_land:"जमीन का आकार (एकड़) — पात्रता के लिए",schemes_title:"आपके लिए सबसे अच्छी लोन योजनाएं",qty_title:"कीटनाशक मात्रा कैलकुलेटर",qty_desc:"अपने खेत का आकार डालें → सटीक मात्रा पाएं",lbl_pest:"कीटनाशक चुनें",lbl_field:"खेत का आकार (एकड़)",lbl_water:"प्रति एकड़ पानी (लीटर)",ins_title:"फसल बीमा कैलकुलेटर",premium_title:"अपना प्रीमियम कैलकुलेट करें",lbl_ins_crop:"फसल",lbl_ins_land:"जमीन का आकार (एकड़)",lbl_ins_state:"राज्य",lbl_sum:"बीमा राशि (₹/एकड़)",ins_btn:"मेरा प्रीमियम कैलकुलेट करें",how_apply:"📋 PMFBY के लिए कैसे आवेदन करें",what_covers:"✅ PMFBY में क्या शामिल है",search_placeholder:"🔍 फसल, कीट या कीटनाशक का नाम खोजें...",filter_all:"🌾 सभी",filter_fungicide:"🍄 फंगीसाइड",filter_insecticide:"🐛 कीटनाशक",filter_organic:"🌿 जैविक",
+  ins_steps:["नजदीकी बैंक, CSC या pmfby.gov.in जाएं","लाएं: आधार, जमीन के कागजात (खसरा/खतौनी), बैंक विवरण, बुवाई प्रमाण पत्र","PMFBY फॉर्म भरें — अंतिम तिथि बुवाई के महीने की होती है","प्रीमियम दें — KCC होने पर बैंक अपने आप काटता है","फसल खराब होने पर — 72 घंटे के भीतर दावा दर्ज करें","मंजूरी के 15-20 दिन में पैसा बैंक में आएगा"],
+  ins_crops:["गेहूं (रबी)","धान/चावल (खरीफ)","मक्का (खरीफ)","सरसों (रबी)","सोयाबीन (खरीफ)","कपास (खरीफ)","मूंगफली (खरीफ)","चना (रबी)","टमाटर (वार्षिक)","प्याज (वार्षिक)"],
+  loan_types:["किसान क्रेडिट कार्ड (KCC) — 4% ब्याज","कृषि टर्म लोन — 7% ब्याज","संबद्ध गतिविधि लोन — 8% ब्याज","कस्टम ब्याज दर"]},
+  pa:{t1:"ਕਰਜ਼ਾ ਕੈਲਕੁਲੇਟਰ",t2:"ਕੀਟਨਾਸ਼ਕ",t3:"ਬੀਮਾ",loan_title:"ਕਿਸਾਨ ਕਰਜ਼ਾ ਕੈਲਕੁਲੇਟਰ",loan_sub:"EMI ਕੈਲਕੁਲੇਟ ਕਰੋ · ਸਭ ਤੋਂ ਵਧੀਆ ਯੋਜਨਾ ਲੱਭੋ",emi_title:"ਆਪਣਾ ਲੋਨ EMI ਕੈਲਕੁਲੇਟ ਕਰੋ",lbl_loan_type:"ਕਰਜ਼ੇ ਦੀ ਕਿਸਮ",lbl_loan_amt:"ਕਰਜ਼ਾ ਰਕਮ (₹)",lbl_tenure:"ਕਰਜ਼ਾ ਮਿਆਦ (ਮਹੀਨੇ)",lbl_custom_rate:"ਵਿਆਜ ਦਰ (% ਪ੍ਰਤੀ ਸਾਲ)",lbl_land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",schemes_title:"ਤੁਹਾਡੇ ਲਈ ਸਭ ਤੋਂ ਵਧੀਆ ਕਰਜ਼ਾ ਯੋਜਨਾਵਾਂ",qty_title:"ਕੀਟਨਾਸ਼ਕ ਮਾਤਰਾ ਕੈਲਕੁਲੇਟਰ",qty_desc:"ਆਪਣੇ ਖੇਤ ਦਾ ਆਕਾਰ ਦਰਜ ਕਰੋ → ਸਹੀ ਮਾਤਰਾ ਪਾਓ",lbl_pest:"ਕੀਟਨਾਸ਼ਕ ਚੁਣੋ",lbl_field:"ਖੇਤ ਦਾ ਆਕਾਰ (ਏਕੜ)",lbl_water:"ਪ੍ਰਤੀ ਏਕੜ ਪਾਣੀ (ਲੀਟਰ)",ins_title:"ਫਸਲ ਬੀਮਾ ਕੈਲਕੁਲੇਟਰ",premium_title:"ਆਪਣਾ ਪ੍ਰੀਮੀਅਮ ਕੈਲਕੁਲੇਟ ਕਰੋ",lbl_ins_crop:"ਫਸਲ",lbl_ins_land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",lbl_ins_state:"ਰਾਜ",lbl_sum:"ਬੀਮਾ ਰਕਮ (₹/ਏਕੜ)",ins_btn:"ਮੇਰਾ ਪ੍ਰੀਮੀਅਮ ਕੈਲਕੁਲੇਟ ਕਰੋ",how_apply:"📋 PMFBY ਲਈ ਕਿਵੇਂ ਅਰਜ਼ੀ ਦੇਣੀ ਹੈ",what_covers:"✅ PMFBY ਵਿੱਚ ਕੀ ਸ਼ਾਮਲ ਹੈ",search_placeholder:"🔍 ਫਸਲ, ਕੀੜੇ ਜਾਂ ਕੀਟਨਾਸ਼ਕ ਦਾ ਨਾਮ ਖੋਜੋ...",filter_all:"🌾 ਸਭ",filter_fungicide:"🍄 ਉੱਲੀਨਾਸ਼ਕ",filter_insecticide:"🐛 ਕੀਟਨਾਸ਼ਕ",filter_organic:"🌿 ਜੈਵਿਕ",
+  ins_steps:["ਨਜ਼ਦੀਕੀ ਬੈਂਕ, CSC ਜਾਂ pmfby.gov.in ਜਾਓ","ਲਿਆਓ: ਆਧਾਰ, ਜ਼ਮੀਨ ਦੇ ਕਾਗਜ਼ਾਤ, ਬੈਂਕ ਵੇਰਵੇ, ਬਿਜਾਈ ਸਰਟੀਫਿਕੇਟ","PMFBY ਫਾਰਮ ਭਰੋ — ਅੰਤਿਮ ਤਾਰੀਖ ਬਿਜਾਈ ਮਹੀਨੇ ਦੀ ਹੁੰਦੀ ਹੈ","ਪ੍ਰੀਮੀਅਮ ਦਿਓ — KCC ਹੋਣ ਤੇ ਬੈਂਕ ਆਪੇ ਕੱਟਦਾ ਹੈ","ਫਸਲ ਖਰਾਬ ਹੋਣ ਤੇ — 72 ਘੰਟਿਆਂ ਵਿੱਚ ਦਾਅਵਾ ਦਰਜ ਕਰੋ","ਮਨਜ਼ੂਰੀ ਦੇ 15-20 ਦਿਨਾਂ ਵਿੱਚ ਪੈਸੇ ਬੈਂਕ ਵਿੱਚ ਆਉਣਗੇ"],
+  ins_crops:["ਕਣਕ (ਰਬੀ)","ਝੋਨਾ/ਚਾਵਲ (ਖਰੀਫ਼)","ਮੱਕੀ (ਖਰੀਫ਼)","ਸਰ੍ਹੋਂ (ਰਬੀ)","ਸੋਇਆਬੀਨ (ਖਰੀਫ਼)","ਕਪਾਹ (ਖਰੀਫ਼)","ਮੂੰਗਫਲੀ (ਖਰੀਫ਼)","ਛੋਲੇ (ਰਬੀ)","ਟਮਾਟਰ (ਸਾਲਾਨਾ)","ਪਿਆਜ਼ (ਸਾਲਾਨਾ)"],
+  loan_types:["ਕਿਸਾਨ ਕ੍ਰੈਡਿਟ ਕਾਰਡ (KCC) — 4% ਵਿਆਜ","ਖੇਤੀ ਟਰਮ ਲੋਨ — 7% ਵਿਆਜ","ਸਹਾਇਕ ਗਤੀਵਿਧੀ ਲੋਨ — 8% ਵਿਆਜ","ਕਸਟਮ ਵਿਆਜ ਦਰ"]},
+  mr:{t1:"कर्ज कॅल्क्युलेटर",t2:"कीटकनाशक",t3:"विमा",loan_title:"शेतकरी कर्ज कॅल्क्युलेटर",loan_sub:"EMI कॅल्क्युलेट करा · सर्वोत्तम योजना शोधा · पात्रता जाणा",emi_title:"तुमचा कर्ज EMI कॅल्क्युलेट करा",lbl_loan_type:"कर्जाचा प्रकार",lbl_loan_amt:"कर्ज रक्कम (₹)",lbl_tenure:"कर्ज कालावधी (महिने)",lbl_custom_rate:"व्याज दर (% प्रति वर्ष)",lbl_land:"जमिनीचा आकार (एकर)",schemes_title:"तुमच्यासाठी सर्वोत्तम कर्ज योजना",qty_title:"कीटकनाशक प्रमाण कॅल्क्युलेटर",qty_desc:"तुमच्या शेताचा आकार टाका → अचूक प्रमाण मिळवा",lbl_pest:"कीटकनाशक निवडा",lbl_field:"शेताचा आकार (एकर)",lbl_water:"प्रति एकर पाणी (लिटर)",ins_title:"पीक विमा कॅल्क्युलेटर",premium_title:"तुमचा प्रीमियम कॅल्क्युलेट करा",lbl_ins_crop:"पीक",lbl_ins_land:"जमिनीचा आकार (एकर)",lbl_ins_state:"राज्य",lbl_sum:"विमा रक्कम (₹/एकर)",ins_btn:"माझा प्रीमियम कॅल्क्युलेट करा",how_apply:"📋 PMFBY साठी कसा अर्ज करावा",what_covers:"✅ PMFBY मध्ये काय समाविष्ट आहे",search_placeholder:"🔍 पीक, कीड किंवा कीटकनाशक नाव शोधा...",filter_all:"🌾 सर्व",filter_fungicide:"🍄 बुरशीनाशक",filter_insecticide:"🐛 कीटकनाशक",filter_organic:"🌿 सेंद्रिय",
+  ins_steps:["नजीकचे बँक, CSC किंवा pmfby.gov.in ला जा","आणा: आधार, जमीन कागदपत्रे (खसरा/खतौनी), बँक तपशील, पेरणी प्रमाणपत्र","PMFBY फॉर्म भरा — अंतिम मुदत पेरणीच्या महिन्याच्या शेवटची असते","प्रीमियम भरा — KCC असल्यास बँक आपोआप कापते","पीक नुकसान झाल्यास — 72 तासांत दावा नोंदवा","मंजुरीनंतर 15-20 दिवसांत पैसे बँकेत येतात"],
+  ins_crops:["गहू (रबी)","भात/तांदूळ (खरीप)","मका (खरीप)","मोहरी (रबी)","सोयाबीन (खरीप)","कापूस (खरीप)","भुईमूग (खरीप)","हरभरा (रबी)","टोमॅटो (वार्षिक)","कांदा (वार्षिक)"],
+  loan_types:["किसान क्रेडिट कार्ड (KCC) — 4% व्याज","कृषी टर्म लोन — 7% व्याज","संलग्न क्रियाकलाप लोन — 8% व्याज","कस्टम व्याज दर"]},
+  te:{t1:"రుణ కాల్క్యులేటర్",t2:"క్రిమిసంహారకం",t3:"బీమా",loan_title:"రైతు రుణ కాల్క్యులేటర్",loan_sub:"EMI లెక్కించండి · ఉత్తమ పథకం కనుగొనండి",emi_title:"మీ రుణ EMI లెక్కించండి",lbl_loan_type:"రుణ రకం",lbl_loan_amt:"రుణ మొత్తం (₹)",lbl_tenure:"రుణ వ్యవధి (నెలలు)",lbl_custom_rate:"వడ్డీ రేటు (% సంవత్సరానికి)",lbl_land:"భూమి పరిమాణం (ఎకరాలు)",schemes_title:"మీకు అత్యుత్తమ రుణ పథకాలు",qty_title:"క్రిమిసంహారక పరిమాణ కాల్క్యులేటర్",qty_desc:"మీ పొలం పరిమాణం నమోదు చేయండి → ఖచ్చితమైన పరిమాణం పొందండి",lbl_pest:"క్రిమిసంహారకం ఎంచుకోండి",lbl_field:"పొలం పరిమాణం (ఎకరాలు)",lbl_water:"ఎకరానికి నీరు (లీటర్లు)",ins_title:"పంట బీమా కాల్క్యులేటర్",premium_title:"మీ ప్రీమియం లెక్కించండి",lbl_ins_crop:"పంట",lbl_ins_land:"భూమి పరిమాణం (ఎకరాలు)",lbl_ins_state:"రాష్ట్రం",lbl_sum:"బీమా మొత్తం (₹/ఎకరం)",ins_btn:"నా ప్రీమియం లెక్కించండి",how_apply:"📋 PMFBY కోసం ఎలా దరఖాస్తు చేయాలి",what_covers:"✅ PMFBY ఏమి కవర్ చేస్తుంది",search_placeholder:"🔍 పంట, తెగులు లేదా క్రిమిసంహారకం పేరు శోధించండి...",filter_all:"🌾 అన్నీ",filter_fungicide:"🍄 శిలీంద్రనాశిని",filter_insecticide:"🐛 క్రిమిసంహారకం",filter_organic:"🌿 సేంద్రీయ",
+  ins_steps:["సమీప బ్యాంక్, CSC లేదా pmfby.gov.in కి వెళ్ళండి","తీసుకురండి: ఆధార్, భూమి పత్రాలు, బ్యాంక్ వివరాలు, విత్తన ప్రమాణపత్రం","PMFBY ఫారమ్ పూరించండి — గడువు విత్తన నెల చివరి తేదీ","ప్రీమియం చెల్లించండి — KCC ఉంటే బ్యాంక్ స్వయంగా తీసుకుంటుంది","పంట నష్టపోతే — 72 గంటల్లో క్లెయిమ్ నమోదు చేయండి","అనుమతి తర్వాత 15-20 రోజుల్లో డబ్బు బ్యాంక్‌లో జమ అవుతుంది"],
+  ins_crops:["గోధుమ (రబీ)","వరి/అన్నం (ఖరీఫ్)","మొక్కజొన్న (ఖరీఫ్)","ఆవాలు (రబీ)","సోయాబీన్ (ఖరీఫ్)","పత్తి (ఖరీఫ్)","వేరుశెనగ (ఖరీఫ్)","శనగ (రబీ)","టమాటా (వార్షిక)","ఉల్లిపాయ (వార్షిక)"],
+  loan_types:["కిసాన్ క్రెడిట్ కార్డ్ (KCC) — 4% వడ్డీ","వ్యవసాయ టర్మ్ లోన్ — 7% వడ్డీ","అనుబంధ కార్యకలాపాల లోన్ — 8% వడ్డీ","కస్టమ్ వడ్డీ రేటు"]},
+  ta:{t1:"கடன் கணக்கீடு",t2:"பூச்சிக்கொல்லி",t3:"காப்பீடு",loan_title:"விவசாயி கடன் கணக்கீடு",loan_sub:"EMI கணக்கிடுங்கள் · சிறந்த திட்டம் கண்டறியுங்கள்",emi_title:"உங்கள் கடன் EMI கணக்கிடுங்கள்",lbl_loan_type:"கடன் வகை",lbl_loan_amt:"கடன் தொகை (₹)",lbl_tenure:"கடன் காலம் (மாதங்கள்)",lbl_custom_rate:"வட்டி விகிதம் (% ஆண்டுக்கு)",lbl_land:"நிலம் அளவு (ஏக்கர்)",schemes_title:"உங்களுக்கான சிறந்த கடன் திட்டங்கள்",qty_title:"பூச்சிக்கொல்லி அளவு கணக்கீடு",qty_desc:"உங்கள் வயல் அளவை உள்ளிடுங்கள் → சரியான அளவு பெறுங்கள்",lbl_pest:"பூச்சிக்கொல்லி தேர்ந்தெடுங்கள்",lbl_field:"வயல் அளவு (ஏக்கர்)",lbl_water:"ஏக்கருக்கு தண்ணீர் (லிட்டர்)",ins_title:"பயிர் காப்பீடு கணக்கீடு",premium_title:"உங்கள் பிரீமியம் கணக்கிடுங்கள்",lbl_ins_crop:"பயிர்",lbl_ins_land:"நிலம் அளவு (ஏக்கர்)",lbl_ins_state:"மாநிலம்",lbl_sum:"காப்பீடு தொகை (₹/ஏக்கர்)",ins_btn:"என் பிரீமியம் கணக்கிடுங்கள்",how_apply:"📋 PMFBY க்கு எவ்வாறு விண்ணப்பிக்கலாம்",what_covers:"✅ PMFBY என்ன உள்ளடக்குகிறது",search_placeholder:"🔍 பயிர், பூச்சி அல்லது பூச்சிக்கொல்லி பெயர் தேடுங்கள்...",filter_all:"🌾 அனைத்தும்",filter_fungicide:"🍄 பூஞ்சைக்கொல்லி",filter_insecticide:"🐛 பூச்சிக்கொல்லி",filter_organic:"🌿 இயற்கை",
+  ins_steps:["அருகிலுள்ள வங்கி, CSC அல்லது pmfby.gov.in ஐ பார்வையிடுங்கள்","கொண்டு வாருங்கள்: ஆதார், நில ஆவணங்கள், வங்கி விவரங்கள், விதைப்பு சான்றிதழ்","PMFBY படிவம் நிரப்புங்கள் — கடைசி தேதி விதைப்பு மாதத்தின் இறுதி","பிரீமியம் செலுத்துங்கள் — KCC இருந்தால் வங்கி தானாக கழிக்கும்","பயிர் தோல்வியடைந்தால் — 72 மணி நேரத்தில் கோரிக்கை பதிவு செய்யுங்கள்","ஒப்புதலுக்குப் பிறகு 15-20 நாட்களில் பணம் வங்கியில் வரும்"],
+  ins_crops:["கோதுமை (ரபி)","நெல்/அரிசி (காரிஃப்)","மக்காச்சோளம் (காரிஃப்)","கடுகு (ரபி)","சோயாபீன் (காரிஃப்)","பருத்தி (காரிஃப்)","வேர்க்கடலை (காரிஃப்)","கடலை (ரபி)","தக்காளி (ஆண்டு)","வெங்காயம் (ஆண்டு)"],
+  loan_types:["கிசான் கிரெடிட் கார்டு (KCC) — 4% வட்டி","விவசாய கடன் — 7% வட்டி","துணை செயல்பாட்டு கடன் — 8% வட்டி","தனிப்பயன் வட்டி விகிதம்"]},
+  kn:{t1:"ಸಾಲ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್",t2:"ಕ್ರಿಮಿನಾಶಕ",t3:"ವಿಮೆ",loan_title:"ರೈತ ಸಾಲ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್",loan_sub:"EMI ಲೆಕ್ಕ ಹಾಕಿ · ಉತ್ತಮ ಯೋಜನೆ ಹುಡುಕಿ",emi_title:"ನಿಮ್ಮ ಸಾಲ EMI ಲೆಕ್ಕ ಹಾಕಿ",lbl_loan_type:"ಸಾಲದ ವಿಧ",lbl_loan_amt:"ಸಾಲದ ಮೊತ್ತ (₹)",lbl_tenure:"ಸಾಲದ ಅವಧಿ (ತಿಂಗಳು)",lbl_custom_rate:"ಬಡ್ಡಿ ದರ (% ವಾರ್ಷಿಕ)",lbl_land:"ಭೂಮಿ ಗಾತ್ರ (ಎಕರೆ)",schemes_title:"ನಿಮಗಾಗಿ ಉತ್ತಮ ಸಾಲ ಯೋಜನೆಗಳು",qty_title:"ಕ್ರಿಮಿನಾಶಕ ಪ್ರಮಾಣ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್",qty_desc:"ನಿಮ್ಮ ಹೊಲದ ಗಾತ್ರ ನಮೂದಿಸಿ → ನಿಖರ ಪ್ರಮಾಣ ಪಡೆಯಿರಿ",lbl_pest:"ಕ್ರಿಮಿನಾಶಕ ಆಯ್ಕೆ ಮಾಡಿ",lbl_field:"ಹೊಲದ ಗಾತ್ರ (ಎಕರೆ)",lbl_water:"ಎಕರೆಗೆ ನೀರು (ಲೀಟರ್)",ins_title:"ಬೆಳೆ ವಿಮೆ ಕ್ಯಾಲ್ಕ್ಯುಲೇಟರ್",premium_title:"ನಿಮ್ಮ ಪ್ರೀಮಿಯಂ ಲೆಕ್ಕ ಹಾಕಿ",lbl_ins_crop:"ಬೆಳೆ",lbl_ins_land:"ಭೂಮಿ ಗಾತ್ರ (ಎಕರೆ)",lbl_ins_state:"ರಾಜ್ಯ",lbl_sum:"ವಿಮೆ ಮೊತ್ತ (₹/ಎಕರೆ)",ins_btn:"ನನ್ನ ಪ್ರೀಮಿಯಂ ಲೆಕ್ಕ ಹಾಕಿ",how_apply:"📋 PMFBY ಗೆ ಹೇಗೆ ಅರ್ಜಿ ಸಲ್ಲಿಸಬೇಕು",what_covers:"✅ PMFBY ಏನು ಒಳಗೊಂಡಿದೆ",search_placeholder:"🔍 ಬೆಳೆ, ಕೀಟ ಅಥವಾ ಕ್ರಿಮಿನಾಶಕ ಹೆಸರು ಹುಡುಕಿ...",filter_all:"🌾 ಎಲ್ಲಾ",filter_fungicide:"🍄 ಶಿಲೀಂಧ್ರನಾಶಕ",filter_insecticide:"🐛 ಕ್ರಿಮಿನಾಶಕ",filter_organic:"🌿 ಸಾವಯವ",
+  ins_steps:["ಹತ್ತಿರದ ಬ್ಯಾಂಕ್, CSC ಅಥವಾ pmfby.gov.in ಗೆ ಭೇಟಿ ನೀಡಿ","ತನ್ನಿ: ಆಧಾರ್, ಭೂಮಿ ದಾಖಲೆಗಳು, ಬ್ಯಾಂಕ್ ವಿವರಗಳು, ಬಿತ್ತನೆ ಪ್ರಮಾಣಪತ್ರ","PMFBY ಫಾರ್ಮ್ ತುಂಬಿ — ಕೊನೆಯ ದಿನಾಂಕ ಬಿತ್ತನೆ ತಿಂಗಳ ಕೊನೆ","ಪ್ರೀಮಿಯಂ ಪಾವತಿಸಿ — KCC ಇದ್ದರೆ ಬ್ಯಾಂಕ್ ಸ್ವಯಂ ಕಡಿತ ಮಾಡುತ್ತದೆ","ಬೆಳೆ ನಷ್ಟವಾದರೆ — 72 ಗಂಟೆಯಲ್ಲಿ ಕ್ಲೇಮ್ ಸಲ್ಲಿಸಿ","ಅನುಮೋದನೆಯ 15-20 ದಿನಗಳಲ್ಲಿ ಹಣ ಬ್ಯಾಂಕ್‌ಗೆ ಬರುತ್ತದೆ"],
+  ins_crops:["ಗೋಧಿ (ರಬಿ)","ಭತ್ತ/ಅಕ್ಕಿ (ಖರೀಫ್)","ಮೆಕ್ಕೆಜೋಳ (ಖರೀಫ್)","ಸಾಸಿವೆ (ರಬಿ)","ಸೋಯಾಬೀನ್ (ಖರೀಫ್)","ಹತ್ತಿ (ಖರೀಫ್)","ಶೇಂಗಾ (ಖರೀಫ್)","ಕಡಲೆ (ರಬಿ)","ಟೊಮೇಟೊ (ವಾರ್ಷಿಕ)","ಈರುಳ್ಳಿ (ವಾರ್ಷಿಕ)"],
+  loan_types:["ಕಿಸಾನ್ ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ (KCC) — 4% ಬಡ್ಡಿ","ಕೃಷಿ ಅವಧಿ ಸಾಲ — 7% ಬಡ್ಡಿ","ಸಹಾಯಕ ಚಟುವಟಿಕೆ ಸಾಲ — 8% ಬಡ್ಡಿ","ಕಸ್ಟಮ್ ಬಡ್ಡಿ ದರ"]},
+  ml:{t1:"ലോൺ കാൽക്കുലേറ്റർ",t2:"കീടനാശിനി",t3:"ഇൻഷുറൻസ്",loan_title:"കർഷക ലോൺ കാൽക്കുലേറ്റർ",loan_sub:"EMI കണക്കാക്കൂ · ഉത്തമ പദ്ധതി കണ്ടെത്തൂ",emi_title:"നിങ്ങളുടെ ലോൺ EMI കണക്കാക്കൂ",lbl_loan_type:"ലോൺ തരം",lbl_loan_amt:"ലോൺ തുക (₹)",lbl_tenure:"ലോൺ കാലാവധി (മാസങ്ങൾ)",lbl_custom_rate:"പലിശ നിരക്ക് (% വാർഷികം)",lbl_land:"ഭൂമി വലിപ്പം (ഏക്കർ)",schemes_title:"നിങ്ങൾക്കായി ഏറ്റവും നല്ല ലോൺ പദ്ധതികൾ",qty_title:"കീടനാശിനി അളവ് കാൽക്കുലേറ്റർ",qty_desc:"നിങ്ങളുടെ വയൽ വലിപ്പം നൽകൂ → കൃത്യമായ അളവ് നേടൂ",lbl_pest:"കീടനാശിനി തിരഞ്ഞെടുക്കൂ",lbl_field:"വയൽ വലിപ്പം (ഏക്കർ)",lbl_water:"ഏക്കറിന് വെള്ളം (ലിറ്റർ)",ins_title:"വിള ഇൻഷുറൻസ് കാൽക്കുലേറ്റർ",premium_title:"നിങ്ങളുടെ പ്രീമിയം കണക്കാക്കൂ",lbl_ins_crop:"വിള",lbl_ins_land:"ഭൂമി വലിപ്പം (ഏക്കർ)",lbl_ins_state:"സംസ്ഥാനം",lbl_sum:"ഇൻഷുറൻസ് തുക (₹/ഏക്കർ)",ins_btn:"എന്റെ പ്രീമിയം കണക്കാക്കൂ",how_apply:"📋 PMFBY ക്കായി എങ്ങനെ അപേക്ഷിക്കാം",what_covers:"✅ PMFBY എന്ത് ഉൾക്കൊള്ളുന്നു",search_placeholder:"🔍 വിള, കീടം അല്ലെങ്കിൽ കീടനാശിനി പേര് തിരയൂ...",filter_all:"🌾 എല്ലാം",filter_fungicide:"🍄 കുമിൾനാശിനി",filter_insecticide:"🐛 കീടനാശിനി",filter_organic:"🌿 ജൈവ",
+  ins_steps:["അടുത്തുള്ള ബാങ്ക്, CSC അല്ലെങ്കിൽ pmfby.gov.in സന്ദർശിക്കൂ","കൊണ്ടുവരൂ: ആധാർ, ഭൂമി രേഖകൾ, ബാങ്ക് വിവരങ്ങൾ, വിതക്കൽ സർട്ടിഫിക്കറ്റ്","PMFBY ഫോം പൂരിപ്പിക്കൂ — അവസാന തീയതി വിതക്കൽ മാസത്തിന്റെ അവസാനം","പ്രീമിയം അടക്കൂ — KCC ഉണ്ടെങ്കിൽ ബാങ്ക് സ്വയം കുറയ്ക്കും","വിള നഷ്ടപ്പെട്ടാൽ — 72 മണിക്കൂറിൽ ക്ലെയിം ഫയൽ ചേയ്യൂ","അനുമതിക്ക് ശേഷം 15-20 ദിവസത്തിൽ പണം ബാങ്കിൽ വരും"],
+  ins_crops:["ഗോതമ്പ് (റബി)","നെല്ല്/അരി (ഖരീഫ്)","ചോളം (ഖരീഫ്)","കടുക് (റബി)","സോയാബീൻ (ഖരീഫ്)","പഞ്ഞി (ഖരീഫ്)","നിലക്കടല (ഖരീഫ്)","കടല (റബി)","തക്കാളി (വാർഷിക)","ഉള്ളി (വാർഷിക)"],
+  loan_types:["കിസാൻ ക്രെഡിറ്റ് കാർഡ് (KCC) — 4% പലിശ","കൃഷി ടേം ലോൺ — 7% പലിശ","അനുബന്ധ പ്രവർത്തന ലോൺ — 8% പലിശ","ഇഷ്ടാനുസൃത പലിശ നിരക്ക്"]},
+  gu:{t1:"લોન કૅલ્ક્યુલેટર",t2:"જંતુનાશક",t3:"વીમો",loan_title:"ખેડૂત લોન કૅલ્ક્યુલેટર",loan_sub:"EMI ગણો · શ્રેષ્ઠ યોજના શોધો",emi_title:"તમારો લોન EMI ગણો",lbl_loan_type:"લોનનો પ્રકાર",lbl_loan_amt:"લોન રકમ (₹)",lbl_tenure:"લોન અવધિ (મહિના)",lbl_custom_rate:"વ્યાજ દર (% વાર્ષિક)",lbl_land:"જમીનનું કદ (એકર)",schemes_title:"તમારા માટે શ્રેષ્ઠ લોન યોજનાઓ",qty_title:"જંતુનાશક માત્રા કૅલ્ક્યુલેટર",qty_desc:"તમારા ખેતરનું કદ દાખલ કરો → ચોક્કસ માત્રા મેળવો",lbl_pest:"જંતુનાશક પસંદ કરો",lbl_field:"ખેતરનું કદ (એકર)",lbl_water:"પ્રતિ એકર પાણી (લીટર)",ins_title:"પાક વીમો કૅલ્ક્યુલેટર",premium_title:"તમારો પ્રીમિયમ ગણો",lbl_ins_crop:"પાક",lbl_ins_land:"જમીનનું કદ (એકર)",lbl_ins_state:"રાજ્ય",lbl_sum:"વીમા રકમ (₹/એકર)",ins_btn:"મારો પ્રીમિયમ ગણો",how_apply:"📋 PMFBY માટે કેવી રીતે અરજી કરવી",what_covers:"✅ PMFBY શું આવરી લે છે",search_placeholder:"🔍 પાક, જીવાત અથવા જંતુનાશક નામ શોધો...",filter_all:"🌾 બધા",filter_fungicide:"🍄 ફૂગનાશક",filter_insecticide:"🐛 જંતુનાશક",filter_organic:"🌿 જૈવ",
+  ins_steps:["નજીકની બેન્ક, CSC અથવા pmfby.gov.in ની મુલાકાત લો","લઈ આવો: આધાર, જમીનના કાગળો, બેન્ક વિગત, વાવણી પ્રમાણપત્ર","PMFBY ફોર્મ ભરો — છેલ્લી તારીખ વાવણી મહિનાની હોય છે","પ્રીમિયમ ભરો — KCC હોય તો બેન્ક આપોઆપ કાપે છે","પાક નિષ્ફળ જાય તો — 72 કલાકમાં દાવો નોંધો","મંજૂરી પછી 15-20 દિવસમાં પૈસા બેન્કમાં આવશે"],
+  ins_crops:["ઘઉં (રવિ)","ડાંગર/ચોખા (ખરીફ)","મકાઈ (ખરીફ)","સરસવ (રવિ)","સોયાબીન (ખરીફ)","કપાસ (ખરીફ)","મગફળી (ખરીફ)","ચણા (રવિ)","ટામેટા (વાર્ષિક)","ડુંગળી (વાર્ષિક)"],
+  loan_types:["કિસાન ક્રેડિટ કાર્ડ (KCC) — 4% વ્યાજ","ખેતી ટર્મ લોન — 7% વ્યાજ","સહાયક પ્રવૃત્તિ લોન — 8% વ્યાજ","કસ્ટમ વ્યાજ દર"]},
+  bn:{t1:"ঋণ ক্যালকুলেটর",t2:"কীটনাশক",t3:"বীমা",loan_title:"কৃষক ঋণ ক্যালকুলেটর",loan_sub:"EMI গণনা করুন · সেরা প্রকল্প খুঁজুন",emi_title:"আপনার ঋণ EMI গণনা করুন",lbl_loan_type:"ঋণের ধরন",lbl_loan_amt:"ঋণের পরিমাণ (₹)",lbl_tenure:"ঋণের মেয়াদ (মাস)",lbl_custom_rate:"সুদের হার (% বার্ষিক)",lbl_land:"জমির আকার (একর)",schemes_title:"আপনার জন্য সেরা ঋণ প্রকল্প",qty_title:"কীটনাশক পরিমাণ ক্যালকুলেটর",qty_desc:"আপনার জমির আকার লিখুন → সঠিক পরিমাণ পান",lbl_pest:"কীটনাশক বেছে নিন",lbl_field:"জমির আকার (একর)",lbl_water:"প্রতি একরে পানি (লিটার)",ins_title:"ফসল বীমা ক্যালকুলেটর",premium_title:"আপনার প্রিমিয়াম গণনা করুন",lbl_ins_crop:"ফসল",lbl_ins_land:"জমির আকার (একর)",lbl_ins_state:"রাজ্য",lbl_sum:"বীমার পরিমাণ (₹/একর)",ins_btn:"আমার প্রিমিয়াম গণনা করুন",how_apply:"📋 PMFBY এর জন্য কীভাবে আবেদন করবেন",what_covers:"✅ PMFBY কী কভার করে",search_placeholder:"🔍 ফসল, পোকা বা কীটনাশকের নাম খুঁজুন...",filter_all:"🌾 সব",filter_fungicide:"🍄 ছত্রাকনাশক",filter_insecticide:"🐛 কীটনাশক",filter_organic:"🌿 জৈব",
+  ins_steps:["নিকটস্থ ব্যাংক, CSC বা pmfby.gov.in পরিদর্শন করুন","নিয়ে আসুন: আধার, জমির কাগজপত্র, ব্যাংক বিবরণ, বপনের সনদ","PMFBY ফর্ম পূরণ করুন — শেষ তারিখ বপনের মাসের শেষে","প্রিমিয়াম দিন — KCC থাকলে ব্যাংক স্বয়ংক্রিয়ভাবে কাটবে","ফসল ক্ষতি হলে — ৭২ ঘণ্টার মধ্যে দাবি নথিভুক্ত করুন","অনুমোদনের ১৫-২০ দিনের মধ্যে টাকা ব্যাংকে আসবে"],
+  ins_crops:["গম (রবি)","ধান/চাল (খরিফ)","ভুট্টা (খরিফ)","সরিষা (রবি)","সয়াবিন (খরিফ)","তুলা (খরিফ)","চিনাবাদাম (খরিফ)","ছোলা (রবি)","টমেটো (বার্ষিক)","পেঁয়াজ (বার্ষিক)"],
+  loan_types:["কিসান ক্রেডিট কার্ড (KCC) — ৪% সুদ","কৃষি মেয়াদী ঋণ — ৭% সুদ","সহায়ক কার্যক্রম ঋণ — ৮% সুদ","কাস্টম সুদের হার"]},
 };
 
 const LOAN_SCHEMES = [
@@ -371,10 +401,64 @@ let currentLang = "en";
 function setLang(l) {
   currentLang = l;
   try { localStorage.setItem("annadatahub_lang", l); } catch(e) {}
-  const t = (LANG_LABELS[l] || LANG_LABELS.en);
-  document.getElementById("t1").textContent = t[0];
-  document.getElementById("t2").textContent = t[1];
-  document.getElementById("t3").textContent = t[2];
+  const t = LANG_LABELS[l] || LANG_LABELS.en;
+  // Tabs
+  document.getElementById("t1").textContent = t.t1;
+  document.getElementById("t2").textContent = t.t2;
+  document.getElementById("t3").textContent = t.t3;
+  // Loan
+  document.getElementById("loan-title").textContent = t.loan_title;
+  document.getElementById("loan-sub").textContent = t.loan_sub;
+  document.getElementById("emi-title").textContent = t.emi_title;
+  document.getElementById("lbl-loan-type").textContent = t.lbl_loan_type;
+  document.getElementById("lbl-loan-amt").textContent = t.lbl_loan_amt;
+  document.getElementById("lbl-loan-tenure").textContent = t.lbl_tenure;
+  document.getElementById("lbl-custom-rate").textContent = t.lbl_custom_rate;
+  document.getElementById("lbl-land-size").textContent = t.lbl_land;
+  document.getElementById("schemes-title").textContent = t.schemes_title;
+  // Loan type dropdown
+  const lt = document.getElementById("loanType");
+  if (lt) {
+    const vals = ["kcc","agri","allied","custom"];
+    const cur = lt.value;
+    lt.innerHTML = t.loan_types.map((opt, i) => `<option value="${vals[i]}">${opt}</option>`).join("");
+    lt.value = cur;
+  }
+  // Pesticide
+  document.getElementById("qty-calc-title").textContent = t.qty_title;
+  document.getElementById("qty-calc-desc").textContent = t.qty_desc;
+  document.getElementById("lbl-select-pest").textContent = t.lbl_pest;
+  document.getElementById("lbl-field-size").textContent = t.lbl_field;
+  document.getElementById("lbl-water").textContent = t.lbl_water;
+  document.getElementById("pestSearch").placeholder = t.search_placeholder;
+  // Filter tags re-render
+  document.getElementById("filterTags").innerHTML = [
+    ["all", t.filter_all], ["fungicide", t.filter_fungicide],
+    ["insecticide", t.filter_insecticide], ["organic", t.filter_organic]
+  ].map(([cat, label]) => `<div class="filter-tag ${cat==="all"?"active":""}" onclick="setFilter('${cat}',this)">${label}</div>`).join("");
+  // Insurance
+  document.getElementById("ins-title").textContent = t.ins_title;
+  document.getElementById("premium-title").textContent = t.premium_title;
+  document.getElementById("lbl-ins-crop").textContent = t.lbl_ins_crop;
+  document.getElementById("lbl-ins-land").textContent = t.lbl_ins_land;
+  document.getElementById("lbl-ins-state").textContent = t.lbl_ins_state;
+  document.getElementById("lbl-sum-insured").textContent = t.lbl_sum;
+  document.getElementById("ins-btn-text").textContent = t.ins_btn;
+  document.getElementById("how-apply-title").textContent = t.how_apply;
+  document.getElementById("what-covers-title").textContent = t.what_covers;
+  // Insurance crop dropdown
+  const ic = document.getElementById("insCrop");
+  if (ic) {
+    const vals = ["wheat_rabi","paddy_kharif","corn_kharif","mustard_rabi","soybean_kharif","cotton_kharif","groundnut_kharif","gram_rabi","tomato_annual","onion_annual"];
+    const cur = ic.value;
+    ic.innerHTML = t.ins_crops.map((name, i) => `<option value="${vals[i]}">${name}</option>`).join("");
+    ic.value = cur;
+  }
+  // Insurance steps
+  const steps = document.querySelectorAll(".ins-step-text");
+  if (steps.length && t.ins_steps) {
+    steps.forEach((s, i) => { if (t.ins_steps[i]) s.innerHTML = t.ins_steps[i]; });
+  }
 }
 
 function showTab(tab) {
