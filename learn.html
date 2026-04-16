@@ -133,6 +133,14 @@
     <option value="bn">বাংলা</option>
   </select>
 </div>
+<!-- Set dropdown value immediately from localStorage before page renders -->
+<script>
+try {
+  var _sl = document.getElementById("langSel");
+  var _sv = localStorage.getItem("annadatahub_lang") || "en";
+  if (_sl) _sl.value = _sv;
+} catch(e) {}
+</script>
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('techniques')" id="tab-techniques"><span class="icon">🌱</span><span id="t1">Techniques</span></button>
