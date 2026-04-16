@@ -76,28 +76,28 @@
 
   <!-- FILTER -->
   <div class="filter-bar" id="filterBar">
-    <button class="filter-btn active" onclick="filterPosts('all', this)">🌾 All</button>
-    <button class="filter-btn" onclick="filterPosts('Wheat', this)">🌾 Wheat</button>
-    <button class="filter-btn" onclick="filterPosts('Rice', this)">🌾 Rice</button>
-    <button class="filter-btn" onclick="filterPosts('Cotton', this)">🌿 Cotton</button>
-    <button class="filter-btn" onclick="filterPosts('Vegetables', this)">🥦 Vegetables</button>
-    <button class="filter-btn" onclick="filterPosts('Question', this)">❓ Questions</button>
+    <button class="filter-btn active" id="fb-all" onclick="filterPosts('all', this)">🌾 All</button>
+    <button class="filter-btn" id="fb-wheat" onclick="filterPosts('Wheat', this)">🌾 Wheat</button>
+    <button class="filter-btn" id="fb-rice" onclick="filterPosts('Rice', this)">🌾 Rice</button>
+    <button class="filter-btn" id="fb-cotton" onclick="filterPosts('Cotton', this)">🌿 Cotton</button>
+    <button class="filter-btn" id="fb-veg" onclick="filterPosts('Vegetables', this)">🥦 Vegetables</button>
+    <button class="filter-btn" id="fb-q" onclick="filterPosts('Question', this)">❓ Questions</button>
   </div>
 
   <!-- POSTS FEED -->
   <div id="postsFeed">
-    <div class="loading"><div class="spinner"></div><p style="color:var(--muted)">Loading posts...</p></div>
+    <div class="loading"><div class="spinner"></div><p style="color:var(--muted)" id="loading-text">Loading posts...</p></div>
   </div>
 
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <a class="nav-item" href="index.html"><span class="nav-icon">🏠</span>Home</a>
-  <a class="nav-item" href="farmer-tools.html"><span class="nav-icon">📊</span>Prices</a>
+  <a class="nav-item" href="index.html"><span class="nav-icon">🏠</span><span id="nav-home">Home</span></a>
+  <a class="nav-item" href="farmer-tools.html"><span class="nav-icon">📊</span><span id="nav-prices">Prices</span></a>
   <a class="nav-scan" href="farmer-tools.html">📷</a>
-  <a class="nav-item active" href="farmgram.html"><span class="nav-icon">📱</span>FarmGram</a>
-  <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span>MSP</a>
+  <a class="nav-item active" href="farmgram.html"><span class="nav-icon">📱</span><span id="nav-farmgram">FarmGram</span></a>
+  <a class="nav-item" href="msp.html"><span class="nav-icon">⚖️</span><span id="nav-msp">MSP</span></a>
 </div>
 
 <div id="toast" class="toast hidden"></div>
@@ -108,6 +108,42 @@ const BACKEND = "https://annadatahub-production-a9db.up.railway.app";
 let allPosts = [];
 let currentFilter = "all";
 let selectedPhotoBase64 = null;
+let currentLang = "en";
+
+const FG_LABELS = {
+  en:{all:"🌾 All",wheat:"🌾 Wheat",rice:"🌾 Rice",cotton:"🌿 Cotton",veg:"🥦 Vegetables",q:"❓ Questions",placeholder:"What's happening on your farm? Ask a question, share a tip, post about your crop...",post_btn:"🌾 Post to FarmGram",posting:"Posting...",loading:"Loading posts...",share_title:"Share with Farmers",just_now:"Just now",copied:"Copied!",nav_home:"Home",nav_prices:"Prices",nav_farmgram:"FarmGram",nav_msp:"MSP"},
+  hi:{all:"🌾 सभी",wheat:"🌾 गेहूं",rice:"🌾 धान",cotton:"🌿 कपास",veg:"🥦 सब्जियां",q:"❓ सवाल",placeholder:"आपके खेत में क्या हो रहा है? सवाल पूछें, टिप शेयर करें...",post_btn:"🌾 FarmGram पर पोस्ट करें",posting:"पोस्ट हो रहा है...",loading:"पोस्ट लोड हो रहे हैं...",share_title:"किसानों के साथ शेयर करें",just_now:"अभी",copied:"कॉपी हो गया!",nav_home:"होम",nav_prices:"मंडी",nav_farmgram:"फार्मग्राम",nav_msp:"MSP"},
+  pa:{all:"🌾 ਸਭ",wheat:"🌾 ਕਣਕ",rice:"🌾 ਝੋਨਾ",cotton:"🌿 ਕਪਾਹ",veg:"🥦 ਸਬਜ਼ੀਆਂ",q:"❓ ਸਵਾਲ",placeholder:"ਤੁਹਾਡੇ ਖੇਤ ਵਿੱਚ ਕੀ ਹੋ ਰਿਹਾ ਹੈ? ਸਵਾਲ ਪੁੱਛੋ, ਸਲਾਹ ਸਾਂਝੀ ਕਰੋ...",post_btn:"🌾 FarmGram ਤੇ ਪੋਸਟ ਕਰੋ",posting:"ਪੋਸਟ ਹੋ ਰਿਹਾ ਹੈ...",loading:"ਪੋਸਟਾਂ ਲੋਡ ਹੋ ਰਹੀਆਂ ਹਨ...",share_title:"ਕਿਸਾਨਾਂ ਨਾਲ ਸਾਂਝਾ ਕਰੋ",just_now:"ਹੁਣੇ",copied:"ਕਾਪੀ ਹੋ ਗਿਆ!",nav_home:"ਘਰ",nav_prices:"ਮੰਡੀ",nav_farmgram:"ਫਾਰਮਗ੍ਰਾਮ",nav_msp:"MSP"},
+  mr:{all:"🌾 सर्व",wheat:"🌾 गहू",rice:"🌾 भात",cotton:"🌿 कापूस",veg:"🥦 भाज्या",q:"❓ प्रश्न",placeholder:"तुमच्या शेतात काय घडत आहे? प्रश्न विचारा, टिप शेअर करा...",post_btn:"🌾 FarmGram वर पोस्ट करा",posting:"पोस्ट होत आहे...",loading:"पोस्ट लोड होत आहेत...",share_title:"शेतकऱ्यांसोबत शेअर करा",just_now:"आत्ता",copied:"कॉपी झाले!",nav_home:"मुख्यपृष्ठ",nav_prices:"मंडी",nav_farmgram:"फार्मग्राम",nav_msp:"MSP"},
+  te:{all:"🌾 అన్నీ",wheat:"🌾 గోధుమ",rice:"🌾 వరి",cotton:"🌿 పత్తి",veg:"🥦 కూరగాయలు",q:"❓ ప్రశ్నలు",placeholder:"మీ పొలంలో ఏం జరుగుతోంది? ప్రశ్న అడగండి, చిట్కా పంచుకోండి...",post_btn:"🌾 FarmGram లో పోస్ట్ చేయండి",posting:"పోస్ట్ అవుతోంది...",loading:"పోస్ట్లు లోడ్ అవుతున్నాయి...",share_title:"రైతులతో పంచుకోండి",just_now:"ఇప్పుడే",copied:"కాపీ అయింది!",nav_home:"హోమ్",nav_prices:"ధరలు",nav_farmgram:"ఫార్మ్‌గ్రామ్",nav_msp:"MSP"},
+  ta:{all:"🌾 அனைத்தும்",wheat:"🌾 கோதுமை",rice:"🌾 நெல்",cotton:"🌿 பருத்தி",veg:"🥦 காய்கறிகள்",q:"❓ கேள்விகள்",placeholder:"உங்கள் வயலில் என்ன நடக்கிறது? கேள்வி கேளுங்கள், குறிப்பு பகிருங்கள்...",post_btn:"🌾 FarmGram இல் பதிவிடுங்கள்",posting:"பதிவிடப்படுகிறது...",loading:"பதிவுகள் ஏற்றப்படுகின்றன...",share_title:"விவசாயிகளுடன் பகிர்ந்துகொள்ளுங்கள்",just_now:"இப்போதே",copied:"நகலெடுக்கப்பட்டது!",nav_home:"முகப்பு",nav_prices:"விலைகள்",nav_farmgram:"பண்ணைக்காரம்",nav_msp:"MSP"},
+  kn:{all:"🌾 ಎಲ್ಲಾ",wheat:"🌾 ಗೋಧಿ",rice:"🌾 ಭತ್ತ",cotton:"🌿 ಹತ್ತಿ",veg:"🥦 ತರಕಾರಿ",q:"❓ ಪ್ರಶ್ನೆಗಳು",placeholder:"ನಿಮ್ಮ ಹೊಲದಲ್ಲಿ ಏನು ನಡೆಯುತ್ತಿದೆ? ಪ್ರಶ್ನೆ ಕೇಳಿ, ಸಲಹೆ ಹಂಚಿ...",post_btn:"🌾 FarmGram ಗೆ ಪೋಸ್ಟ್ ಮಾಡಿ",posting:"ಪೋಸ್ಟ್ ಆಗುತ್ತಿದೆ...",loading:"ಪೋಸ್ಟ್‌ಗಳು ಲೋಡ್ ಆಗುತ್ತಿವೆ...",share_title:"ರೈತರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ",just_now:"ಈಗಲೇ",copied:"ನಕಲಿಸಲಾಗಿದೆ!",nav_home:"ಮುಖ್ಯಪುಟ",nav_prices:"ಬೆಲೆ",nav_farmgram:"ಫಾರ್ಮ್‌ಗ್ರಾಮ್",nav_msp:"MSP"},
+  ml:{all:"🌾 എല്ലാം",wheat:"🌾 ഗോതമ്പ്",rice:"🌾 നെല്ല്",cotton:"🌿 പഞ്ഞി",veg:"🥦 പച്ചക്കറി",q:"❓ ചോദ്യങ്ങൾ",placeholder:"നിങ്ങളുടെ ഫാമിൽ എന്ത് നടക്കുന്നു? ചോദ്യം ചോദിക്കൂ, ടിപ്പ് പങ്കുവെക്കൂ...",post_btn:"🌾 FarmGram ൽ പോസ്റ്റ് ചേയ്യൂ",posting:"പോസ്റ്റ് ആകുന്നു...",loading:"പോസ്റ്റുകൾ ലോഡ് ആകുന്നു...",share_title:"കർഷകരുമായി പങ്കിടൂ",just_now:"ഇപ്പോൾ",copied:"പകർത്തി!",nav_home:"ഹോം",nav_prices:"വിലകൾ",nav_farmgram:"ഫാം​ഗ്രാം",nav_msp:"MSP"},
+  gu:{all:"🌾 બધા",wheat:"🌾 ઘઉં",rice:"🌾 ડાંગર",cotton:"🌿 કપાસ",veg:"🥦 શાકભાજી",q:"❓ સવાલ",placeholder:"તમારા ખેતરમાં શું થઈ રહ્યું છે? સવાલ પૂછો, ટિપ શેર કરો...",post_btn:"🌾 FarmGram પર પોસ્ટ કરો",posting:"પોસ્ટ થઈ રહ્યું છે...",loading:"પોસ્ટ લોડ થઈ રહ્યા છે...",share_title:"ખેડૂતો સાથે શેર કરો",just_now:"હમણાં",copied:"કૉپی થઈ ગયું!",nav_home:"હોમ",nav_prices:"ભાવ",nav_farmgram:"ફાર્મગ્રામ",nav_msp:"MSP"},
+  bn:{all:"🌾 সব",wheat:"🌾 গম",rice:"🌾 ধান",cotton:"🌿 তুলা",veg:"🥦 সবজি",q:"❓ প্রশ্ন",placeholder:"আপনার খামারে কী হচ্ছে? প্রশ্ন করুন, টিপস শেয়ার করুন...",post_btn:"🌾 FarmGram এ পোস্ট করুন",posting:"পোস্ট হচ্ছে...",loading:"পোস্টগুলো লোড হচ্ছে...",share_title:"কৃষকদের সাথে শেয়ার করুন",just_now:"এইমাত্র",copied:"কপি হয়েছে!",nav_home:"হোম",nav_prices:"দাম",nav_farmgram:"ফার্মগ্রাম",nav_msp:"MSP"},
+};
+
+function setLang(l) {
+  currentLang = l;
+  try { localStorage.setItem("annadatahub_lang", l); } catch(e) {}
+  const t = FG_LABELS[l] || FG_LABELS.en;
+  document.getElementById("fb-all").textContent = t.all;
+  document.getElementById("fb-wheat").textContent = t.wheat;
+  document.getElementById("fb-rice").textContent = t.rice;
+  document.getElementById("fb-cotton").textContent = t.cotton;
+  document.getElementById("fb-veg").textContent = t.veg;
+  document.getElementById("fb-q").textContent = t.q;
+  // Update post textarea placeholder if visible
+  const ta = document.getElementById("postContent");
+  if (ta) ta.placeholder = t.placeholder;
+  const loadingEl = document.getElementById("loading-text");
+  if (loadingEl) loadingEl.textContent = t.loading;
+  // Nav labels
+  const nh = document.getElementById("nav-home"); if (nh) nh.textContent = t.nav_home;
+  const np = document.getElementById("nav-prices"); if (np) np.textContent = t.nav_prices;
+  const nf = document.getElementById("nav-farmgram"); if (nf) nf.textContent = t.nav_farmgram;
+  const nm = document.getElementById("nav-msp"); if (nm) nm.textContent = t.nav_msp;
+}
 
 // Auth helpers
 function getToken() { try { return localStorage.getItem("auth_token"); } catch(e) { return null; } }
@@ -147,14 +183,15 @@ function renderCreatePost() {
   const token = getToken();
   const section = document.getElementById("createPostSection");
   const header = document.getElementById("headerRight");
+  const t = FG_LABELS[currentLang] || FG_LABELS.en;
 
   if (user && token) {
     header.innerHTML = `<div style="background:rgba(255,255,255,0.2);border-radius:20px;padding:5px 10px;display:flex;align-items:center;gap:6px;cursor:pointer" onclick="scrollToCreate()"><span style="font-size:1rem">🧑‍🌾</span><span style="color:white;font-size:0.8rem;font-weight:600">${user.full_name.split(" ")[0]}</span></div>`;
     section.innerHTML = `
       <div class="card">
-        <div style="font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;color:var(--green);margin-bottom:12px">📝 Share with Farmers</div>
+        <div style="font-family:'Baloo 2',cursive;font-size:0.95rem;font-weight:700;color:var(--green);margin-bottom:12px">📝 ${t.share_title}</div>
         <div class="field">
-          <textarea id="postContent" rows="3" placeholder="What's happening on your farm? Ask a question, share a tip, post about your crop..."></textarea>
+          <textarea id="postContent" rows="3" placeholder="${t.placeholder}"></textarea>
         </div>
         <div class="field">
           <select id="postCrop">
@@ -175,7 +212,7 @@ function renderCreatePost() {
           </button>
           <img id="postPhotoPreview" class="photo-preview"/>
         </div>
-        <button class="btn btn-green" onclick="createPost()" id="postBtn">🌾 Post to FarmGram</button>
+        <button class="btn btn-green" onclick="createPost()" id="postBtn">${t.post_btn}</button>
       </div>`;
   } else {
     header.innerHTML = `<a href="index.html" style="background:var(--gold);color:var(--text);border:none;border-radius:8px;padding:6px 12px;font-family:'Baloo 2',cursive;font-size:0.8rem;font-weight:700;cursor:pointer;text-decoration:none">👤 Login</a>`;
@@ -214,7 +251,7 @@ async function createPost() {
 
   if (!content) { showToast("Please write something to post", "error"); return; }
 
-  btn.disabled = true; btn.textContent = "Posting...";
+  btn.disabled = true; btn.textContent = (FG_LABELS[currentLang] || FG_LABELS.en).posting;
 
   try {
     const res = await fetch(`${BACKEND}/api/farmgram/post`, {
@@ -244,7 +281,7 @@ async function createPost() {
   } catch(e) {
     showToast(e.message || "Could not post. Try again.", "error");
   }
-  btn.disabled = false; btn.textContent = "🌾 Post to FarmGram";
+  btn.disabled = false; btn.textContent = (FG_LABELS[currentLang] || FG_LABELS.en).post_btn;
 }
 
 async function loadPosts() {
@@ -349,11 +386,17 @@ function copyPost(content) {
   if (navigator.share) {
     navigator.share({title: "FarmGram Post", text: text}).catch(() => {});
   } else {
-    navigator.clipboard.writeText(text).then(() => showToast("Copied to clipboard!"));
+    navigator.clipboard.writeText(text).then(() => showToast((FG_LABELS[currentLang]||FG_LABELS.en).copied));
   }
 }
 
 // Init
+try {
+  const saved = localStorage.getItem("annadatahub_lang") || "en";
+  currentLang = saved;
+  setLang(saved);
+} catch(e) {}
+
 renderCreatePost();
 loadPosts();
 </script>
