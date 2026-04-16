@@ -566,6 +566,17 @@ async def ask_ai(query: AIQuery, request: Request):
         result = fallback_map.get(query.language, "AI service is busy. Please try again in 1 minute. Kisan Helpline: 1800-180-1551 (Free)")
     else:
         cache_set(cache_key, result, hours=6)
+        # Log AI question for admin panel
+        try:
+            await db.ai_logs.insert_one({
+                "_id": str(uuid.uuid4()),
+                "question": query.question[:300],
+                "language": query.language,
+                "ip": get_client_ip(request),
+                "created_at": datetime.utcnow().isoformat()
+            })
+        except Exception:
+            pass
 
     return {"success": True, "answer": result, "powered_by": "AnnadataHub AI"}
 
@@ -799,3 +810,92 @@ async def get_profile(authorization: str = Header(None)):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail="Could not fetch profile")
+
+# ── ADMIN ENDPOINTS ───────────────────────────────────────────────────────────
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Anmol2002")
+
+def verify_admin(password: str):
+    if password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=403, detail="Invalid admin password")
+
+@app.get("/api/admin/stats")
+async def admin_stats(request: Request, password: str = ""):
+    verify_admin(password)
+    try:
+        total_farmers = await db.users.count_documents({})
+        total_scans = await db.scans.count_documents({})
+        total_posts = await db.farmgram.count_documents({})
+        total_questions = await db.ai_logs.count_documents({})
+
+        # Farmers by state
+        state_pipeline = [
+            {"$group": {"_id": "$state", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}},
+            {"$limit": 10}
+        ]
+        states = await db.users.aggregate(state_pipeline).to_list(10)
+
+        # Farmers by language
+        lang_pipeline = [
+            {"$group": {"_id": "$language", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        langs = await db.users.aggregate(lang_pipeline).to_list(20)
+
+        # Recent registrations (last 7 days)
+        week_ago = (datetime.utcnow() - timedelta(days=7)).isoformat()
+        recent_farmers = await db.users.count_documents({"created_at": {"$gte": week_ago}})
+
+        return {
+            "success": True,
+            "stats": {
+                "total_farmers": total_farmers,
+                "total_scans": total_scans,
+                "total_posts": total_posts,
+                "total_questions": total_questions,
+                "new_this_week": recent_farmers,
+            },
+            "states": states,
+            "languages": langs
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/admin/farmers")
+async def admin_farmers(request: Request, password: str = "", limit: int = 50):
+    verify_admin(password)
+    try:
+        farmers = await db.users.find(
+            {}, {"password": 0}  # exclude passwords
+        ).sort("created_at", -1).limit(limit).to_list(limit)
+        for f in farmers:
+            f["id"] = f.pop("_id")
+        return {"success": True, "farmers": farmers, "total": len(farmers)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/admin/questions")
+async def admin_questions(request: Request, password: str = "", limit: int = 50):
+    verify_admin(password)
+    try:
+        questions = await db.ai_logs.find().sort("created_at", -1).limit(limit).to_list(limit)
+        for q in questions:
+            q["id"] = q.pop("_id")
+        return {"success": True, "questions": questions, "total": len(questions)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/admin/posts")
+async def admin_posts(request: Request, password: str = "", limit: int = 50):
+    verify_admin(password)
+    try:
+        posts = await db.farmgram.find().sort("created_at", -1).limit(limit).to_list(limit)
+        for p in posts:
+            p["id"] = p.pop("_id")
+        return {"success": True, "posts": posts, "total": len(posts)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+# ── END ADMIN ─────────────────────────────────────────────────────────────────
