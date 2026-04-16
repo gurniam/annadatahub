@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Header
+from fastapi import FastAPI, HTTPException, Header, Request
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
@@ -13,11 +13,63 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 from typing import Optional
 import xml.etree.ElementTree as ET
+from collections import defaultdict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("annadatahub")
 
 app = FastAPI(title="AnnadataHub API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ── RATE LIMITER ──────────────────────────────────────────────────────────────
+# In-memory store: {ip: {"count": N, "window_start": datetime}}
+_rate_store: dict = defaultdict(lambda: {"count": 0, "window_start": datetime.utcnow()})
+
+RATE_LIMITS = {
+    "default":    {"requests": 60,  "window_seconds": 60},   # 60 req/min general
+    "ai":         {"requests": 20,  "window_seconds": 60},   # 20 AI calls/min
+    "scan":       {"requests": 10,  "window_seconds": 60},   # 10 crop scans/min
+    "auth":       {"requests": 5,   "window_seconds": 60},   # 5 login attempts/min
+}
+
+def get_client_ip(request: Request) -> str:
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+def check_rate_limit(ip: str, limit_type: str = "default"):
+    limits = RATE_LIMITS.get(limit_type, RATE_LIMITS["default"])
+    max_requests = limits["requests"]
+    window_secs = limits["window_seconds"]
+
+    key = f"{ip}:{limit_type}"
+    now = datetime.utcnow()
+    entry = _rate_store[key]
+
+    # Reset window if expired
+    if (now - entry["window_start"]).total_seconds() > window_secs:
+        entry["count"] = 0
+        entry["window_start"] = now
+
+    entry["count"] += 1
+
+    if entry["count"] > max_requests:
+        logger.warning("Rate limit hit: ip=%s type=%s count=%d", ip, limit_type, entry["count"])
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests. Please wait a moment and try again."
+        )
+
+# ── END RATE LIMITER ──────────────────────────────────────────────────────────
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -359,7 +411,8 @@ async def list_gemini_models():
     return {"models": models, "count": len(models)}
 
 @app.post("/api/auth/register")
-async def register(user: UserRegister):
+async def register(user: UserRegister, request: Request):
+    check_rate_limit(get_client_ip(request), "auth")
     try:
         existing = await db.users.find_one({"email": user.email})
         if existing:
@@ -380,7 +433,8 @@ async def register(user: UserRegister):
         raise HTTPException(status_code=500, detail="Registration failed. Please try again.")
 
 @app.post("/api/auth/login")
-async def login(user: UserLogin):
+async def login(user: UserLogin, request: Request):
+    check_rate_limit(get_client_ip(request), "auth")
     try:
         db_user = await db.users.find_one({"email": user.email})
         if not db_user or not bcrypt.checkpw(user.password.encode(), db_user["password"].encode()):
@@ -393,13 +447,14 @@ async def login(user: UserLogin):
 
 
 @app.post("/api/crop/scan")
-async def scan_crop(request: CropScanRequest, authorization: str = Header(None)):
+async def scan_crop(scan_request: CropScanRequest, request: Request, authorization: str = Header(None)):
+    check_rate_limit(get_client_ip(request), "scan")
     lang_map = {
         "hi": "Respond in Hindi.", "pa": "Respond in Punjabi.",
         "mr": "Respond in Marathi.", "te": "Respond in Telugu.",
         "ta": "Respond in Tamil.", "en": "Respond in English."
     }
-    lang_instruction = lang_map.get(request.language, "Respond in English.")
+    lang_instruction = lang_map.get(scan_request.language, "Respond in English.")
 
     vision_prompt = (
         f"You are an expert agricultural scientist. {lang_instruction} "
@@ -417,17 +472,17 @@ async def scan_crop(request: CropScanRequest, authorization: str = Header(None))
     result = None
 
     # 1. Try Gemini (with auto-discovery of working model)
-    result = await call_gemini_vision(request.image_base64, vision_prompt)
+    result = await call_gemini_vision(scan_request.image_base64, vision_prompt)
 
     # 2. Try Groq vision
     if not result:
         logger.info("Gemini failed, trying Groq vision")
-        result = await call_groq_vision(request.image_base64, vision_prompt)
+        result = await call_groq_vision(scan_request.image_base64, vision_prompt)
 
     # 3. Text-based diagnosis using crop type (always works)
     if not result:
         logger.info("Vision failed, using text-based diagnosis")
-        crop = request.crop_type or "unknown crop"
+        crop = scan_request.crop_type or "unknown crop"
         text_prompt = (
             f"An Indian farmer's {crop} crop shows disease/pest symptoms. {lang_instruction} "
             f"Give the most common diagnosis for {crop} in India. "
@@ -447,7 +502,7 @@ async def scan_crop(request: CropScanRequest, authorization: str = Header(None))
         result = json.dumps({
             "disease": "Please select crop type and try again",
             "severity": "Unknown",
-            "crop": request.crop_type or "Unknown",
+            "crop": scan_request.crop_type or "Unknown",
             "confidence": 0,
             "treatment": "Select your crop type from the dropdown, then scan again for better diagnosis.",
             "medicine": "N/A",
@@ -474,7 +529,7 @@ async def scan_crop(request: CropScanRequest, authorization: str = Header(None))
                 "_id": str(uuid.uuid4()),
                 "user_id": payload["user_id"],
                 "result": result,
-                "crop_type": request.crop_type,
+                "crop_type": scan_request.crop_type,
                 "created_at": datetime.utcnow().isoformat()
             })
             await db.users.update_one({"_id": payload["user_id"]}, {"$inc": {"scan_count": 1}})
@@ -485,7 +540,8 @@ async def scan_crop(request: CropScanRequest, authorization: str = Header(None))
 
 
 @app.post("/api/ai/ask")
-async def ask_ai(query: AIQuery):
+async def ask_ai(query: AIQuery, request: Request):
+    check_rate_limit(get_client_ip(request), "ai")
     cache_key = hashlib.md5(f"{query.question}{query.language}".encode()).hexdigest()
     cached = cache_get(cache_key)
     if cached:
@@ -515,7 +571,8 @@ async def ask_ai(query: AIQuery):
 
 
 @app.get("/api/news")
-async def get_news(state: str = "All India", topic: str = "all"):
+async def get_news(request: Request, state: str = "All India", topic: str = "all"):
+    check_rate_limit(get_client_ip(request), "default")
     cache_key = f"news_{state}_{topic}_{datetime.utcnow().strftime('%Y-%m-%d')}"
     cached = cache_get(cache_key)
     if cached:
@@ -547,7 +604,8 @@ async def get_news(state: str = "All India", topic: str = "all"):
 
 
 @app.get("/api/mandi/prices")
-async def mandi_prices(crop: str = "wheat", state: str = "Punjab"):
+async def mandi_prices(request: Request, crop: str = "wheat", state: str = "Punjab"):
+    check_rate_limit(get_client_ip(request), "default")
     cache_key = f"mandi_{crop}_{state}_{datetime.utcnow().strftime('%Y-%m-%d')}"
     cached = cache_get(cache_key)
     if cached:
@@ -564,7 +622,8 @@ async def mandi_prices(crop: str = "wheat", state: str = "Punjab"):
 
 
 @app.get("/api/weather")
-async def weather(location: str = "Punjab"):
+async def weather(request: Request, location: str = "Punjab"):
+    check_rate_limit(get_client_ip(request), "default")
     WEATHER_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
     try:
         async with httpx.AsyncClient(timeout=10.0) as c:
@@ -595,7 +654,8 @@ async def weather(location: str = "Punjab"):
 
 
 @app.get("/api/schemes")
-async def govt_schemes(state: str = "Punjab"):
+async def govt_schemes(request: Request, state: str = "Punjab"):
+    check_rate_limit(get_client_ip(request), "default")
     schemes = [
         {"name": "PM-KISAN", "emoji": "💰", "color": "#2e7d32", "tagline": "₹6,000/year direct to bank", "amount": "₹6,000", "amount_label": "per year", "description": "Direct income support of Rs.6000 per year to all farmer families.", "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center", "apply_url": "https://pmkisan.gov.in"},
         {"name": "PM Fasal Bima Yojana", "emoji": "🌾", "color": "#f57c00", "tagline": "Crop insurance at lowest premium", "amount": "1.5-2%", "amount_label": "premium only", "description": "Comprehensive crop insurance against flood, drought, pest and disease.", "benefits": ["Full compensation for crop loss", "Kharif premium only 2%", "Rabi premium only 1.5%"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"], "how_to_apply": "Contact nearest bank before sowing season", "apply_url": "https://pmfby.gov.in"},
@@ -609,7 +669,8 @@ async def govt_schemes(state: str = "Punjab"):
 
 
 @app.get("/api/msp")
-async def get_msp(crop: str = "Wheat", state: str = "Punjab"):
+async def get_msp(request: Request, crop: str = "Wheat", state: str = "Punjab"):
+    check_rate_limit(get_client_ip(request), "default")
     # Real MSP 2024-25 prices from CACP — Cabinet Committee on Economic Affairs
     MSP_PRICES = {
         "Wheat": {"msp": 2275, "season": "Rabi", "procurement": "FCI / State Procurement Agency"},
@@ -659,7 +720,8 @@ async def get_msp(crop: str = "Wheat", state: str = "Punjab"):
 
 
 @app.get("/api/farmgram/posts")
-async def get_posts():
+async def get_posts(request: Request):
+    check_rate_limit(get_client_ip(request), "default")
     try:
         posts = await db.farmgram.find().sort("created_at", -1).limit(20).to_list(20)
         for p in posts:
@@ -670,7 +732,8 @@ async def get_posts():
 
 
 @app.post("/api/farmgram/post")
-async def create_post(post: FarmGramPost, authorization: str = Header(None)):
+async def create_post(post: FarmGramPost, request: Request, authorization: str = Header(None)):
+    check_rate_limit(get_client_ip(request), "default")
     if not authorization:
         raise HTTPException(status_code=401, detail="Login required to post")
     payload = verify_token(authorization.replace("Bearer ", ""))
