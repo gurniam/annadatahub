@@ -346,11 +346,11 @@
       <div style="font-size:0.82rem;color:var(--muted);margin-bottom:4px">🌾 Kisan Call Center</div>
       <div class="helpline-number">1800-180-1551</div>
       <div style="font-size:0.82rem;color:#374151;margin-top:6px">Available: Mon-Sat, 6am-10pm · Hindi, Punjabi, and 20 regional languages · Free from any phone</div>
-      <a href="tel:18001801551" style="display:inline-block;margin-top:10px;background:var(--red);color:white;padding:8px 20px;border-radius:8px;font-family:'Baloo 2',cursive;font-weight:700;text-decoration:none;font-size:0.9rem">📞 Call Now — Free</a>
+      <a href="tel:18001801551" id="call-now-btn" style="display:inline-block;margin-top:10px;background:var(--red);color:white;padding:8px 20px;border-radius:8px;font-family:'Baloo 2',cursive;font-weight:700;text-decoration:none;font-size:0.9rem">📞 Call Now — Free</a>
     </div>
 
     <div class="card">
-      <div class="card-title" style="color:var(--green)">☎️ All Farmer Helplines</div>
+      <div class="card-title" style="color:var(--green)" id="all-helplines-title">☎️ All Farmer Helplines</div>
       <div style="padding:12px 0;border-bottom:1px solid var(--border)">
         <div style="font-weight:700;font-size:0.88rem">PM-KISAN Helpline</div>
         <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--green)">155261</div>
@@ -382,7 +382,7 @@
     </div>
 
     <div class="card">
-      <div class="card-title" style="color:var(--blue)">🌐 Important Government Websites</div>
+      <div class="card-title" style="color:var(--blue)" id="imp-sites-title">🌐 Important Government Websites</div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <a href="https://pmkisan.gov.in" target="_blank" style="padding:10px;background:var(--green-light);border-radius:10px;text-decoration:none;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:var(--green);font-size:0.88rem">pmkisan.gov.in</span><span style="font-size:0.75rem;color:var(--muted)">PM-KISAN →</span></a>
         <a href="https://pmfby.gov.in" target="_blank" style="padding:10px;background:var(--gold-light);border-radius:10px;text-decoration:none;display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600;color:var(--brown);font-size:0.88rem">pmfby.gov.in</span><span style="font-size:0.75rem;color:var(--muted)">Crop Insurance →</span></a>
@@ -406,28 +406,78 @@ const LANG_NAMES = {
 };
 
 const LABELS = {
-  en:{msp:"MSP",rights:"Rights",complaint:"Complaint",helpline:"Helpline"},
-  hi:{msp:"MSP",rights:"अधिकार",complaint:"शिकायत",helpline:"हेल्पलाइन"},
-  pa:{msp:"MSP",rights:"ਅਧਿਕਾਰ",complaint:"ਸ਼ਿਕਾਇਤ",helpline:"ਹੈਲਪਲਾਈਨ"},
-  mr:{msp:"MSP",rights:"हक्क",complaint:"तक्रार",helpline:"हेल्पलाइन"},
-  te:{msp:"MSP",rights:"హక్కులు",complaint:"ఫిర్యాదు",helpline:"హెల్ప్‌లైన్"},
-  ta:{msp:"MSP",rights:"உரிமைகள்",complaint:"புகார்",helpline:"உதவி எண்"},
-  gu:{msp:"MSP",rights:"અધિકારો",complaint:"ફરિયાદ",helpline:"હેલ્પલાઈન"},
-  kn:{msp:"MSP",rights:"ಹಕ್ಕುಗಳು",complaint:"ದೂರು",helpline:"ಹೆಲ್ಪ್‌ಲೈನ್"},
-  ml:{msp:"MSP",rights:"അവകാശങ്ങൾ",complaint:"പരാതി",helpline:"ഹെൽപ്‌ലൈൻ"},
-  bn:{msp:"MSP",rights:"অধিকার",complaint:"অভিযোগ",helpline:"হেল্পলাইন"},
+  en:{msp:"MSP",rights:"Rights",complaint:"Complaint",helpline:"Helpline",msp_hero:"Check Your MSP",msp_hero_sub:"Minimum Support Price — Government guaranteed price for your crop",msp_card:"MSP Price Checker",lbl_crop:"Your Crop",lbl_state:"Your State",msp_btn:"Check My MSP",msp_table:"MSP 2024-25 — All Crops",msp_source:"Source: CACP — Cabinet Committee on Economic Affairs. Official Government of India prices.",th_crop:"Crop",th_msp:"MSP (₹/quintal)",th_change:"Change",msp_warn:"If any trader buys below MSP, it is illegal. File complaint at your nearest agriculture office.",rights_hero:"Know Your Rights",rights_hero_sub:"Every Indian farmer has legal rights. Know them and protect yourself.",comp_hero:"File a Complaint",comp_hero_sub:"Don't suffer silently. You have the right to complain.",comp_online:"💻 File Online Complaint:",comp_template:"Complaint Letter Template",copy_btn:"Copy Template",helpline_hero:"Farmer Helplines",helpline_hero_sub:"All helplines are FREE. Call anytime for help.",call_now:"📞 Call Now — Free",all_helplines:"☎️ All Farmer Helplines",imp_sites:"🌐 Important Government Websites",loading_msp:"Getting MSP information...",error_try:"Error. Try again.",copy_manual:"Copy the text manually"},
+  hi:{msp:"MSP",rights:"अधिकार",complaint:"शिकायत",helpline:"हेल्पलाइन",msp_hero:"अपना MSP जांचें",msp_hero_sub:"न्यूनतम समर्थन मूल्य — आपकी फसल के लिए सरकार की गारंटी",msp_card:"MSP मूल्य जांचकर्ता",lbl_crop:"आपकी फसल",lbl_state:"आपका राज्य",msp_btn:"मेरा MSP जांचें",msp_table:"MSP 2024-25 — सभी फसलें",msp_source:"स्रोत: CACP — आर्थिक मामलों की कैबिनेट समिति। भारत सरकार की आधिकारिक कीमतें।",th_crop:"फसल",th_msp:"MSP (₹/क्विंटल)",th_change:"बदलाव",msp_warn:"अगर कोई व्यापारी MSP से कम खरीदे तो यह अवैध है। अपने नजदीकी कृषि कार्यालय में शिकायत करें।",rights_hero:"अपने अधिकार जानें",rights_hero_sub:"हर भारतीय किसान के कानूनी अधिकार हैं। उन्हें जानें और अपनी रक्षा करें।",comp_hero:"शिकायत दर्ज करें",comp_hero_sub:"चुपचाप मत सहो। आपको शिकायत करने का अधिकार है।",comp_online:"💻 ऑनलाइन शिकायत करें:",comp_template:"शिकायत पत्र का नमूना",copy_btn:"नमूना कॉपी करें",helpline_hero:"किसान हेल्पलाइन",helpline_hero_sub:"सभी हेल्पलाइन मुफ्त हैं। कभी भी मदद के लिए फोन करें।",call_now:"📞 अभी कॉल करें — मुफ्त",all_helplines:"☎️ सभी किसान हेल्पलाइन",imp_sites:"🌐 महत्वपूर्ण सरकारी वेबसाइट",loading_msp:"MSP जानकारी आ रही है...",error_try:"त्रुटि। फिर कोशिश करें।",copy_manual:"टेक्स्ट मैन्युअली कॉपी करें"},
+  pa:{msp:"MSP",rights:"ਅਧਿਕਾਰ",complaint:"ਸ਼ਿਕਾਇਤ",helpline:"ਹੈਲਪਲਾਈਨ",msp_hero:"ਆਪਣਾ MSP ਜਾਂਚੋ",msp_hero_sub:"ਘੱਟੋ-ਘੱਟ ਸਮਰਥਨ ਮੁੱਲ — ਤੁਹਾਡੀ ਫਸਲ ਲਈ ਸਰਕਾਰੀ ਗਾਰੰਟੀ",msp_card:"MSP ਮੁੱਲ ਜਾਂਚਕਰਤਾ",lbl_crop:"ਤੁਹਾਡੀ ਫਸਲ",lbl_state:"ਤੁਹਾਡਾ ਰਾਜ",msp_btn:"ਮੇਰਾ MSP ਜਾਂਚੋ",msp_table:"MSP 2024-25 — ਸਾਰੀਆਂ ਫਸਲਾਂ",msp_source:"ਸਰੋਤ: CACP — ਭਾਰਤ ਸਰਕਾਰ ਦੀਆਂ ਅਧਿਕਾਰਤ ਕੀਮਤਾਂ।",th_crop:"ਫਸਲ",th_msp:"MSP (₹/ਕੁਇੰਟਲ)",th_change:"ਬਦਲਾਵ",msp_warn:"ਜੇ ਕੋਈ ਵਪਾਰੀ MSP ਤੋਂ ਘੱਟ ਖਰੀਦੇ ਤਾਂ ਇਹ ਗੈਰਕਾਨੂੰਨੀ ਹੈ। ਨਜ਼ਦੀਕੀ ਖੇਤੀਬਾੜੀ ਦਫ਼ਤਰ ਵਿੱਚ ਸ਼ਿਕਾਇਤ ਕਰੋ।",rights_hero:"ਆਪਣੇ ਅਧਿਕਾਰ ਜਾਣੋ",rights_hero_sub:"ਹਰ ਭਾਰਤੀ ਕਿਸਾਨ ਦੇ ਕਾਨੂੰਨੀ ਅਧਿਕਾਰ ਹਨ।",comp_hero:"ਸ਼ਿਕਾਇਤ ਦਰਜ ਕਰੋ",comp_hero_sub:"ਚੁੱਪਚਾਪ ਨਾ ਸਹੋ। ਤੁਹਾਨੂੰ ਸ਼ਿਕਾਇਤ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਹੈ।",comp_online:"💻 ਔਨਲਾਈਨ ਸ਼ਿਕਾਇਤ ਕਰੋ:",comp_template:"ਸ਼ਿਕਾਇਤ ਪੱਤਰ ਦਾ ਨਮੂਨਾ",copy_btn:"ਨਮੂਨਾ ਕਾਪੀ ਕਰੋ",helpline_hero:"ਕਿਸਾਨ ਹੈਲਪਲਾਈਨ",helpline_hero_sub:"ਸਾਰੀਆਂ ਹੈਲਪਲਾਈਨਾਂ ਮੁਫ਼ਤ ਹਨ।",call_now:"📞 ਹੁਣੇ ਕਾਲ ਕਰੋ — ਮੁਫ਼ਤ",all_helplines:"☎️ ਸਾਰੀਆਂ ਕਿਸਾਨ ਹੈਲਪਲਾਈਨਾਂ",imp_sites:"🌐 ਮਹੱਤਵਪੂਰਨ ਸਰਕਾਰੀ ਵੈੱਬਸਾਈਟਾਂ",loading_msp:"MSP ਜਾਣਕਾਰੀ ਆ ਰਹੀ ਹੈ...",error_try:"ਗਲਤੀ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",copy_manual:"ਟੈਕਸਟ ਮੈਨੁਅਲੀ ਕਾਪੀ ਕਰੋ"},
+  mr:{msp:"MSP",rights:"हक्क",complaint:"तक्रार",helpline:"हेल्पलाइन",msp_hero:"आपला MSP तपासा",msp_hero_sub:"किमान आधारभूत किंमत — आपल्या पिकासाठी सरकारची हमी",msp_card:"MSP किंमत तपासणी",lbl_crop:"तुमचे पीक",lbl_state:"तुमचे राज्य",msp_btn:"माझा MSP तपासा",msp_table:"MSP 2024-25 — सर्व पिके",msp_source:"स्रोत: CACP — भारत सरकारच्या अधिकृत किंमती.",th_crop:"पीक",th_msp:"MSP (₹/क्विंटल)",th_change:"बदल",msp_warn:"कोणताही व्यापारी MSP पेक्षा कमी भावाने खरेदी करत असेल तर ते बेकायदेशीर आहे.",rights_hero:"आपले हक्क जाणा",rights_hero_sub:"प्रत्येक भारतीय शेतकऱ्याला कायदेशीर हक्क आहेत.",comp_hero:"तक्रार नोंदवा",comp_hero_sub:"गप्प राहू नका. तुम्हाला तक्रार करण्याचा अधिकार आहे.",comp_online:"💻 ऑनलाइन तक्रार करा:",comp_template:"तक्रार पत्राचा नमुना",copy_btn:"नमुना कॉपी करा",helpline_hero:"शेतकरी हेल्पलाइन",helpline_hero_sub:"सर्व हेल्पलाइन मोफत आहेत.",call_now:"📞 आत्ता कॉल करा — मोफत",all_helplines:"☎️ सर्व शेतकरी हेल्पलाइन",imp_sites:"🌐 महत्त्वाच्या सरकारी वेबसाइट",loading_msp:"MSP माहिती येत आहे...",error_try:"त्रुटी. पुन्हा प्रयत्न करा.",copy_manual:"मजकूर व्यक्तिचलितपणे कॉपी करा"},
+  te:{msp:"MSP",rights:"హక్కులు",complaint:"ఫిర్యాదు",helpline:"హెల్ప్‌లైన్",msp_hero:"మీ MSP తనిఖీ చేయండి",msp_hero_sub:"కనీస మద్దతు ధర — మీ పంటకు ప్రభుత్వ హామీ",msp_card:"MSP ధర తనిఖీ",lbl_crop:"మీ పంట",lbl_state:"మీ రాష్ట్రం",msp_btn:"నా MSP తనిఖీ చేయండి",msp_table:"MSP 2024-25 — అన్ని పంటలు",msp_source:"మూలం: CACP — భారత ప్రభుత్వం అధికారిక ధరలు.",th_crop:"పంట",th_msp:"MSP (₹/క్వింటల్)",th_change:"మార్పు",msp_warn:"ఏ వ్యాపారి అయినా MSP కంటే తక్కువకు కొంటే అది చట్టవిరుద్ధం.",rights_hero:"మీ హక్కులు తెలుసుకోండి",rights_hero_sub:"ప్రతి భారతీయ రైతుకు చట్టపరమైన హక్కులు ఉన్నాయి.",comp_hero:"ఫిర్యాదు నమోదు చేయండి",comp_hero_sub:"మౌనంగా బాధపడకండి. ఫిర్యాదు చేసే హక్కు మీకుంది.",comp_online:"💻 ఆన్‌లైన్‌లో ఫిర్యాదు చేయండి:",comp_template:"ఫిర్యాదు లేఖ నమూనా",copy_btn:"నమూనా కాపీ చేయండి",helpline_hero:"రైతు హెల్ప్‌లైన్‌లు",helpline_hero_sub:"అన్ని హెల్ప్‌లైన్‌లు ఉచితం.",call_now:"📞 ఇప్పుడే కాల్ చేయండి — ఉచితం",all_helplines:"☎️ అన్ని రైతు హెల్ప్‌లైన్‌లు",imp_sites:"🌐 ముఖ్యమైన ప్రభుత్వ వెబ్‌సైట్‌లు",loading_msp:"MSP సమాచారం వస్తోంది...",error_try:"లోపం. మళ్ళీ ప్రయత్నించండి.",copy_manual:"టెక్స్ట్ మాన్యువల్‌గా కాపీ చేయండి"},
+  ta:{msp:"MSP",rights:"உரிமைகள்",complaint:"புகார்",helpline:"உதவி எண்",msp_hero:"உங்கள் MSP சரிபாருங்கள்",msp_hero_sub:"குறைந்தபட்ச ஆதார விலை — உங்கள் பயிருக்கு அரசு உத்தரவாதம்",msp_card:"MSP விலை சரிபார்ப்பு",lbl_crop:"உங்கள் பயிர்",lbl_state:"உங்கள் மாநிலம்",msp_btn:"என் MSP சரிபாருங்கள்",msp_table:"MSP 2024-25 — அனைத்து பயிர்கள்",msp_source:"ஆதாரம்: CACP — இந்திய அரசின் அதிகாரப்பூர்வ விலைகள்.",th_crop:"பயிர்",th_msp:"MSP (₹/குவிண்டால்)",th_change:"மாற்றம்",msp_warn:"எந்த வணிகரும் MSP-ஐ விட குறைவாக வாங்கினால் அது சட்டவிரோதம்.",rights_hero:"உங்கள் உரிமைகளை அறியுங்கள்",rights_hero_sub:"ஒவ்வொரு இந்திய விவசாயிக்கும் சட்டபூர்வமான உரிமைகள் உள்ளன.",comp_hero:"புகார் பதிவு செய்யுங்கள்",comp_hero_sub:"மௌனமாக பாடுபடாதீர்கள். புகார் செய்வதற்கு உங்களுக்கு உரிமை உள்ளது.",comp_online:"💻 ஆன்லைன் புகார் பதிவு செய்யுங்கள்:",comp_template:"புகார் கடித வார்ப்புரு",copy_btn:"வார்ப்புருவை நகலெடுங்கள்",helpline_hero:"விவசாயி உதவி எண்கள்",helpline_hero_sub:"அனைத்து உதவி எண்களும் இலவசம்.",call_now:"📞 இப்போதே அழையுங்கள் — இலவசம்",all_helplines:"☎️ அனைத்து விவசாயி உதவி எண்கள்",imp_sites:"🌐 முக்கியமான அரசு வலைத்தளங்கள்",loading_msp:"MSP தகவல் வருகிறது...",error_try:"பிழை. மீண்டும் முயற்சிக்கவும்.",copy_manual:"உரையை கைமுறையாக நகலெடுக்கவும்"},
+  kn:{msp:"MSP",rights:"ಹಕ್ಕುಗಳು",complaint:"ದೂರು",helpline:"ಹೆಲ್ಪ್‌ಲೈನ್",msp_hero:"ನಿಮ್ಮ MSP ಪರಿಶೀಲಿಸಿ",msp_hero_sub:"ಕನಿಷ್ಠ ಬೆಂಬಲ ಬೆಲೆ — ನಿಮ್ಮ ಬೆಳೆಗೆ ಸರ್ಕಾರದ ಭರವಸೆ",msp_card:"MSP ಬೆಲೆ ಪರಿಶೀಲನೆ",lbl_crop:"ನಿಮ್ಮ ಬೆಳೆ",lbl_state:"ನಿಮ್ಮ ರಾಜ್ಯ",msp_btn:"ನನ್ನ MSP ಪರಿಶೀಲಿಸಿ",msp_table:"MSP 2024-25 — ಎಲ್ಲ ಬೆಳೆಗಳು",msp_source:"ಮೂಲ: CACP — ಭಾರತ ಸರ್ಕಾರದ ಅಧಿಕೃತ ಬೆಲೆಗಳು.",th_crop:"ಬೆಳೆ",th_msp:"MSP (₹/ಕ್ವಿಂಟಲ್)",th_change:"ಬದಲಾವಣೆ",msp_warn:"ಯಾವುದೇ ವ್ಯಾಪಾರಿ MSP ಗಿಂತ ಕಡಿಮೆಗೆ ಖರೀದಿಸಿದರೆ ಅದು ಕಾನೂನುಬಾಹಿರ.",rights_hero:"ನಿಮ್ಮ ಹಕ್ಕುಗಳನ್ನು ತಿಳಿಯಿರಿ",rights_hero_sub:"ಪ್ರತಿ ಭಾರತೀಯ ರೈತರಿಗೆ ಕಾನೂನು ಹಕ್ಕುಗಳಿವೆ.",comp_hero:"ದೂರು ದಾಖಲಿಸಿ",comp_hero_sub:"ಮೌನವಾಗಿ ಸಹಿಸಬೇಡಿ. ದೂರು ನೀಡಲು ನಿಮಗೆ ಹಕ್ಕಿದೆ.",comp_online:"💻 ಆನ್‌ಲೈನ್ ದೂರು ದಾಖಲಿಸಿ:",comp_template:"ದೂರು ಪತ್ರದ ಮಾದರಿ",copy_btn:"ಮಾದರಿ ನಕಲಿಸಿ",helpline_hero:"ರೈತ ಹೆಲ್ಪ್‌ಲೈನ್‌ಗಳು",helpline_hero_sub:"ಎಲ್ಲ ಹೆಲ್ಪ್‌ಲೈನ್‌ಗಳು ಉಚಿತ.",call_now:"📞 ಈಗಲೇ ಕರೆ ಮಾಡಿ — ಉಚಿತ",all_helplines:"☎️ ಎಲ್ಲ ರೈತ ಹೆಲ್ಪ್‌ಲೈನ್‌ಗಳು",imp_sites:"🌐 ಮಹತ್ವದ ಸರ್ಕಾರಿ ವೆಬ್‌ಸೈಟ್‌ಗಳು",loading_msp:"MSP ಮಾಹಿತಿ ಬರುತ್ತಿದೆ...",error_try:"ದೋಷ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",copy_manual:"ಪಠ್ಯ ಕೈಯಾರೆ ನಕಲಿಸಿ"},
+  ml:{msp:"MSP",rights:"അവകാശങ്ങൾ",complaint:"പരാതി",helpline:"ഹെൽപ്‌ലൈൻ",msp_hero:"നിങ്ങളുടെ MSP പരിശോധിക്കൂ",msp_hero_sub:"കുറഞ്ഞ താങ്ങുവില — നിങ്ങളുടെ വിളക്ക് സർക്കാർ ഉറപ്പ്",msp_card:"MSP വില പരിശോധന",lbl_crop:"നിങ്ങളുടെ വിള",lbl_state:"നിങ്ങളുടെ സംസ്ഥാനം",msp_btn:"എന്റെ MSP പരിശോധിക്കൂ",msp_table:"MSP 2024-25 — എല്ലാ വിളകളും",msp_source:"ഉറവിടം: CACP — ഭാരത സർക്കാരിന്റെ ഔദ്യോഗിക വിലകൾ.",th_crop:"വിള",th_msp:"MSP (₹/ക്വിന്റൽ)",th_change:"മാറ്റം",msp_warn:"ഏത് വ്യാപാരി MSP-യേക്കാൾ കുറഞ്ഞ വിലക്ക് വാങ്ങിയാലും അത് നിയമവിരുദ്ധമാണ്.",rights_hero:"നിങ്ങളുടെ അവകാശങ്ങൾ അറിയൂ",rights_hero_sub:"ഓരോ ഇന്ത്യൻ കർഷകനും നിയമപരമായ അവകാശങ്ങൾ ഉണ്ട്.",comp_hero:"പരാതി രേഖപ്പെടുത്തൂ",comp_hero_sub:"മൗനമായി സഹിക്കരുത്. പരാതി നൽകാൻ നിങ്ങൾക്ക് അവകാശമുണ്ട്.",comp_online:"💻 ഓൺലൈൻ പരാതി നൽകൂ:",comp_template:"പരാതി കത്ത് ടെംപ്ലേറ്റ്",copy_btn:"ടെംപ്ലേറ്റ് കോപ്പി ചേയ്യൂ",helpline_hero:"കർഷക ഹെൽപ്‌ലൈനുകൾ",helpline_hero_sub:"എല്ലാ ഹെൽപ്‌ലൈനുകളും സൗജന്യം.",call_now:"📞 ഇപ്പോൾ വിളിക്കൂ — സൗജന്യം",all_helplines:"☎️ എല്ലാ കർഷക ഹെൽപ്‌ലൈനുകളും",imp_sites:"🌐 പ്രധാന സർക്കാർ വെബ്‌സൈറ്റുകൾ",loading_msp:"MSP വിവരം വരുന്നു...",error_try:"പിഴവ്. വീണ്ടും ശ്രമിക്കൂ.",copy_manual:"ടെക്സ്റ്റ് സ്വയം കോപ്പി ചേയ്യൂ"},
+  gu:{msp:"MSP",rights:"અધિકારો",complaint:"ફરિયાદ",helpline:"હેલ્પલાઈન",msp_hero:"તમારો MSP તપાસો",msp_hero_sub:"લઘુત્તમ ટેકાના ભાવ — તમારા પાક માટે સરકારની ગેરંટી",msp_card:"MSP ભાવ તપાસ",lbl_crop:"તમારો પાક",lbl_state:"તમારું રાજ્ય",msp_btn:"મારો MSP તપાસો",msp_table:"MSP 2024-25 — બધા પાક",msp_source:"સ્ત્રોત: CACP — ભારત સરકારના સત્તાવાર ભાવ.",th_crop:"પાક",th_msp:"MSP (₹/ક્વિન્ટલ)",th_change:"ફેરફાર",msp_warn:"કોઈ પણ વ્યાપારી MSP કરતાં ઓછા ભાવે ખરીદે તો તે ગેરકાયદેસર છે.",rights_hero:"તમારા અધિકારો જાણો",rights_hero_sub:"દરેક ભારતીય ખેડૂतना કાનૂની અધિકારો છે.",comp_hero:"ફરિયાદ નોંધાવો",comp_hero_sub:"ચૂપ ન રહો. ફરિયાદ કરવાનો અધિકાર તમારો છે.",comp_online:"💻 ઓનલાઇન ફરિયાદ કરો:",comp_template:"ફરિયાદ પત્ર નમૂનો",copy_btn:"નમૂનો કૉપી કરો",helpline_hero:"ખેડૂत હેલ્પલાઈન",helpline_hero_sub:"બધી હેલ્પલાઈન મફત છે.",call_now:"📞 અત્યારે ફોન કરો — મફત",all_helplines:"☎️ બધી ખેડૂત હેલ્પલાઈન",imp_sites:"🌐 મહત્વની સરકારી વેબસાઈટ",loading_msp:"MSP માહિતી આવી રહી છે...",error_try:"ભૂલ. ફરી પ્રયાસ કરો.",copy_manual:"ટેક્સ્ટ જાતે કૉপી કરો"},
+  bn:{msp:"MSP",rights:"অধিকার",complaint:"অভিযোগ",helpline:"হেল্পলাইন",msp_hero:"আপনার MSP যাচাই করুন",msp_hero_sub:"ন্যূনতম সহায়তা মূল্য — আপনার ফসলের জন্য সরকারি নিশ্চয়তা",msp_card:"MSP মূল্য যাচাইকারী",lbl_crop:"আপনার ফসল",lbl_state:"আপনার রাজ্য",msp_btn:"আমার MSP যাচাই করুন",msp_table:"MSP 2024-25 — সব ফসল",msp_source:"উৎস: CACP — ভারত সরকারের সরকারি মূল্য।",th_crop:"ফসল",th_msp:"MSP (₹/কুইন্টাল)",th_change:"পরিবর্তন",msp_warn:"যে কোনো ব্যবসায়ী MSP-র নিচে কিনলে তা বেআইনি।",rights_hero:"আপনার অধিকার জানুন",rights_hero_sub:"প্রতিটি ভারতীয় কৃষকের আইনি অধিকার আছে।",comp_hero:"অভিযোগ দায়ের করুন",comp_hero_sub:"চুপ করে সহ্য করবেন না। অভিযোগ করার অধিকার আপনার আছে।",comp_online:"💻 অনলাইনে অভিযোগ করুন:",comp_template:"অভিযোগ চিঠির নমুনা",copy_btn:"নমুনা কপি করুন",helpline_hero:"কৃষক হেল্পলাইন",helpline_hero_sub:"সব হেল্পলাইন বিনামূল্যে।",call_now:"📞 এখনই কল করুন — বিনামূল্যে",all_helplines:"☎️ সব কৃষক হেল্পলাইন",imp_sites:"🌐 গুরুত্বপূর্ণ সরকারি ওয়েবসাইট",loading_msp:"MSP তথ্য আসছে...",error_try:"ত্রুটি। আবার চেষ্টা করুন।",copy_manual:"টেক্সট ম্যানুয়ালি কপি করুন"},
 };
 
-let currentLang = "en";
+// MSP crop translations
+const MSP_CROPS = {
+  en:["Wheat","Rice","Maize","Cotton","Soybean","Mustard","Groundnut","Sugarcane","Moong","Urad","Chana","Sunflower","Jowar","Bajra","Ragi"],
+  hi:["गेहूं","धान","मक्का","कपास","सोयाबीन","सरसों","मूंगफली","गन्ना","मूंग","उड़द","चना","सूरजमुखी","ज्वार","बाजरा","रागी"],
+  pa:["ਕਣਕ","ਝੋਨਾ","ਮੱਕੀ","ਕਪਾਹ","ਸੋਇਆਬੀਨ","ਸਰ੍ਹੋਂ","ਮੂੰਗਫਲੀ","ਗੰਨਾ","ਮੂੰਗੀ","ਮਾਂਹ","ਛੋਲੇ","ਸੂਰਜਮੁਖੀ","ਜਵਾਰ","ਬਾਜਰਾ","ਰਾਗੀ"],
+  mr:["गहू","भात","मका","कापूस","सोयाबीन","मोहरी","भुईमूग","ऊस","मूग","उडीद","हरभरा","सूर्यफूल","ज्वारी","बाजरी","नाचणी"],
+  te:["గోధుమ","వరి","మొక్కజొన్న","పత్తి","సోయాబీన్","ఆవాలు","వేరుశెనగ","చెరకు","పెసర","మినుము","శనగ","పొద్దుతిరుగుడు","జొన్న","సజ్జ","రాగి"],
+  ta:["கோதுமை","நெல்","மக்காச்சோளம்","பருத்தி","சோயாபீன்","கடுகு","வேர்க்கடலை","கரும்பு","பாசிப்பயறு","உளுந்து","கொண்டைக்கடலை","சூரியகாந்தி","சோளம்","கம்பு","கேழ்வரகு"],
+  kn:["ಗೋಧಿ","ಭತ್ತ","ಮೆಕ್ಕೆಜೋಳ","ಹತ್ತಿ","ಸೋಯಾಬೀನ್","ಸಾಸಿವೆ","ಶೇಂಗಾ","ಕಬ್ಬು","ಹೆಸರು","ಉದ್ದು","ಕಡಲೆ","ಸೂರ್ಯಕಾಂತಿ","ಜೋಳ","ಸಜ್ಜೆ","ರಾಗಿ"],
+  ml:["ഗോതമ്പ്","നെല്ല്","ചോളം","പഞ്ഞി","സോയാബീൻ","കടുക്","നിലക്കടല","കരിമ്പ്","ചെറുപയർ","ഉഴുന്ന്","കടല","സൂര്യകാന്തി","ജോവർ","ബജ്റ","റാഗി"],
+  gu:["ઘઉં","ડાંગર","મકાઈ","કપાસ","સોયાબીન","સરસવ","મગફળી","શેરડી","મગ","અડદ","ચણા","સૂર્યમુખી","જુવાર","બાજરી","નાગલી"],
+  bn:["গম","ধান","ভুট্টা","তুলা","সয়াবিন","সরিষা","চিনাবাদাম","আখ","মুগ","মাসকলাই","ছোলা","সূর্যমুখী","জোয়ার","বাজরা","রাগি"],
+};
+const MSP_CROP_VALS = ["Wheat","Rice","Maize","Cotton","Soybean","Mustard","Groundnut","Sugarcane","Moong","Urad","Chana","Sunflower","Jowar","Bajra","Ragi"];
 
 function setLang(l) {
   currentLang = l;
   try { localStorage.setItem("annadatahub_lang", l); } catch(e) {}
   const lb = LABELS[l] || LABELS.en;
+  // Tabs
   document.getElementById("t-msp").textContent = lb.msp;
   document.getElementById("t-rights").textContent = lb.rights;
   document.getElementById("t-complaint").textContent = lb.complaint;
   document.getElementById("t-helpline").textContent = lb.helpline;
+  // MSP page
+  document.getElementById("msp-hero-title").textContent = lb.msp_hero;
+  document.getElementById("msp-hero-sub").textContent = lb.msp_hero_sub;
+  document.getElementById("msp-card-title").textContent = lb.msp_card;
+  document.getElementById("lbl-msp-crop").textContent = lb.lbl_crop;
+  document.getElementById("lbl-msp-state").textContent = lb.lbl_state;
+  document.getElementById("msp-btn-text").textContent = lb.msp_btn;
+  document.getElementById("msp-table-title").textContent = lb.msp_table;
+  document.getElementById("msp-source").textContent = lb.msp_source;
+  document.getElementById("th-crop").textContent = lb.th_crop;
+  document.getElementById("th-msp").textContent = lb.th_msp;
+  document.getElementById("th-change").textContent = lb.th_change;
+  document.getElementById("msp-warning").textContent = lb.msp_warn;
+  // Rights page
+  document.getElementById("rights-hero-title").textContent = lb.rights_hero;
+  document.getElementById("rights-hero-sub").textContent = lb.rights_hero_sub;
+  // Complaint page
+  document.getElementById("complaint-hero-title").textContent = lb.comp_hero;
+  document.getElementById("complaint-hero-sub").textContent = lb.comp_hero_sub;
+  document.getElementById("comp-online-title").textContent = lb.comp_online;
+  document.getElementById("comp-template-title").textContent = lb.comp_template;
+  document.getElementById("copy-btn-text").textContent = lb.copy_btn;
+  // Helpline page
+  document.getElementById("helpline-hero-title").textContent = lb.helpline_hero;
+  document.getElementById("helpline-hero-sub").textContent = lb.helpline_hero_sub;
+  document.getElementById("call-now-btn").textContent = lb.call_now;
+  document.getElementById("all-helplines-title").textContent = lb.all_helplines;
+  document.getElementById("imp-sites-title").textContent = lb.imp_sites;
+  // MSP crop dropdown
+  const mspCrop = document.getElementById("mspCrop");
+  if (mspCrop) {
+    const cur = mspCrop.value;
+    const crops = MSP_CROPS[l] || MSP_CROPS.en;
+    mspCrop.innerHTML = MSP_CROP_VALS.map((v, i) => `<option value="${v}">${crops[i]}</option>`).join("");
+    mspCrop.value = cur || "Wheat";
+  }
 }
 
 function showTab(tab) {
@@ -457,7 +507,7 @@ async function checkMSP() {
   const result = document.getElementById("msp-result");
 
   btn.disabled = true; btn.innerHTML = `⏳ Checking...`;
-  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>Getting MSP information...</p></div>`;
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${(LABELS[currentLang]||LABELS.en).loading_msp}</p></div>`;
 
   try {
     const res = await fetch(`${BACKEND}/api/msp?crop=${encodeURIComponent(crop)}`);
@@ -493,8 +543,8 @@ async function checkMSP() {
 
     showToast("MSP info loaded! ✅");
   } catch(e) {
-    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not load MSP info. Try again.</p></div>`;
-    showToast("Error. Try again.", "error");
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>${(LABELS[currentLang]||LABELS.en).error_try}</p></div>`;
+    showToast((LABELS[currentLang]||LABELS.en).error_try, "error");
   }
   btn.disabled = false; btn.innerHTML = `💰 <span id="msp-btn-text">Check My MSP</span>`;
 }
@@ -520,7 +570,7 @@ Yours faithfully,
   if (navigator.clipboard) {
     navigator.clipboard.writeText(template).then(() => showToast("Template copied! ✅"));
   } else {
-    showToast("Copy the text manually", "error");
+    showToast((LABELS[currentLang]||LABELS.en).copy_manual, "error");
   }
 }
 
