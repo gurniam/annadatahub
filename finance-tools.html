@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta name="description" content="Free farmer finance tools — loan EMI calculator, pesticide quantity calculator and crop insurance premium calculator for Indian farmers."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AnnadataHub — Farmer Finance Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -118,7 +119,7 @@
 <body>
 
 <div class="header">
-  <div class="logo">
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center" class="logo">
     <div class="logo-icon">🌾</div>
     <div class="logo-name">Annadata<span>Hub</span></div>
   </div>
@@ -135,6 +136,10 @@
     <option value="bn">বাংলা</option>
   </select>
 </div>
+<!-- Restore saved language immediately -->
+<script>
+try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("annadatahub_lang")||"en"; if(_s)_s.value=_v; } catch(e){}
+</script>
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('loan')" id="tab-loan"><span class="icon">🏦</span><span id="t1">Loan Calc</span></button>
