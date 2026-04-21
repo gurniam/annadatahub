@@ -114,8 +114,8 @@
       <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;color:var(--green)">AnnadataHub</div>
     </div>
     <div class="auth-tabs">
-      <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')" id="tab-login-btn">Login</button>
-      <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')" id="tab-signup-btn">Sign Up</button>
+      <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')"><span id="auth-tab-login">Login</span></button>
+      <button class="auth-tab" id="signupTab" onclick="switchAuthTab('signup')"><span id="auth-tab-signup">Sign Up</span></button>
     </div>
     <div id="loginForm">
       <div class="auth-field"><label>📧 Email</label><input type="email" id="loginEmail" placeholder="your@email.com"/></div>
@@ -537,7 +537,7 @@ const T = {
     nav_home:"হোম", nav_prices:"দাম", nav_farmgram:"ফার্মগ্রাম", nav_msp:"MSP",
     hdr_login:"লগইন",
     tips:["আপনার গম ফসলে হলুদ মরিচা দেখুন। পেলে Propiconazole স্প্রে করুন।","স্প্রে করার সেরা সময়: ভোর ৬-৯টা।","PM-কিষান স্ট্যাটাস চেক করুন।","সকালে ফসলে পানি দিন — সন্ধ্যায় দিলে ছত্রাক রোগ হয়।","ফুলন্ত ফসলে পটাশ দিন।"]
-  },
+  ,login_tab:"লগইন",signup_tab:"নিবন্ধন"},
   kn: {
     greet_morning:"ಶುಭೋದಯ ರೈತ! 🙏", greet_afternoon:"ನಮಸ್ಕಾರ ರೈತ! 🙏", greet_evening:"ಶುಭ ಸಂಜೆ ರೈತ! 🙏",
     greet_sub:"ಇಂದು ನಿಮ್ಮ ಬೆಳೆ ಹೇಗಿದೆ?", greet_time_m:"ಶುಭೋದಯ ☀️", greet_time_a:"ನಮಸ್ಕಾರ 🌤️", greet_time_e:"ಶುಭ ಸಂಜೆ 🌙",
@@ -666,6 +666,8 @@ function applyLang(lang) {
   document.getElementById("nav-farmgram").textContent = t.nav_farmgram;
   document.getElementById("nav-msp").textContent = t.nav_msp;
   document.getElementById("hdr-login").textContent = t.hdr_login;
+  const atl = document.getElementById("auth-tab-login"); if(atl) atl.textContent = t.auth_login||"Login";
+  const ats = document.getElementById("auth-tab-signup"); if(ats) ats.textContent = t.auth_signup||"Sign Up";
   // Login/Signup buttons
   const lb = document.getElementById("loginBtn");
   if (lb) lb.textContent = t.login_btn || "Login to AnnadataHub";
@@ -778,7 +780,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".lang-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-lang") === lang));
   applyLang(lang);
   const user = getUser();
-  if (user && getToken()) updateHeaderUI(user);
+  if (user && getToken()) {
+    updateHeaderUI(user);
+  } else {
+    // Show login modal automatically for non-logged-in users
+    setTimeout(() => {
+      document.getElementById("authOverlay").classList.remove("hidden");
+    }, 800);
+  }
 });
 </script>
 </body>
