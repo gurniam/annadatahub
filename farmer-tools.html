@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta name="description" content="Free AI crop disease scanner for Indian farmers. Get live mandi prices, weather alerts and government schemes in your language. Powered by AI."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AnnadataHub — Farmer Tools</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -101,7 +102,7 @@
 <body>
 
 <div class="header">
-  <div class="logo">
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center" class="logo">
     <div class="logo-icon">🌾</div>
     <div class="logo-name">Annadata<span>Hub</span></div>
   </div>
@@ -114,6 +115,10 @@
     <option value="ur">اردو</option>
   </select>
 </div>
+<!-- Restore saved language immediately -->
+<script>
+try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem("annadatahub_lang")||"en"; if(_s)_s.value=_v; } catch(e){}
+</script>
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('scan')" id="tab-scan"><span>📷</span><span id="t-scan">Scan</span></button>
