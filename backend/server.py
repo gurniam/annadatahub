@@ -1030,7 +1030,6 @@ async def admin_growth(request: Request, password: str = "", days: int = 30):
                 daily_map[date] = daily_map.get(date, 0) + 1
 
         # Fill missing dates with 0
-        from datetime import date as dt_date
         result_days = []
         for i in range(days):
             d = (datetime.utcnow() - timedelta(days=days-1-i)).strftime("%Y-%m-%d")
