@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta name="description" content="Free crop calendar and fertilizer calculator for Indian farmers. Get exact fertilizer quantities based on your crop, land size and growth stage."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AnnadataHub — Crop Calendar & Fertilizer</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -91,7 +92,7 @@
 <body>
 
 <div class="header">
-  <div class="logo">
+  <a href="index.html" style="text-decoration:none;display:flex;align-items:center" class="logo">
     <div class="logo-icon">🌾</div>
     <div class="logo-name">Annadata<span>Hub</span></div>
   </div>
@@ -109,6 +110,10 @@
     <option value="ur">اردو</option>
   </select>
 </div>
+<!-- Restore saved language immediately -->
+<script>
+try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("annadatahub_lang")||"en"; if(_s)_s.value=_v; } catch(e){}
+</script>
 
 <div class="tabs">
   <button class="tab active" onclick="showTab('calendar')" id="tab-calendar">
@@ -276,8 +281,8 @@ const LANG_NAMES = {
   ta:"Tamil",gu:"Gujarati",kn:"Kannada",ml:"Malayalam",bn:"Bengali",ur:"Urdu"
 };
 
-const LABELS = {
-  en:{cal:"Crop Calendar",fert:"Fertilizer",cal_title:"Crop Calendar",fert_title:"Fertilizer Calculator",cal_crop:"Your Crop",sow_date:"Sowing Date",cal_state:"Your State",land_size:"Land Size (acres)",cal_btn:"Generate My Crop Calendar",fert_crop:"Your Crop",fert_land:"Land Size (acres)",stage:"Growth Stage",soil:"Soil Type",fert_state:"State",fert_btn:"Calculate Exact Quantities",generating:"Generating...",building:"Building your crop calendar...",calculating:"Calculating...",calc_loading:"Calculating exact quantities...",err_try:"Error. Try again.",err_cal:"Could not generate calendar. Try again.",err_fert:"Could not calculate. Try again."},
+let currentLang = "en";
+const LABELS = {fert:"Fertilizer",cal_title:"Crop Calendar",fert_title:"Fertilizer Calculator",cal_crop:"Your Crop",sow_date:"Sowing Date",cal_state:"Your State",land_size:"Land Size (acres)",cal_btn:"Generate My Crop Calendar",fert_crop:"Your Crop",fert_land:"Land Size (acres)",stage:"Growth Stage",soil:"Soil Type",fert_state:"State",fert_btn:"Calculate Exact Quantities",generating:"Generating...",building:"Building your crop calendar...",calculating:"Calculating...",calc_loading:"Calculating exact quantities...",err_try:"Error. Try again.",err_cal:"Could not generate calendar. Try again.",err_fert:"Could not calculate. Try again."},
   hi:{cal:"फसल कैलेंडर",fert:"खाद कैलकुलेटर",cal_title:"फसल कैलेंडर",fert_title:"खाद कैलकुलेटर",cal_crop:"आपकी फसल",sow_date:"बुवाई की तारीख",cal_state:"आपका राज्य",land_size:"जमीन का आकार (एकड़)",cal_btn:"मेरा फसल कैलेंडर बनाएं",fert_crop:"आपकी फसल",fert_land:"जमीन का आकार (एकड़)",stage:"विकास की अवस्था",soil:"मिट्टी का प्रकार",fert_state:"राज्य",fert_btn:"सटीक मात्रा की गणना करें",generating:"तैयार हो रहा है...",building:"आपका फसल कैलेंडर बन रहा है...",calculating:"गणना हो रही है...",calc_loading:"सटीक मात्रा की गणना हो रही है...",err_try:"त्रुटि। फिर कोशिश करें।",err_cal:"कैलेंडर नहीं बना। फिर कोशिश करें।",err_fert:"गणना नहीं हुई। फिर कोशिश करें।"},
   pa:{cal:"ਫਸਲ ਕੈਲੰਡਰ",fert:"ਖਾਦ ਕੈਲਕੁਲੇਟਰ",cal_title:"ਫਸਲ ਕੈਲੰਡਰ",fert_title:"ਖਾਦ ਕੈਲਕੁਲੇਟਰ",cal_crop:"ਤੁਹਾਡੀ ਫਸਲ",sow_date:"ਬਿਜਾਈ ਦੀ ਤਾਰੀਖ",cal_state:"ਤੁਹਾਡਾ ਰਾਜ",land_size:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",cal_btn:"ਮੇਰਾ ਫਸਲ ਕੈਲੰਡਰ ਬਣਾਓ",fert_crop:"ਤੁਹਾਡੀ ਫਸਲ",fert_land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",stage:"ਵਿਕਾਸ ਦੀ ਅਵਸਥਾ",soil:"ਮਿੱਟੀ ਦੀ ਕਿਸਮ",fert_state:"ਰਾਜ",fert_btn:"ਸਹੀ ਮਾਤਰਾ ਦੀ ਗਣਨਾ ਕਰੋ",generating:"ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ...",building:"ਤੁਹਾਡਾ ਫਸਲ ਕੈਲੰਡਰ ਬਣ ਰਿਹਾ ਹੈ...",calculating:"ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ...",calc_loading:"ਸਹੀ ਮਾਤਰਾ ਦੀ ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ...",err_try:"ਗਲਤੀ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",err_cal:"ਕੈਲੰਡਰ ਨਹੀਂ ਬਣਿਆ।",err_fert:"ਗਣਨਾ ਨਹੀਂ ਹੋਈ।"},
   mr:{cal:"पीक कॅलेंडर",fert:"खत कॅल्क्युलेटर",cal_title:"पीक कॅलेंडर",fert_title:"खत कॅल्क्युलेटर",cal_crop:"तुमचे पीक",sow_date:"पेरणीची तारीख",cal_state:"तुमचे राज्य",land_size:"जमिनीचा आकार (एकर)",cal_btn:"माझे पीक कॅलेंडर तयार करा",fert_crop:"तुमचे पीक",fert_land:"जमिनीचा आकार (एकर)",stage:"वाढीची अवस्था",soil:"मातीचा प्रकार",fert_state:"राज्य",fert_btn:"अचूक प्रमाण मोजा",generating:"तयार होत आहे...",building:"तुमचे पीक कॅलेंडर तयार होत आहे...",calculating:"गणना होत आहे...",calc_loading:"अचूक प्रमाण मोजले जात आहे...",err_try:"त्रुटी. पुन्हा प्रयत्न करा.",err_cal:"कॅलेंडर बनले नाही.",err_fert:"गणना झाली नाही."},
