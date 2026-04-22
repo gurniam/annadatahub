@@ -144,8 +144,14 @@
         </select>
       </div>
       <div class="auth-field"><label>🔒 Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters"/></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin:10px 0 4px;">
+        <input type="checkbox" id="termsCheck" onchange="document.getElementById('signupBtn').disabled=!this.checked" style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:var(--green);cursor:pointer;"/>
+        <label for="termsCheck" style="font-size:0.78rem;color:var(--muted);line-height:1.5;cursor:pointer;">
+          I agree to the <a href="legal.html" target="_blank" style="color:var(--green);font-weight:700;">Terms of Service</a> and <a href="legal.html" target="_blank" style="color:var(--green);font-weight:700;">Privacy Policy</a>. I understand AI advice should be verified with local experts.
+        </label>
+      </div>
       <div class="auth-error hidden" id="signupError"></div>
-      <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Free Account 🚀</button>
+      <button class="auth-btn" id="signupBtn" onclick="doSignup()" disabled>Create Free Account 🚀</button>
       <div style="text-align:center;margin-top:10px;font-size:0.78rem;color:var(--muted)">Already have account? <span style="color:var(--green);font-weight:700;cursor:pointer" onclick="switchAuthTab('login')">Login</span></div>
     </div>
   </div>
@@ -703,6 +709,11 @@ function hideLoginModal() { document.getElementById("authOverlay").classList.add
 function switchAuthTab(tab) {
   document.getElementById("loginForm").classList.toggle("hidden", tab !== "login");
   document.getElementById("signupForm").classList.toggle("hidden", tab !== "signup");
+  // Reset terms checkbox and button state when switching tabs
+  if (tab === "signup") {
+    const tc = document.getElementById("termsCheck");
+    if (tc) { tc.checked = false; document.getElementById("signupBtn").disabled = true; }
+  }
   document.getElementById("loginTab").classList.toggle("active", tab === "login");
   document.getElementById("signupTab").classList.toggle("active", tab === "signup");
   document.getElementById("loginError").classList.add("hidden");
@@ -752,6 +763,7 @@ async function doSignup() {
   if (!full_name) { showAuthError("signupError", "Please enter your name."); return; }
   if (!email) { showAuthError("signupError", "Please enter your email."); return; }
   if (!password || password.length < 6) { showAuthError("signupError", "Password must be at least 6 characters."); return; }
+  if (!document.getElementById("termsCheck").checked) { showAuthError("signupError", "Please accept the Terms of Service to continue."); return; }
   const btn = document.getElementById("signupBtn");
   btn.disabled = true; btn.textContent = (T[getSavedLang()]||T.en).creating;
   try {
