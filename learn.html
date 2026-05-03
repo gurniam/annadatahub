@@ -112,6 +112,9 @@
   .powered{text-align:center;font-size:0.7rem;color:var(--muted);margin-top:8px;}
   .divider{height:1px;background:var(--border);margin:12px 0;}
   .section-label{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;}
+
+  .filter-btn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:white;font-family:'Hind',sans-serif;font-size:0.8rem;font-weight:600;color:var(--muted);cursor:pointer;}
+  .active-filter{background:var(--green);color:white;border-color:var(--green);}
 </style>
 </head>
 <body>
@@ -149,6 +152,7 @@ try {
   <button class="tab" onclick="showTab('videos')" id="tab-videos"><span class="icon">▶️</span><span id="t3">Videos</span></button>
   <button class="tab" onclick="showTab('ailearn')" id="tab-ailearn"><span class="icon">🤖</span><span id="t4">Ask AI</span></button>
   <button class="tab" onclick="showTab('feedback')" id="tab-feedback"><span class="icon">🎙️</span><span id="t5">Feedback</span></button>
+  <button class="tab" onclick="showTab('books')" id="tab-books"><span class="icon">📚</span><span id="t6">Books</span></button>
 </div>
 
 <div class="content">
@@ -281,6 +285,36 @@ try {
     <div class="card">
       <div class="card-title" style="color:var(--purple)">💬 <span id="fb-say-title">What Farmers Say</span></div>
       <div id="feedbackList"></div>
+    </div>
+  </div>
+
+  <!-- BOOKS & GUIDES -->
+  <div class="page" id="page-books">
+
+    <!-- Hero -->
+    <div style="background:linear-gradient(135deg,#1a5c2e,#2d7a45);border-radius:16px;padding:20px;color:white;margin-bottom:14px;text-align:center">
+      <div style="font-size:2rem">📚</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;margin:6px 0" id="books-hero-title">ICAR Crop Guides & Agricultural Books</div>
+      <div style="font-size:0.82rem;opacity:0.85" id="books-hero-sub">Free government-published books for Indian farmers. Based on real research from ICAR, PAU, IARI and State Agricultural Universities.</div>
+    </div>
+
+    <!-- Filter -->
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px">
+      <button onclick="filterBooks('all')" id="bfilter-all" class="filter-btn active-filter" style="white-space:nowrap">All</button>
+      <button onclick="filterBooks('cereal')" id="bfilter-cereal" class="filter-btn" style="white-space:nowrap">🌾 Cereals</button>
+      <button onclick="filterBooks('vegetable')" id="bfilter-vegetable" class="filter-btn" style="white-space:nowrap">🥦 Vegetables</button>
+      <button onclick="filterBooks('fruit')" id="bfilter-fruit" class="filter-btn" style="white-space:nowrap">🍎 Fruits</button>
+      <button onclick="filterBooks('soil')" id="bfilter-soil" class="filter-btn" style="white-space:nowrap">🌱 Soil & Water</button>
+      <button onclick="filterBooks('pest')" id="bfilter-pest" class="filter-btn" style="white-space:nowrap">🐛 Pest & Disease</button>
+      <button onclick="filterBooks('organic')" id="bfilter-organic" class="filter-btn" style="white-space:nowrap">🌿 Organic</button>
+      <button onclick="filterBooks('scheme')" id="bfilter-scheme" class="filter-btn" style="white-space:nowrap">🏛️ Schemes</button>
+    </div>
+
+    <div id="books-list"></div>
+
+    <!-- ICAR Disclaimer -->
+    <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:12px;margin-top:12px;font-size:0.8rem;color:#92400e">
+      📌 <strong>Source:</strong> All books and guides listed here are published by ICAR, IARI, PAU Ludhiana, State Agricultural Universities and Government of India. These are free public resources.
     </div>
   </div>
 
@@ -612,15 +646,13 @@ function renderTechniques(data) {
             <div class="invest-item"><div class="invest-label">Returns in</div><div class="invest-val">${tech.investment.roi}</div></div>
           </div>
         </div>
-        <div id="tech-content-${tech.id}" class="tech-content" style="margin:10px 0;font-size:0.86rem;color:var(--muted);font-style:italic">
-          ${currentLang === "en" ? "Tap below to get complete guide in English" : `${LANG_NAMES[currentLang]} में पूरी जानकारी पाने के लिए नीचे टैप करें`}
-        </div>
+        <div id="tech-content-${tech.id}" style="margin:8px 0;display:none"></div>
         ${currentLang !== "en" ? `
         <button class="translate-btn" id="translate-btn-${tech.id}" onclick="translateTechContent(${tech.id}, '${tech.name}')">
           🌐 ${t.translate_btn}
         </button>` : ""}
-        <button class="learn-btn" onclick="askAboutTech('${tech.name}')">
-          🤖 ${currentLang === "en" ? "Get Complete Guide from AI →" : `AI से ${LANG_NAMES[currentLang]} में पूरी जानकारी →`}
+        <button class="learn-btn" id="guide-btn-${tech.id}" onclick="showTechGuide(${tech.id}, '${tech.name}')" style="background:var(--green);color:white;border:none;border-radius:10px;padding:12px;width:100%;font-family:'Baloo 2',cursive;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:6px">
+          📖 Full Complete Guide →
         </button>
       </div>
     </div>`}).join("");
