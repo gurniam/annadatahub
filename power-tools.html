@@ -50,7 +50,7 @@
   .voice-icon{font-size:2.5rem;}
   .voice-status{text-align:center;font-size:0.88rem;color:var(--muted);margin-bottom:14px;min-height:20px;}
   .voice-transcript{background:var(--green-light);border-radius:12px;padding:12px 14px;font-size:0.88rem;margin-bottom:12px;min-height:44px;line-height:1.5;display:none;}
-  .voice-answer{background:white;border:1px solid var(--border);border-radius:12px;padding:14px;font-size:0.88rem;line-height:1.7;display:none;}
+  .voice-answer{background:white;border:1px solid var(--border);border-radius:12px;padding:14px;font-size:0.88rem;line-height:1.7;display:none;max-height:70vh;overflow-y:auto;}
   .voice-answer .answer-label{font-size:0.72rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px;}
   .quick-questions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
   .quick-q{background:var(--green-light);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:0.8rem;cursor:pointer;color:var(--green);font-weight:500;}
@@ -569,9 +569,16 @@ async function askQuestion(question) {
   try {
     const answer = await callAI(
       `Farmer question: ${question}`,
-      `You are a helpful agricultural expert for Indian farmers. Respond ENTIRELY in ${lang}. Give practical advice in 3-4 sentences with specific Indian context and rupee prices.`
+      `You are AnnadataHub AI, an expert agricultural advisor for Indian farmers. Respond ENTIRELY in ${lang}. Give detailed, structured answer with specific quantities, Indian product names, rupee costs, step-by-step method, warnings and pro tips. Be thorough and specific - never vague.`
     );
-    document.getElementById("answerText").textContent = answer;
+    // Format answer nicely - convert numbered lines to readable format
+    const formatted = answer
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n(\d+\.)/g, '<br><b>$1</b>')
+      .replace(/\n-/g, '<br>•')
+      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+      .replace(/\*(.*?)\*/g, '<i>$1</i>');
+    document.getElementById("answerText").innerHTML = formatted;
     document.getElementById("voiceStatus").textContent = "✅ Answer ready";
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
