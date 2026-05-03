@@ -176,17 +176,17 @@ def verify_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="Invalid token. Please login again.")
 
 
-async def call_ai(prompt: str, system: str = "") -> Optional[str]:
+async def call_ai(prompt: str, system: str = "", max_tokens: int = 1024) -> Optional[str]:
     if not GROQ_API_KEY:
         return None
     try:
-        async with httpx.AsyncClient(timeout=30.0) as c:
+        async with httpx.AsyncClient(timeout=45.0) as c:
             r = await c.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
                 json={
                     "model": "llama-3.3-70b-versatile",
-                    "max_tokens": 1024,
+                    "max_tokens": max_tokens,
                     "messages": [
                         {"role": "system", "content": system or "You are AnnadataHub AI for Indian farmers."},
                         {"role": "user", "content": prompt}
@@ -584,8 +584,19 @@ async def ask_ai(query: AIQuery, request: Request):
         "ml": "മലയാളത്തിൽ.", "ur": "اردو میں جواب۔", "en": "Reply in English."
     }
     lang = lang_map.get(query.language, "Reply in English.")
-    system = query.system_prompt if query.system_prompt else f"You are AnnadataHub AI, a farming assistant for Indian farmers. Give practical, actionable advice specific to India. {lang}"
-    result = await call_ai(query.question, system)
+    system = query.system_prompt if query.system_prompt else f"""You are AnnadataHub AI, an expert agricultural advisor for Indian farmers with deep knowledge of Indian farming. {lang}
+
+When answering farming questions, ALWAYS give DETAILED answers covering:
+1. DIRECT ANSWER — Answer clearly and specifically
+2. DETAILED EXPLANATION — Explain WHY with specific quantities, timings, doses in Indian units (kg/acre, litre/acre, rupees)
+3. STEP BY STEP METHOD — Numbered steps on exactly HOW to do it
+4. BEST TIME/SEASON — Which month, which crop stage
+5. COST & BENEFIT — Approximate cost in rupees, how much farmer saves or earns extra
+6. WARNING — What NOT to do, common Indian farmer mistakes
+7. PRO TIP — One expert tip most farmers don't know
+
+Use simple language a village farmer understands. Give SPECIFIC product names, doses, prices available in Indian markets. Always mention Indian crop varieties. Give state-specific examples (Punjab, UP, Maharashtra, AP etc). Never be vague — always specific with numbers. Base all recommendations on ICAR Package of Practices and State Agricultural University (SAU) guidelines."""
+    result = await call_ai(query.question, system, max_tokens=2000)
 
     if not result:
         fallback_map = {
@@ -697,18 +708,100 @@ async def weather(request: Request, location: str = "Punjab"):
 
 
 @app.get("/api/schemes")
-async def govt_schemes(request: Request, state: str = "Punjab"):
+async def govt_schemes(request: Request, state: str = "Punjab", crop: str = "Wheat", land: str = "2"):
     check_rate_limit(get_client_ip(request), "default")
-    schemes = [
-        {"name": "PM-KISAN", "emoji": "💰", "color": "#2e7d32", "tagline": "₹6,000/year direct to bank", "amount": "₹6,000", "amount_label": "per year", "description": "Direct income support of Rs.6000 per year to all farmer families.", "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center", "apply_url": "https://pmkisan.gov.in"},
-        {"name": "PM Fasal Bima Yojana", "emoji": "🌾", "color": "#f57c00", "tagline": "Crop insurance at lowest premium", "amount": "1.5-2%", "amount_label": "premium only", "description": "Comprehensive crop insurance against flood, drought, pest and disease.", "benefits": ["Full compensation for crop loss", "Kharif premium only 2%", "Rabi premium only 1.5%"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"], "how_to_apply": "Contact nearest bank before sowing season", "apply_url": "https://pmfby.gov.in"},
-        {"name": "Kisan Credit Card", "emoji": "💳", "color": "#1565c0", "tagline": "Crop loan at 4% interest", "amount": "₹3 lakh", "amount_label": "at 4% interest", "description": "Easy credit for crop production at very low interest rate.", "benefits": ["Loan up to Rs.3 lakh", "Interest rate only 4%", "Flexible repayment"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Passport photo"], "how_to_apply": "Apply at nearest SBI, PNB or cooperative bank", "apply_url": "https://www.sbi.co.in/web/agri-rural/agriculture-banking/crop-loan/kisan-credit-card"},
-        {"name": "PM Kisan Maan Dhan Yojana", "emoji": "👴", "color": "#6a1b9a", "tagline": "₹3,000/month pension after 60", "amount": "₹3,000", "amount_label": "per month after 60", "description": "Pension scheme for small and marginal farmers.", "benefits": ["₹3,000 monthly pension", "Contribute only ₹55-200/month", "Government matches contribution"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Age proof"], "how_to_apply": "Visit nearest CSC center with documents", "apply_url": "https://maandhan.in"},
-        {"name": "Soil Health Card", "emoji": "🌱", "color": "#558b2f", "tagline": "Free soil testing + advice", "amount": "Free", "amount_label": "no cost", "description": "Free soil testing to get crop-wise recommendations.", "benefits": ["Free soil testing", "Fertilizer recommendations", "Reduce input costs by 20%"], "documents": ["Aadhar card", "Land records"], "how_to_apply": "Contact nearest Krishi Vigyan Kendra", "apply_url": "https://soilhealth.dac.gov.in"},
-        {"name": "PM-KUSUM Solar Pump", "emoji": "☀️", "color": "#f57f17", "tagline": "90% subsidy on solar pump", "amount": "90%", "amount_label": "subsidy", "description": "Solar water pumps with 90% government subsidy.", "benefits": ["90% subsidy", "Save ₹20,000-50,000/year", "Free irrigation electricity"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Electricity bill"], "how_to_apply": "Apply at pmkusum.mnre.gov.in or district agriculture office", "apply_url": "https://pmkusum.mnre.gov.in"},
-    ]
-    data = {"summary": f"You are eligible for {len(schemes)} central government schemes.", "schemes": schemes}
-    await log_feature("schemes", {"state": state})
+
+    # Comprehensive list of ALL major central + state government schemes
+    ALL_CENTRAL_SCHEMES = """
+CENTRAL GOVERNMENT SCHEMES (apply to ALL states):
+1. PM-KISAN - ₹6,000/year direct income support (₹2,000 every 4 months). pmkisan.gov.in
+2. PM Fasal Bima Yojana (PMFBY) - Crop insurance: Kharif 2% premium, Rabi 1.5% premium, full crop loss covered. pmfby.gov.in
+3. Kisan Credit Card (KCC) - Crop loan up to ₹3 lakh at only 4% interest rate. Any nationalized bank.
+4. PM Kisan Maan Dhan Yojana - ₹3,000/month pension after age 60, contribute ₹55-200/month. maandhan.in
+5. Soil Health Card Scheme - Free soil testing, fertilizer recommendations, saves 20% input cost. soilhealth.dac.gov.in
+6. PM-KUSUM Solar Pump - 90% subsidy on solar water pumps, saves ₹20,000-50,000/year electricity. pmkusum.mnre.gov.in
+7. PM Krishi Sinchai Yojana (PMKSY) - Drip/sprinkler irrigation 55-75% subsidy, "Har Khet Ko Pani". pmksy.gov.in
+8. Paramparagat Krishi Vikas Yojana (PKVY) - ₹50,000/hectare for organic farming, 3 year support. pgsindia-ncof.gov.in
+9. National Food Security Mission (NFSM) - Free/subsidized seeds, fertilizers, machinery for rice/wheat/pulses farmers.
+10. Rashtriya Krishi Vikas Yojana (RKVY) - State-level agricultural development funding, machinery subsidies.
+11. Agricultural Infrastructure Fund (AIF) - Low interest loan up to ₹2 crore at 3% for storage, cold chain. agriinfra.dac.gov.in
+12. eNAM (National Agriculture Market) - Online mandi platform, sell crops at best price from home. enam.gov.in
+13. PM Kisan Sampada Yojana - Food processing unit setup subsidy 35-75%. mofpi.gov.in
+14. Pradhan Mantri Kisan Drone Yojana - Subsidized drone for crop spraying. Up to ₹5 lakh subsidy.
+15. National Beekeeping & Honey Mission - Beehive subsidy, training for additional income. nbhm.gov.in
+16. Sub-Mission on Agricultural Mechanization (SMAM) - 40-50% subsidy on tractors, harvesters, implements. agrimachinery.nic.in
+17. National Horticulture Mission (NHM) - Fruit/vegetable/flower farmers: subsidized planting material, drip irrigation. nhm.nic.in
+18. PM Annadata Aay SanraksHan Abhiyan (PM-AASHA) - Price support, procurement at MSP when market falls below MSP.
+19. Interest Subvention Scheme - Short term crop loan up to ₹3 lakh at effective 4% rate.
+20. Crop Diversification Programme - Incentive to shift from water-intensive crops, financial support for new crops.
+"""
+
+    STATE_SCHEMES = {
+        "Punjab": "Punjab: Aam Aadmi Kisan Scheme (free electricity 300 units/month), Punjab Kisan Karj Mafi (loan waiver), Punjab Agriculture Subsidy Scheme (seed/fertilizer subsidy), Mera Pani Meri Virasat (₹7,000/acre for crop diversification away from paddy).",
+        "Haryana": "Haryana: Meri Fasal Mera Byora (crop registration portal, MSP guarantee), Haryana Kisan Kalyan Pradhikaran, Bhavantar Bharpai Yojana (price difference compensation for vegetables), Saksham Yuva Scheme.",
+        "Uttar Pradesh": "UP: UP Kisan Karj Rahat (loan waiver up to ₹1 lakh), Mukhyamantri Krishak Durghatna Kalyan Yojana (accident insurance ₹5 lakh), UP Kisan Mitra Scheme, Paramparagat Krishi Vikas Yojana UP.",
+        "Bihar": "Bihar: Bihar Rajya Fasal Sahayata Yojana (crop insurance alternative), Krishi Input Subsidy (₹13,500/hectare after flood/drought), DBT Agriculture portal, Bihar Horticulture Development Society subsidy.",
+        "Rajasthan": "Rajasthan: Mukhyamantri Krishak Saathi Yojana (accident ₹2 lakh), Rajasthan Krishi Processing, Marketing & Agri-Business Policy, Rajasthan Solar Agriculture Pumping Scheme.",
+        "Madhya Pradesh": "MP: Mukhyamantri Krishak Jeevan Kalyan Yojana, MP Kisan App, Bhavantar Bhugtan Yojana (price support), MP Rajya Krishi Vikas Yojana.",
+        "Maharashtra": "Maharashtra: Jalyukt Shivar Yojana (water conservation), Godhan Nyay Yojana, Gokul Mission dairy support, Nanaji Deshmukh Krishi Sanjivani Project (climate-resilient farming), Mahadbt farmer portal.",
+        "Gujarat": "Gujarat: Kisan Suryodaya Yojana (daytime electricity for irrigation), GAIC crop insurance, Gujarat Organic Farming Policy, I-Khedut portal for all subsidies.",
+        "Karnataka": "Karnataka: Raitha Siri Scheme (₹10,000 relief), Krishi Bhagya drought scheme, Bhoochetana (soil health), Raitha Samparka Kendra, PM Kusum state component for solar pumps.",
+        "Andhra Pradesh": "AP: YSR Rythu Bharosa (₹13,500/year per farmer), YSR Free Crop Insurance, YSR Sunna Vaddi (zero interest crop loan), Rythu Bharosa Kendras (RBK) free agri services.",
+        "Telangana": "Telangana: Rythu Bandhu (₹10,000/acre per season = ₹20,000/year), Rythu Bima (farmer life insurance ₹5 lakh), Rythu Vedika farmer centers.",
+        "Tamil Nadu": "TN: Uzhavar Sandhai farmer markets, TNEGA schemes, CM Drought Relief, TN Precision Farming Project, TANFNET market linkage.",
+        "Kerala": "Kerala: Karshaka Kshemanidhi pension, Karshaka Sree, Subhiksha Keralam food security program, VFPCK vegetable/fruit promotion.",
+        "West Bengal": "WB: Krishak Bandhu (₹10,000/year + ₹2 lakh life insurance), WB Crop Insurance, Matua community schemes, Bangla Shasya Bima.",
+        "Odisha": "Odisha: KALIA Yojana (₹25,000 support + ₹2 lakh life insurance), Odisha Millet Mission, SMSP price support.",
+        "Uttarakhand": "Uttarakhand: Mukhyamantri Krishak Durghatna Yojana, UK horticulture subsidy schemes, Parvatiya Krishi Vikas Yojana for hill farming.",
+        "Himachal Pradesh": "HP: HP Kisan subsidy portal, Apple/horticulture marketing support, HIMCOSFED farmer cooperative support.",
+        "Jharkhand": "Jharkhand: Mukhyamantri Krishi Ashirwad Yojana, Zero interest loan scheme, Jharkhand Fasal Rahat Yojana.",
+        "Chhattisgarh": "CG: Rajiv Gandhi Kisan Nyay Yojana (input subsidy ₹9,000/acre for paddy), Godhan Nyay Yojana (cowdung purchase).",
+        "Assam": "Assam: Mukhyamantri Krishi Sa-Sajuli Yojana (free farm equipment), Assam Krishi Yojana, ATMA farmer group support.",
+    }
+
+    state_specific = STATE_SCHEMES.get(state, f"Check your state agriculture department website for {state}-specific schemes.")
+
+    prompt = f"""Indian farmer in {state}, growing {crop}, has {land} acres land. List ALL eligible government schemes.
+
+CENTRAL SCHEMES (always include relevant ones):
+PM-KISAN ₹6000/yr | PM Fasal Bima Yojana crop insurance 1.5-2% | Kisan Credit Card ₹3L at 4% | PM Kisan Maan Dhan ₹3000/month pension | Soil Health Card free | PM-KUSUM solar pump 90% subsidy | PMKSY drip irrigation 75% subsidy | SMAM machinery 50% subsidy | NHM horticulture subsidy | eNAM online market | Organic farming PKVY ₹50000/ha | AIF cold storage loan 3% | PM-AASHA MSP protection | Interest subvention 4% crop loan | Kisan Drone 40% subsidy
+
+STATE SCHEMES for {state}: {STATE_SCHEMES.get(state, "Check state agriculture department for " + state + " specific schemes")}
+
+Return ONLY JSON:
+{{"summary":"Eligible for X schemes worth ₹XX,XXX+ benefits","schemes":[{{"name":"","emoji":"","color":"#hex","tagline":"","amount":"","amount_label":"","description":"2 sentences","benefits":["","",""],"documents":["",""],"how_to_apply":"steps","apply_url":"https://"}}]}}
+
+Include 8-10 most relevant schemes for {crop} farmer in {state}. ONLY JSON, no extra text."""
+
+    try:
+        raw = await call_ai(prompt, system="You are an expert on Indian government agricultural schemes. Return ONLY valid JSON.", max_tokens=3000)
+        if not raw:
+            raise ValueError("No AI response")
+        raw = raw.strip()
+        raw = raw.replace("```json", "").replace("```", "").strip()
+        match = re.search(r'\{[\s\S]*\}', raw)
+        if match:
+            data = json.loads(match.group(0))
+        else:
+            raise ValueError("No JSON found")
+    except Exception as e:
+        logger.error(f"Schemes AI error: {e}")
+        # Fallback to hardcoded if AI fails
+        data = {
+            "summary": "You are eligible for 8+ central government schemes",
+            "schemes": [
+                {"name": "PM-KISAN", "emoji": "💰", "color": "#2e7d32", "tagline": "₹6,000/year direct to bank", "amount": "₹6,000", "amount_label": "per year", "description": "Direct income support of Rs.6000 per year to all farmer families in 3 installments.", "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center", "apply_url": "https://pmkisan.gov.in"},
+                {"name": "PM Fasal Bima Yojana", "emoji": "🌾", "color": "#f57c00", "tagline": "Crop insurance at lowest premium", "amount": "1.5-2%", "amount_label": "premium only", "description": "Comprehensive crop insurance against flood, drought, pest and disease.", "benefits": ["Full crop loss compensation", "Kharif premium only 2%", "Rabi premium only 1.5%"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"], "how_to_apply": "Contact nearest bank before sowing season", "apply_url": "https://pmfby.gov.in"},
+                {"name": "Kisan Credit Card", "emoji": "💳", "color": "#1565c0", "tagline": "Crop loan at 4% interest", "amount": "₹3 lakh", "amount_label": "at 4% interest", "description": "Easy credit for crop production, post-harvest expenses and allied activities.", "benefits": ["Loan up to ₹3 lakh", "Interest only 4%", "Flexible repayment"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Passport photo"], "how_to_apply": "Apply at nearest SBI, PNB or cooperative bank", "apply_url": "https://pmkisan.gov.in"},
+                {"name": "PM-KUSUM Solar Pump", "emoji": "☀️", "color": "#f57f17", "tagline": "90% subsidy on solar pump", "amount": "90%", "amount_label": "subsidy", "description": "Solar water pumps with 90% government subsidy. Saves electricity cost every year.", "benefits": ["90% subsidy", "Save ₹20,000-50,000/year", "No electricity bills"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Electricity bill"], "how_to_apply": "Apply at pmkusum.mnre.gov.in or district agriculture office", "apply_url": "https://pmkusum.mnre.gov.in"},
+                {"name": "Soil Health Card", "emoji": "🌱", "color": "#558b2f", "tagline": "Free soil testing + advice", "amount": "Free", "amount_label": "no cost", "description": "Free soil testing with crop-wise fertilizer recommendations. Saves 20% fertilizer cost.", "benefits": ["Free soil testing", "Fertilizer recommendations", "Reduce input costs 20%"], "documents": ["Aadhar card", "Land records"], "how_to_apply": "Contact nearest Krishi Vigyan Kendra (KVK)", "apply_url": "https://soilhealth.dac.gov.in"},
+                {"name": "PM Kisan Maan Dhan Yojana", "emoji": "👴", "color": "#6a1b9a", "tagline": "₹3,000/month pension after 60", "amount": "₹3,000", "amount_label": "per month after 60", "description": "Pension scheme for small and marginal farmers. Government matches your contribution.", "benefits": ["₹3,000 monthly pension", "Contribute only ₹55-200/month", "Government matches contribution"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Age proof"], "how_to_apply": "Visit nearest CSC center with all documents", "apply_url": "https://maandhan.in"},
+                {"name": "PM Krishi Sinchai Yojana", "emoji": "💧", "color": "#0277bd", "tagline": "55-75% subsidy on drip/sprinkler", "amount": "75%", "amount_label": "subsidy", "description": "Subsidy on micro-irrigation (drip and sprinkler). Saves 40-50% water and increases yield.", "benefits": ["75% subsidy for small farmers", "Save 40-50% water", "Increase yield 20-30%"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Apply at district agriculture office or pmksy.gov.in", "apply_url": "https://pmksy.gov.in"},
+                {"name": "eNAM Mandi Portal", "emoji": "📱", "color": "#00695c", "tagline": "Sell crops online at best price", "amount": "Best price", "amount_label": "nationwide", "description": "Online national agriculture market. Sell your crops to buyers across India at best price.", "benefits": ["Access buyers nationwide", "Transparent pricing", "Direct payment to bank"], "documents": ["Aadhar card", "Bank passbook", "Mobile number"], "how_to_apply": "Register at enam.gov.in or nearest APMC mandi", "apply_url": "https://enam.gov.in"},
+            ]
+        }
+
+    await log_feature("schemes", {"state": state, "crop": crop})
     return {"success": True, "data": json.dumps(data)}
 
 
