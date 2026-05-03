@@ -371,18 +371,25 @@ const TECHNIQUES = [
   {id:6,name:"Organic Farming Certification",icon:"🌿",bg:"#f0fdf4",category:"organic",tagline:"Certified organic = 2-3x higher price for your crops",badges:[{text:"Premium Price",cls:"badge-gold"},{text:"Export Ready",cls:"badge-green"},{text:"Subsidy",cls:"badge-blue"}],investment:{setup:"₹5,000-15,000",monthly:"₹1,000",earning:"2-3x current price",roi:"3 years"}},
   {id:7,name:"Beekeeping Business",icon:"🐝",bg:"#fff7ed",category:"business",tagline:"Earn ₹25,000-60,000/year from bees — also improves crop yield",badges:[{text:"Low Maintenance",cls:"badge-green"},{text:"Dual Income",cls:"badge-gold"},{text:"Crop Benefit",cls:"badge-purple"}],investment:{setup:"₹10,000-25,000",monthly:"₹500",earning:"₹25,000-60,000/year",roi:"6-12 months"}},
   {id:8,name:"Terrace/Rooftop Farming",icon:"🏠",bg:"#f0fdf4",category:"modern",tagline:"Grow vegetables on your roof — save money, earn money",badges:[{text:"No Land Needed",cls:"badge-green"},{text:"Urban Farmers",cls:"badge-blue"},{text:"Fresh Produce",cls:"badge-gold"}],investment:{setup:"₹3,000-10,000",monthly:"₹500-1,000",earning:"₹5,000-20,000/month",roi:"2-3 months"}},
+  {id:9,name:"Medicinal Plant Farming",icon:"🌿",bg:"#f0fdf4",category:"business",tagline:"Earn ₹1-5 lakh/acre — Tulsi, Ashwagandha, Aloe Vera",badges:[{text:"High Value Crop",cls:"badge-gold"},{text:"Low Input",cls:"badge-green"},{text:"Company Buyback",cls:"badge-blue"}],investment:{setup:"₹5,000-15,000/acre",monthly:"₹1,000-2,000",earning:"₹1,00,000-5,00,000/acre/year",roi:"6-12 months"}},
+  {id:10,name:"Polyhouse/Greenhouse Farming",icon:"🏭",bg:"#eff6ff",category:"modern",tagline:"Grow any crop in any season — 5x income per sqft",badges:[{text:"Year Round",cls:"badge-blue"},{text:"50% Subsidy",cls:"badge-green"},{text:"5x Income",cls:"badge-gold"}],investment:{setup:"₹80,000-3,00,000",monthly:"₹3,000-8,000",earning:"₹2,00,000-10,00,000/year",roi:"2-3 years"}},
+  {id:11,name:"Integrated Farming System",icon:"🔄",bg:"#fef9c3",category:"modern",tagline:"Crop + Fish + Poultry + Compost — maximum income from 1 acre",badges:[{text:"Zero Waste",cls:"badge-green"},{text:"Year Round Income",cls:"badge-gold"},{text:"Risk Free",cls:"badge-blue"}],investment:{setup:"₹25,000-75,000",monthly:"₹2,000-5,000",earning:"₹1,50,000-4,00,000/acre/year",roi:"6-12 months"}},
+  {id:12,name:"Microgreens Business",icon:"🌱",bg:"#e0fdf4",category:"business",tagline:"Harvest in 7 days — sell at ₹400-800/kg to restaurants",badges:[{text:"7 Day Harvest",cls:"badge-gold"},{text:"No Land Needed",cls:"badge-green"},{text:"Restaurant Market",cls:"badge-blue"}],investment:{setup:"₹2,000-5,000",monthly:"₹500-1,500",earning:"₹15,000-40,000/month",roi:"1 month"}},
+  {id:13,name:"Seed Production Business",icon:"🌾",bg:"#fefce8",category:"business",tagline:"Earn 3-5x regular crop price by producing certified seeds",badges:[{text:"3-5x Price",cls:"badge-gold"},{text:"Govt Support",cls:"badge-green"},{text:"Stable Income",cls:"badge-blue"}],investment:{setup:"₹10,000-25,000",monthly:"₹2,000",earning:"₹60,000-2,00,000/acre/year",roi:"1 season"}},
+  {id:14,name:"Agri Tourism / Farm Stay",icon:"🏡",bg:"#fdf4ff",category:"business",tagline:"Earn ₹50,000-2,00,000/month from farm tourism",badges:[{text:"High Income",cls:"badge-gold"},{text:"No New Land",cls:"badge-green"},{text:"Growing Market",cls:"badge-blue"}],investment:{setup:"₹50,000-2,00,000",monthly:"₹5,000-10,000",earning:"₹50,000-2,00,000/month",roi:"6-18 months"}},
+  {id:15,name:"Fish Farming (Aquaculture)",icon:"🐟",bg:"#eff6ff",category:"business",tagline:"Earn ₹3-8 lakh/acre/year from fish pond",badges:[{text:"High Demand",cls:"badge-gold"},{text:"Govt Subsidy",cls:"badge-green"},{text:"Year Round",cls:"badge-blue"}],investment:{setup:"₹50,000-2,00,000",monthly:"₹5,000-10,000",earning:"₹3,00,000-8,00,000/acre/year",roi:"1-2 years"}},
 ];
 
 // Translations for technique names, taglines and badges
 const TECH_TRANS = {
   en:{
-    names:["Hydroponics Farming","Mushroom Farming","Drip Irrigation","Vermicompost Business","Solar Pump for Irrigation","Organic Farming Certification","Beekeeping Business","Terrace/Rooftop Farming"],
-    taglines:["Grow crops without soil — 10x more yield in less space","Start with ₹3,000 — earn ₹20,000/month from small space","Save 50% water — increase yield by 30-40%","Turn farm waste into gold — sell organic fertilizer","Free water pumping — save ₹20,000-50,000/year on electricity","Certified organic = 2-3x higher price for your crops","Earn ₹25,000-60,000/year from bees — also improves crop yield","Grow vegetables on your roof — save money, earn money"],
+    names:["Hydroponics Farming","Mushroom Farming","Drip Irrigation","Vermicompost Business","Solar Pump for Irrigation","Organic Farming Certification","Beekeeping Business","Terrace/Rooftop Farming","Medicinal Plant Farming","Polyhouse/Greenhouse Farming","Integrated Farming System","Microgreens Business","Seed Production Business","Agri Tourism / Farm Stay","Fish Farming (Aquaculture)"],
+    taglines:["Grow crops without soil — 10x more yield in less space","Start with ₹3,000 — earn ₹20,000/month from small space","Save 50% water — increase yield by 30-40%","Turn farm waste into gold — sell organic fertilizer","Free water pumping — save ₹20,000-50,000/year on electricity","Certified organic = 2-3x higher price for your crops","Earn ₹25,000-60,000/year from bees — also improves crop yield","Grow vegetables on your roof — save money, earn money","Tulsi, Ashwagandha, Aloe Vera — earn ₹1-5 lakh/acre","Grow any crop any season — 5x income per sqft","Crop + Fish + Poultry — maximum income from 1 acre","Harvest in 7 days — sell at ₹400-800/kg to restaurants","Earn 3-5x regular price by producing certified seeds","Earn ₹50,000-2,00,000/month from farm tourism","Earn ₹3-8 lakh/acre/year from fish pond — 40-60% subsidy"],
     badges:[["No Soil","10x Yield","Water Saving"],["Low Investment","High Demand","Indoor"],["50% Water Saving","Govt Subsidy","Higher Yield"],["Zero Waste","Organic","Extra Income"],["90% Subsidy","Free Electricity","24/7 Water"],["Premium Price","Export Ready","Subsidy"],["Low Maintenance","Dual Income","Crop Benefit"],["No Land Needed","Urban Farmers","Fresh Produce"]],
   },
   hi:{
-    names:["हाइड्रोपोनिक्स खेती","मशरूम की खेती","ड्रिप सिंचाई","वर्मीकम्पोस्ट व्यापार","सोलर पंप सिंचाई","जैविक खेती प्रमाणन","मधुमक्खी पालन","छत पर खेती"],
-    taglines:["बिना मिट्टी फसल उगाएं — 10 गुना अधिक पैदावार","₹3,000 से शुरू — छोटी जगह से ₹20,000/माह","50% पानी बचाएं — पैदावार 30-40% बढ़ाएं","खेती का कचरा सोने में बदलें — जैविक खाद बेचें","मुफ्त पानी पंपिंग — बिजली पर ₹50,000/साल बचाएं","जैविक प्रमाणन = आपकी फसल का 2-3 गुना दाम","मधुमक्खियों से ₹60,000/साल — फसल भी बेहतर","अपनी छत पर सब्जियां उगाएं — पैसे बचाएं, कमाएं"],
+    names:["हाइड्रोपोनिक्स खेती","मशरूम की खेती","ड्रिप सिंचाई","वर्मीकम्पोस्ट व्यापार","सोलर पंप सिंचाई","जैविक खेती प्रमाणन","मधुमक्खी पालन","छत पर खेती","औषधीय पौधे खेती","पॉलीहाउस खेती","एकीकृत खेती प्रणाली","माइक्रोग्रीन्स व्यापार","बीज उत्पादन व्यापार","कृषि पर्यटन","मछली पालन"],
+    taglines:["बिना मिट्टी फसल उगाएं — 10 गुना अधिक पैदावार","₹3,000 से शुरू — छोटी जगह से ₹20,000/माह","50% पानी बचाएं — पैदावार 30-40% बढ़ाएं","खेती का कचरा सोने में बदलें — जैविक खाद बेचें","मुफ्त पानी पंपिंग — बिजली पर ₹50,000/साल बचाएं","जैविक प्रमाणन = आपकी फसल का 2-3 गुना दाम","मधुमक्खियों से ₹60,000/साल — फसल भी बेहतर","अपनी छत पर सब्जियां उगाएं — पैसे बचाएं, कमाएं","तुलसी, अश्वगंधा, एलोवेरा — ₹1-5 लाख/एकड़","किसी भी मौसम में कोई भी फसल — 5 गुना आमदनी","फसल + मछली + मुर्गी — 1 एकड़ से अधिकतम आमदनी","7 दिन में कटाई — ₹400-800/किलो रेस्तरां में बेचें","प्रमाणित बीज — सामान्य दाम से 3-5 गुना","कृषि पर्यटन से ₹50,000-2,00,000/माह","मछली तालाब से ₹3-8 लाख/एकड़/साल"],
     badges:[["बिना मिट्टी","10 गुना पैदावार","पानी बचत"],["कम निवेश","उच्च मांग","घर के अंदर"],["50% पानी बचत","सरकारी सब्सिडी","अधिक पैदावार"],["शून्य बर्बादी","जैविक","अतिरिक्त आमदनी"],["90% सब्सिडी","मुफ्त बिजली","24/7 पानी"],["प्रीमियम दाम","निर्यात योग्य","सब्सिडी"],["कम देखभाल","दोहरी आमदनी","फसल लाभ"],["बिना जमीन","शहरी किसान","ताजा उपज"]],
   },
   pa:{
@@ -442,20 +449,43 @@ const BIZ_TRANS = {
 };
 
 const VIDEOS = [
-  {title:"Hydroponics Farming at Home — Complete Guide",channel:"Kheti Kisani",lang:"Hindi",topic:"hydroponics",views:"2.3M",url:"https://www.youtube.com/results?search_query=hydroponics+farming+hindi",emoji:"🌱"},
-  {title:"ਹਾਈਡ੍ਰੋਪੋਨਿਕਸ ਖੇਤੀ ਕਿਵੇਂ ਕਰੀਏ",channel:"Punjab Kheti",lang:"Punjabi",topic:"hydroponics",views:"850K",url:"https://www.youtube.com/results?search_query=hydroponics+farming+punjabi",emoji:"🌱"},
-  {title:"Mushroom Farming Business — ₹50,000/month",channel:"Agri World",lang:"Hindi",topic:"mushroom",views:"5.1M",url:"https://www.youtube.com/results?search_query=mushroom+farming+hindi",emoji:"🍄"},
-  {title:"Organic Farming Complete Course",channel:"Kisan Helpline",lang:"Hindi",topic:"organic",views:"1.8M",url:"https://www.youtube.com/results?search_query=organic+farming+hindi",emoji:"🌿"},
-  {title:"సేంద్రియ వ్యవసాయం — పూర్తి గైడ్",channel:"Rythu Kosam",lang:"Telugu",topic:"organic",views:"920K",url:"https://www.youtube.com/results?search_query=organic+farming+telugu",emoji:"🌿"},
-  {title:"Drip Irrigation — Save Water Save Money",channel:"KVK India",lang:"Hindi",topic:"drip",views:"3.2M",url:"https://www.youtube.com/results?search_query=drip+irrigation+hindi",emoji:"💧"},
-  {title:"தொட்டி தோட்டம் — Terrace Farming Tamil",channel:"Vivasayam",lang:"Tamil",topic:"organic",views:"1.1M",url:"https://www.youtube.com/results?search_query=terrace+farming+tamil",emoji:"🏠"},
-  {title:"Vermicompost Business — Complete Setup",channel:"Organic India",lang:"Hindi",topic:"organic",views:"2.7M",url:"https://www.youtube.com/results?search_query=vermicompost+business+hindi",emoji:"🌍"},
-  {title:"PM Kisan Yojana — Complete Guide 2026",channel:"Sarkari Help",lang:"Hindi",topic:"government",views:"4.5M",url:"https://www.youtube.com/results?search_query=pm+kisan+yojana+2026",emoji:"🏛️"},
-  {title:"Mushroom Sheti — Marathi Complete Guide",channel:"Shetkari",lang:"Marathi",topic:"mushroom",views:"780K",url:"https://www.youtube.com/results?search_query=mushroom+farming+marathi",emoji:"🍄"},
-  {title:"ಸಾವಯವ ಕೃಷಿ — Kannada Organic Farming",channel:"Krishi Mitra",lang:"Kannada",topic:"organic",views:"560K",url:"https://www.youtube.com/results?search_query=organic+farming+kannada",emoji:"🌿"},
-  {title:"Drip Irrigation Gujarati — ટપક સિંચાઈ",channel:"Gujarat Kheti",lang:"Gujarati",topic:"drip",views:"340K",url:"https://www.youtube.com/results?search_query=drip+irrigation+gujarati",emoji:"💧"},
-  {title:"জৈব কৃষি — Bengali Organic Farming Guide",channel:"Krishi Bangla",lang:"Bengali",topic:"organic",views:"490K",url:"https://www.youtube.com/results?search_query=organic+farming+bengali",emoji:"🌿"},
-  {title:"ജൈവ കൃഷി — Malayalam Organic Farming",channel:"Kerala Karshakan",lang:"Malayalam",topic:"organic",views:"310K",url:"https://www.youtube.com/results?search_query=organic+farming+malayalam",emoji:"🌿"},
+  // BEGINNER BASICS
+  {title:"खेती शुरू कैसे करें — नए किसानों के लिए पूरी गाइड",channel:"Kheti Kisani",lang:"Hindi",topic:"beginner",views:"8.2M",url:"https://www.youtube.com/results?search_query=naye+kisan+kheti+kaise+kare+hindi",emoji:"🌱",desc:"Complete guide for new farmers — where to start, which crops, which season"},
+  {title:"Farming for Beginners — Complete A to Z Guide",channel:"Krishi TV India",lang:"Hindi",topic:"beginner",views:"5.4M",url:"https://www.youtube.com/results?search_query=farming+beginners+complete+guide+india+hindi",emoji:"🌾",desc:"A to Z farming guide — soil, seeds, water, harvest, selling"},
+  {title:"How to Start Farming with Small Land",channel:"Agri Doctor",lang:"Hindi",topic:"beginner",views:"3.1M",url:"https://www.youtube.com/results?search_query=small+land+farming+india+hindi",emoji:"🏡",desc:"Best crops and methods for small land farmers"},
+  // MODERN TECHNIQUES
+  {title:"Hydroponics Farming — Zero to Setup in 30 Minutes",channel:"Kheti Kisani",lang:"Hindi",topic:"hydroponics",views:"12.3M",url:"https://www.youtube.com/results?search_query=hydroponics+farming+setup+hindi+step+by+step",emoji:"🌱",desc:"Complete hydroponics setup — PVC pipes, nutrients, which crops"},
+  {title:"Mushroom Farming Business — ₹50,000/month from 100 Bags",channel:"Agri World",lang:"Hindi",topic:"mushroom",views:"9.1M",url:"https://www.youtube.com/results?search_query=oyster+mushroom+farming+business+hindi",emoji:"🍄",desc:"Oyster mushroom complete guide — spawn, bags, harvest, selling"},
+  {title:"Vermicompost Business — Complete Setup ₹2,000 mein",channel:"Organic India TV",lang:"Hindi",topic:"organic",views:"6.7M",url:"https://www.youtube.com/results?search_query=vermicompost+business+kaise+kare+hindi",emoji:"🌍",desc:"Start vermicompost from scratch — earthworms, material, harvesting, selling"},
+  {title:"Drip Irrigation — Save 50% Water, Subsidy kaise milegi",channel:"KVK India",lang:"Hindi",topic:"drip",views:"7.2M",url:"https://www.youtube.com/results?search_query=drip+irrigation+subsidy+india+hindi",emoji:"💧",desc:"Drip irrigation setup + government 75% subsidy application process"},
+  {title:"Solar Pump — PM KUSUM Subsidy 90% Complete Process",channel:"Kisan Helpline",lang:"Hindi",topic:"solar",views:"5.8M",url:"https://www.youtube.com/results?search_query=pm+kusum+solar+pump+subsidy+apply+hindi",emoji:"☀️",desc:"PM-KUSUM scheme application step by step — get 90% subsidy"},
+  {title:"Beekeeping Business — Madhumakhi Palan Complete Guide",channel:"Agri Junction",lang:"Hindi",topic:"bee",views:"4.3M",url:"https://www.youtube.com/results?search_query=beekeeping+honey+farming+hindi+madhumakhi+palan",emoji:"🐝",desc:"Start beekeeping with ₹20,000 — honey production, KVIC subsidy"},
+  {title:"Terrace Farming — Grow Vegetables on Rooftop",channel:"Urban Kisan",lang:"Hindi",topic:"terrace",views:"3.9M",url:"https://www.youtube.com/results?search_query=terrace+farming+rooftop+vegetable+hindi",emoji:"🏠",desc:"Rooftop vegetable garden — grow bags, soil mix, which vegetables"},
+  // CROP SPECIFIC
+  {title:"Wheat Farming Complete Guide — HD-3086, PBW-343",channel:"Punjab Agricultural University",lang:"Hindi",topic:"wheat",views:"4.1M",url:"https://www.youtube.com/results?search_query=wheat+farming+complete+guide+hindi+variety",emoji:"🌾",desc:"Wheat sowing to harvesting — variety selection, fertilizer, irrigation timing"},
+  {title:"Paddy Rice Farming — PR-126 Basmati Complete Guide",channel:"PAU Ludhiana",lang:"Hindi",topic:"rice",views:"3.8M",url:"https://www.youtube.com/results?search_query=paddy+rice+farming+hindi+PR126+basmati",emoji:"🌾",desc:"Rice cultivation — nursery, transplanting, water management, SRI method"},
+  {title:"Tomato Farming — Nursery to Harvest Complete Guide",channel:"Krishi Jagran",lang:"Hindi",topic:"vegetable",views:"5.2M",url:"https://www.youtube.com/results?search_query=tomato+farming+complete+guide+hindi",emoji:"🍅",desc:"Tomato cultivation — nursery, staking, disease control, market price"},
+  {title:"Onion Farming — Pyaz ki Kheti Complete Guide",channel:"Shetkari Mitra",lang:"Hindi",topic:"vegetable",views:"6.1M",url:"https://www.youtube.com/results?search_query=onion+farming+hindi+pyaz+kheti",emoji:"🧅",desc:"Onion from nursery to storage — purple blotch control, curing, selling"},
+  {title:"Mango Orchard — High Density Planting 10x Income",channel:"CISH Lucknow",lang:"Hindi",topic:"fruit",views:"2.9M",url:"https://www.youtube.com/results?search_query=mango+orchard+high+density+planting+hindi",emoji:"🥭",desc:"High density mango — Amrapali variety, 640 trees/acre, 10x income"},
+  // DISEASE & PEST
+  {title:"Crop Disease Identification — पत्तों पर धब्बे क्यों?",channel:"Agri Doctor India",lang:"Hindi",topic:"disease",views:"8.7M",url:"https://www.youtube.com/results?search_query=crop+disease+identification+hindi+patte+dhabbe",emoji:"🔬",desc:"Identify 20+ diseases from symptoms — what to spray, when to spray"},
+  {title:"Pesticide Use — Safe, Correct, Money-Saving Guide",channel:"NCIPM India",lang:"Hindi",topic:"pest",views:"3.4M",url:"https://www.youtube.com/results?search_query=pesticide+use+correctly+india+hindi",emoji:"🐛",desc:"How to use pesticides safely — dose, timing, resistance management"},
+  // ORGANIC
+  {title:"Organic Farming — Jeevamrit Recipe & Application",channel:"Subhash Palekar Natural Farming",lang:"Hindi",topic:"organic",views:"11.2M",url:"https://www.youtube.com/results?search_query=jeevamrit+recipe+natural+farming+hindi",emoji:"🌿",desc:"Make Jeevamrit free at home — cow dung, cow urine, jaggery recipe"},
+  {title:"Organic Certification — PGS Process Complete Guide",channel:"NCOF Ghaziabad",lang:"Hindi",topic:"organic",views:"2.1M",url:"https://www.youtube.com/results?search_query=organic+certification+PGS+india+hindi",emoji:"📜",desc:"Get organic certificate — PGS process, documents, premium market access"},
+  // GOVERNMENT SCHEMES
+  {title:"PM Kisan Yojana — eKYC kaise kare, Status check",channel:"Sarkari Help",lang:"Hindi",topic:"government",views:"14.5M",url:"https://www.youtube.com/results?search_query=pm+kisan+ekyc+status+check+hindi+2026",emoji:"💰",desc:"PM-KISAN registration, eKYC, beneficiary status, common rejection fix"},
+  {title:"Fasal Bima — Crop Insurance Claim Process",channel:"Kisan Helpline Official",lang:"Hindi",topic:"government",views:"6.3M",url:"https://www.youtube.com/results?search_query=PM+fasal+bima+yojana+claim+process+hindi",emoji:"🌾",desc:"PMFBY claim step by step — how to register loss, documents needed"},
+  {title:"Kisan Credit Card — 4% Interest Loan Apply Kaise",channel:"Bank Help India",lang:"Hindi",topic:"government",views:"8.9M",url:"https://www.youtube.com/results?search_query=kisan+credit+card+apply+4+percent+interest+hindi",emoji:"💳",desc:"KCC application process, documents, how to get crop loan at 4%"},
+  // REGIONAL LANGUAGES
+  {title:"Mushroom Sheti — Marathi मशरूम शेती संपूर्ण मार्गदर्शन",channel:"Shetkari TV",lang:"Marathi",topic:"mushroom",views:"4.8M",url:"https://www.youtube.com/results?search_query=mushroom+farming+marathi+shetkari",emoji:"🍄",desc:"Marathi complete mushroom farming guide — setup to selling"},
+  {title:"Rythu Bandhu + Rythu Bima — Apply Chesukonu Ela",channel:"Rythu Kosam",lang:"Telugu",topic:"government",views:"5.2M",url:"https://www.youtube.com/results?search_query=rythu+bandhu+rythu+bima+apply+telugu",emoji:"🏛️",desc:"Telangana schemes — Rythu Bandhu ₹10,000/acre, Rythu Bima insurance"},
+  {title:"ਕਿਸਾਨ ਕ੍ਰੈਡਿਟ ਕਾਰਡ — ਪੰਜਾਬ ਵਿੱਚ ਕਿਵੇਂ ਅਪਲਾਈ ਕਰੀਏ",channel:"Punjab Kheti",lang:"Punjabi",topic:"government",views:"2.3M",url:"https://www.youtube.com/results?search_query=kisan+credit+card+punjab+apply+punjabi",emoji:"💳",desc:"Punjabi guide — KCC application process in Punjab"},
+  {title:"Organic Farming Tamil — இயற்கை வேளாண்மை முழு வழிகாட்டி",channel:"Vivasayam",lang:"Tamil",topic:"organic",views:"3.1M",url:"https://www.youtube.com/results?search_query=organic+farming+tamil+complete+guide",emoji:"🌿",desc:"Tamil organic farming — inputs, certification, premium market"},
+  {title:"ಸಾವಯವ ಕೃಷಿ — Kannada Organic Farming Complete",channel:"Krishi Mitra",lang:"Kannada",topic:"organic",views:"2.6M",url:"https://www.youtube.com/results?search_query=organic+farming+kannada+complete",emoji:"🌿",desc:"Kannada organic farming — jeevamrit, bio-fertilizers, certification"},
+  {title:"ജൈവ കൃഷി — Kerala Natural Farming Guide",channel:"Kerala Karshakan",lang:"Malayalam",topic:"organic",views:"1.8M",url:"https://www.youtube.com/results?search_query=organic+farming+kerala+malayalam",emoji:"🌿",desc:"Malayalam organic farming guide for Kerala farmers"},
+  {title:"জৈব কৃষি — Bengali Complete Organic Guide",channel:"Krishi Bangla",lang:"Bengali",topic:"organic",views:"2.2M",url:"https://www.youtube.com/results?search_query=organic+farming+bengali+complete",emoji:"🌿",desc:"Bengali organic farming — inputs, compost, certification"},
+  {title:"Soil Health Card — Kaise Padhe, Kaise Use Kare",channel:"ICAR India Official",lang:"Hindi",topic:"soil",views:"4.7M",url:"https://www.youtube.com/results?search_query=soil+health+card+kaise+padhein+use+kare+hindi",emoji:"🌱",desc:"Official ICAR guide — read your soil health card and use it correctly"},
 ];
 
 const DEMO_FEEDBACK = [
@@ -763,7 +793,23 @@ async function askToLearn() {
 
   try {
     const answer = await callAI(
-      `Indian farmer question: ${q}\n\nRespond ENTIRELY in ${langName}. Give practical step-by-step guidance. Include costs in Indian Rupees. Keep language simple and easy to understand for a farmer.`,
+      `A farmer who is completely new to farming is asking this question: "${q}"
+
+Respond ENTIRELY in ${langName}. This person knows NOTHING — explain everything from scratch like explaining to a 10-year-old.
+
+Give a VERY DETAILED answer covering:
+1. सरल उत्तर / Simple Answer — What is it, explain in 2-3 simple lines
+2. कौन कर सकता है / Who can do it — Any farmer? Special skill? Land size needed?  
+3. शुरुआत कैसे करें / How to Start — Exact numbered steps from Day 1
+4. बजट के अनुसार / Budget Options — Low (₹2,000-5,000), Medium (₹10,000-25,000), High (₹50,000+)
+5. समय / Timeline — When to start, days/months to first harvest or income
+6. सटीक खर्च / Exact Costs — Each item cost in rupees, where to buy in India
+7. कमाई / Expected Income — Realistic monthly income, per acre, per unit
+8. गलतियाँ / Common Beginner Mistakes — What destroys new farmers, what NOT to do
+9. कहाँ बेचें / Where to Sell — Exact market names, apps, buyers, price per kg
+10. सरकारी मदद / Free Government Help — Scheme names, KVK training, subsidy websites
+
+Be VERY specific: exact kg amounts, exact rupee costs, exact Indian product names, exact government scheme names. NO vague advice. Assume zero knowledge.`,
       currentLang
     );
     result.innerHTML = `
@@ -862,6 +908,276 @@ function renderFeedback() {
       <div style="font-size:0.83rem;color:#374151;line-height:1.5;margin-bottom:6px">"${f.text}"</div>
       ${f.feature ? `<div style="font-size:0.72rem;color:var(--green);font-weight:600">${f.feature}</div>` : ""}
     </div>`).join("");
+}
+
+
+// ============= DETAILED TECHNIQUE GUIDES =============
+const TECHNIQUE_GUIDES = {
+  1: {
+    what:"Hydroponics means growing crops in water with nutrients — NO soil needed. Plants grow 2-3x faster, yield 10x more per sqft. Best for: spinach, lettuce, tomatoes, chilli, herbs.",
+    who:"Anyone — farmers with small land, rooftop, women SHGs. No farming experience needed.",
+    budget_options:[
+      {label:"Starter (Under ₹5,000)",steps:["Use 5-litre plastic bottles or old buckets — drill holes","Buy cocopeat (₹150/kg) as growing medium","Buy liquid nutrient solution — ₹300/500ml, lasts 2 months","Grow 20-30 plants of spinach or coriander","No pump needed — refill water manually every 2 days","Harvest in 25-30 days. Learn the basics before scaling up"]},
+      {label:"Small Setup (₹5,000-15,000)",steps:["Buy 4-inch PVC pipes — ₹100/metre, need 10 metres total","Drill holes every 15cm for net cups (₹5 each)","Buy small water pump ₹500-800 from hardware store","Set timer to run pump 30 min every 4 hours","Buy ready-made nutrient kit: ₹500 for A+B solution","Grow 100-150 plants — spinach, lettuce, basil, tomato"]},
+      {label:"Commercial (₹20,000-50,000)",steps:["NFT (Nutrient Film Technique) system — 500+ plants","HDPE pipes with UV protection — lasts 10+ years","Auto timer + water pump + reservoir tank 200 litres","EC meter (₹1,500) + pH meter (₹800) — essential for quality","Grow cherry tomato, capsicum, strawberry for premium price","Target: restaurants, organic stores, apartment WhatsApp groups"]}
+    ],
+    costs:"Starter: ₹2,000-5,000 | Small: ₹8,000-15,000 | Commercial: ₹25,000-50,000 | Earning: ₹8,000-60,000/month depending on scale",
+    crops:"Spinach (30 days), Lettuce (35 days), Basil (40 days), Tomato (70 days), Chilli (90 days), Strawberry (60 days), Cherry tomato (₹150/kg)",
+    tips:"Start with spinach — easiest, fastest. pH must stay 5.5-6.5. Keep water temperature below 25°C. Clean system every 3 months with dilute bleach. Sell fresh — shelf life only 2-3 days.",
+    mistakes:"Too much nutrient burns roots (yellow leaves). Letting reservoir dry — roots die in 2 hours. Not checking pH — plants can't absorb nutrients. Buying expensive equipment before testing if you like it.",
+    market:"Restaurants pay ₹80-150/kg for hydroponic greens. Apartment societies via WhatsApp. Organic stores. Swiggy Instamart vendor registration. BigBasket supplier portal."
+  },
+  2: {
+    what:"Mushroom farming grows edible mushrooms on straw/wheat waste. Oyster mushroom is easiest — no special equipment. Price: ₹120-200/kg fresh, ₹800-1200/kg dry.",
+    who:"Perfect for anyone with a small room 10×10 feet. No land needed. Women SHGs especially successful.",
+    budget_options:[
+      {label:"Beginner (₹1,000-3,000)",steps:["Get free training first from nearest KVK — they provide spawn too","Buy 1 kg spawn (₹80-100) — enough for 10 bags","Collect wheat straw/paddy bhusa — free from your fields","Soak straw 12 hours, boil 30 minutes to sterilize","Fill in 2 kg polythene bags, mix spawn, seal with holes","Keep in any room at 20-25°C. First harvest in 25-30 days"]},
+      {label:"Small Business (₹3,000-8,000)",steps:["Set up 50-100 bags in a clean room or shed","Build simple bamboo/wood shelf structure for bags","Install mist sprayer (₹500) for humidity — keep at 80-90%","Buy spawn regularly: 1 kg ₹80 produces 4-5 kg mushroom","Each bag gives 3-4 harvests over 90 days","Sell fresh to local market ₹120/kg — target ₹8,000-15,000/month"]},
+      {label:"Commercial (₹10,000-25,000)",steps:["100-200 bags production unit in dedicated room","Temperature control using cooler in summer (above 28°C mushroom stops)","Separate spawn-run room (dark, 22°C) and fruiting room (light, 18-22°C)","Add Button mushroom (needs cold room) for higher price ₹200/kg","Dry excess mushroom — sells at ₹900/kg, shelf life 6 months","Register with FSSAI (free for small), sell online on Amazon/Flipkart"]}
+    ],
+    costs:"Beginner: ₹1,000-3,000 | Small: ₹5,000-10,000 | Commercial: ₹15,000-25,000 | Earning: ₹5,000-40,000/month",
+    crops:"Oyster mushroom (easiest), Milky mushroom (summer, tolerates heat), Button mushroom (premium, needs cold room), Shiitake (export quality, ₹600-1000/kg)",
+    tips:"Contact KVK first — free training, spawn, and guidance. Hygiene is 90% of success. Label bags with date to track rotation. Dried mushroom has 10x shelf life — valuable during oversupply.",
+    mistakes:"Skipping straw sterilization — green/black mold destroys batch. Using fresh cow dung — wrong material. Overwatering — causes rot. Wrong temperature — mushroom stops fruiting above 28°C.",
+    market:"Fresh: vegetable market ₹120/kg, restaurants ₹150-180/kg, hospitals/hotels. Dry: ₹900-1200/kg online. Export mushroom powder to Europe via APEDA at premium prices."
+  },
+  3: {
+    what:"Drip irrigation delivers water directly to plant roots through small pipes. Saves 50% water, increases yield 20-30%. Government gives 55-75% subsidy under PMKSY.",
+    who:"Every farmer with irrigated land. Especially important for vegetables, fruits, cotton, sugarcane.",
+    budget_options:[
+      {label:"Small Farm under 0.5 acre (₹3,000-8,000 after subsidy)",steps:["Apply for PMKSY subsidy at district agriculture office FIRST","Small farmer subsidy: 75% — you pay only 25%","For 0.5 acre: need 200m lateral pipe + 50 drippers + main pipe","Buy simple gravity drip kit if no pump — works for small gardens","Install filter at inlet — MANDATORY to prevent clogging","Lay laterals along each crop row, dripper at each plant base"]},
+      {label:"1-3 Acres (₹8,000-20,000 after subsidy)",steps:["Main HDPE pipe from pump to field + sub-main along field boundary","Lateral lines (16mm pipe) along each row — 1.5m apart for tomato","Inline drippers: 2 litre/hour — 30cm apart for vegetables","Pressure gauge: maintain 1-1.5 bar. Filter: 120 mesh","Add fertilizer tank (venturi injector ₹1,200) for fertigation","Test system: run water, check each dripper is working"]},
+      {label:"5+ Acres (₹20,000-60,000 after subsidy)",steps:["Automatic drip with timer and solenoid valves — zone-wise watering","IoT soil moisture sensors (₹2,000-5,000) — water only when needed","Fertigation scheduling: apply fertilizer weekly through drip system","Mulching plastic (₹3,000/acre) with drip conserves 70% water","Monitor pressure zones — each zone max 200m lateral length","Annual maintenance: flush lines, clean filters, replace blocked drippers"]}
+    ],
+    costs:"Actual cost per acre: ₹40,000-80,000. After 75% subsidy: ₹10,000-20,000 from your pocket. Save ₹5,000-15,000/year on water+electricity. Extra yield value: ₹10,000-30,000/acre/season.",
+    crops:"Best for: tomato, chilli, onion, cotton, sugarcane, banana, pomegranate, grapes, all vegetables, orchards.",
+    tips:"Apply fertigation through drip — plants absorb 95% vs 50% from broadcast. Saves 30% fertilizer. Schedule drip at night for maximum efficiency. Pair with mulching for 70% water saving.",
+    mistakes:"Using without filter — drippers clog within weeks. Not flushing monthly — salt buildup. Wrong pressure — too high breaks pipes, too low no water at end of line. Skipping subsidy — losing ₹30,000-60,000.",
+    market:"Drip gives premium quality uniform size — markets pay 10-15% higher. Export quality vegetables possible. Contact: Jain Irrigation, Netafim, EPC local dealers for free demo."
+  },
+  4: {
+    what:"Vermicompost is organic fertilizer made by earthworms. Sells ₹6-15/kg. Each bed produces 100-200 kg/month. Replace chemical fertilizer saving ₹5,000-8,000/acre/year.",
+    who:"Every farmer should make their own. Needs only: farm waste, cow dung, earthworms, shade.",
+    budget_options:[
+      {label:"Home Scale (₹500-1,500)",steps:["Use any old cement tank, used tyres stacked, or lined pit — no cost","Buy 0.5 kg earthworms (₹100-200) from KVK or online","Layer: 3 inch old cow dung + 3 inch dry farm waste","Add worms on top. Cover with jute sack. Spray water daily","Check moisture: squeeze handful — only 2-3 drops should come","Ready in 45-60 days. Enough for your own farm use."]},
+      {label:"Small Business (₹2,000-5,000)",steps:["Build 3-4 beds: each 3ft×6ft×2ft cement tank or brick-lined pit","Buy 2 kg earthworms to start — multiply to fill all beds in 3 months","Process 50-100 kg waste per week from your farm","Harvest 50-80 kg vermicompost per bed per 45 days","Sell surplus at ₹8-12/kg to nearby organic farmers or nurseries","Monthly income: ₹3,000-8,000 from 4 beds after own farm use"]},
+      {label:"Commercial (₹10,000-25,000)",steps:["20-30 beds under shade net structure","Process farm waste + cow dung from neighbours (pay ₹0-1/kg or free)","2 kg worms multiply to 20 kg in 6 months — buy once","Package in 5 kg and 25 kg bags with your brand label","Register with state organic certification for premium buyers","Target 1,000-2,000 kg/month output — earn ₹10,000-25,000/month"]}
+    ],
+    costs:"Home: ₹500-1,500 | Small: ₹2,000-5,000 | Commercial: ₹10,000-25,000 | Earning: ₹2,000-25,000/month | Saves own farm: ₹5,000-8,000/acre/year in chemical costs",
+    crops:"Apply on all crops: 2 tonnes/acre replaces 100kg chemical fertilizer. Vegetables: 1-2 kg per plant. Use liquid leachate (dilute 1:10) as foliar spray every 15 days.",
+    tips:"Scale to 20+ beds for serious income. Vermicompost tea is more valuable than solid compost for foliar. Register as supplier with state agriculture department for bulk orders. Women SHGs successful at this.",
+    mistakes:"Fresh cow dung kills worms (ammonia). Material too wet = bacteria, too dry = worms die. Citrus/onion/meat = worms avoid and production stops. Harvesting too early = immature compost damages crops.",
+    market:"Sell to: organic farmers ₹8-12/kg, nurseries ₹10-15/kg, online Amazon/Flipkart ₹15-25/kg, state govt compost scheme, FPOs, apartment gardeners."
+  },
+  5: {
+    what:"Solar pump uses sunlight to pump water — zero electricity cost. 3HP solar pump saves ₹40,000-60,000/year. PM-KUSUM scheme gives 90% subsidy — pay only 10%.",
+    who:"Every farmer with irrigation need. Especially where electricity supply is irregular.",
+    budget_options:[
+      {label:"1HP Pump — under 1 acre (₹8,000-15,000 after subsidy)",steps:["Apply at pmkusum.mnre.gov.in or state nodal agency","1HP pump: actual cost ₹70,000, after 90% subsidy = ₹7,000","Suitable for: borewell up to 100 feet depth, 0.5-1 acre","Provides: 40,000-60,000 litres/day in good sunlight","Install south-facing, 15-20° tilt for maximum output","Payback: saves ₹15,000-25,000/year electricity — ROI in 6 months"]},
+      {label:"3HP Pump — 2-5 acres (₹15,000-25,000 after subsidy)",steps:["3HP pump: actual ₹1.5 lakh, after 90% subsidy = ₹15,000","Suitable for: borewell up to 200 feet, 3-5 acre farm","Provides: 1,20,000-1,80,000 litres/day","Pair with drip irrigation for maximum efficiency","Install water tank to store daytime pumping for night use","Saves ₹40,000-60,000/year — best ROI of any farm investment"]},
+      {label:"5HP Pump — 5-10 acres (₹25,000-40,000 after subsidy)",steps:["5HP: actual ₹2.5 lakh, after 90% subsidy = ₹25,000","Zone-wise drip system to distribute water across 5-10 acres","Add GSM controller — start pump from mobile phone","Monitor output via app — most modern systems include this","Annual maintenance: clean panels monthly, motor service yearly","Can also sell surplus solar electricity to grid — extra income"]}
+    ],
+    costs:"After 90% subsidy: 1HP = ₹7,000-10,000 | 3HP = ₹15,000-20,000 | 5HP = ₹25,000-35,000 | Annual savings: ₹15,000-80,000 on electricity | ROI: 6-12 months",
+    crops:"Works for all crops and all irrigation systems.",
+    tips:"Apply early — slots fill fast. Get 5-year warranty on panels and 2-year on pump. Clean panels weekly — 1% dust = 5% less output. Buy from MNRE-empanelled vendor only — subsidy rejected otherwise.",
+    mistakes:"Non-empanelled vendor = no subsidy. Wrong tilt angle = 20-30% less output. No earthing = pump damage. Not getting written warranty. Installing without proper sizing — underpowered pump.",
+    market:"Contact: District Agriculture Office or your state DISCOM. Search '[your state] KUSUM portal' for state-specific application."
+  },
+  6: {
+    what:"Certified organic crops sell at 2-3x regular price. Basmati: ₹25 → ₹90/kg. Turmeric: ₹60 → ₹200/kg. Government gives ₹50,000/hectare under PKVY scheme.",
+    who:"Farmers wanting premium price. Needs 3-year transition. Best crops: rice, wheat, vegetables, turmeric, ginger, spices.",
+    budget_options:[
+      {label:"Small Farm under 1 acre — PGS Certification (Free)",steps:["Form group of 10+ farmers in your village — mandatory for PGS","Register at pgsindia-ncof.gov.in — free process, KVK helps","Stop ALL chemicals — switch to Jeevamrit, neem, vermicompost","Year 1-3: sell at regular price but build soil health","Keep farm diary: write all inputs, activities, harvest — inspector checks","After 3 years: get PGS certificate, sell at premium on jaivikkheti.in"]},
+      {label:"1-3 Acres — PKVY Scheme (₹50,000/ha government support)",steps:["Apply under PKVY at district agriculture office as group","Government pays ₹50,000/hectare over 3 years for organic inputs","Get bio-fertilizers (Rhizobium, PSB, Azotobacter) free from KVK","Make Jeevamrit yourself: 10 kg cow dung + 10L urine + 1 kg jaggery + 200L water","Apply every 15 days — replaces all chemical fertilizer","After 3 years: 3rd party organic certification + export opportunity"]},
+      {label:"5+ Acres — Export Grade (₹1,00,000+ investment, ₹5-8x returns)",steps:["Get APEDA approved 3rd party certification: ₹15,000-25,000","Focus on export crops: turmeric, ginger, basmati, black pepper, honey","Separate storage and processing area — inspector requirement","Traceability system: QR code on each bag linking to your farm","Connect with export company or FPO for bulk purchase","Target Europe/US buyers — 5-8x premium for certified organic"]}
+    ],
+    costs:"PGS: Free | PKVY: ₹50,000/ha from govt | 3rd party: ₹15,000-25,000 | Premium: crops sell 2-8x higher price | Extra income: ₹50,000-3,00,000/acre/year",
+    crops:"Best for premium: Turmeric ₹200/kg, Ginger ₹180/kg, Basmati ₹90/kg, Black pepper ₹500/kg, Honey ₹400-600/kg, Moringa ₹250/kg, all organic vegetables.",
+    tips:"Join FPO (Farmer Producer Organisation) — collective certification cheaper, export power, better prices. jaivikkheti.in portal connects to 2 lakh+ organic buyers directly. Export is where real money is.",
+    mistakes:"Using any chemical even once in 3 years — certification rejected. Poor record keeping — inspector fails you. Rushing certification — minimum 3 years, no shortcut. Not finding buyer before full conversion.",
+    market:"Buyers: jaivikkheti.in, BigBasket Organic, Nature's Basket, Fabindia, Organic India, Export via APEDA, Direct EU/US buyers. FPO gives collective bargaining power."
+  },
+  7: {
+    what:"Beekeeping earns ₹25,000-80,000/year per 10 boxes. Honey: ₹200-600/kg. Beeswax: ₹400-600/kg. Also increases your crop yield 15-20% through pollination. KVIC gives subsidy.",
+    who:"Any farmer with flowering crops nearby. Low daily time requirement (1-2 hours/week).",
+    budget_options:[
+      {label:"Beginner 5 boxes (₹10,000-15,000, subsidy available)",steps:["Get 3-day free training at KVK or KVIC office first — mandatory","Buy 5 Langstroth boxes at ₹1,500-2,000 each","Buy 5 Italian Apis mellifera bee colonies at ₹1,500 each","Apply NBHM subsidy (25-50%) before purchasing — saves ₹5,000-8,000","Place near mustard, sunflower, litchi, mango flowering crops","First honey harvest in 3-4 months — 5-8 kg per box per season"]},
+      {label:"Medium 20 boxes (₹40,000-60,000)",steps:["20 boxes gives ₹30,000-50,000/year honey + beeswax income","Seasonal migration: move boxes to follow flowering — mustard (Dec-Feb), litchi (Mar), forest (Jun-Aug)","Keep queen rearing records — replace old queen every 2 years","Buy extractor (₹3,000-5,000) — extracts honey without destroying comb","Get refractometer (₹1,500) — honey moisture must be below 20%","FSSAI registration (free for small producers) for legal selling"]},
+      {label:"Commercial 50+ boxes (₹1,00,000-1,50,000)",steps:["50 boxes: ₹80,000-1,50,000/year honey income + pollination charges","Charge mango/litchi/fruit farmers ₹500-800/box/month for pollination service","Bulk honey: supply to Dabur, Patanjali, local honey brands","Beeswax value addition: candles, lip balm, cream — sell online","Brand your honey — multiflora/monofloral honey premium price","Export pure honey through APEDA — Europe pays €5-8/kg"]}
+    ],
+    costs:"5 boxes: ₹10,000-15,000 | 20 boxes: ₹40,000-60,000 | Earning: ₹8,000-30,000/year (5 boxes) to ₹80,000-1,50,000/year (20 boxes) | Pollination income extra",
+    crops:"Place near: mustard (Dec-Feb), coriander, sunflower, litchi, mango, jamun, eucalyptus, neem, forest flowers. Avoid pesticide-sprayed areas.",
+    tips:"Register with KVIC — they buy honey at fixed price, no marketing needed. Beewax is 5% of honey weight but worth ₹400-600/kg. Honey tasting events in cities sell at ₹600+/kg direct.",
+    mistakes:"Placing near pesticide fields — bees die. Opening hive in rain or cold — bees become aggressive. Harvesting uncapped honey — ferments within weeks. Poor queen management — colony fails.",
+    market:"Direct at ₹400-600/kg vs ₹100-150 to middlemen. KVIC fixed price purchase. Patanjali, Dabur sourcing. Amazon/Flipkart. Honey cooperatives. Export via APEDA."
+  },
+  8: {
+    what:"Grow vegetables on terrace/rooftop without agricultural land. 100 sqft produces 30-50 kg vegetables/month worth ₹3,000-6,000. Zero pesticide fresh food for family.",
+    who:"Anyone with rooftop — 50 sqft is enough to start. Urban and semi-urban. Women especially successful.",
+    budget_options:[
+      {label:"Starter — Family Use (₹1,000-3,000)",steps:["Use old buckets, containers, paint cans, used tyres — zero cost","Buy cocopeat 5 kg (₹150) + vermicompost 5 kg (₹80)","Mix: 50% cocopeat + 30% vermicompost + 20% garden soil","Plant: coriander, spinach, fenugreek, mint — cheapest, fastest","Water daily morning, check soil moisture before watering","Harvest outer leaves only — plant keeps producing for months"]},
+      {label:"Small Production (₹3,000-8,000)",steps:["Buy 20-30 grow bags (₹20-30 each) for proper drainage","Grow: tomato, chilli, brinjal (summer), peas, cauliflower (winter)","Install simple drip from water bottle — saves 50% water","Add neem oil spray (5ml/litre) every 15 days — prevents all pests","Apply liquid jeevamrit every 15 days — free fertilizer from cow products","Target: supply 2-3 nearby families at ₹20-30% below market price"]},
+      {label:"Micro Farm (₹8,000-20,000)",steps:["High-value focus: microgreens (7-day harvest, ₹400-800/kg)","Cherry tomato + baby spinach + herbs — restaurant supplies","Set up grow rack system: 6 shelves = 6x growing space","LED grow lights (₹800-2,000/unit) for year-round indoor growing","Instagram/YouTube channel on terrace farming — earn ₹10,000-50,000/month from content too","Supply to restaurants: fixed weekly order, premium price, reliable income"]}
+    ],
+    costs:"Starter: ₹1,000-3,000 | Small: ₹5,000-8,000 | Micro farm: ₹10,000-20,000 | Earning: save ₹2,000-3,000/month family vegetables to ₹20,000-40,000/month micro farm",
+    crops:"High value: Cherry tomato (₹80-150/kg), Microgreens (₹400-800/kg), Baby spinach (₹60-100/kg), Herbs (tulsi, mint, basil ₹200-400/kg), Strawberry (₹200-400/kg).",
+    tips:"Microgreens are the most profitable — radish, sunflower, wheatgrass. Grow in flat trays, harvest in 7-10 days. Restaurants pay premium. Start Instagram — urban farming content gets massive following.",
+    mistakes:"Only garden soil = clay block that drowns roots. Overwatering = root rot. Growing tall plants near edge = wind damage. Forgetting to water for 2-3 days = plants die in containers faster than ground.",
+    market:"Neighbours/society WhatsApp, restaurants for fresh herbs, organic stores, Instagram marketplace, Swiggy Instamart, local organic market on weekends."
+  },
+  9: {
+    what:"Medicinal plants like Tulsi, Ashwagandha, Aloe Vera, Safed Musli earn ₹1-5 lakh/acre/year. Pharmaceutical companies sign buyback contracts — guaranteed selling price before you plant.",
+    who:"Any farmer with drip irrigation and basic care. Companies like Dabur, Patanjali, AMUL sign buyback agreements.",
+    budget_options:[
+      {label:"0.25 acre — Aloe Vera + Tulsi (₹5,000-8,000)",steps:["Aloe Vera: buy suckers ₹2-3 each, plant 5,000/acre, yield in 18 months","Tulsi: seeds cheap ₹50-100 packet, yield in 90 days","Both need very less water — perfect for dryland farmers","Contact local Ayurvedic medicine factory for buyback agreement","Aloe vera gel: sell fresh at ₹8-12/kg, processed ₹30-50/kg","Tulsi: sell dried leaves ₹30-80/kg, essential oil much higher"]},
+      {label:"0.5-1 acre — Ashwagandha (₹8,000-15,000)",steps:["Ashwagandha: NMITLI variety or WS-20, plant Oct-Nov","Dryland crop — needs almost no irrigation once established","Harvest roots in Feb-March — dry and sell ₹100-180/kg","Seed production: ₹500/kg — much higher than root","Contact: Himalaya, Dabur, Patanjali procurement centers for buyback","Yield: 3-5 q roots/acre + seeds — total income ₹50,000-1,20,000/acre"]},
+      {label:"1-3 acres — Safed Musli (₹20,000-40,000)",steps:["Safed Musli: ₹2,000-3,000/kg dried — highest value medicinal crop","Plant March-April, harvest November-December","High investment: ₹40,000-80,000/acre — but ₹2-4 lakh/acre income","Intercrop with short-duration vegetables for income during growing season","Get certified seed from ICAR-CIMAP Lucknow for best yield","Buyers: Ayurvedic companies, export to China/Europe"]}
+    ],
+    costs:"Aloe Vera/Tulsi: ₹5,000-8,000/acre | Ashwagandha: ₹8,000-15,000/acre | Safed Musli: ₹40,000-80,000/acre | Earning: ₹50,000-5,00,000/acre/year depending on crop",
+    crops:"Best medicinal crops: Aloe Vera, Tulsi (Holy Basil), Ashwagandha, Safed Musli, Giloy, Shatavari, Moringa (drumstick), Stevia (sugar replacement), Lemon Grass.",
+    tips:"Get buyback agreement BEFORE planting — call company procurement: Patanjali 1800-180-5500, Dabur and Himalaya have farmer portals. ICAR-CIMAP Lucknow gives free technical guidance and certified seeds.",
+    mistakes:"Planting without buyback agreement — market is unorganised, price fluctuates. Buying uncertified planting material — low yield, not accepted by companies. Mixing varieties in same field.",
+    market:"Patanjali, Dabur, Himalaya, Baidyanath (buyback contracts). AMPC herbal markets: Indore, Neemuch, Kota. Export through APEDA. Ayurvedic pharmacy direct supply."
+  },
+  10: {
+    what:"Polyhouse (greenhouse) allows growing any crop in any season under controlled conditions. 5x income per sqft. Government gives 50-65% subsidy under NHM. Best for vegetables and flowers.",
+    who:"Farmers with 0.1-1 acre who want high income. Needs initial investment but highest returns of any farming.",
+    budget_options:[
+      {label:"Small Poly tunnel 100 sqm (₹30,000-50,000 after subsidy)",steps:["Apply NHM (National Horticulture Mission) subsidy first — 50-65% off","Simple GI pipe + UV poly film structure: ₹500-700/sqm before subsidy","Grow: capsicum, tomato, cucumber, gerbera flowers inside","Control: temperature, humidity, pests much better than open field","Drip irrigation inside polyhouse — MANDATORY for moisture control","Yield: 3-5x open field. Capsicum: 25-35 kg/plant in polyhouse vs 5-8 kg outside"]},
+      {label:"Medium Poly 500-1000 sqm (₹1,00,000-2,00,000 after subsidy)",steps:["NHM subsidy: up to ₹935/sqm — total subsidy ₹4,67,500 for 500 sqm","Fan and pad cooling system for summer temperature control","Shade net inside for heat-sensitive crops","Hydroponic growing inside polyhouse — maximum yield","Grow cut flowers (rose, gerbera, carnation) — sell to flower shops, events","Income: ₹3-10 lakh/year from 500 sqm polyhouse"]},
+      {label:"Commercial hi-tech 2000+ sqm (₹5,00,000+ after subsidy)",steps:["Computer-controlled climate (temperature, humidity, CO2)","Substrate growing (cocopeat/perlite) — no soil disease","Export quality vegetables/flowers — EU supermarkets","APEDA certification for vegetable exports","Drip + fertigation + sensors = minimum labour","ROI: 3-5 years but ₹10-30 lakh/year steady income"]}
+    ],
+    costs:"100 sqm after subsidy: ₹30,000-50,000 | 500 sqm: ₹1,00,000-2,00,000 | Earning: ₹50,000-3,00,000/year | NHM subsidy contact: state horticulture department",
+    crops:"Capsicum (₹50-150/kg, very high in polyhouse), Tomato (off-season premium), Cucumber, Gerbera flowers (₹3-8/flower), Rose, Carnation, Strawberry.",
+    tips:"Flowers are the most profitable polyhouse crop — gerbera earns ₹5-8/flower, 1 lakh flowers/year per 500 sqm. Wedding/event market is huge and growing fast.",
+    mistakes:"Building before getting subsidy approval. Poor site selection — waterlogging destroys. Not installing proper ventilation — plants die in summer heat. Wrong plastic (use UV-treated only). Skipping drip irrigation.",
+    market:"Vegetables: supermarkets, hotels, hospitals. Flowers: flower shops, wedding planners, event managers, florists. Register with state flower cooperative for guaranteed purchase."
+  },
+  11: {
+    what:"Integrated Farming combines crops + fish/poultry + composting on same land. Waste from one becomes input for another. Maximum income with zero waste. Best for 1-5 acre farms.",
+    who:"Any farmer wanting steady year-round income with reduced risk. Government's preferred model for small farms.",
+    budget_options:[
+      {label:"Basic IFS on 1 acre (₹15,000-25,000)",steps:["Main crop (rice/wheat) on 60% of land","Kitchen garden (vegetables) on 20% for family food","Vermicompost unit using crop waste — free fertilizer","5-10 poultry (desi chicken/duck) — eat pests, manure fertilizes crop","1 goat or cow — manure for vermicompost and jeevamrit","Income: main crop + eggs + milk + vegetables = year-round cash"]},
+      {label:"Full IFS on 2-3 acres (₹40,000-80,000)",steps:["Crop + fruit orchard (mango/guava/banana on bunds)","Small fish pond 0.1 acre — duck droppings feed fish, fish waste irrigates crop","Mushroom unit using crop straw waste","Gobar gas plant from cow dung — free cooking gas + slurry as fertilizer","Beekeeping 5-10 boxes near flowering crops","Total income: 5-7 different income sources — if one fails others support you"]},
+      {label:"Commercial IFS on 5+ acres (₹1,00,000-2,00,000)",steps:["Formally plan: crop zones, fish pond, poultry, orchard, processing unit","NABARD gives special loans for IFS at subsidised rate","Add value processing: pickle from mango, dried mushroom, honey","Register as FPO for collective marketing strength","Employ 2-3 farm workers — create rural employment","Income: ₹3-8 lakh/year — most stable farming income model in India"]}
+    ],
+    costs:"Basic 1 acre: ₹15,000-25,000 | Full 2-3 acres: ₹40,000-80,000 | Commercial: ₹1-2 lakh | Earning: ₹80,000-8,00,000/year depending on scale",
+    crops:"Combination of: main food crop + fruit trees on bunds + vegetables + fish/poultry + vermicompost + beekeeping. Specific mix depends on your land, water availability and state.",
+    tips:"ICAR Farming System Research Division gives free technical plans for your specific land. NABARD IFS loan at subsidised rate. This model is most resistant to crop failure risk.",
+    mistakes:"Trying to do everything at once — start with 2-3 components, add more each year. Fish pond near crop field without bund — overflow damages crop. Poultry without fence — eats seedlings.",
+    market:"Multiple market channels: grain to mandi, fish to local market, eggs daily, milk cooperatives, vegetables to direct consumer. FPO membership for collective selling strength."
+  },
+  12: {
+    what:"Microgreens are young seedlings harvested 7-12 days after germination. Price: ₹400-800/kg. Restaurants, hotels, health stores are main buyers. Grow indoors, no special equipment.",
+    who:"Anyone with indoor space — 10 sqft is enough to start. No land, no soil knowledge needed. High demand in cities.",
+    budget_options:[
+      {label:"Beginner (₹1,000-2,000)",steps:["Buy 5-10 flat seedling trays (₹25-40 each)","Seeds: radish ₹50/100g, sunflower ₹40/100g, mustard ₹20/100g, peas ₹30/100g","Fill trays with cocopeat 1 inch deep — no garden soil (too heavy, has pathogens)","Spread seeds densely — 1 layer covering entire surface","Cover with another tray for 2-3 days (darkness helps germination)","Keep moist, uncover when seeds sprout. Harvest with scissors in 7-12 days"]},
+      {label:"Small Business (₹3,000-8,000)",steps:["Grow 20-30 trays at a time — continuous staggered production","Most profitable: sunflower, peas, radish, wheatgrass, basil, broccoli","Contact 5 restaurants directly — show samples first, then take order","Typical restaurant order: 2-3 kg/week = ₹1,000-2,400/week per restaurant","Package in sealed clamshell boxes or ziplock bags with your brand","10 restaurant clients = ₹10,000-24,000/month steady income"]},
+      {label:"Commercial (₹10,000-25,000)",steps:["50-100 tray operation — dedicated grow room","LED lights (₹800-1,500 per 4 trays) for uniform year-round production","Commercial clients: star hotels, hospital canteens, cloud kitchens","Instagram + quick commerce listing (Blinkit/Swiggy) for direct retail","Wheatgrass juice — sell to juice bars at ₹150-200/kg","Target ₹50,000-1,00,000/month from 100+ restaurant/hotel clients"]}
+    ],
+    costs:"Beginner: ₹1,000-2,000 | Small: ₹5,000-8,000 | Commercial: ₹15,000-25,000 | Earning: ₹5,000-1,00,000/month | Input per tray: ₹20-30, selling price per tray: ₹200-500",
+    crops:"Best sellers: Sunflower (nutty, expensive), Pea shoots (sweet), Radish (spicy), Broccoli (high nutrition, health market), Wheatgrass (juice bars), Basil, Red cabbage (colour).",
+    tips:"Sample to restaurants before selling — let chef taste. Consistent quality = repeat orders. Grow rare varieties (broccoli, red amaranth) — sell at ₹600-800/kg. Food safety certificate builds trust.",
+    mistakes:"Using garden soil — contamination risk, weight problem. Overwatering — mold destroys batch in 2 days. Not approaching restaurants directly — middlemen take 50% margin. Growing only 1-2 varieties.",
+    market:"Restaurants, hotels (5-star pays premium), juice bars, hospital diet kitchens, health food stores, Swiggy Instamart vendor, Blinkit, Instagram/Facebook marketplace, weekend farmers market."
+  },
+  13: {
+    what:"Produce certified seeds for sale — earn 3-5x regular crop price. Seed companies pay ₹80-150/kg for wheat seed vs ₹22 for grain. Government supports under NSP (National Seed Programme).",
+    who:"Experienced farmers with good agronomic practices and isolation land available. Works best for wheat, rice, vegetables.",
+    budget_options:[
+      {label:"Foundation/Certified Seed — 1-2 acres (₹10,000-20,000)",steps:["Register with state Seed Corporation or NSP (National Seed Programme)","Buy breeder seed from SAU (State Agricultural University) — guaranteed purity","Maintain isolation distance: wheat 3m, cross-pollinated crops 300-500m","Field inspection by seed certification agency 2 times","Rogue out off-types and diseased plants — critical for certification","Harvest separately, clean thoroughly, test for germination (min 90%)"]},
+      {label:"Private Seed Production (₹15,000-30,000)",steps:["Sign contract with private seed companies (Mahyco, Pioneer, Syngenta, ITC)","Company provides parent seed + technical guidance + guaranteed buyback","Grow hybrid parent seeds — much higher price than commercial seed","Strict field management required — company field staff inspect weekly","Payment: ₹100-300/kg depending on crop and company","Steady income: same company, same contract every year"]}
+    ],
+    costs:"Registration: ₹500-1,000 | Certified breeder seed: ₹2,000-5,000/acre extra | Earning: wheat seed ₹80-150/kg (vs ₹22 grain), vegetable seed ₹500-5,000/kg | 3-5x regular income",
+    crops:"Best for seed: Wheat (most demand), Paddy (basmati seed), Tomato/Chilli/Okra (vegetable hybrid seed is very expensive), Onion, Mustard.",
+    tips:"Vegetable hybrid seed is the most profitable — tomato hybrid seed ₹3,000-5,000/kg. Contact Mahyco/Syngenta/Pioneer for contract farming. National Seeds Corporation gives foundation seed at subsidised rate.",
+    mistakes:"Not maintaining isolation — seed certification rejected. Harvesting in rain — germination drops. Mixing varieties — quality fails. Not getting field inspected at right time — rejected.",
+    market:"State Seed Corporation buyback, private seed companies (contract), NHRDF for onion/garlic seed, SAU for breeder seed multiplication. High demand every year."
+  },
+  14: {
+    what:"Agri Tourism lets city people visit and experience your farm — pay ₹500-2,000/person. Farm stays earn ₹5,000-10,000/night. Growing trend — city families want real farm experience.",
+    who:"Farmers with fruit orchards, interesting farming activities, near highways or within 50 km of cities.",
+    budget_options:[
+      {label:"Day Visits (₹15,000-30,000)",steps:["Make 1-2 activities: fruit picking, bullock cart ride, fresh food cooking demo","Charge: ₹200-500 per person for 2-3 hour visit","Build simple seating area, clean toilet — basic requirements","Promote on Instagram + Google Business Profile (free)","Weekend-only start — test demand before investing more","10 visitors/weekend = ₹2,000-5,000/weekend extra income"]},
+      {label:"Farm Dining (₹30,000-80,000)",steps:["Open-air dining area using farm produce — desi food only","Freshly made roti, saag, lassi, seasonal vegetables from your own farm","Groups of 10-20 people pay ₹500-800/person for lunch","Target: family outings, school trips, corporate team building","Register food business with FSSAI — ₹100/year for small producer","Summer mango season: mango picking + lunch = ₹800-1,200/person premium"]},
+      {label:"Farm Stay (₹80,000-2,00,000)",steps:["Build 2-4 huts or rooms with basic facilities near farm","Charge ₹2,000-5,000/night — family of 4 pays ₹4,000-8,000","Activities: morning farm walk, milking, organic cooking, nature walks","Airbnb listing is free — India agri-tourism listings growing fast","Partner with travel agents for weekend packages","10 days bookings/month = ₹40,000-80,000/month from same farm"]}
+    ],
+    costs:"Day visits: ₹15,000-30,000 | Farm dining: ₹30,000-80,000 | Farm stay: ₹80,000-2,00,000 | Earning: ₹20,000-2,00,000/month | Best months: Oct-March, summer fruit season",
+    crops:"Best for tourism: mango orchards (picking), strawberry (pick-your-own premium ₹200-400/kg), flower farms, organic vegetable farms, traditional rice fields.",
+    tips:"Instagram is your most powerful marketing tool — post farm photos, sunrise, fresh food daily. Google Business registration (free) brings local visitors. Partner with city schools for educational farm visits.",
+    mistakes:"Starting farm stay before testing demand with day visits. Not having a clean toilet — negative reviews destroy business. No Instagram or online presence — invisible to city visitors. Charging too high before building reputation.",
+    market:"Instagram page with location tags, Google Business Profile, Airbnb, MakeMyTrip, local travel agents, WhatsApp groups for families and corporates."
+  },
+  15: {
+    what:"Fish farming in pond earns ₹3-8 lakh/acre/year. Government gives 40-60% subsidy for pond construction. IMC (Rohu/Katla/Mrigal) is easiest and most profitable for beginners.",
+    who:"Farmers with low-lying land, near water source, or willing to dig pond. Government PMMSY scheme gives excellent subsidy.",
+    budget_options:[
+      {label:"Small Pond 0.1 acre (₹20,000-40,000 after subsidy)",steps:["Apply PMMSY (PM Matsya Sampada Yojana) subsidy — 40-60% for fish farmers","Dig/renovate pond: 0.1 acre, 1.5-2m depth for IMC fish","Buy fingerlings: Rohu, Katla, Mrigal in 60:20:20 ratio — 5,000 fingerlings/acre","Feed: rice bran + mustard oil cake (1:1) twice daily","Lime treatment before stocking: 250 kg/acre to kill disease organisms","Harvest in 10-12 months: 1,200-1,800 kg/acre. Sell at ₹120-180/kg = ₹1.5-3 lakh"]},
+      {label:"1 Acre Pond (₹60,000-1,00,000 after subsidy)",steps:["Combined fish + duck farming: duck droppings feed fish, saves 50% fish feed cost","Biofloc technology: indoor tanks, 10x density vs pond, no land needed","Aeration (paddle wheel aerator ₹15,000-20,000) for high-density stocking","Cage culture in existing lake/reservoir: no land purchase needed","Prawn (Vannamei) + fish polyculture: 2 income streams","Certified organic fish: premium price from supermarkets and export"]},
+      {label:"Commercial 2-5 acres (₹2,00,000-5,00,000)",steps:["Integrated fish + poultry + crop system — each waste becomes input","Prawn farming: ₹500-800/kg vs ₹150 for fish — 3-5x income","Hatchery for fingerling production: supply other fish farmers","Processing unit: fillet, freeze, value add — sell to restaurants/export","State fisheries department gives additional subsidy and training","Income: ₹5-15 lakh/year from 2-5 acres fish farming"]}
+    ],
+    costs:"0.1 acre after subsidy: ₹20,000-40,000 | 1 acre: ₹60,000-1,00,000 | Earning: ₹1.5-3 lakh (0.1 acre) to ₹8-15 lakh/year (1 acre with prawns) | PMMSY subsidy: 40-60%",
+    crops:"IMC fish (Rohu, Katla, Mrigal) — easiest, most popular. Tilapia — fastest growth. Prawn (Vannamei) — highest price. Catfish — tolerates poor water. Ornamental fish — niche but high price.",
+    tips:"PMMSY subsidy is excellent — apply before digging pond. Fisheries department gives free fingerlings in some states. Biofloc technology allows fish farming without pond on any land. Duck + fish integration reduces feed cost 50%.",
+    mistakes:"Not applying lime before stocking — disease outbreak kills everything. Overstocking without aeration — oxygen depletion kills fish overnight. Not testing water quality weekly. Harvesting too early — fish not at market weight.",
+    market:"Local fish market (daily demand), restaurants (fresh supply contract), supermarkets, frozen supply to cities. Prawn export through MPEDA. Ornamental fish to aquariums."
+  }
+};
+
+function showTechGuide(techId, techName) {
+  const guide = TECHNIQUE_GUIDES[techId];
+  if (!guide) { askAboutTech(techName); return; }
+  const el = document.getElementById("tech-content-" + techId);
+  if (!el) return;
+  if (el.dataset.loaded === "1") {
+    el.style.display = el.style.display === "none" ? "block" : "none";
+    return;
+  }
+  el.style.display = "block";
+  el.dataset.loaded = "1";
+
+  const budgetHTML = guide.budget_options.map(opt => `
+    <div style="background:#f8fdf8;border:1px solid var(--green);border-radius:10px;padding:12px;margin-bottom:8px">
+      <div style="font-weight:700;color:var(--green);font-size:0.88rem;margin-bottom:8px">💰 ${opt.label}</div>
+      ${opt.steps.map((s,i) => `<div style="display:flex;gap:8px;margin-bottom:6px">
+        <div style="min-width:20px;height:20px;background:var(--green);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700">${i+1}</div>
+        <div style="font-size:0.82rem;color:#374151;line-height:1.5">${s}</div>
+      </div>`).join("")}
+    </div>`).join("");
+
+  el.innerHTML = `
+    <div style="background:var(--green-light);border-radius:12px;padding:12px;margin-bottom:8px">
+      <div style="font-weight:700;color:var(--green);margin-bottom:4px">🌟 What is ${techName}?</div>
+      <div style="font-size:0.83rem;line-height:1.6;color:#374151">${guide.what}</div>
+      <div style="margin-top:6px;font-size:0.8rem;color:var(--muted)"><b>Who can do this:</b> ${guide.who}</div>
+    </div>
+    <div style="font-weight:700;color:var(--green);font-size:0.88rem;margin:10px 0 6px">📋 Choose Your Budget & Land Size:</div>
+    ${budgetHTML}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0">
+      <div style="background:#fef3c7;border-radius:10px;padding:10px">
+        <div style="font-weight:700;font-size:0.8rem;color:#92400e;margin-bottom:4px">💰 Costs & Earnings</div>
+        <div style="font-size:0.78rem;color:#374151;line-height:1.5">${guide.costs}</div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:10px">
+        <div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">🌾 Best Crops</div>
+        <div style="font-size:0.78rem;color:#374151;line-height:1.5">${guide.crops}</div>
+      </div>
+    </div>
+    <div style="background:#fff7ed;border:1px solid #f59e0b;border-radius:10px;padding:10px;margin-bottom:8px">
+      <div style="font-weight:700;font-size:0.8rem;color:#92400e;margin-bottom:4px">💡 Pro Tips</div>
+      <div style="font-size:0.82rem;color:#374151;line-height:1.5">${guide.tips}</div>
+    </div>
+    <div style="background:#fee2e2;border:1px solid #dc2626;border-radius:10px;padding:10px;margin-bottom:8px">
+      <div style="font-weight:700;font-size:0.8rem;color:#dc2626;margin-bottom:4px">⚠️ Common Mistakes to Avoid</div>
+      <div style="font-size:0.82rem;color:#374151;line-height:1.5">${guide.mistakes}</div>
+    </div>
+    <div style="background:var(--green-light);border-radius:10px;padding:10px;margin-bottom:10px">
+      <div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">🏪 Where to Sell</div>
+      <div style="font-size:0.82rem;color:#374151;line-height:1.5">${guide.market}</div>
+    </div>
+    <button onclick="askAboutTech('${techName}')" style="width:100%;padding:11px;background:var(--green);color:white;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:0.88rem;font-weight:700;cursor:pointer">
+      🤖 Ask AI for More Details in Your Language →
+    </button>`;
 }
 
 // ── BOOKS & ICAR GUIDES ────────────────────────────────────────────
