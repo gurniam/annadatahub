@@ -87,6 +87,17 @@
   @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
   .divider{height:1px;background:var(--border);margin:14px 0;}
   .powered{text-align:center;font-size:0.72rem;color:var(--muted);margin-top:8px;}
+  .result-box{background:var(--green-light);border:2px solid var(--green);border-radius:14px;padding:16px;}
+  .result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+  .result-row:last-child{border-bottom:none;}
+  .result-unit{font-size:0.82rem;color:var(--muted);font-weight:600;}
+  .result-val{font-family:'Baloo 2',cursive;font-size:1.1rem;font-weight:800;color:var(--green);}
+  .result-val.big{font-size:1.5rem;color:var(--green);}
+  .ref-row{display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid var(--border);font-size:0.84rem;}
+  .ref-row:nth-child(even){background:var(--green-light);}
+  .ref-unit{font-weight:700;color:var(--green);}
+  .ref-eq{color:var(--muted);}
+
 </style>
 </head>
 <body>
@@ -122,6 +133,9 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
   <button class="tab" onclick="showTab('fertilizer')" id="tab-fertilizer">
     <span class="icon">💊</span><span id="t-fert">Fertilizer</span>
   </button>
+  <button class="tab" onclick="showTab('land')" id="tab-land">
+    <span class="icon">📐</span><span id="t-land">Land Calc</span>
+  </button>
 </div>
 
 <!-- ALL 29 STATES — reusable datalist -->
@@ -147,7 +161,7 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
       <div class="two-col">
         <div class="field">
           <label id="lbl-cal-crop">Your Crop</label>
-          <select id="calCrop">
+          <select id="calCrop" onchange="updateCalVariety()">
             <option value="Wheat">Wheat (गेहूं)</option>
             <option value="Rice">Rice (धान)</option>
             <option value="Corn">Corn (मक्का)</option>
@@ -169,10 +183,14 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
           <input type="date" id="calDate"/>
         </div>
       </div>
+      <div class="field">
+        <label id="lbl-cal-variety">🌱 Crop Variety</label>
+        <select id="calVariety" style="background:var(--green-light);border-color:var(--green);font-weight:600"></select>
+      </div>
       <div class="two-col">
         <div class="field">
           <label id="lbl-cal-state">Your State</label>
-          <select id="calState">
+          <select id="calState" onchange="syncCalLandUnit()">
             <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
             <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
             <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
@@ -186,8 +204,11 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
           </select>
         </div>
         <div class="field">
-          <label id="lbl-land-size">Land Size (acres)</label>
-          <input type="number" id="calLand" placeholder="e.g. 2" value="2" min="0.5" max="100"/>
+          <label id="lbl-land-size">Land Size</label>
+          <div style="display:flex;gap:6px">
+            <input type="number" id="calLand" placeholder="e.g. 2" value="2" min="0.01" step="0.01" style="flex:1"/>
+            <select id="calLandUnit" style="width:90px;padding:11px 6px;border:1.5px solid var(--border);border-radius:10px;font-size:0.78rem;background:white;color:var(--text)"></select>
+          </div>
         </div>
       </div>
       <button class="btn btn-green" onclick="getCalendar()" id="cal-btn">
@@ -204,7 +225,7 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
       <div class="two-col">
         <div class="field">
           <label id="lbl-fert-crop">Your Crop</label>
-          <select id="fertCrop">
+          <select id="fertCrop" onchange="updateFertVariety()">
             <option value="Wheat">Wheat (गेहूं)</option>
             <option value="Rice">Rice (धान)</option>
             <option value="Corn">Corn (मक्का)</option>
@@ -220,9 +241,16 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
           </select>
         </div>
         <div class="field">
-          <label id="lbl-fert-land">Land Size (acres)</label>
-          <input type="number" id="fertLand" placeholder="e.g. 3" value="3" min="0.5" max="100"/>
+          <label id="lbl-fert-land">Land Size</label>
+          <div style="display:flex;gap:6px">
+            <input type="number" id="fertLand" placeholder="e.g. 3" value="3" min="0.01" step="0.01" style="flex:1"/>
+            <select id="fertLandUnit" style="width:90px;padding:11px 6px;border:1.5px solid var(--border);border-radius:10px;font-size:0.78rem;background:white;color:var(--text)"></select>
+          </div>
         </div>
+      </div>
+      <div class="field">
+        <label id="lbl-fert-variety">🌱 Crop Variety</label>
+        <select id="fertVariety" style="background:var(--green-light);border-color:var(--green);font-weight:600"></select>
       </div>
       <div class="two-col">
         <div class="field">
@@ -249,7 +277,7 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
       </div>
       <div class="field">
         <label id="lbl-fert-state">State</label>
-        <select id="fertState">
+        <select id="fertState" onchange="syncFertLandUnit()">
           <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
           <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
           <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
@@ -269,6 +297,65 @@ try { var _s=document.getElementById("langSel"); var _v=localStorage.getItem("an
     <div id="fertilizer-result"></div>
   </div>
 
+  <!-- LAND CALCULATOR -->
+  <div class="page" id="page-land">
+    <div class="card">
+      <div class="card-title" style="color:var(--green)">📐 <span id="land-title">Land Measurement Calculator</span></div>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:14px" id="land-subtitle">Convert your local land unit to Acres, Hectares & Square Meters</p>
+      <div class="field">
+        <label id="lbl-land-state">Your State</label>
+        <select id="landState" onchange="updateLandUnits()">
+          <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+          <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+          <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+          <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
+          <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
+          <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
+          <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
+          <option>Assam</option><option>Goa</option><option>Sikkim</option>
+          <option>Manipur</option><option>Meghalaya</option><option>Tripura</option>
+          <option>Nagaland</option><option>Mizoram</option><option>Arunachal Pradesh</option>
+        </select>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label id="lbl-land-unit">Your Unit</label>
+          <select id="landUnit" onchange="calcLand()">
+          </select>
+        </div>
+        <div class="field">
+          <label id="lbl-land-amount">Amount</label>
+          <input type="number" id="landAmount" value="1" min="0.01" step="0.01" oninput="calcLand()"/>
+        </div>
+      </div>
+      <div id="land-result" style="margin-top:4px"></div>
+    </div>
+
+    <!-- REVERSE: Acres to local -->
+    <div class="card">
+      <div class="card-title" style="color:var(--blue)">🔄 <span id="rev-title">Acres to Local Unit</span></div>
+      <div class="two-col">
+        <div class="field">
+          <label id="lbl-acres-input">Enter Acres</label>
+          <input type="number" id="acresInput" value="1" min="0.01" step="0.01" oninput="calcReverse()"/>
+        </div>
+        <div class="field">
+          <label id="lbl-rev-unit">Convert to</label>
+          <select id="reverseUnit" onchange="calcReverse()">
+          </select>
+        </div>
+      </div>
+      <div id="reverse-result" style="margin-top:4px"></div>
+    </div>
+
+    <!-- QUICK REFERENCE TABLE -->
+    <div class="card">
+      <div class="card-title" style="color:var(--brown)">📋 <span id="ref-title">State Reference Table</span></div>
+      <div id="ref-table"></div>
+    </div>
+  </div>
+
+
 </div>
 
 <div id="toast" class="toast" style="display:none"></div>
@@ -283,9 +370,9 @@ const LANG_NAMES = {
 
 let currentLang = "en";
 const LABELS = {
-  en:{fert:"Fertilizer",cal_title:"Crop Calendar",fert_title:"Fertilizer Calculator",cal_crop:"Your Crop",sow_date:"Sowing Date",cal_state:"Your State",land_size:"Land Size (acres)",cal_btn:"Generate My Crop Calendar",fert_crop:"Your Crop",fert_land:"Land Size (acres)",stage:"Growth Stage",soil:"Soil Type",fert_state:"State",fert_btn:"Calculate Exact Quantities",generating:"Generating...",building:"Building your crop calendar...",calculating:"Calculating...",calc_loading:"Calculating exact quantities...",err_try:"Error. Try again.",err_cal:"Could not generate calendar. Try again.",err_fert:"Could not calculate. Try again."},
-  hi:{cal:"फसल कैलेंडर",fert:"खाद कैलकुलेटर",cal_title:"फसल कैलेंडर",fert_title:"खाद कैलकुलेटर",cal_crop:"आपकी फसल",sow_date:"बुवाई की तारीख",cal_state:"आपका राज्य",land_size:"जमीन का आकार (एकड़)",cal_btn:"मेरा फसल कैलेंडर बनाएं",fert_crop:"आपकी फसल",fert_land:"जमीन का आकार (एकड़)",stage:"विकास की अवस्था",soil:"मिट्टी का प्रकार",fert_state:"राज्य",fert_btn:"सटीक मात्रा की गणना करें",generating:"तैयार हो रहा है...",building:"आपका फसल कैलेंडर बन रहा है...",calculating:"गणना हो रही है...",calc_loading:"सटीक मात्रा की गणना हो रही है...",err_try:"त्रुटि। फिर कोशिश करें।",err_cal:"कैलेंडर नहीं बना। फिर कोशिश करें।",err_fert:"गणना नहीं हुई। फिर कोशिश करें।"},
-  pa:{cal:"ਫਸਲ ਕੈਲੰਡਰ",fert:"ਖਾਦ ਕੈਲਕੁਲੇਟਰ",cal_title:"ਫਸਲ ਕੈਲੰਡਰ",fert_title:"ਖਾਦ ਕੈਲਕੁਲੇਟਰ",cal_crop:"ਤੁਹਾਡੀ ਫਸਲ",sow_date:"ਬਿਜਾਈ ਦੀ ਤਾਰੀਖ",cal_state:"ਤੁਹਾਡਾ ਰਾਜ",land_size:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",cal_btn:"ਮੇਰਾ ਫਸਲ ਕੈਲੰਡਰ ਬਣਾਓ",fert_crop:"ਤੁਹਾਡੀ ਫਸਲ",fert_land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",stage:"ਵਿਕਾਸ ਦੀ ਅਵਸਥਾ",soil:"ਮਿੱਟੀ ਦੀ ਕਿਸਮ",fert_state:"ਰਾਜ",fert_btn:"ਸਹੀ ਮਾਤਰਾ ਦੀ ਗਣਨਾ ਕਰੋ",generating:"ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ...",building:"ਤੁਹਾਡਾ ਫਸਲ ਕੈਲੰਡਰ ਬਣ ਰਿਹਾ ਹੈ...",calculating:"ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ...",calc_loading:"ਸਹੀ ਮਾਤਰਾ ਦੀ ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ...",err_try:"ਗਲਤੀ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",err_cal:"ਕੈਲੰਡਰ ਨਹੀਂ ਬਣਿਆ।",err_fert:"ਗਣਨਾ ਨਹੀਂ ਹੋਈ।"},
+  en:{cal_variety:"🌱 Crop Variety",fert_variety:"🌱 Crop Variety",land:"Land Calc",land_title:"Land Measurement Calculator",land_subtitle:"Convert your local unit to Acres, Hectares & Sq Meters",lbl_land_state:"Your State",lbl_land_unit:"Your Unit",lbl_land_amount:"Amount",lbl_acres:"Acres to Local Unit",lbl_rev_unit:"Convert to",ref_title:"State Reference Table",fert:"Fertilizer",cal_title:"Crop Calendar",fert_title:"Fertilizer Calculator",cal_crop:"Your Crop",sow_date:"Sowing Date",cal_state:"Your State",land_size:"Land Size",cal_btn:"Generate My Crop Calendar",fert_crop:"Your Crop",fert_land:"Land Size",stage:"Growth Stage",soil:"Soil Type",fert_state:"State",fert_btn:"Calculate Exact Quantities",generating:"Generating...",building:"Building your crop calendar...",calculating:"Calculating...",calc_loading:"Calculating exact quantities...",err_try:"Error. Try again.",err_cal:"Could not generate calendar. Try again.",err_fert:"Could not calculate. Try again."},
+  hi:{cal_variety:"🌱 फसल की किस्म",fert_variety:"🌱 फसल की किस्म",land:"जमीन कैलक.",land_title:"जमीन माप कैलकुलेटर",land_subtitle:"अपनी स्थानीय इकाई को एकड़, हेक्टेयर में बदलें",lbl_land_state:"आपका राज्य",lbl_land_unit:"आपकी इकाई",lbl_land_amount:"मात्रा",lbl_acres:"एकड़ से स्थानीय इकाई",lbl_rev_unit:"इसमें बदलें",ref_title:"राज्य संदर्भ तालिका",cal:"फसल कैलेंडर",fert:"खाद कैलकुलेटर",cal_title:"फसल कैलेंडर",fert_title:"खाद कैलकुलेटर",cal_crop:"आपकी फसल",sow_date:"बुवाई की तारीख",cal_state:"आपका राज्य",land_size:"जमीन का आकार (एकड़)",cal_btn:"मेरा फसल कैलेंडर बनाएं",fert_crop:"आपकी फसल",fert_land:"जमीन का आकार (एकड़)",stage:"विकास की अवस्था",soil:"मिट्टी का प्रकार",fert_state:"राज्य",fert_btn:"सटीक मात्रा की गणना करें",generating:"तैयार हो रहा है...",building:"आपका फसल कैलेंडर बन रहा है...",calculating:"गणना हो रही है...",calc_loading:"सटीक मात्रा की गणना हो रही है...",err_try:"त्रुटि। फिर कोशिश करें।",err_cal:"कैलेंडर नहीं बना। फिर कोशिश करें।",err_fert:"गणना नहीं हुई। फिर कोशिश करें।"},
+  pa:{cal_variety:"🌱 ਫਸਲ ਦੀ ਕਿਸਮ",fert_variety:"🌱 ਫਸਲ ਦੀ ਕਿਸਮ",land:"ਜ਼ਮੀਨ ਕੈਲਕ.",land_title:"ਜ਼ਮੀਨ ਮਾਪ ਕੈਲਕੁਲੇਟਰ",land_subtitle:"ਆਪਣੀ ਸਥਾਨਕ ਇਕਾਈ ਨੂੰ ਏਕੜ ਵਿੱਚ ਬਦਲੋ",lbl_land_state:"ਤੁਹਾਡਾ ਰਾਜ",lbl_land_unit:"ਤੁਹਾਡੀ ਇਕਾਈ",lbl_land_amount:"ਮਾਤਰਾ",lbl_acres:"ਏਕੜ ਤੋਂ ਸਥਾਨਕ ਇਕਾਈ",lbl_rev_unit:"ਇਸ ਵਿੱਚ ਬਦਲੋ",ref_title:"ਰਾਜ ਸੰਦਰਭ ਸਾਰਣੀ",cal:"ਫਸਲ ਕੈਲੰਡਰ",fert:"ਖਾਦ ਕੈਲਕੁਲੇਟਰ",cal_title:"ਫਸਲ ਕੈਲੰਡਰ",fert_title:"ਖਾਦ ਕੈਲਕੁਲੇਟਰ",cal_crop:"ਤੁਹਾਡੀ ਫਸਲ",sow_date:"ਬਿਜਾਈ ਦੀ ਤਾਰੀਖ",cal_state:"ਤੁਹਾਡਾ ਰਾਜ",land_size:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",cal_btn:"ਮੇਰਾ ਫਸਲ ਕੈਲੰਡਰ ਬਣਾਓ",fert_crop:"ਤੁਹਾਡੀ ਫਸਲ",fert_land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",stage:"ਵਿਕਾਸ ਦੀ ਅਵਸਥਾ",soil:"ਮਿੱਟੀ ਦੀ ਕਿਸਮ",fert_state:"ਰਾਜ",fert_btn:"ਸਹੀ ਮਾਤਰਾ ਦੀ ਗਣਨਾ ਕਰੋ",generating:"ਤਿਆਰ ਹੋ ਰਿਹਾ ਹੈ...",building:"ਤੁਹਾਡਾ ਫਸਲ ਕੈਲੰਡਰ ਬਣ ਰਿਹਾ ਹੈ...",calculating:"ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ...",calc_loading:"ਸਹੀ ਮਾਤਰਾ ਦੀ ਗਣਨਾ ਹੋ ਰਹੀ ਹੈ...",err_try:"ਗਲਤੀ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",err_cal:"ਕੈਲੰਡਰ ਨਹੀਂ ਬਣਿਆ।",err_fert:"ਗਣਨਾ ਨਹੀਂ ਹੋਈ।"},
   mr:{cal:"पीक कॅलेंडर",fert:"खत कॅल्क्युलेटर",cal_title:"पीक कॅलेंडर",fert_title:"खत कॅल्क्युलेटर",cal_crop:"तुमचे पीक",sow_date:"पेरणीची तारीख",cal_state:"तुमचे राज्य",land_size:"जमिनीचा आकार (एकर)",cal_btn:"माझे पीक कॅलेंडर तयार करा",fert_crop:"तुमचे पीक",fert_land:"जमिनीचा आकार (एकर)",stage:"वाढीची अवस्था",soil:"मातीचा प्रकार",fert_state:"राज्य",fert_btn:"अचूक प्रमाण मोजा",generating:"तयार होत आहे...",building:"तुमचे पीक कॅलेंडर तयार होत आहे...",calculating:"गणना होत आहे...",calc_loading:"अचूक प्रमाण मोजले जात आहे...",err_try:"त्रुटी. पुन्हा प्रयत्न करा.",err_cal:"कॅलेंडर बनले नाही.",err_fert:"गणना झाली नाही."},
   te:{cal:"పంట క్యాలెండర్",fert:"ఎరువుల కాల్కులేటర్",cal_title:"పంట క్యాలెండర్",fert_title:"ఎరువుల కాల్కులేటర్",cal_crop:"మీ పంట",sow_date:"విత్తన తేదీ",cal_state:"మీ రాష్ట్రం",land_size:"భూమి పరిమాణం (ఎకరాలు)",cal_btn:"నా పంట క్యాలెండర్ తయారు చేయండి",fert_crop:"మీ పంట",fert_land:"భూమి పరిమాణం (ఎకరాలు)",stage:"వృద్ధి దశ",soil:"నేల రకం",fert_state:"రాష్ట్రం",fert_btn:"ఖచ్చితమైన మొత్తాలను లెక్కించండి",generating:"తయారవుతోంది...",building:"మీ పంట క్యాలెండర్ తయారవుతోంది...",calculating:"లెక్కిస్తోంది...",calc_loading:"ఖచ్చితమైన పరిమాణాలు లెక్కిస్తోంది...",err_try:"లోపం. మళ్ళీ ప్రయత్నించండి.",err_cal:"క్యాలెండర్ రాలేదు.",err_fert:"లెక్క రాలేదు."},
   ta:{cal:"பயிர் நாட்காட்டி",fert:"உர கணக்கீடு",cal_title:"பயிர் நாட்காட்டி",fert_title:"உர கணக்கீடு",cal_crop:"உங்கள் பயிர்",sow_date:"விதைப்பு தேதி",cal_state:"உங்கள் மாநிலம்",land_size:"நிலம் அளவு (ஏக்கர்)",cal_btn:"என் பயிர் நாட்காட்டி உருவாக்கு",fert_crop:"உங்கள் பயிர்",fert_land:"நிலம் அளவு (ஏக்கர்)",stage:"வளர்ச்சி நிலை",soil:"மண் வகை",fert_state:"மாநிலம்",fert_btn:"சரியான அளவை கணக்கிடுங்கள்",generating:"தயாரிக்கப்படுகிறது...",building:"உங்கள் பயிர் நாட்காட்டி தயாரிக்கப்படுகிறது...",calculating:"கணக்கிடுகிறது...",calc_loading:"சரியான அளவுகள் கணக்கிடுகிறது...",err_try:"பிழை. மீண்டும் முயற்சிக்கவும்.",err_cal:"நாட்காட்டி வரவில்லை.",err_fert:"கணக்கீடு வரவில்லை."},
@@ -440,9 +527,11 @@ function daysSince(dateStr) {
 // CROP CALENDAR
 async function getCalendar() {
   const crop = document.getElementById("calCrop").value;
+  const variety = document.getElementById("calVariety").value || "Standard";
   const date = document.getElementById("calDate").value;
   const state = document.getElementById("calState").value;
-  const land = document.getElementById("calLand").value || "2";
+  const landAcres = getAcres("calLand","calLandUnit","calState");
+  const land = landAcres.toString();
   const lang = LANG_NAMES[currentLang] || "English";
   const days = daysSince(date);
   const btn = document.getElementById("cal-btn");
@@ -454,7 +543,8 @@ async function getCalendar() {
   try {
     const data = await callAI(
       `Create a detailed crop calendar for Indian farmer. Respond ENTIRELY in ${lang}. Return ONLY valid JSON.
-      Crop: ${crop}, State: ${state}, Land: ${land} acres, Days since sowing: ${days} days.
+      Crop: ${crop}, Variety: ${variety}, State: ${state}, Land: ${land} acres, Days since sowing: ${days} days.
+      Give VARIETY-SPECIFIC advice for ${variety}. Include variety-specific duration, diseases, and tips.
       Return JSON: {"crop":"${crop}","total_days":number,"current_day":${days},"current_stage":"stage name","stage_emoji":"emoji","harvest_date":"in X days","today_tasks":[{"task":"name","detail":"what to do","urgent":false,"tip":"money saving tip"}],"upcoming_week":[{"day":"Day X","task":"task","detail":"description","type":"irrigation/fertilizer/pesticide/harvest/other"}],"key_milestones":[{"day":"Day X","milestone":"name","action":"what to do"}],"warnings":["warning if any"],"expected_yield":"X quintals per acre","expected_income":"₹X,XXX per acre"}`
     );
 
@@ -534,7 +624,9 @@ async function getCalendar() {
 // FERTILIZER CALCULATOR
 async function getFertilizer() {
   const crop = document.getElementById("fertCrop").value;
-  const land = document.getElementById("fertLand").value || "3";
+  const variety = document.getElementById("fertVariety").value || "Standard";
+  const landAcres = getAcres("fertLand","fertLandUnit","fertState");
+  const land = landAcres.toString();
   const stage = document.getElementById("fertStage").value;
   const soil = document.getElementById("fertSoil").value;
   const state = document.getElementById("fertState").value;
@@ -548,7 +640,8 @@ async function getFertilizer() {
   try {
     const data = await callAI(
       `Calculate exact fertilizer for Indian farmer. Respond ENTIRELY in ${lang}. Return ONLY valid JSON. All prices in Indian Rupees.
-      Crop=${crop}, Land=${land} acres, Stage=${stage}, Soil=${soil}, State=${state}.
+      Crop=${crop}, Variety=${variety}, Land=${land} acres, Stage=${stage}, Soil=${soil}, State=${state}.
+      Give VARIETY-SPECIFIC fertilizer recommendations for ${variety}. Different varieties need different NPK ratios and quantities.
       Return JSON: {"crop":"${crop}","land":"${land} acres","stage":"${stage}","fertilizers":[{"name":"name","local_name":"Hindi name","quantity_kg":number,"quantity_bags":"X bags","cost_per_kg":number,"total_cost":number,"how_to_apply":"method","timing":"best time"}],"total_cost":number,"typical_farmer_spends":number,"you_save":number,"application_tips":["tip1","tip2","tip3"],"dont_do":["mistake1","mistake2"],"organic_alternatives":"organic options","next_application":"when next"}`
     );
 
@@ -605,7 +698,291 @@ async function getFertilizer() {
   btn.disabled = false; btn.innerHTML = `💊 <span id="fert-btn-text">${(LABELS[currentLang] || LABELS.en).fert_btn}</span>`;
 }
 
-// INIT — load saved language
+
+
+// ============= CROP VARIETIES =============
+const CROP_VARIETIES = {
+  "Wheat": [
+    {v:"HD-3086",info:"High yield, rust resistant, 110-115 days"},
+    {v:"HD-2967",info:"Most popular, all India, 145-150 days"},
+    {v:"PBW-343",info:"Punjab favourite, good chapati quality"},
+    {v:"PBW-725",info:"Late sown variety, tolerates heat"},
+    {v:"DBW-187",info:"New variety, high yield 55-60 q/acre"},
+    {v:"WH-1105",info:"Haryana, drought tolerant"},
+    {v:"GW-322",info:"Gujarat, good for late sowing"},
+    {v:"K-307",info:"UP/Bihar, good yield on alluvial soil"},
+    {v:"Raj-4120",info:"Rajasthan, drought tolerant"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Rice": [
+    {v:"Pusa Basmati 1121",info:"Premium basmati, 140-145 days, ₹3500-5000/q"},
+    {v:"Pusa Basmati 1509",info:"Early basmati, 120 days, saves water"},
+    {v:"Basmati 370",info:"Traditional basmati, excellent aroma"},
+    {v:"Pusa Basmati 6",info:"Semi-dwarf, high yield basmati"},
+    {v:"PR-126",info:"Punjab, early, 123 days, saves water"},
+    {v:"PR-114",info:"Punjab, medium duration, good yield"},
+    {v:"Sona Masoori",info:"AP/Telangana/Karnataka, medium grain"},
+    {v:"Swarna MTU-7029",info:"Most popular non-basmati, WB/Odisha/Bihar"},
+    {v:"IR-64",info:"High yield, blight resistant, South India"},
+    {v:"HKR-47",info:"Haryana, short duration, good for saline soil"},
+    {v:"Sahbhagi Dhan",info:"Drought tolerant, Bihar/Jharkhand"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Corn": [
+    {v:"DKC-9144",info:"Hybrid, high yield 35-40 q/acre"},
+    {v:"NK-6240",info:"Syngenta hybrid, disease resistant"},
+    {v:"Pioneer P3396",info:"Popular hybrid, good stalk strength"},
+    {v:"Navjot",info:"Open pollinated, good for hills"},
+    {v:"Ageti-76",info:"Early variety, 75-80 days"},
+    {v:"Vivek Hybrid-9",info:"High altitude, NE India"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Tomato": [
+    {v:"Pusa Hybrid-1",info:"IARI hybrid, high yield 200-250 q/acre"},
+    {v:"Avtar",info:"Indeterminate, long bearing season"},
+    {v:"Avinash-2",info:"Firm fruit, good for transport"},
+    {v:"Pusa Ruby",info:"Open pollinated, good for processing"},
+    {v:"Solan Gola",info:"HP/hills, medium size, good taste"},
+    {v:"CO-3",info:"Tamil Nadu, heat tolerant"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Potato": [
+    {v:"Kufri Jyoti",info:"Most popular, all India, 90-100 days"},
+    {v:"Kufri Pukhraj",info:"Early variety, 70-75 days, yellow flesh"},
+    {v:"Kufri Badshah",info:"Late, high yield, good for chips"},
+    {v:"Kufri Chipsona-1",info:"Processing variety, high dry matter"},
+    {v:"Kufri Sindhuri",info:"Red skin, UP/Bihar, stores well"},
+    {v:"Kufri Himalini",info:"Hill areas, HP/Uttarakhand"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Cotton": [
+    {v:"Bollgard-II (BG-II)",info:"Bt cotton, most common, boll worm resistant"},
+    {v:"RCH-2 BG-II",info:"Rasi hybrid Bt, high yield"},
+    {v:"MRC-6025 BG-II",info:"Mahyco hybrid, good fiber quality"},
+    {v:"NHH-44 BG-II",info:"Medium duration, Punjab/Haryana"},
+    {v:"Suraj (H-8)",info:"Non-Bt, desi cotton, Gujarat"},
+    {v:"LD-133",info:"Long staple, Punjab"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Sugarcane": [
+    {v:"CO-0238",info:"Most popular North India, high sugar, 12-14 months"},
+    {v:"CO-86032",info:"Tamil Nadu/South, high yield"},
+    {v:"CO-94012",info:"Maharashtra, high sugar recovery"},
+    {v:"UP-0005125",info:"UP, early maturing, 10 months"},
+    {v:"CoJ-64",info:"Punjab/Haryana, ratoon crop performs well"},
+    {v:"CoLk-94184",info:"UP, tolerates waterlogging"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Mustard": [
+    {v:"Pusa Bold",info:"Most popular, high yield, 110-120 days"},
+    {v:"RH-30",info:"Haryana favourite, high oil content 40%"},
+    {v:"Varuna (T-59)",info:"Old reliable variety, all India"},
+    {v:"Pusa Vijay",info:"New IARI variety, aphid tolerant"},
+    {v:"DRMR-150",info:"Rajasthan, drought tolerant"},
+    {v:"NRCHB-506",info:"Yellow sarson, Bihar/WB"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Soybean": [
+    {v:"JS-335",info:"Most popular MP/Maharashtra, 95-100 days"},
+    {v:"JS-9305",info:"Short duration 85 days, early harvest"},
+    {v:"NRC-37",info:"High yield, stem fly resistant"},
+    {v:"Indira Soya-9",info:"CG/MP, waterlogging tolerant"},
+    {v:"MACS-450",info:"Maharashtra, yellow mosaic resistant"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Onion": [
+    {v:"Pusa Red",info:"Red, IARI, all India, 110-120 days"},
+    {v:"Agrifound Dark Red",info:"Most popular, good storage"},
+    {v:"NHRDF Red-2",info:"Good pungency, Maharashtra/AP"},
+    {v:"Arka Niketan",info:"IIHR Bangalore, rabi season"},
+    {v:"Bhima Raj",info:"New variety, Kharif + Rabi"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Groundnut": [
+    {v:"TAG-24",info:"Gujarat favourite, 100-110 days"},
+    {v:"GG-20",info:"Gujarat, bold seed, high oil"},
+    {v:"ICGS-11",info:"ICRISAT, Rajasthan/AP, drought tolerant"},
+    {v:"TG-37A",info:"AP/Telangana, spreading type"},
+    {v:"Girnar-2",info:"Gujarat, large pod, good yield"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Chilli": [
+    {v:"Pusa Jwala",info:"Popular desi, pungent, Gujarat/MP"},
+    {v:"Bydagi Kaddi",info:"Karnataka, low pungency, exports"},
+    {v:"LCA-206",info:"AP, Guntur type, high yield"},
+    {v:"K-2",info:"Haryana/Punjab, medium pungency"},
+    {v:"IARI Selection-1",info:"Dry chilli, all India"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Banana": [
+    {v:"Cavendish (G-9)",info:"Most popular, 300-350 q/acre, 12 months"},
+    {v:"Robusta",info:"Thick peel, good transport, Maharashtra"},
+    {v:"Dwarf Cavendish",info:"Shorter plant, high density planting"},
+    {v:"Rasthali (Silk)",info:"Tamil Nadu/AP, premium taste"},
+    {v:"Nendran",info:"Kerala, cooking banana, starchy"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+  "Mango": [
+    {v:"Alphonso (Hapus)",info:"Premium export, Konkan, ₹200-500/kg"},
+    {v:"Dashehari",info:"UP, sweet, most popular North India"},
+    {v:"Langra",info:"UP/Bihar, unique taste, no fibre"},
+    {v:"Kesar",info:"Gujarat, GI tagged, saffron colour"},
+    {v:"Amrapali",info:"High density planting dwarf hybrid"},
+    {v:"Totapuri",info:"South India, processing, aamras"},
+    {v:"Himsagar",info:"West Bengal, premium local variety"},
+    {v:"Other/Local",info:"Specify in notes"},
+  ],
+};
+
+function getVarieties(crop) {
+  return CROP_VARIETIES[crop] || [{v:"Standard variety",info:"General recommendations will be provided"}];
+}
+
+function updateCalVariety() {
+  const crop = document.getElementById("calCrop").value;
+  const sel = document.getElementById("calVariety");
+  if (!sel) return;
+  const vars = getVarieties(crop);
+  sel.innerHTML = vars.map(v => `<option value="${v.v}" title="${v.info}">${v.v} — ${v.info}</option>`).join("");
+}
+
+function updateFertVariety() {
+  const crop = document.getElementById("fertCrop").value;
+  const sel = document.getElementById("fertVariety");
+  if (!sel) return;
+  const vars = getVarieties(crop);
+  sel.innerHTML = vars.map(v => `<option value="${v.v}" title="${v.info}">${v.v} — ${v.info}</option>`).join("");
+}
+
+// ============= LAND CALCULATOR =============
+const LAND_UNITS = {
+  "Punjab":        {units:["Killa","Kanal","Marla"],          acres:[1, 0.125, 0.00625],         labels:["Killa (ਕਿੱਲਾ)","Kanal (ਕਨਾਲ)","Marla (ਮਰਲਾ)"]},
+  "Haryana":       {units:["Killa","Kanal","Marla"],          acres:[1, 0.125, 0.00625],         labels:["Killa (किल्ला)","Kanal (कनाल)","Marla (मरला)"]},
+  "Uttar Pradesh": {units:["Bigha","Biswa","Biswansi"],       acres:[0.625, 0.03125, 0.0015625], labels:["Bigha (बीघा)","Biswa (बिस्वा)","Biswansi (बिस्वांसी)"]},
+  "Bihar":         {units:["Bigha","Katha","Dhur"],           acres:[0.619, 0.03095, 0.001547],  labels:["Bigha (बीघा)","Katha (कट्ठा)","Dhur (धुर)"]},
+  "Uttarakhand":   {units:["Nali","Mutthi","Bigha"],          acres:[0.04942, 0.002471, 0.625],  labels:["Nali (नाली)","Mutthi (मुट्ठी)","Bigha (बीघा)"]},
+  "Jharkhand":     {units:["Bigha","Katha","Dhur"],           acres:[0.619, 0.03095, 0.001547],  labels:["Bigha (बीघा)","Katha (कट्ठा)","Dhur (धुर)"]},
+  "West Bengal":   {units:["Bigha","Katha","Chhatak"],        acres:[0.33, 0.0165, 0.004125],    labels:["Bigha (বিঘা)","Katha (কাঠা)","Chhatak (ছটাক)"]},
+  "Assam":         {units:["Bigha","Katha","Lecha"],          acres:[0.33, 0.0165, 0.00825],     labels:["Bigha (বিঘা)","Katha (কাঠা)","Lecha (লেচা)"]},
+  "Madhya Pradesh":{units:["Bigha","Biswa"],                  acres:[0.625, 0.03125],            labels:["Bigha (बीघा)","Biswa (बिस्वा)"]},
+  "Rajasthan":     {units:["Bigha","Biswa"],                  acres:[0.625, 0.03125],            labels:["Bigha (बीघा)","Biswa (बिस्वा)"]},
+  "Himachal Pradesh":{units:["Bigha","Biswa","Biswansi"],     acres:[0.625, 0.03125, 0.0015625], labels:["Bigha (बीघा)","Biswa (बिस्वा)","Biswansi (बिस्वांसी)"]},
+  "Jammu and Kashmir":{units:["Kanal","Marla"],               acres:[0.125, 0.00625],            labels:["Kanal (کنال)","Marla (مرلہ)"]},
+  "Maharashtra":   {units:["Guntha","Acre"],                  acres:[0.025, 1],                  labels:["Guntha (गुंठा)","Acre (एकर)"]},
+  "Goa":           {units:["Guntha","Acre"],                  acres:[0.025, 1],                  labels:["Guntha (गुंठे)","Acre (एकर)"]},
+  "Gujarat":       {units:["Vigha","Guntha"],                 acres:[0.4, 0.025],                labels:["Vigha (વીઘા)","Guntha (ગૂઠ)"]},
+  "Karnataka":     {units:["Guntha","Acre"],                  acres:[0.025, 1],                  labels:["Guntha (ಗುಂಟೆ)","Acre (ಎಕರೆ)"]},
+  "Andhra Pradesh":{units:["Cent","Guntha","Acre"],           acres:[0.01, 0.025, 1],            labels:["Cent (సెంట్)","Guntha (గుంట)","Acre (ఎకరం)"]},
+  "Telangana":     {units:["Cent","Guntha","Acre"],           acres:[0.01, 0.025, 1],            labels:["Cent (సెంట్)","Guntha (గుంట)","Acre (ఎకరం)"]},
+  "Tamil Nadu":    {units:["Cent","Ground","Acre"],           acres:[0.01, 0.05510, 1],          labels:["Cent (சென்ட்)","Ground (கிரவுண்ட்)","Acre (ஏக்கர்)"]},
+  "Kerala":        {units:["Cent","Are","Acre"],              acres:[0.01, 0.02471, 1],          labels:["Cent (സെന്റ്)","Are (ആർ)","Acre (ഏക്കർ)"]},
+  "Odisha":        {units:["Decimal","Guntha","Acre"],        acres:[0.01, 0.025, 1],            labels:["Decimal (ଡେସିମଲ)","Guntha (ଗୁଣ୍ଠ)","Acre (ଏକର)"]},
+  "Chhattisgarh":  {units:["Bigha","Biswa"],                  acres:[0.625, 0.03125],            labels:["Bigha (बीघा)","Biswa (बिस्वा)"]},
+};
+const DEFAULT_UNITS = {units:["Acre","Hectare"],acres:[1, 2.47105],labels:["Acre","Hectare (हेक्टेयर)"]};
+
+function getLandData(state) { return LAND_UNITS[state] || DEFAULT_UNITS; }
+
+
+function getUnitsForState(state) {
+  const d = LAND_UNITS[state] || DEFAULT_UNITS;
+  return d;
+}
+
+function syncCalLandUnit() {
+  const state = document.getElementById("calState").value;
+  const d = getUnitsForState(state);
+  const sel = document.getElementById("calLandUnit");
+  if (sel) sel.innerHTML = d.labels.map((l,i) => `<option value="${i}">${d.units[i]}</option>`).join("");
+}
+
+function syncFertLandUnit() {
+  const state = document.getElementById("fertState").value;
+  const d = getUnitsForState(state);
+  const sel = document.getElementById("fertLandUnit");
+  if (sel) sel.innerHTML = d.labels.map((l,i) => `<option value="${i}">${d.units[i]}</option>`).join("");
+}
+
+function getAcres(inputId, unitSelId, stateId) {
+  const val = parseFloat(document.getElementById(inputId).value) || 1;
+  const stateEl = document.getElementById(stateId);
+  const unitEl = document.getElementById(unitSelId);
+  if (!stateEl || !unitEl) return val;
+  const state = stateEl.value;
+  const idx = parseInt(unitEl.value) || 0;
+  const d = getUnitsForState(state);
+  const acres = val * d.acres[idx];
+  return parseFloat(acres.toFixed(4));
+}
+
+function updateLandUnits() {
+  const state = document.getElementById("landState").value;
+  const data = getLandData(state);
+  const unitSel = document.getElementById("landUnit");
+  const revSel = document.getElementById("reverseUnit");
+  unitSel.innerHTML = data.labels.map((l, i) => `<option value="${i}">${l}</option>`).join("");
+  revSel.innerHTML = data.labels.map((l, i) => `<option value="${i}">${l}</option>`).join("");
+  calcLand();
+  calcReverse();
+  buildRefTable(state);
+}
+
+function fmt(n) {
+  if (n >= 1000) return n.toLocaleString('en-IN', {maximumFractionDigits: 2});
+  if (n >= 1) return parseFloat(n.toFixed(3)).toString();
+  return parseFloat(n.toFixed(4)).toString();
+}
+
+function calcLand() {
+  const state = document.getElementById("landState").value;
+  const data = getLandData(state);
+  const idx = parseInt(document.getElementById("landUnit").value) || 0;
+  const amount = parseFloat(document.getElementById("landAmount").value) || 1;
+  const acres = amount * data.acres[idx];
+  const hectares = acres * 0.404686;
+  const sqMeters = acres * 4046.86;
+  const sqFeet = acres * 43560;
+  document.getElementById("land-result").innerHTML = `
+    <div class="result-box">
+      <div class="result-row"><span class="result-unit">📏 Acres</span><span class="result-val big">${fmt(acres)}</span></div>
+      <div class="result-row"><span class="result-unit">🌍 Hectares</span><span class="result-val">${fmt(hectares)}</span></div>
+      <div class="result-row"><span class="result-unit">📐 Square Meters</span><span class="result-val">${fmt(sqMeters)}</span></div>
+      <div class="result-row"><span class="result-unit">📦 Square Feet</span><span class="result-val">${fmt(sqFeet)}</span></div>
+      ${data.units.filter((_,i) => i !== idx).map((u, i) => {
+        const ai = data.units.indexOf(u);
+        const val = acres / data.acres[ai];
+        return `<div class="result-row"><span class="result-unit">🌾 ${data.labels[ai]}</span><span class="result-val">${fmt(val)}</span></div>`;
+      }).join("")}
+    </div>`;
+}
+
+function calcReverse() {
+  const state = document.getElementById("landState").value;
+  const data = getLandData(state);
+  const idx = parseInt(document.getElementById("reverseUnit").value) || 0;
+  const acres = parseFloat(document.getElementById("acresInput").value) || 1;
+  const localVal = acres / data.acres[idx];
+  const hectares = acres * 0.404686;
+  document.getElementById("reverse-result").innerHTML = `
+    <div class="result-box">
+      <div class="result-row"><span class="result-unit">🌾 ${data.labels[idx]}</span><span class="result-val big">${fmt(localVal)}</span></div>
+      <div class="result-row"><span class="result-unit">🌍 Hectares</span><span class="result-val">${fmt(hectares)}</span></div>
+    </div>`;
+}
+
+function buildRefTable(state) {
+  const data = getLandData(state);
+  const rows = data.units.map((u, i) => {
+    const acres = data.acres[i];
+    const sqm = acres * 4046.86;
+    return `<div class="ref-row"><span class="ref-unit">1 ${data.labels[i]}</span><span class="ref-eq">= ${fmt(acres)} Acre = ${fmt(sqm)} m²</span></div>`;
+  });
+  rows.push(`<div class="ref-row"><span class="ref-unit">1 Acre</span><span class="ref-eq">= 0.4047 Hectare = 4047 m²</span></div>`);
+  rows.push(`<div class="ref-row"><span class="ref-unit">1 Hectare</span><span class="ref-eq">= 2.471 Acres = 10,000 m²</span></div>`);
+  document.getElementById("ref-table").innerHTML = rows.join("");
+}
+
+// Init land calculator on page load
 window.addEventListener("load", () => {
   document.getElementById("calDate").valueAsDate = new Date(Date.now() - 30*24*60*60*1000);
   try {
@@ -614,7 +991,13 @@ window.addEventListener("load", () => {
     document.getElementById("langSel").value = saved;
     setLang(saved);
   } catch(e) {}
+  updateLandUnits();
+  syncCalLandUnit();
+  syncFertLandUnit();
+  updateCalVariety();
+  updateFertVariety();
 });
+
 </script>
 </body>
 </html>
