@@ -864,6 +864,179 @@ function renderFeedback() {
     </div>`).join("");
 }
 
+// ── BOOKS & ICAR GUIDES ────────────────────────────────────────────
+const BOOKS = [
+  {id:1,cat:"cereal",crop:"Rice",icon:"🌾",title:"Paddy (Rice) Cultivation Guide",source:"PAU Ludhiana / ICAR",desc:"Complete rice guide — sowing time, varieties (PR-126, Basmati 1121, Pusa 1509), fertilizer NPK doses per acre, water management (SRI method saves 30% water), blast disease control, harvesting tips.",
+   content:[
+    {h:"Best Varieties",t:"PR-126 (123 days, saves water), Pusa Basmati 1509 (120 days, premium price), Swarna MTU-7029 (non-basmati, high yield), Sona Masoori (AP/Karnataka)"},
+    {h:"Fertilizer Dose (per acre)",t:"Urea: 55 kg | DAP: 25 kg | Potash (MOP): 13 kg | Apply in 3 splits — at planting, tillering, panicle initiation"},
+    {h:"Water Management",t:"SRI method: 2.5 cm water only (not flooding). Saves 30-40% water. Alternate Wetting & Drying (AWD) saves 25% water and increases yield 5-10%"},
+    {h:"Key Diseases",t:"Blast (brown spots on leaves) — spray Tricyclazole 75WP @ 6g/15L. BLB (yellow edges) — spray Copper oxychloride. Sheath blight — Hexaconazole 5SC @ 2ml/L"},
+    {h:"Weed Control",t:"Bispyribac sodium (Nominee Gold) @ 100ml/acre at 15-20 days. Or hand weed at 20 and 40 days. Keep field flooded first 3 weeks to suppress weeds"},
+    {h:"Harvesting",t:"Harvest when 80-85% grains turn golden. Moisture should be 20-22%. Delay causes shattering loss. Use combine harvester to save cost."},
+   ]},
+  {id:2,cat:"cereal",crop:"Wheat",icon:"🌾",title:"Wheat Cultivation Guide",source:"PAU Ludhiana / ICAR-IARI",desc:"Complete wheat guide — HD-3086, PBW-343, DBW-187 varieties, sowing time, fertilizer schedule, yellow rust control, irrigation timing.",
+   content:[
+    {h:"Best Varieties",t:"HD-3086 (early, rust resistant), PBW-343 (Punjab favourite), DBW-187 (new, 55-60 q/acre), PBW-725 (late sown, heat tolerant), WH-1105 (Haryana, drought tolerant)"},
+    {h:"Sowing Time",t:"Timely sowing: Nov 1-15 (best yield). Late sowing Nov 25 onwards: use PBW-725 or HD-3298. Each week delay after Nov 15 reduces yield by 1-1.5 q/acre"},
+    {h:"Fertilizer Dose (per acre)",t:"Urea: 65 kg | DAP: 50 kg | Potash: 25 kg | Apply full DAP + half urea at sowing. Remaining urea at first irrigation (21 days)"},
+    {h:"Irrigation Schedule",t:"1st: Crown root (21 days) — MOST CRITICAL, never miss. 2nd: Tillering (40-45 days). 3rd: Jointing (60-65 days). 4th: Flowering (80-85 days). 5th: Grain filling (100 days)"},
+    {h:"Yellow Rust Control",t:"If yellow stripes appear — spray Propiconazole (Tilt 25EC) @ 200ml/acre immediately. Spray again after 15 days if needed. Early action saves entire crop."},
+    {h:"Harvesting",t:"Harvest when moisture is 12-14%. Combine harvest. Store in cool dry place. Apply Aluminium phosphide tablet (1 tablet/tonne) to prevent weevil."},
+   ]},
+  {id:3,cat:"cereal",crop:"Maize",icon:"🌽",title:"Maize (Corn) Cultivation Guide",source:"ICAR-IIMR Hyderabad",desc:"Hybrid maize production — DKC-9144, NK-6240, spacing, fertilizer, stalk borer management, post-harvest storage.",
+   content:[
+    {h:"Best Hybrid Varieties",t:"DKC-9144 (35-40 q/acre), NK-6240 (Syngenta, disease resistant), Pioneer P3396 (good stalk strength), Ageti-76 (early, 75 days), Vivek-9 (hill areas)"},
+    {h:"Sowing & Spacing",t:"Kharif: June-July. Rabi: Oct-Nov. Row spacing: 60-65 cm. Plant to plant: 20-25 cm. Seed rate: 8-10 kg/acre. Sow 4-5 cm deep."},
+    {h:"Fertilizer Dose (per acre)",t:"Urea: 87 kg (in 3 splits) | DAP: 50 kg | Potash: 33 kg | Zinc Sulphate: 10 kg (if deficient). First split at sowing, second at knee height, third at tasseling"},
+    {h:"Stalk Borer Control",t:"Fall Armyworm (FAW) — apply Chlorantraniliprole (Coragen) @ 3ml/15L in whorl stage. Spray Emamectin benzoate @ 2g/15L at 25 and 40 days after germination"},
+    {h:"Irrigation",t:"Critical stages: Knee height, Tasseling, Silking, Grain filling. Maize is very sensitive to water stress at silking — yield loss up to 50% if stressed"},
+    {h:"Harvesting & Storage",t:"Harvest when husk turns brown and grain moisture is 18-20%. Dry to 12% before storage. Hermetic bags prevent 90% storage loss from weevils."},
+   ]},
+  {id:4,cat:"vegetable",crop:"Tomato",icon:"🍅",title:"Tomato Production Guide",source:"ICAR-IIHR Bangalore",desc:"Nursery to harvest — Pusa Hybrid-1, leaf curl virus management, drip schedule, post-harvest grading for market.",
+   content:[
+    {h:"Varieties",t:"Pusa Hybrid-1 (200-250 q/acre), Avinash-2 (firm, good transport), Pusa Ruby (open pollinated), Solan Gola (hills), Rashmi (Maharashtra). For processing: Roma type varieties"},
+    {h:"Nursery to Transplant",t:"Sow in nursery trays. Germination: 5-7 days. Transplant at 25-30 days when seedlings are 10-15 cm. Spacing: 60×45 cm. Irrigate immediately after transplanting"},
+    {h:"Fertilizer (per acre)",t:"Basal: FYM 4 tonnes + DAP 50 kg + Potash 30 kg. Top dress: Urea 30 kg at 30 days, 20 kg at 50 days. Through drip: 19:19:19 fertilizer weekly in fruit stage"},
+    {h:"Key Disease Control",t:"Leaf curl virus (spread by whitefly) — spray Imidacloprid 200SL @ 0.3ml/L every 15 days. Early blight (brown spots) — Mancozeb 75WP @ 25g/15L. Late blight — Metalaxyl+Mancozeb"},
+    {h:"Staking & Pruning",t:"Stake plants at 30 days. Remove suckers (side shoots) up to first flower cluster. Improves air circulation, reduces disease, increases fruit size by 20-30%"},
+    {h:"Post-Harvest",t:"Grade by size: A grade (above 60g), B grade (40-60g), C grade below. Wrap A grade in newspaper for long distance transport. Pre-cooling extends shelf life 2x."},
+   ]},
+  {id:5,cat:"vegetable",crop:"Potato",icon:"🥔",title:"Potato Production Guide",source:"ICAR-CPRI Shimla",desc:"Kufri Jyoti, Kufri Pukhraj, seed treatment, earthing up, late blight management, cold storage.",
+   content:[
+    {h:"Varieties by Purpose",t:"Kufri Jyoti (all purpose, most popular, 90 days), Kufri Pukhraj (early, 70 days, yellow flesh), Kufri Badshah (late, storage), Kufri Chipsona (chips/processing), Kufri Sindhuri (red skin, stores well)"},
+    {h:"Seed Treatment",t:"Cut tubers (40-50g pieces with 2-3 eyes). Treat with Mancozeb 75WP @ 25g/10L + Imidacloprid @ 5ml/10L for 30 min. Dry in shade for 2 days before planting"},
+    {h:"Fertilizer (per acre)",t:"FYM: 4 tonnes | Urea: 87 kg | DAP: 125 kg | Potash: 65 kg | Apply full DAP+Potash at planting. Split urea: half at planting, half at earthing up (30 days)"},
+    {h:"Late Blight Control",t:"Most dangerous disease — brown water-soaked spots on leaves. Preventive spray: Mancozeb 75WP @ 600g/acre every 7 days in humid weather. Curative: Metalaxyl+Mancozeb (Ridomil) @ 25g/15L"},
+    {h:"Earthing Up",t:"Do at 30-35 days — pull soil towards stems in ridges. Critical for tuber development and preventing greening. Second earthing at 50-55 days in some varieties"},
+    {h:"Storage",t:"Cure at 15-20°C for 10-15 days after harvest. Cold store at 2-4°C for long storage. Apply CIPC (sprout inhibitor) @ 14ml/tonne for extending shelf life. Avoid bruising during harvesting."},
+   ]},
+  {id:6,cat:"vegetable",crop:"Onion",icon:"🧅",title:"Onion Cultivation Guide",source:"ICAR-DOGR Pune",desc:"Agrifound Dark Red, kharif vs rabi onion, purple blotch management, curing and storage to prevent 40-50% post-harvest loss.",
+   content:[
+    {h:"Varieties",t:"Agrifound Dark Red (rabi, all India), Pusa Red (IARI, good yield), NHRDF Red-2 (Maharashtra/AP), Arka Niketan (IIHR, rabi), Bhima Raj (kharif+rabi). White onion for export: Agrifound White"},
+    {h:"Nursery & Transplanting",t:"Sow in raised nursery beds. Rabi: Oct-Nov sowing, transplant Dec-Jan. Kharif: June sowing, transplant July-Aug. Transplant at 6-7 week old seedlings. Spacing: 15×10 cm"},
+    {h:"Fertilizer (per acre)",t:"FYM: 6 tonnes | Urea: 87 kg (3 splits) | SSP: 375 kg | Potash: 50 kg | Sulphur @ 8 kg (essential for pungency and storage). Calcium @ 5 kg reduces neck rot"},
+    {h:"Purple Blotch & Thrips",t:"Purple blotch (fungal) — spray Mancozeb 75WP @ 25g/15L + Iprodione @ 2ml/L. Thrips (silver streaks on leaves) — spray Spinosad @ 3ml/15L or Fipronil @ 2ml/L every 10-12 days"},
+    {h:"Irrigation Management",t:"Critical: do NOT irrigate 10-15 days before harvest — stops bulb development and improves storage. Over-irrigation causes neck rot. Drip is ideal for onion."},
+    {h:"Curing & Storage",t:"After harvest: cure in open field for 7-10 days (do not expose to rain). Then store in well-ventilated bamboo/wire mesh crates. Never store in gunny bags — causes 30-40% loss. Cold store at 0-2°C for 6 months."},
+   ]},
+  {id:7,cat:"fruit",crop:"Mango",icon:"🥭",title:"Mango Orchard Management",source:"ICAR-CISH Lucknow",desc:"Dasheri, Langra, Alphonso variety guide, pruning, Hopper and mealybug control, post-harvest treatment.",
+   content:[
+    {h:"Top Varieties",t:"Dasheri (UP, July, sweet), Langra (no fibre, UP/Bihar), Alphonso/Hapus (Konkan, export, ₹200-500/kg), Kesar (Gujarat, GI tag), Amrapali (dwarf hybrid, high density planting), Mallika (Dasheri × Neelum, less alternate bearing)"},
+    {h:"Orchard Establishment",t:"Spacing: 10×10m (100 trees/acre) standard. High density: Amrapali @ 2.5×2.5m (640 trees/acre) — 3-4x more income. Pit size: 1m×1m×1m. Fill with: FYM 30 kg + Superphosphate 1 kg + Soil"},
+    {h:"Annual Fertilizer (per tree)",t:"Young tree (1-5 yr): FYM 20-50 kg + Urea 100-500g + SSP 50-250g + MOP 50-250g. Bearing tree (10+ yr): FYM 50 kg + Urea 2 kg + SSP 1.5 kg + MOP 1.5 kg. Apply in 2 splits: June and October"},
+    {h:"Hopper & Mealybug Control",t:"Mango Hopper: spray Imidacloprid 200SL @ 0.3ml/L at panicle emergence (Feb). Mealybug: apply sticky band on trunk (Oct) to prevent crawlers. Spray Chlorpyrifos @ 2ml/L if infestation seen"},
+    {h:"Alternate Bearing Fix",t:"Problem: tree bears heavily one year, nothing next year. Solution: prune 30-40 cm of fruited shoots after harvest. Apply Paclobutrazol @ 5-8 ml/m trunk girth in September of off year"},
+    {h:"Post-Harvest",t:"Harvest at correct maturity (12-13 weeks after fruit set for Alphonso). Dip in hot water 48°C for 60 min to prevent stem-end rot. Wax coating extends shelf life. Grade by size for premium price."},
+   ]},
+  {id:8,cat:"fruit",crop:"Banana",icon:"🍌",title:"Banana Cultivation Guide",source:"ICAR-NRC Banana Trichy",desc:"G-9, Robusta, Nendran variety guide, tissue culture planting, fertilizer schedule, Sigatoka control.",
+   content:[
+    {h:"Varieties",t:"G-9 Cavendish (export quality, 300-350 q/acre, 12 months), Robusta (thick peel, transport), Dwarf Cavendish (short plant, high density), Rasthali (premium taste, TN/AP), Nendran (Kerala cooking banana), Red banana (niche market, ₹60-100/kg)"},
+    {h:"Planting",t:"Use tissue culture plants — disease-free, uniform. Plant at 1.8m×1.8m (1,100 plants/acre). Pit: 45×45×45 cm. Fill with FYM 10 kg + Neem cake 250g + Carbofuran 20g per pit"},
+    {h:"Fertilizer Schedule (per plant per year)",t:"FYM: 10 kg | Urea: 200g | SSP: 100g | Potash: 300g (banana is potassium hungry — critical for bunch size). Apply in 4 splits every 3 months. Potassium deficiency causes small bananas."},
+    {h:"Sigatoka Leaf Spot",t:"Yellow streaks → brown spots → leaf dies. Spray Propiconazole 25EC @ 1ml/L every 21 days in humid season. Remove and burn infected leaves. Ensure proper drainage — waterlogging worsens disease"},
+    {h:"Irrigation & Earthing",t:"Banana needs 25-30 litres/plant/day. Drip irrigation most efficient. Earth up at 3 months to support plant. Remove excess suckers — keep only 1 ratoon sucker per plant"},
+    {h:"Bunch Management",t:"Remove male bud (bell) after last hand appears — saves 10% bunch weight. Cover bunch with blue polyethylene bag — increases finger weight 15-20%, improves colour, keeps pests away"},
+   ]},
+  {id:9,cat:"soil",crop:"Soil Health",icon:"🌱",title:"Soil Health Card Guide — How to Use It",source:"ICAR-IISS Bhopal / GoI",desc:"How to read your soil health card, correct fertilizer dose calculation, organic matter improvement, micro-nutrient deficiency identification.",
+   content:[
+    {h:"How to Read Your Card",t:"pH: 6.5-7.5 = ideal. Below 6 = acidic (add lime). Above 8 = alkaline (add gypsum). EC (electrical conductivity): above 4 = salt problem. Organic Carbon: below 0.5% = very poor, add FYM urgently"},
+    {h:"NPK Reading",t:"N (Nitrogen): Low = add 20-25% more urea than normal. P (Phosphorus): Low = add extra DAP/SSP. K (Potassium): Low = add MOP/SOP. Medium = standard dose. High = reduce by 25%"},
+    {h:"Micro-nutrients",t:"Zinc deficiency (most common in India): yellow-brown spots on young leaves — apply Zinc Sulphate 10 kg/acre. Boron: hollow stem in cauliflower/cabbage — apply Borax 2 kg/acre. Iron: yellowing between leaf veins — spray Ferrous sulphate 0.5%"},
+    {h:"Improving Organic Carbon",t:"Apply FYM (farmyard manure) 4-6 tonnes/acre every year. Green manuring: grow Dhaincha/Sesbania, incorporate before flowering. Avoid burning crop residue — incorporate instead. Each 0.1% increase takes 3-4 years"},
+    {h:"Saline/Alkaline Soil",t:"Saline soil (high EC): apply Gypsum 4-8 q/acre + leach with excess water. Alkaline soil (pH >8): apply Gypsum 4 q/acre + sulfur 2 q/acre. Grow tolerant crops: Barley, Cotton, Sugarbeet"},
+    {h:"How to Get Soil Tested",t:"Go to nearest KVK or Agriculture Department lab. Collect 6-8 samples from 0-15 cm depth in zigzag pattern across field. Mix together, take 500g. Costs ₹5-50. Get Soil Health Card free from government."},
+   ]},
+  {id:10,cat:"soil",crop:"Vermicompost",icon:"♻️",title:"Vermicompost & Organic Manure Guide",source:"ICAR-IISS / ICAR-NCOF",desc:"How to make vermicompost at home, earthworm selection, moisture management, using FYM to reduce fertilizer cost 30-40%.",
+   content:[
+    {h:"Getting Started",t:"Build cement tank 3×6×2 ft OR use lined pit. Buy Eisenia fetida earthworms — 1 kg for ₹200-400 from KVK or online. 1 kg worms processes 3-4 kg waste per day"},
+    {h:"What to Add / Not Add",t:"ADD: Cow dung (30+ days old), crop residue, kitchen vegetable waste, dry leaves, straw, fruit peels. DO NOT ADD: Meat, fish, milk, citrus, onion, oily material, fresh cow dung (kills worms with ammonia)"},
+    {h:"Process",t:"Layer 1: 4 inch cow dung base. Layer 2: crop waste 3 inch. Repeat. Add worms on top. Cover with jute sack. Spray water to maintain 40-50% moisture (squeeze handful — only a few drops). Ready in 45-60 days."},
+    {h:"Harvesting",t:"When top layer is black granular with earthy smell — harvest by pushing to one side (worms move away from light). Sieve through 4mm mesh. Worms stay in coarse material — reuse. Pack fine material as vermicompost."},
+    {h:"Application Rate",t:"Field crops: 2-3 tonnes/acre replaces 50-60% chemical fertilizer. Vegetables: 1-2 kg per plant. Mix into soil at planting. Can combine with 50% chemical dose for best results."},
+    {h:"Liquid Vermicompost",t:"Dilute vermicompost leachate 1:10 with water. Spray on leaves every 15 days or drip into root zone. Increases yield 10-15% compared to just soil application. Shelf life: use within 3 days."},
+   ]},
+  {id:11,cat:"pest",crop:"All Crops",icon:"🐛",title:"Integrated Pest Management (IPM) — Complete Guide",source:"ICAR-NCIPM New Delhi",desc:"IPM for all crops — pest identification, economic threshold, when to spray vs when not to, safe pesticide list.",
+   content:[
+    {h:"IPM Principles",t:"Step 1: Monitor crop every 5-7 days. Step 2: Identify pest (don't spray based on rumour). Step 3: Check Economic Threshold Level (ETL) — only spray if pest count crosses threshold. Step 4: Use biological control first, chemical last."},
+    {h:"Economic Threshold Levels",t:"Rice: Brown Planthopper — spray at 5-10 hoppers/hill. Wheat: Aphid — spray at 200+ aphids/metre row. Tomato: Fruit borer — spray at 5% fruit damage. Cotton: Bollworm — spray at 8-10 egg masses/100 plants"},
+    {h:"Biological Control",t:"Trichogramma cards (egg parasitoid): hang 5 cards/acre for bollworm control in cotton, maize, sugarcane. ₹20-30/card. Bacillus thuringiensis (Bt) spray: controls caterpillars in any crop. NPV virus: for Helicoverpa in cotton/tomato"},
+    {h:"Safe Pesticide Use",t:"Read label carefully. Wear gloves, mask, goggles. Spray in morning or evening (not midday). Don't spray flowering crops (kills bees). Observe waiting period before harvest. Rotate chemicals — same pesticide builds resistance in 3-5 years"},
+    {h:"Common Mistakes",t:"Spraying as calendar — wastes money, builds resistance. Wrong dilution — too little = no effect, too much = residue problem. Spraying in rain — washes off. Mixing 3+ chemicals — causes phytotoxicity. Not wearing PPE — health hazard."},
+    {h:"Pesticide Resistance Management",t:"Rotate mode of action every 2-3 sprays. Use neem-based pesticides (Azadirachtin) as alternate. Check if pest population is increasing despite spray — sign of resistance. Contact KVK for resistant pest management advice."},
+   ]},
+  {id:12,cat:"organic",crop:"Organic Farming",icon:"🌿",title:"Organic Farming — Complete Beginner Guide",source:"ICAR-NCOF Ghaziabad",desc:"Transition process, permitted inputs, bio-fertilizers, PGS certification, premium market access.",
+   content:[
+    {h:"Transition Period",t:"3-year transition: Year 1-3 — no chemical fertilizers/pesticides. Grow crops with organic inputs only. Yield may drop 20-30% initially. Soil health improves each year. After 3 years: get organic certificate and premium price."},
+    {h:"Organic Inputs Allowed",t:"Fertilizers: FYM, vermicompost, bone meal, neem cake, rock phosphate, wood ash. Bio-fertilizers: Rhizobium, PSB, Azotobacter, KMB (all free/cheap from KVK). Pesticides: Neem oil, Bt, Trichoderma, Pseudomonas"},
+    {h:"Bio-fertilizer Use",t:"Rhizobium (legumes only): treat seeds — 200g/acre seed. Azotobacter (non-legumes): 200g/acre soil application. PSB (all crops): 200g/acre for phosphorus mobilization. Mix with jaggery water as sticker. Buy from KVK @ ₹30-50/packet"},
+    {h:"Jeevamrit (Free Liquid Bio-fertilizer)",t:"Recipe per 200L: Cow dung 10 kg + Cow urine 5-10L + Jaggery 1 kg + Pulse flour 1 kg + Farm soil 1 handful. Mix well, ferment for 3-7 days in shade (stir twice daily). Apply 200L per acre every 15 days by drenching or spray"},
+    {h:"PGS Certification",t:"Free certification through government Participatory Guarantee System. Form group of 10+ farmers. Register at pgsindia-ncof.gov.in. KVK helps with documentation. Certificate valid 1 year, renewable. Sell on jaivikkheti.in at premium price"},
+    {h:"Premium Markets",t:"Sell at 2-3x price to: jaivikkheti.in portal, Organic stores in cities, BigBasket Organic, Nature's Basket, FPO direct sales. Export to Europe/US through APEDA at 5-8x price. Best crops for organic premium: Turmeric, Ginger, Honey, Basmati rice"},
+   ]},
+  {id:13,cat:"scheme",crop:"All Schemes",icon:"🏛️",title:"How to Apply for PM-KISAN & Major Schemes",source:"Ministry of Agriculture GoI",desc:"Step-by-step application process for PM-KISAN, Fasal Bima, Kisan Credit Card, KUSUM solar pump.",
+   content:[
+    {h:"PM-KISAN (₹6,000/year)",t:"Step 1: Visit pmkisan.gov.in or nearest CSC center. Step 2: Register with Aadhar card + land records + bank passbook. Step 3: Check eKYC completion (mandatory). Step 4: Installment comes directly to bank every 4 months. Check status: Beneficiary Status tab on website."},
+    {h:"PM Fasal Bima Yojana",t:"Step 1: Visit nearest bank before sowing season (deadline is 2 weeks before sowing). Step 2: Fill form with: Aadhar + land records + bank account + crop details. Step 3: Pay 1.5% premium (Rabi) or 2% (Kharif). Step 4: In case of crop loss — inform bank within 72 hours of damage"},
+    {h:"Kisan Credit Card",t:"Step 1: Go to SBI/PNB/cooperative bank with: Aadhar + land records + bank passbook + 2 photos. Step 2: Bank assesses land and crop. Step 3: Credit limit set (usually ₹50,000-1,50,000). Interest: 7% — gets 3% rebate if repaid on time = only 4% effective rate"},
+    {h:"PM-KUSUM Solar Pump",t:"Step 1: Register at pmkusum.mnre.gov.in or state nodal agency. Step 2: Select pump capacity (1HP/2HP/3HP/5HP). Step 3: Pay 10% cost upfront. Step 4: Empanelled vendor installs. Step 5: 30% central + 30% state subsidy credited back. Waiting: 3-6 months"},
+    {h:"Key Documents Needed",t:"For ALL schemes: Aadhar card + Land records (Khatoni/7-12 extract) + Bank passbook (with IFSC) + Mobile number linked to Aadhar + Passport size photo"},
+    {h:"Common Rejection Reasons",t:"eKYC not done for PM-KISAN (check on portal). Land in wife's name but applying in husband's name — either both apply or transfer land. Bank account inactive. Aadhar not linked to bank. Wrong khasra/khata number in form."},
+   ]},
+];
+
+let currentBooks = BOOKS;
+
+function filterBooks(cat) {
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active-filter"));
+  const btn = document.getElementById("bfilter-" + cat);
+  if(btn) btn.classList.add("active-filter");
+  currentBooks = cat === "all" ? BOOKS : BOOKS.filter(b => b.cat === cat);
+  renderBooks(currentBooks);
+}
+
+function renderBooks(books) {
+  const el = document.getElementById("books-list");
+  if (!el) return;
+  if (!books || !books.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">📚 No books in this category yet.</div>';
+    return;
+  }
+  el.innerHTML = books.map(b => `
+    <div style="background:white;border-radius:14px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+      <div onclick="toggleBook(${b.id})" style="padding:16px;display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+        <div style="width:44px;height:44px;background:var(--green-light);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">${b.icon}</div>
+        <div style="flex:1">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;color:var(--green);font-size:0.95rem">${b.title}</div>
+          <div style="font-size:0.75rem;color:var(--muted);margin:2px 0">📖 ${b.source}</div>
+          <div style="font-size:0.82rem;color:#374151;line-height:1.5;margin-top:4px">${b.desc}</div>
+        </div>
+        <div style="color:var(--muted);font-size:1.1rem">▼</div>
+      </div>
+      <div id="book-content-${b.id}" style="display:none;border-top:1px solid var(--border);padding:14px">
+        ${b.content.map(s => `
+          <div style="margin-bottom:12px">
+            <div style="font-weight:700;color:var(--green);font-size:0.85rem;margin-bottom:4px">📌 ${s.h}</div>
+            <div style="font-size:0.83rem;color:#374151;line-height:1.6;background:#f8fdf8;border-radius:8px;padding:10px">${s.t}</div>
+          </div>`).join("")}
+        <button onclick="askBookQuestion('${b.crop}','${b.title}')" style="width:100%;padding:10px;background:var(--green);color:white;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:0.88rem;font-weight:700;cursor:pointer;margin-top:4px">
+          🤖 Ask AI more about ${b.crop} →
+        </button>
+      </div>
+    </div>`).join("");
+}
+
+function toggleBook(id) {
+  const el = document.getElementById("book-content-" + id);
+  if(el) el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
+function askBookQuestion(crop, title) {
+  showTab("ailearn");
+  document.getElementById("learnQuestion").value = `Tell me everything about growing ${crop} — step by step guide including varieties, fertilizer doses, irrigation, pest control, harvesting and where to sell in India`;
+  document.getElementById("learnQuestion").focus();
+}
+
 // ── INIT ─────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
   // Render videos and feedback first (no lang dependency)
@@ -880,6 +1053,7 @@ window.addEventListener("load", () => {
   } catch(e) {
     renderTechniques(TECHNIQUES);
     renderBusiness(BUSINESSES);
+    renderBooks(BOOKS);
   }
 
   const hash = window.location.hash.replace("#", "");
