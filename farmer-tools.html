@@ -249,20 +249,10 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
   <div class="page" id="page-schemes">
     <div class="card">
       <div class="card-title" style="color:var(--earth)">🏛️ <span id="schemes-title">Government Schemes</span></div>
-      <div class="field">
-        <label id="lbl-land">Land Size (acres)</label>
-        <select id="schemeLand">
-          <option value="less than 1 acre">Less than 1 acre</option>
-          <option value="1-2 acres">1 - 2 acres</option>
-          <option value="2-5 acres" selected>2 - 5 acres</option>
-          <option value="5-10 acres">5 - 10 acres</option>
-          <option value="more than 10 acres">More than 10 acres</option>
-        </select>
-      </div>
       <div class="two-col">
         <div class="field">
           <label id="lbl-scheme-state">State</label>
-          <select id="schemeState">
+          <select id="schemeState" onchange="syncSchemeLandUnit()">
             <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
             <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
             <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
@@ -284,6 +274,13 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
           </select>
         </div>
       </div>
+      <div class="field">
+        <label id="lbl-land">Land Size</label>
+        <div style="display:flex;gap:6px">
+          <input type="number" id="schemeLandAmt" value="2" min="0.01" step="0.01" style="flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.88rem"/>
+          <select id="schemeLandUnit" style="width:100px;padding:11px 8px;border:1.5px solid var(--border);border-radius:10px;font-size:0.78rem;background:white;color:var(--text)"></select>
+        </div>
+      </div>
       <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">🏛️ <span id="schemes-btn-text">Find My Eligible Schemes</span></button>
     </div>
     <div id="schemes-result"></div>
@@ -296,8 +293,52 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
 <script>
 const BACKEND = "https://annadatahub-production-a9db.up.railway.app";
 
+// Land units by state
+const LAND_UNITS_FT = {
+  "Punjab":          {units:["Killa","Kanal","Marla"],    acres:[1,0.125,0.00625],        labels:["Killa","Kanal","Marla"]},
+  "Haryana":         {units:["Killa","Kanal","Marla"],    acres:[1,0.125,0.00625],        labels:["Killa","Kanal","Marla"]},
+  "Uttar Pradesh":   {units:["Bigha","Biswa"],            acres:[0.625,0.03125],          labels:["Bigha","Biswa"]},
+  "Bihar":           {units:["Bigha","Katha","Dhur"],     acres:[0.619,0.03095,0.001547], labels:["Bigha","Katha","Dhur"]},
+  "Uttarakhand":     {units:["Nali","Mutthi","Bigha"],    acres:[0.04942,0.002471,0.625], labels:["Nali","Mutthi","Bigha"]},
+  "Jharkhand":       {units:["Bigha","Katha"],            acres:[0.619,0.03095],          labels:["Bigha","Katha"]},
+  "West Bengal":     {units:["Bigha","Katha"],            acres:[0.33,0.0165],            labels:["Bigha","Katha"]},
+  "Assam":           {units:["Bigha","Katha"],            acres:[0.33,0.0165],            labels:["Bigha","Katha"]},
+  "Madhya Pradesh":  {units:["Bigha","Biswa"],            acres:[0.625,0.03125],          labels:["Bigha","Biswa"]},
+  "Rajasthan":       {units:["Bigha","Biswa"],            acres:[0.625,0.03125],          labels:["Bigha","Biswa"]},
+  "Himachal Pradesh":{units:["Bigha","Biswa"],            acres:[0.625,0.03125],          labels:["Bigha","Biswa"]},
+  "Jammu and Kashmir":{units:["Kanal","Marla"],           acres:[0.125,0.00625],          labels:["Kanal","Marla"]},
+  "Chhattisgarh":    {units:["Bigha","Biswa"],            acres:[0.625,0.03125],          labels:["Bigha","Biswa"]},
+  "Maharashtra":     {units:["Guntha","Acre"],            acres:[0.025,1],                labels:["Guntha","Acre"]},
+  "Goa":             {units:["Guntha","Acre"],            acres:[0.025,1],                labels:["Guntha","Acre"]},
+  "Gujarat":         {units:["Vigha","Guntha"],           acres:[0.4,0.025],              labels:["Vigha","Guntha"]},
+  "Karnataka":       {units:["Guntha","Acre"],            acres:[0.025,1],                labels:["Guntha","Acre"]},
+  "Andhra Pradesh":  {units:["Cent","Guntha","Acre"],     acres:[0.01,0.025,1],           labels:["Cent","Guntha","Acre"]},
+  "Telangana":       {units:["Cent","Guntha","Acre"],     acres:[0.01,0.025,1],           labels:["Cent","Guntha","Acre"]},
+  "Tamil Nadu":      {units:["Cent","Ground","Acre"],     acres:[0.01,0.05510,1],         labels:["Cent","Ground","Acre"]},
+  "Kerala":          {units:["Cent","Are","Acre"],        acres:[0.01,0.02471,1],         labels:["Cent","Are","Acre"]},
+  "Odisha":          {units:["Decimal","Guntha","Acre"],  acres:[0.01,0.025,1],           labels:["Decimal","Guntha","Acre"]},
+};
+const DEFAULT_LAND_FT = {units:["Acre","Hectare"],acres:[1,2.47105],labels:["Acre","Hectare"]};
+
+function getLandFT(state){ return LAND_UNITS_FT[state] || DEFAULT_LAND_FT; }
+
+function syncSchemeLandUnit(){
+  const state = document.getElementById("schemeState").value;
+  const d = getLandFT(state);
+  const sel = document.getElementById("schemeLandUnit");
+  if(sel) sel.innerHTML = d.labels.map((l,i) => `<option value="${i}">${l}</option>`).join("");
+}
+
+function getSchemeAcres(){
+  const state = document.getElementById("schemeState").value;
+  const val = parseFloat(document.getElementById("schemeLandAmt").value) || 2;
+  const idx = parseInt(document.getElementById("schemeLandUnit").value) || 0;
+  const d = getLandFT(state);
+  return parseFloat((val * d.acres[idx]).toFixed(4));
+}
+
 const LANG = {
-  en:{scan:"Scan",mandi:"Mandi",weather:"Weather",schemes:"Schemes",scan_title:"Crop Disease Scanner",scan_desc:"Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.",scan_tap:"Choose how to add your crop photo",btn_camera:"Camera",btn_gallery:"Gallery",crop_type:"Crop Type",language:"Language",scan_btn:"Scan for Disease",scanning:"AI is analysing your crop photo...",healthy:"Your crop looks healthy!",treatment:"Treatment",medicine:"Medicine",dosage:"Dosage",prevention:"Prevention",urgency:"Urgency",no_photo:"Please take or upload a photo first",mandi_title:"Live Mandi Prices",mandi_crop:"Your Crop",mandi_state:"Your State",mandi_btn:"Get Today's Prices",fetching_prices:"Fetching prices...",weather_title:"Weather & Farm Alerts",location:"District / City",weather_crop:"Your Crop",weather_btn:"Get Weather & Alerts",fetching_weather:"Fetching weather...",humidity:"Humidity",rain:"Rain Chance",best_time:"Best Time",spray_ok:"✅ Good for spraying",spray_no:"⚠️ Avoid spraying today",schemes_title:"Government Schemes",land:"Land Size (acres)",scheme_state:"State",scheme_crop:"Main Crop",schemes_btn:"Find My Eligible Schemes",finding_schemes:"Finding schemes...",eligible:"✅ You are eligible!",apply:"Apply Now →",documents:"Documents needed",how_apply:"How to apply",verify_schemes:"Always verify at official government websites",verify_mandi:"Verify at your local mandi before selling",ai_disclaimer:"AI guidance · Confirm with local KVK",err_photo:"Error. Try with better photo.",err_prices:"Error fetching prices",err_weather:"Error fetching weather",err_schemes:"Error fetching schemes",err_try:"Could not fetch. Try again."},
+  en:{scan:"Scan",mandi:"Mandi",weather:"Weather",schemes:"Schemes",scan_title:"Crop Disease Scanner",scan_desc:"Take a clear photo of your sick crop leaf. AI identifies disease and gives treatment.",scan_tap:"Choose how to add your crop photo",btn_camera:"Camera",btn_gallery:"Gallery",crop_type:"Crop Type",language:"Language",scan_btn:"Scan for Disease",scanning:"AI is analysing your crop photo...",healthy:"Your crop looks healthy!",treatment:"Treatment",medicine:"Medicine",dosage:"Dosage",prevention:"Prevention",urgency:"Urgency",no_photo:"Please take or upload a photo first",mandi_title:"Live Mandi Prices",mandi_crop:"Your Crop",mandi_state:"Your State",mandi_btn:"Get Today's Prices",fetching_prices:"Fetching prices...",weather_title:"Weather & Farm Alerts",location:"District / City",weather_crop:"Your Crop",weather_btn:"Get Weather & Alerts",fetching_weather:"Fetching weather...",humidity:"Humidity",rain:"Rain Chance",best_time:"Best Time",spray_ok:"✅ Good for spraying",spray_no:"⚠️ Avoid spraying today",schemes_title:"Government Schemes",land:"Land Size",scheme_state:"State",scheme_crop:"Main Crop",schemes_btn:"Find My Eligible Schemes",finding_schemes:"Finding schemes...",eligible:"✅ You are eligible!",apply:"Apply Now →",documents:"Documents needed",how_apply:"How to apply",verify_schemes:"Always verify at official government websites",verify_mandi:"Verify at your local mandi before selling",ai_disclaimer:"AI guidance · Confirm with local KVK",err_photo:"Error. Try with better photo.",err_prices:"Error fetching prices",err_weather:"Error fetching weather",err_schemes:"Error fetching schemes",err_try:"Could not fetch. Try again."},
   hi:{scan:"स्कैन",mandi:"मंडी",weather:"मौसम",schemes:"योजनाएं",scan_title:"फसल रोग स्कैनर",scan_desc:"अपनी बीमार फसल की पत्ती की साफ फोटो लें। AI रोग बताएगा और इलाज देगा।",scan_tap:"अपनी फसल की फोटो कैसे जोड़ें चुनें",btn_camera:"कैमरा",btn_gallery:"गैलरी",crop_type:"फसल का प्रकार",language:"भाषा",scan_btn:"रोग के लिए स्कैन करें",scanning:"AI आपकी फसल फोटो का विश्लेषण कर रहा है...",healthy:"आपकी फसल स्वस्थ दिखती है!",treatment:"उपचार",medicine:"दवाई",dosage:"मात्रा",prevention:"बचाव",urgency:"तत्कालता",no_photo:"पहले फोटो लें या अपलोड करें",mandi_title:"लाइव मंडी भाव",mandi_crop:"आपकी फसल",mandi_state:"आपका राज्य",mandi_btn:"आज के भाव देखें",fetching_prices:"भाव आ रहे हैं...",weather_title:"मौसम और फार्म अलर्ट",location:"जिला / शहर",weather_crop:"आपकी फसल",weather_btn:"मौसम और अलर्ट देखें",fetching_weather:"मौसम आ रहा है...",humidity:"नमी",rain:"बारिश की संभावना",best_time:"सबसे अच्छा समय",spray_ok:"✅ छिड़काव के लिए अच्छा दिन",spray_no:"⚠️ आज छिड़काव न करें",schemes_title:"सरकारी योजनाएं",land:"जमीन का आकार (एकड़)",scheme_state:"राज्य",scheme_crop:"मुख्य फसल",schemes_btn:"मेरी पात्र योजनाएं खोजें",finding_schemes:"योजनाएं खोजी जा रही हैं...",eligible:"✅ आप पात्र हैं!",apply:"अभी आवेदन करें →",documents:"जरूरी दस्तावेज",how_apply:"आवेदन कैसे करें",verify_schemes:"हमेशा आधिकारिक सरकारी वेबसाइट पर जांचें",verify_mandi:"बेचने से पहले अपनी स्थानीय मंडी में भाव जांचें",ai_disclaimer:"AI मार्गदर्शन · स्थानीय KVK से पुष्टि करें",err_photo:"त्रुटि। बेहतर फोटो से कोशिश करें।",err_prices:"भाव लाने में त्रुटि",err_weather:"मौसम लाने में त्रुटि",err_schemes:"योजनाएं लाने में त्रुटि",err_try:"नहीं आया। फिर कोशिश करें।"},
   pa:{scan:"ਸਕੈਨ",mandi:"ਮੰਡੀ",weather:"ਮੌਸਮ",schemes:"ਯੋਜਨਾਵਾਂ",scan_title:"ਫਸਲ ਰੋਗ ਸਕੈਨਰ",scan_desc:"ਆਪਣੀ ਬਿਮਾਰ ਫਸਲ ਦੇ ਪੱਤੇ ਦੀ ਸਾਫ਼ ਫੋਟੋ ਲਓ। AI ਰੋਗ ਦੱਸੇਗਾ ਅਤੇ ਇਲਾਜ ਦੇਵੇਗਾ।",scan_tap:"ਆਪਣੀ ਫਸਲ ਦੀ ਫੋਟੋ ਕਿਵੇਂ ਜੋੜਨੀ ਹੈ ਚੁਣੋ",btn_camera:"ਕੈਮਰਾ",btn_gallery:"ਗੈਲਰੀ",crop_type:"ਫਸਲ ਦੀ ਕਿਸਮ",language:"ਭਾਸ਼ਾ",scan_btn:"ਰੋਗ ਲਈ ਸਕੈਨ ਕਰੋ",scanning:"AI ਤੁਹਾਡੀ ਫਸਲ ਫੋਟੋ ਦਾ ਵਿਸ਼ਲੇਸ਼ਣ ਕਰ ਰਿਹਾ ਹੈ...",healthy:"ਤੁਹਾਡੀ ਫਸਲ ਸਿਹਤਮੰਦ ਦਿਖਦੀ ਹੈ!",treatment:"ਇਲਾਜ",medicine:"ਦਵਾਈ",dosage:"ਮਾਤਰਾ",prevention:"ਬਚਾਅ",urgency:"ਜ਼ਰੂਰੀਅਤ",no_photo:"ਪਹਿਲਾਂ ਫੋਟੋ ਲਓ ਜਾਂ ਅਪਲੋਡ ਕਰੋ",mandi_title:"ਲਾਈਵ ਮੰਡੀ ਭਾਅ",mandi_crop:"ਤੁਹਾਡੀ ਫਸਲ",mandi_state:"ਤੁਹਾਡਾ ਰਾਜ",mandi_btn:"ਅੱਜ ਦੇ ਭਾਅ ਦੇਖੋ",fetching_prices:"ਭਾਅ ਆ ਰਹੇ ਹਨ...",weather_title:"ਮੌਸਮ ਅਤੇ ਖੇਤ ਅਲਰਟ",location:"ਜ਼ਿਲ੍ਹਾ / ਸ਼ਹਿਰ",weather_crop:"ਤੁਹਾਡੀ ਫਸਲ",weather_btn:"ਮੌਸਮ ਅਤੇ ਅਲਰਟ ਦੇਖੋ",fetching_weather:"ਮੌਸਮ ਆ ਰਿਹਾ ਹੈ...",humidity:"ਨਮੀ",rain:"ਮੀਂਹ ਦੀ ਸੰਭਾਵਨਾ",best_time:"ਸਭ ਤੋਂ ਵਧੀਆ ਸਮਾਂ",spray_ok:"✅ ਸਪਰੇਅ ਕਰਨ ਲਈ ਚੰਗਾ ਦਿਨ",spray_no:"⚠️ ਅੱਜ ਸਪਰੇਅ ਨਾ ਕਰੋ",schemes_title:"ਸਰਕਾਰੀ ਯੋਜਨਾਵਾਂ",land:"ਜ਼ਮੀਨ ਦਾ ਆਕਾਰ (ਏਕੜ)",scheme_state:"ਰਾਜ",scheme_crop:"ਮੁੱਖ ਫਸਲ",schemes_btn:"ਮੇਰੀਆਂ ਯੋਜਨਾਵਾਂ ਲੱਭੋ",finding_schemes:"ਯੋਜਨਾਵਾਂ ਲੱਭੀਆਂ ਜਾ ਰਹੀਆਂ ਹਨ...",eligible:"✅ ਤੁਸੀਂ ਯੋਗ ਹੋ!",apply:"ਹੁਣੇ ਅਰਜ਼ੀ ਦਿਓ →",documents:"ਲੋੜੀਂਦੇ ਦਸਤਾਵੇਜ਼",how_apply:"ਅਰਜ਼ੀ ਕਿਵੇਂ ਦੇਣੀ ਹੈ",verify_schemes:"ਹਮੇਸ਼ਾ ਸਰਕਾਰੀ ਵੈੱਬਸਾਈਟ ਤੇ ਜਾਂਚੋ",verify_mandi:"ਵੇਚਣ ਤੋਂ ਪਹਿਲਾਂ ਆਪਣੀ ਸਥਾਨਕ ਮੰਡੀ ਵਿੱਚ ਭਾਅ ਜਾਂਚੋ",ai_disclaimer:"AI ਮਾਰਗਦਰਸ਼ਨ · ਸਥਾਨਕ KVK ਤੋਂ ਪੁਸ਼ਟੀ ਕਰੋ",err_photo:"ਗਲਤੀ। ਬਿਹਤਰ ਫੋਟੋ ਨਾਲ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",err_prices:"ਭਾਅ ਲਿਆਉਣ ਵਿੱਚ ਗਲਤੀ",err_weather:"ਮੌਸਮ ਲਿਆਉਣ ਵਿੱਚ ਗਲਤੀ",err_schemes:"ਯੋਜਨਾਵਾਂ ਲਿਆਉਣ ਵਿੱਚ ਗਲਤੀ",err_try:"ਨਹੀਂ ਆਇਆ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"},
   mr:{scan:"स्कॅन",mandi:"मंडी",weather:"हवामान",schemes:"योजना",scan_title:"पीक रोग स्कॅनर",scan_desc:"आपल्या आजारी पिकाच्या पानाचा स्पष्ट फोटो घ्या। AI रोग सांगेल आणि उपचार देईल.",scan_tap:"आपल्या पिकाचा फोटो कसा जोडायचा ते निवडा",btn_camera:"कॅमेरा",btn_gallery:"गॅलरी",crop_type:"पिकाचा प्रकार",language:"भाषा",scan_btn:"रोगासाठी स्कॅन करा",scanning:"AI तुमच्या पिकाच्या फोटोचे विश्लेषण करत आहे...",healthy:"तुमचे पीक निरोगी दिसते!",treatment:"उपचार",medicine:"औषध",dosage:"प्रमाण",prevention:"प्रतिबंध",urgency:"निकड",no_photo:"आधी फोटो घ्या किंवा अपलोड करा",mandi_title:"थेट मंडी भाव",mandi_crop:"तुमचे पीक",mandi_state:"तुमचे राज्य",mandi_btn:"आजचे भाव पहा",fetching_prices:"भाव येत आहेत...",weather_title:"हवामान आणि शेत सूचना",location:"जिल्हा / शहर",weather_crop:"तुमचे पीक",weather_btn:"हवामान आणि सूचना पहा",fetching_weather:"हवामान येत आहे...",humidity:"आर्द्रता",rain:"पावसाची शक्यता",best_time:"सर्वोत्तम वेळ",spray_ok:"✅ फवारणीसाठी चांगला दिवस",spray_no:"⚠️ आज फवारणी करू नका",schemes_title:"सरकारी योजना",land:"जमिनीचा आकार (एकर)",scheme_state:"राज्य",scheme_crop:"मुख्य पीक",schemes_btn:"माझ्या पात्र योजना शोधा",finding_schemes:"योजना शोधल्या जात आहेत...",eligible:"✅ तुम्ही पात्र आहात!",apply:"आता अर्ज करा →",documents:"आवश्यक कागदपत्रे",how_apply:"अर्ज कसा करावा",verify_schemes:"नेहमी अधिकृत सरकारी वेबसाइटवर तपासा",verify_mandi:"विकण्यापूर्वी तुमच्या स्थानिक मंडीत भाव तपासा",ai_disclaimer:"AI मार्गदर्शन · स्थानिक KVK कडून खात्री करा",err_photo:"त्रुटी. चांगल्या फोटोसह प्रयत्न करा.",err_prices:"भाव आणताना त्रुटी",err_weather:"हवामान आणताना त्रुटी",err_schemes:"योजना आणताना त्रुटी",err_try:"आले नाही. पुन्हा प्रयत्न करा."},
@@ -388,28 +429,6 @@ function updateCropDropdowns(lang) {
   setOptions("mandiCrop", mandiCropMap, null);
   setOptions("weatherCrop", weatherCropMap, null);
   setOptions("schemeCrop", schemeCropMap, se);
-
-  // Translate land size dropdown
-  const landSizes = {
-    en:["Less than 1 acre","1 - 2 acres","2 - 5 acres","5 - 10 acres","More than 10 acres"],
-    hi:["1 एकड़ से कम","1 - 2 एकड़","2 - 5 एकड़","5 - 10 एकड़","10 एकड़ से अधिक"],
-    pa:["1 ਏਕੜ ਤੋਂ ਘੱਟ","1 - 2 ਏਕੜ","2 - 5 ਏਕੜ","5 - 10 ਏਕੜ","10 ਏਕੜ ਤੋਂ ਵੱਧ"],
-    mr:["1 एकरपेक्षा कमी","1 - 2 एकर","2 - 5 एकर","5 - 10 एकर","10 एकरपेक्षा जास्त"],
-    te:["1 ఎకరా కంటే తక్కువ","1 - 2 ఎకరాలు","2 - 5 ఎకరాలు","5 - 10 ఎకరాలు","10 ఎకరాల కంటే ఎక్కువ"],
-    ta:["1 ஏக்கரில் குறைவு","1 - 2 ஏக்கர்","2 - 5 ஏக்கர்","5 - 10 ஏக்கர்","10 ஏக்கருக்கு மேல்"],
-    kn:["1 ಎಕರೆಗಿಂತ ಕಡಿಮೆ","1 - 2 ಎಕರೆ","2 - 5 ಎಕರೆ","5 - 10 ಎಕರೆ","10 ಎಕರೆಗಿಂತ ಹೆಚ್ಚು"],
-    ml:["1 ഏക്കറിൽ കുറവ്","1 - 2 ഏക്കർ","2 - 5 ഏക്കർ","5 - 10 ഏക്കർ","10 ഏക്കറിൽ കൂടുതൽ"],
-    gu:["1 એકર કરતાં ઓછું","1 - 2 એકર","2 - 5 એકર","5 - 10 એકર","10 એકર કરતાં વધુ"],
-    bn:["১ একরের কম","১ - ২ একর","২ - ৫ একর","৫ - ১০ একর","১০ একরের বেশি"],
-  };
-  const landVals = ["less than 1 acre","1-2 acres","2-5 acres","5-10 acres","more than 10 acres"];
-  const lsEl = document.getElementById("schemeLand");
-  if (lsEl) {
-    const curVal = lsEl.value;
-    const labels = landSizes[lang] || landSizes.en;
-    lsEl.innerHTML = labels.map((lbl, i) => `<option value="${landVals[i]}">${lbl}</option>`).join("");
-    lsEl.value = curVal;
-  }
 }
 
 function applyLang() {
@@ -708,12 +727,14 @@ async function getWeather() {
 // SCHEMES
 async function getSchemes() {
   const state = document.getElementById("schemeState").value;
+  const crop = document.getElementById("schemeCrop").value;
+  const land = getSchemeAcres().toString();
   const btn = document.getElementById("schemes-btn");
   const result = document.getElementById("schemes-result");
   btn.disabled = true; btn.innerHTML = `⏳ ${T("finding_schemes")}`;
   result.innerHTML = `<div class="loading"><div class="spinner"></div><p>${T("finding_schemes")}</p></div>`;
   try {
-    const res = await fetch(`${BACKEND}/api/schemes?state=${encodeURIComponent(state)}`);
+    const res = await fetch(`${BACKEND}/api/schemes?state=${encodeURIComponent(state)}&crop=${encodeURIComponent(crop)}&land=${encodeURIComponent(land)}`);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const outer = await res.json();
     const data = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
@@ -757,6 +778,7 @@ function toggleScheme(i) { document.getElementById("scheme-" + i).classList.togg
 window.addEventListener("load", () => {
   const hash = window.location.hash.replace("#", "");
   if (hash && document.getElementById("tab-" + hash)) showTab(hash);
+  syncSchemeLandUnit();
   // Load saved language
   try {
     const saved = localStorage.getItem("annadatahub_lang");
