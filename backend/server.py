@@ -251,7 +251,7 @@ async def call_gemini_vision(image_base64: str, prompt: str) -> Optional[str]:
                 ]
             }
         ],
-        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 1024}
+        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 2048}
     }
 
     # Use cached working model if available
@@ -261,17 +261,20 @@ async def call_gemini_vision(image_base64: str, prompt: str) -> Optional[str]:
     else:
         # First try known good combinations
         models_to_try = [
+            ("v1beta", "gemini-2.5-flash-preview-04-17"),
+            ("v1beta", "gemini-2.5-pro-preview-03-25"),
             ("v1beta", "gemini-2.0-flash"),
             ("v1", "gemini-2.0-flash"),
+            ("v1beta", "gemini-2.0-flash-lite"),
             ("v1beta", "gemini-2.0-flash-exp"),
             ("v1beta", "gemini-2.0-flash-001"),
             ("v1beta", "gemini-1.5-flash"),
             ("v1", "gemini-1.5-flash"),
+            ("v1beta", "gemini-1.5-flash-8b"),
             ("v1beta", "gemini-1.5-flash-001"),
             ("v1beta", "gemini-1.5-flash-002"),
             ("v1beta", "gemini-1.5-pro"),
             ("v1", "gemini-1.5-pro"),
-            ("v1beta", "gemini-pro-vision"),
         ]
 
         # Also try dynamically discovered models
@@ -286,7 +289,7 @@ async def call_gemini_vision(image_base64: str, prompt: str) -> Optional[str]:
     for api_version, model_id in models_to_try:
         try:
             url = f"https://generativelanguage.googleapis.com/{api_version}/models/{model_id}:generateContent?key={GEMINI_API_KEY}"
-            async with httpx.AsyncClient(timeout=30.0) as c:
+            async with httpx.AsyncClient(timeout=45.0) as c:
                 r = await c.post(url, headers={"Content-Type": "application/json"}, json=request_body)
                 logger.info("Gemini %s/%s status: %s", api_version, model_id, r.status_code)
 
@@ -661,17 +664,76 @@ async def mandi_prices(request: Request, crop: str = "wheat", state: str = "Punj
     cache_key = f"mandi_{crop}_{state}_{datetime.utcnow().strftime('%Y-%m-%d')}"
     cached = cache_get(cache_key)
     if cached:
-        return {"success": True, "data": cached, "crop": crop, "state": state}
+        return {"success": True, "data": cached, "crop": crop, "state": state, "source": "cache"}
 
-    result = await call_ai(
-        f'Give current mandi prices for {crop} in {state} India. Return ONLY JSON: {{"markets":[{{"market":"name","price":2150,"unit":"per quintal"}}],"msp":2275,"best_selling_tip":"tip","date":"{datetime.utcnow().strftime("%d %b %Y")}"}}'
-    )
-    if not result:
-        result = get_mandi_fallback(crop, state)
+    AGMARKNET_KEY = os.environ.get("AGMARKNET_API_KEY", "")
+    agmarknet_data = None
+
+    # Try AGMARKNET real government data first
+    if AGMARKNET_KEY:
+        try:
+            crop_map = {
+                "wheat": "Wheat", "rice": "Paddy(Desi)(Brown)", "maize": "Maize",
+                "cotton": "Cotton", "sugarcane": "Sugarcane", "soybean": "Soyabean",
+                "mustard": "Rapeseed(Canola)", "groundnut": "Groundnut",
+                "onion": "Onion", "potato": "Potato", "tomato": "Tomato",
+                "chilli": "Chilli", "turmeric": "Turmeric", "ginger": "Ginger"
+            }
+            api_crop = crop_map.get(crop.lower(), crop.title())
+            async with httpx.AsyncClient(timeout=10.0) as c:
+                r = await c.get(
+                    "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070",
+                    params={
+                        "api-key": AGMARKNET_KEY, "format": "json", "limit": "10",
+                        "filters[state]": state, "filters[commodity]": api_crop,
+                        "sort[arrival_date]": "desc"
+                    }
+                )
+                if r.status_code == 200:
+                    data = r.json()
+                    records = data.get("records", [])
+                    if records:
+                        markets = []
+                        total_modal = 0
+                        for rec in records[:5]:
+                            modal = int(float(rec.get("modal_price", 0)))
+                            min_p = int(float(rec.get("min_price", modal)))
+                            max_p = int(float(rec.get("max_price", modal)))
+                            if modal > 0:
+                                markets.append({
+                                    "market": f"{rec.get('market','')} ({rec.get('district','')})",
+                                    "price": modal, "min_price": min_p, "max_price": max_p,
+                                    "unit": "per quintal", "date": rec.get("arrival_date","")
+                                })
+                                total_modal += modal
+                        if markets:
+                            avg = total_modal // len(markets)
+                            msp_map = {"wheat":2275,"rice":2183,"maize":1870,"cotton":6620,"soybean":4600,"mustard":5650,"groundnut":6377}
+                            msp = msp_map.get(crop.lower(), avg)
+                            tip = f"Average today: Rs.{avg}/quintal across {len(markets)} mandis. {'Above MSP - good time to sell!' if avg >= msp else 'Below MSP - consider government procurement.'}"
+                            agmarknet_data = json.dumps({
+                                "markets": markets, "msp": msp, "average_price": avg,
+                                "best_selling_tip": tip,
+                                "date": datetime.utcnow().strftime("%d %b %Y"),
+                                "source": "AGMARKNET - Government of India (Live Data)"
+                            })
+                            logger.info(f"AGMARKNET: {len(markets)} markets for {crop}/{state}")
+        except Exception as e:
+            logger.warning(f"AGMARKNET error: {e}")
+
+    if agmarknet_data:
+        result = agmarknet_data
+        source = "agmarknet"
+    else:
+        msp_map = {"wheat":2275,"rice":2183,"maize":1870,"cotton":6620,"sugarcane":315,"soybean":4600,"mustard":5650,"groundnut":6377,"onion":800,"potato":600,"tomato":800}
+        msp = msp_map.get(crop.lower(), 2000)
+        today = datetime.utcnow().strftime("%d %b %Y")
+        prompt = f"Mandi prices for {crop} in {state} today {today}. MSP Rs.{msp}/quintal. Return ONLY JSON with markets array (market name, price, unit per quintal), msp value, average_price, best_selling_tip, date, source fields. Give 3 realistic prices."
+        source = "ai_estimate"
 
     cache_set(cache_key, result, hours=4)
-    await log_feature("mandi_prices", {"crop": crop, "state": state})
-    return {"success": True, "data": result, "crop": crop, "state": state}
+    await log_feature("mandi_prices", {"crop": crop, "state": state, "source": source})
+    return {"success": True, "data": result, "crop": crop, "state": state, "source": source}
 
 
 @app.get("/api/weather")
@@ -943,6 +1005,94 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Anmol2002")
 def verify_admin(password: str):
     if password != ADMIN_PASSWORD:
         raise HTTPException(status_code=403, detail="Invalid admin password")
+
+
+class WhatToGrowQuery(BaseModel):
+    state: str = "Punjab"
+    season: str = "Rabi"
+    land: str = "2 acres"
+    land_acres: float = 2.0
+    water: str = "Borewell"
+    soil: str = "Loamy"
+    budget: str = "Medium"
+    goal: str = "Maximum income per acre"
+    previous_crop: str = "none"
+    language: str = "English"
+
+@app.post("/api/what-to-grow")
+async def what_to_grow(query: WhatToGrowQuery, request: Request):
+    check_rate_limit(get_client_ip(request), "ai")
+
+    cache_key = hashlib.md5(f"{query.state}{query.season}{query.land_acres}{query.water}{query.soil}{query.budget}{query.goal}".encode()).hexdigest()
+    cached = cache_get(cache_key)
+    if cached:
+        try:
+            data = json.loads(cached)
+            return {"success": True, "recommendations": data["recommendations"], "overall_advice": data["overall_advice"], "cached": True}
+        except:
+            pass
+
+    prompt = f"""You are an expert agricultural advisor for Indian farmers. A farmer wants to know what to grow on their farm.
+
+Farm Details:
+- State: {query.state}
+- Season: {query.season}
+- Land: {query.land} ({query.land_acres} acres)
+- Water Source: {query.water}
+- Soil Type: {query.soil}
+- Budget: {query.budget}
+- Goal: {query.goal}
+- Previous Crop: {query.previous_crop}
+
+Respond in {query.language}.
+
+Recommend the TOP 3 best crops for this specific farm. Consider: local climate of {query.state}, water availability ({query.water}), soil type ({query.soil}), budget constraint ({query.budget}), and goal ({query.goal}). Include crop rotation if previous crop is mentioned.
+
+Return ONLY valid JSON:
+{{
+  "recommendations": [
+    {{
+      "name": "Crop Name",
+      "emoji": "🌾",
+      "reason": "2-3 sentences why this crop is perfect for THIS specific farm — mention state, water, soil, season specifically",
+      "expected_income": "Rs.X,XXX - Rs.X,XXX per acre",
+      "duration": "XX-XX days",
+      "investment": "Rs.X,XXX - Rs.X,XXX per acre",
+      "risk_level": "Low/Medium/High — one line why",
+      "varieties": "Best 2-3 variety names for {query.state}",
+      "state_specific_tip": "One specific tip for {query.state} farmers growing this crop",
+      "where_to_sell": "Specific markets, mandis, buyers for this crop in {query.state}"
+    }}
+  ],
+  "overall_advice": "One powerful piece of advice for this specific farmer based on all their conditions"
+}}
+
+Give exactly 3 recommendations ranked best to third-best. ONLY JSON, no extra text."""
+
+    try:
+        raw = await call_ai(prompt, max_tokens=2500)
+        if not raw:
+            raise ValueError("No AI response")
+        raw = raw.strip().replace("```json","").replace("```","").strip()
+        match = re.search(r'\{[\s\S]*\}', raw)
+        if not match:
+            raise ValueError("No JSON found")
+        data = json.loads(match.group(0))
+        cache_set(cache_key, json.dumps(data), hours=6)
+        await log_feature("what_to_grow", {"state": query.state, "season": query.season})
+        return {"success": True, "recommendations": data["recommendations"], "overall_advice": data.get("overall_advice", "")}
+    except Exception as e:
+        logger.error(f"What to grow error: {e}")
+        # Fallback recommendations
+        fallback = {
+            "recommendations": [
+                {"name": "Wheat", "emoji": "🌾", "reason": f"Wheat is a reliable Rabi crop for {query.state} with good MSP support of Rs.2,275/quintal.", "expected_income": "Rs.25,000-35,000 per acre", "duration": "120-150 days", "investment": "Rs.8,000-12,000 per acre", "risk_level": "Low — government MSP protection", "varieties": "HD-3086, PBW-343, DBW-187", "state_specific_tip": f"Sow between Nov 1-15 for best yield in {query.state}.", "where_to_sell": "Local mandi, government procurement centers, private traders"},
+                {"name": "Mustard", "emoji": "🌼", "reason": "Mustard needs less water than wheat and gives good income with oil content premium.", "expected_income": "Rs.20,000-28,000 per acre", "duration": "110-120 days", "investment": "Rs.5,000-8,000 per acre", "risk_level": "Low — drought tolerant", "varieties": "Pusa Bold, RH-30, Varuna", "state_specific_tip": "Sow Oct 15-Nov 15. Aphid management critical in Feb.", "where_to_sell": "Local oil mills, mandis, processor direct"},
+                {"name": "Potato", "emoji": "🥔", "reason": "High value crop with good market demand and strong returns per acre.", "expected_income": "Rs.40,000-80,000 per acre", "duration": "70-90 days", "investment": "Rs.25,000-35,000 per acre", "risk_level": "Medium — late blight risk", "varieties": "Kufri Jyoti, Kufri Pukhraj", "state_specific_tip": "Plant Oct-Nov. Cold store in March for better price in June-August.", "where_to_sell": "Local mandi, cold storage traders, chips companies"}
+            ],
+            "overall_advice": f"Start with lower risk crops like wheat first season, then experiment with higher value crops as you gain confidence and capital."
+        }
+        return {"success": True, "recommendations": fallback["recommendations"], "overall_advice": fallback["overall_advice"]}
 
 @app.get("/api/admin/stats")
 async def admin_stats(request: Request, password: str = ""):
