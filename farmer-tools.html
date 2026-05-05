@@ -286,6 +286,101 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
     <div id="schemes-result"></div>
   </div>
 
+  <!-- WHAT TO GROW -->
+  <div class="page" id="page-whattogrow">
+    <div style="background:linear-gradient(135deg,#14532d,#166534);border-radius:16px;padding:20px;color:white;margin-bottom:14px;text-align:center">
+      <div style="font-size:2rem">🌱</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;margin:6px 0" id="wtg-hero-title">What Should I Grow?</div>
+      <div style="font-size:0.82rem;opacity:0.85" id="wtg-hero-sub">Tell us about your farm — AI will recommend the best crops for maximum income based on your land, water, season and state.</div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--green)" id="wtg-form-title">🌾 Tell Us About Your Farm</div>
+      <div class="two-col">
+        <div class="field">
+          <label id="lbl-wtg-state">Your State</label>
+          <select id="wtgState" onchange="syncWtgLandUnit()">
+            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
+            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
+            <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
+            <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
+            <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
+            <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
+            <option>Assam</option><option>Goa</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lbl-wtg-season">Season</label>
+          <select id="wtgSeason">
+            <option value="Kharif (June-October)">Kharif (June-Oct)</option>
+            <option value="Rabi (November-March)">Rabi (Nov-Mar)</option>
+            <option value="Zaid (March-June)">Zaid (Mar-Jun)</option>
+            <option value="Year Round">Year Round</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label id="lbl-wtg-land">Land Size</label>
+        <div style="display:flex;gap:6px">
+          <input type="number" id="wtgLandAmt" value="2" min="0.01" step="0.01" style="flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem"/>
+          <select id="wtgLandUnit" style="width:100px;padding:11px 8px;border:1.5px solid var(--border);border-radius:10px;font-size:0.78rem;background:white"></select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label id="lbl-wtg-water">Water Source</label>
+          <select id="wtgWater">
+            <option value="Borewell">Borewell</option>
+            <option value="Canal irrigation">Canal</option>
+            <option value="Rain-fed only">Rain-fed only</option>
+            <option value="River/pond nearby">River/Pond</option>
+            <option value="Drip irrigation installed">Drip installed</option>
+          </select>
+        </div>
+        <div class="field">
+          <label id="lbl-wtg-soil">Soil Type</label>
+          <select id="wtgSoil">
+            <option value="Loamy">Loamy</option>
+            <option value="Sandy loam">Sandy Loam</option>
+            <option value="Clay">Clay</option>
+            <option value="Black cotton soil">Black Cotton</option>
+            <option value="Red laterite">Red/Laterite</option>
+            <option value="Alluvial">Alluvial</option>
+            <option value="I don't know">Don't Know</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label id="lbl-wtg-budget">Investment Budget</label>
+        <select id="wtgBudget">
+          <option value="Very low — under Rs.5,000">Very Low — Under ₹5,000</option>
+          <option value="Low — Rs.5,000 to Rs.15,000">Low — ₹5,000–15,000</option>
+          <option value="Medium — Rs.15,000 to Rs.50,000" selected>Medium — ₹15,000–50,000</option>
+          <option value="High — above Rs.50,000">High — Above ₹50,000</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="lbl-wtg-goal">Your Main Goal</label>
+        <select id="wtgGoal">
+          <option value="Maximum income per acre">Maximum Income</option>
+          <option value="Low risk stable income">Low Risk / Stable</option>
+          <option value="Quick harvest in 60-90 days">Quick Harvest (60-90 days)</option>
+          <option value="Organic premium market">Organic / Premium</option>
+          <option value="Export quality crops">Export Quality</option>
+          <option value="Minimum water usage">Save Water</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="lbl-wtg-prev">Previous Crop (optional)</label>
+        <input type="text" id="wtgPrev" placeholder="e.g. Wheat, Rice, Nothing" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:0.88rem;width:100%;box-sizing:border-box"/>
+      </div>
+      <button class="btn btn-green" onclick="getWhatToGrow()" id="wtg-btn">
+        🌱 <span id="wtg-btn-text">Get Crop Recommendations</span>
+      </button>
+    </div>
+    <div id="wtg-result"></div>
+  </div>
+
 </div>
 
 <div id="toast" class="toast" style="display:none"></div>
@@ -668,16 +763,28 @@ async function getMandiPrices() {
     const outer = await res.json();
     const raw = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
     const markets = raw.markets || [];
+    const sourceBadge = outer.source === "agmarknet"
+      ? `<span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">✅ LIVE — AGMARKNET Government Data</span>`
+      : `<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">⚠️ AI Estimate — Verify before selling</span>`;
     result.innerHTML = `
       <div class="card">
-        <div class="card-title">${outer.crop} — ${outer.state}</div>
-        <div style="font-size:0.85rem;margin-bottom:8px;color:var(--muted)">${T("mandi_msp") || "MSP"}: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div class="card-title" style="margin:0">${outer.crop} — ${outer.state}</div>
+          ${sourceBadge}
+        </div>
+        <div style="font-size:0.82rem;margin-bottom:10px;color:var(--muted)">${T("mandi_msp") || "MSP"}: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date}${raw.average_price ? ` | Avg: <strong style="color:var(--green)">₹${raw.average_price}</strong>` : ""}</div>
         <div class="price-grid">
-          ${markets.map(m => `<div class="price-card"><div class="price-mandi">${m.market}</div><div class="price-amount">₹${m.price}</div><div class="price-unit">${m.unit}</div></div>`).join("")}
+          ${markets.map(m => `<div class="price-card">
+            <div class="price-mandi">${m.market}</div>
+            <div class="price-amount">₹${m.price}</div>
+            ${m.min_price && m.max_price ? `<div style="font-size:0.7rem;color:var(--muted)">₹${m.min_price}–₹${m.max_price}</div>` : ""}
+            <div class="price-unit">${m.unit}</div>
+            ${m.date ? `<div style="font-size:0.68rem;color:var(--muted)">${m.date}</div>` : ""}
+          </div>`).join("")}
         </div>
         <div class="advice-box"><strong>💡 ${T("mandi_tip") || "Tip"}:</strong> ${raw.best_selling_tip}</div>
       </div>
-      <div class="powered">🌾 ${T("verify_mandi")}</div>`;
+      <div class="powered">🌾 ${raw.source || T("verify_mandi")}</div>`;
     showToast("✅ Prices loaded!");
   } catch(e) {
     result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>${T("err_try")}</p></div>`;
@@ -775,10 +882,111 @@ async function getSchemes() {
 function toggleScheme(i) { document.getElementById("scheme-" + i).classList.toggle("open"); }
 
 // Hash navigation
+
+// ============= WHAT TO GROW =============
+function syncWtgLandUnit() {
+  const state = document.getElementById("wtgState").value;
+  const d = getLandFT(state);
+  const sel = document.getElementById("wtgLandUnit");
+  if(sel) sel.innerHTML = d.labels.map((l,i) => `<option value="${i}">${l}</option>`).join("");
+}
+
+async function getWhatToGrow() {
+  const state = document.getElementById("wtgState").value;
+  const season = document.getElementById("wtgSeason").value;
+  const landAmt = parseFloat(document.getElementById("wtgLandAmt").value) || 2;
+  const landIdx = parseInt(document.getElementById("wtgLandUnit").value) || 0;
+  const d = getLandFT(state);
+  const landAcres = parseFloat((landAmt * d.acres[landIdx]).toFixed(3));
+  const landLabel = `${landAmt} ${d.units[landIdx]} (${landAcres} acres)`;
+  const water = document.getElementById("wtgWater").value;
+  const soil = document.getElementById("wtgSoil").value;
+  const budget = document.getElementById("wtgBudget").value;
+  const goal = document.getElementById("wtgGoal").value;
+  const prev = document.getElementById("wtgPrev").value || "none";
+  const lang = LANG_NAMES[currentLang] || "English";
+
+  const btn = document.getElementById("wtg-btn");
+  const result = document.getElementById("wtg-result");
+  btn.disabled = true;
+  btn.innerHTML = "⏳ Analysing your farm...";
+  result.innerHTML = `<div class="loading"><div class="spinner"></div><p>AI is analysing your farm conditions...</p></div>`;
+
+  try {
+    const res = await fetch(`${BACKEND}/api/what-to-grow`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({state, season, land: landLabel, land_acres: landAcres, water, soil, budget, goal, previous_crop: prev, language: lang})
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || "Failed");
+
+    const recs = data.recommendations;
+    result.innerHTML = `
+      <div style="background:var(--green-light);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center">
+        <div style="font-family:'Baloo 2',cursive;font-weight:800;color:var(--green);font-size:1rem">🌾 Top Crops for Your Farm</div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:3px">${state} · ${season} · ${landLabel} · ${goal}</div>
+      </div>
+      ${recs.map((crop, i) => `
+        <div style="background:white;border-radius:14px;border:2px solid ${i===0?'var(--green)':'var(--border)'};margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+          <div style="background:${i===0?'var(--green)':i===1?'#f59e0b':'#6b7280'};padding:10px 14px;display:flex;align-items:center;gap:10px">
+            <div style="background:white;color:${i===0?'var(--green)':i===1?'#f59e0b':'#6b7280'};width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Baloo 2',cursive;font-weight:800;font-size:0.9rem">${i+1}</div>
+            <div style="color:white;font-family:'Baloo 2',cursive;font-weight:800;font-size:1rem">${crop.name} ${crop.emoji||'🌾'}</div>
+            ${i===0?'<span style="margin-left:auto;background:white;color:var(--green);padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">BEST CHOICE</span>':''}
+          </div>
+          <div style="padding:14px">
+            <div style="font-size:0.84rem;color:#374151;line-height:1.6;margin-bottom:10px">${crop.reason}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+              <div style="background:#f0fdf4;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">💰 Expected Income</div>
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;color:var(--green);font-size:0.95rem">${crop.expected_income}</div>
+              </div>
+              <div style="background:#fef3c7;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">📅 Duration</div>
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;color:#92400e;font-size:0.95rem">${crop.duration}</div>
+              </div>
+              <div style="background:#eff6ff;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">💸 Investment</div>
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;color:#1d4ed8;font-size:0.88rem">${crop.investment}</div>
+              </div>
+              <div style="background:#fdf4ff;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">⚠️ Risk</div>
+                <div style="font-family:'Baloo 2',cursive;font-weight:800;color:#7e22ce;font-size:0.88rem">${crop.risk_level}</div>
+              </div>
+            </div>
+            <div style="background:#f8fdf8;border-radius:8px;padding:10px;margin-bottom:8px">
+              <div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">🌱 Recommended Varieties</div>
+              <div style="font-size:0.82rem;color:#374151">${crop.varieties}</div>
+            </div>
+            <div style="background:#fff7ed;border-radius:8px;padding:10px;margin-bottom:8px">
+              <div style="font-weight:700;font-size:0.8rem;color:#92400e;margin-bottom:4px">💡 Key Tips for ${state}</div>
+              <div style="font-size:0.82rem;color:#374151">${crop.state_specific_tip}</div>
+            </div>
+            <div style="background:var(--green-light);border-radius:8px;padding:10px">
+              <div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">🏪 Where to Sell</div>
+              <div style="font-size:0.82rem;color:#374151">${crop.where_to_sell}</div>
+            </div>
+          </div>
+        </div>`).join("")}
+      <div style="background:#fef3c7;border-radius:12px;padding:12px;font-size:0.8rem;color:#92400e;margin-top:4px">
+        💡 <strong>Pro tip:</strong> ${data.overall_advice}
+      </div>
+      <div class="powered" style="margin-top:8px">🌾 AnnadataHub AI · Based on your specific farm conditions</div>`;
+    showToast("✅ Recommendations ready!");
+  } catch(e) {
+    result.innerHTML = `<div class="empty"><div class="icon">😕</div><p>Could not get recommendations. Please try again.</p></div>`;
+    showToast("Error getting recommendations", "error");
+  }
+  btn.disabled = false;
+  btn.innerHTML = `🌱 <span id="wtg-btn-text">Get Crop Recommendations</span>`;
+}
+
 window.addEventListener("load", () => {
   const hash = window.location.hash.replace("#", "");
   if (hash && document.getElementById("tab-" + hash)) showTab(hash);
   syncSchemeLandUnit();
+  syncWtgLandUnit();
   // Load saved language
   try {
     const saved = localStorage.getItem("annadatahub_lang");
