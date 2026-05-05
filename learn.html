@@ -153,6 +153,7 @@ try {
   <button class="tab" onclick="showTab('ailearn')" id="tab-ailearn"><span class="icon">🤖</span><span id="t4">Ask AI</span></button>
   <button class="tab" onclick="showTab('feedback')" id="tab-feedback"><span class="icon">🎙️</span><span id="t5">Feedback</span></button>
   <button class="tab" onclick="showTab('books')" id="tab-books"><span class="icon">📚</span><span id="t6">Books</span></button>
+  <button class="tab" onclick="showTab('storage')" id="tab-storage"><span class="icon">🏪</span><span id="t7">Storage</span></button>
 </div>
 
 <div class="content">
@@ -315,6 +316,68 @@ try {
     <!-- ICAR Disclaimer -->
     <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:12px;margin-top:12px;font-size:0.8rem;color:#92400e">
       📌 <strong>Source:</strong> All books and guides listed here are published by ICAR, IARI, PAU Ludhiana, State Agricultural Universities and Government of India. These are free public resources.
+    </div>
+  </div>
+
+  <!-- STORAGE GUIDE -->
+  <div class="page" id="page-storage">
+
+    <!-- Hero -->
+    <div style="background:linear-gradient(135deg,#92400e,#b45309);border-radius:16px;padding:20px;color:white;margin-bottom:14px;text-align:center">
+      <div style="font-size:2rem">🏪</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:1.2rem;font-weight:800;margin:6px 0" id="storage-hero-title">Crop Storage Guide</div>
+      <div style="font-size:0.82rem;opacity:0.85" id="storage-hero-sub">Indian farmers lose 10-25% of harvest due to bad storage. Learn how to store every crop properly and save lakhs every year.</div>
+    </div>
+
+    <!-- Loss Stats -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:white;border-radius:12px;padding:10px;text-align:center;border:1px solid var(--border)">
+        <div style="font-size:1.4rem;font-weight:800;color:#dc2626">25%</div>
+        <div style="font-size:0.72rem;color:var(--muted)">Fruits & Vegetables lost</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:10px;text-align:center;border:1px solid var(--border)">
+        <div style="font-size:1.4rem;font-weight:800;color:#f59e0b">10%</div>
+        <div style="font-size:0.72rem;color:var(--muted)">Grains lost in storage</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:10px;text-align:center;border:1px solid var(--border)">
+        <div style="font-size:1.4rem;font-weight:800;color:var(--green)">₹92,000 Cr</div>
+        <div style="font-size:0.72rem;color:var(--muted)">Lost every year in India</div>
+      </div>
+    </div>
+
+    <!-- Crop Filter -->
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px">
+      <button onclick="filterStorage('all')" id="sfilter-all" class="filter-btn active-filter" style="white-space:nowrap">All Crops</button>
+      <button onclick="filterStorage('grain')" id="sfilter-grain" class="filter-btn" style="white-space:nowrap">🌾 Grains</button>
+      <button onclick="filterStorage('vegetable')" id="sfilter-vegetable" class="filter-btn" style="white-space:nowrap">🥦 Vegetables</button>
+      <button onclick="filterStorage('fruit')" id="sfilter-fruit" class="filter-btn" style="white-space:nowrap">🍎 Fruits</button>
+      <button onclick="filterStorage('spice')" id="sfilter-spice" class="filter-btn" style="white-space:nowrap">🌶️ Spices</button>
+      <button onclick="filterStorage('pulse')" id="sfilter-pulse" class="filter-btn" style="white-space:nowrap">🫘 Pulses</button>
+    </div>
+
+    <div id="storage-list"></div>
+
+    <!-- Government Storage Schemes -->
+    <div style="background:var(--green-light);border-radius:14px;padding:14px;margin-top:4px">
+      <div style="font-family:'Baloo 2',cursive;font-weight:700;color:var(--green);font-size:0.95rem;margin-bottom:10px">🏛️ Government Storage Support</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="background:white;border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:0.85rem;color:var(--green)">Agricultural Infrastructure Fund (AIF)</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:3px">Loan up to ₹2 crore at 3% interest for building your own storage, cold room, or warehouse. Apply at agriinfra.dac.gov.in</div>
+        </div>
+        <div style="background:white;border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:0.85rem;color:var(--green)">Gramin Bhandaran Yojana</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:3px">25-33% subsidy for building rural storage godown. Minimum 50 tonne capacity. Apply at NABARD or cooperative bank.</div>
+        </div>
+        <div style="background:white;border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:0.85rem;color:var(--green)">Warehouse Receipt System (WRS)</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:3px">Store grain in registered warehouse, get receipt, take loan against it at bank. Don't sell at low harvest price — wait for better price. wdra.gov.in</div>
+        </div>
+        <div style="background:white;border-radius:10px;padding:10px">
+          <div style="font-weight:700;font-size:0.85rem;color:var(--green)">Cold Chain Scheme (NHM)</div>
+          <div style="font-size:0.8rem;color:#374151;margin-top:3px">35% subsidy on cold storage for fruits, vegetables, flowers. National Horticulture Board. nhb.gov.in</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -911,6 +974,212 @@ function renderFeedback() {
 }
 
 
+
+// ============= CROP STORAGE GUIDES =============
+const STORAGE_GUIDES = [
+  {id:1, cat:"grain", crop:"Wheat", icon:"🌾", loss:"10-15% if stored wrong",
+   basics:{temp:"Cool and dry. Below 15°C ideal. Max 25°C.", moisture:"Must be below 12% before storage. Test: bite grain — hard click = dry enough. Sticky = too wet.", duration:"12-18 months home storage | 3-5 years in proper silo"},
+   methods:[
+     {label:"Home Storage — Kothi/Tin Drum (₹0-2,000)", steps:["Dry wheat in sun for 3-4 days until moisture below 12% (bite test)", "Clean storage vessel thoroughly — remove old grain, dust, insects", "Treat kothi/drum with Malathion 50EC @ 3ml/litre spray inside — let dry", "Fill grain. Put Aluminium Phosphide tablet (celphos) — 1 tablet per 200 kg on top", "SEAL completely with mud plaster or tape — no air gap", "Check every 30 days for heating (hand inside — hot = insect problem)"]},
+     {label:"HDPE Bag/Hermetic Bag Storage (₹200-500/bag)", steps:["Buy hermetic storage bags (Purdue Improved Crop Storage/PICS bags) — 50 kg each", "Available at agriculture shops or Amazon ₹150-200/bag", "Fill with dry grain. Remove air completely before sealing inner bag", "Seal all 3 layers tightly. Store in shade", "No chemical treatment needed — hermetic = zero oxygen = insects die", "1 bag lasts 3-5 years with proper care. Zero chemical residue on grain"]},
+     {label:"Warehouse Receipt (₹500-1,000 deposit)", steps:["Find nearest WDRA-registered warehouse — wdra.gov.in directory", "Deposit your wheat after quality check (moisture, foreign matter)", "Receive Negotiable Warehouse Receipt (NWR)", "Take loan at bank: 65-70% of grain value at low interest", "Sell when price is high (Feb-March usually best for wheat)", "Save ₹5-15/kg by not selling at harvest low price"]}
+   ],
+   tips:"Aluminium Phosphide (celphos) is most effective — kills all insects including eggs. But POISON — handle with gloves, never open in closed room. Keep away from children. Hermetic bags are safer for home.",
+   mistakes:"Storing wet grain = Aspergillus fungus grows, aflatoxin poison, grain rejected at market. Not sealing properly = weevil enters and destroys 15-20% in 3 months. Mixing old and new grain.",
+   sell_timing:"Best price: November-December (festival demand). Worst: May-June (new harvest flood). Warehouse receipt lets you hold till peak price."
+  },
+  {id:2, cat:"grain", crop:"Rice / Paddy", icon:"🌾", loss:"8-12% in storage",
+   basics:{temp:"Below 15°C for milled rice. Paddy more tolerant.", moisture:"Paddy: below 14%. Milled rice: below 13%. Dry in sun 2-3 days after harvest.", duration:"Paddy: 12-24 months | Milled rice: 6-12 months"},
+   methods:[
+     {label:"Paddy Storage in Gunny/HDPE Bags (₹0-1,000)", steps:["Thresh and dry paddy to 14% moisture (3-4 days sun drying)", "Winnow to remove chaff and broken grain — reduces insect attack", "Fill in clean gunny bags or HDPE woven bags", "Stack on wooden/bamboo platform — never directly on floor (moisture)", "Apply Malathion dust (2% @ 1g/kg) while filling bags", "Cover stack with tarpaulin. Fumigate with Aluminium Phosphide 1 tablet/tonne every 3 months"]},
+     {label:"Hermetic Silo Bags (₹500-1,500)", steps:["Large hermetic bags: 1 tonne capacity — ₹800-1,200 each", "Fill completely, remove air with pump or by pressing", "No chemical needed — zero oxygen kills all pests", "Place on raised platform, cover with shade net", "Single bag stores 1 tonne safely for 12-18 months", "Cost saves: 1 bag lasts 4-5 years = ₹200-300/year per tonne storage"]}
+   ],
+   tips:"Rice absorbs moisture and odours easily — store away from fertilizers, pesticides, kerosene. Milled rice has shorter shelf life than paddy — mill only what you need to sell immediately.",
+   mistakes:"Milling and then storing — milled rice goes stale and rancid faster. Storing in damp room — rice gets yellow and sells at discount. Not checking for rice weevil (small black insects) monthly.",
+   sell_timing:"Paddy: best price Nov-Dec (Diwali demand) and Feb-March. Basmati: hold 6-12 months — aged basmati sells at premium ₹1,000-2,000/q more."
+  },
+  {id:3, cat:"pulse", crop:"Pulses (Dal)", icon:"🫘", loss:"15-20% — most vulnerable grain",
+   basics:{temp:"Cool, below 20°C. Pulses attract insects fastest.", moisture:"Must be below 10-11% — drier than wheat/rice.", duration:"6-12 months home storage | 2 years in proper conditions"},
+   methods:[
+     {label:"Home Storage with Neem (₹100-500)", steps:["Dry in sun 4-5 days — pulses need drier conditions than wheat", "Mix dry neem leaves (50g per 10 kg dal) while filling in container", "Add 5-6 dried red chillies per 10 kg — repels insects naturally", "Use airtight metal/plastic containers — not cloth bags", "Add 1 bay leaf (tej patta) — repels weevils", "Check every 2 weeks. If heating or smell found — sun dry again immediately"]},
+     {label:"Edible Oil Coating (Most Effective Home Method)", steps:["Spread dal in shade after sun drying", "Lightly coat with mustard oil — 5ml per 1 kg dal", "Mix well so each grain has thin oil coating", "Fill in airtight containers immediately", "Oil creates physical barrier — insects can't penetrate or lay eggs", "Tested method: zero insect damage up to 12 months. Safe to eat — just wash before cooking"]}
+   ],
+   tips:"Pulses are most vulnerable to Pulse Beetle (Callosobruchus) — lays eggs in grain before harvest. Oil coating prevents adult beetles from laying eggs. Neem is the traditional effective solution.",
+   mistakes:"Storing in cloth bags — beetles enter easily. Not checking for 3 months — by the time you see damage, 30-40% is lost. Storing near onions/garlic — dal absorbs strong smell.",
+   sell_timing:"Best price: July-August (kharif arrival — rabi stocks exhausted). Hold rabi pulses 2-3 months after harvest for better price."
+  },
+  {id:4, cat:"vegetable", crop:"Onion", icon:"🧅", loss:"25-40% without proper curing",
+   basics:{temp:"25-30°C for curing (first 2 weeks). Then 0-4°C cold store OR 25-30°C with good ventilation for 3-4 months.", moisture:"Surface must be completely dry. Humidity below 65% in storage.", duration:"With curing: 4-6 months | Cold store: 8-10 months"},
+   methods:[
+     {label:"Curing and Traditional Storage (₹0-5,000)", steps:["Harvest when 50% tops fall naturally — don't harvest too early", "Cure in field for 7-10 days in the sun — tops must dry completely", "Don't expose to rain during curing — causes neck rot", "Grade: remove damaged, cut, sprouting onions before storage", "Store in well-ventilated bamboo/wire mesh crates (NOT gunny bags)", "Open storage in shade: stack crates with 6 inch gap for air circulation", "Check weekly — remove rotting onions immediately to prevent spread"]},
+     {label:"Low-Cost Ventilated Storage Structure (₹10,000-25,000)", steps:["Build raised platform (bamboo/wood) — 30cm above ground", "Side walls: wire mesh or bamboo splits — maximum airflow", "Roof: tiled or thatched (NOT tin — gets too hot)", "Capacity: 1 tonne per 10 sqft. Keep at 25-30°C with airflow", "Add fan if needed in hot humid weather", "Reduces losses from 40% to 10-15% vs gunny bag storage"]},
+     {label:"Cold Storage (₹500-1,500 per tonne per season)", steps:["Book space at nearest cold store (Agriculture Dept directory or Google)", "Pre-cooling to 10°C before moving to main storage at 0-2°C", "Store in mesh crates NOT plastic bags — onion needs to breathe", "Inspect monthly. Remove sprouting bulbs immediately", "Take out slowly during price high — don't remove all at once", "Cold store cost: ₹500-1,500/tonne/season vs potential ₹5,000-10,000 extra income from holding price"]}
+   ],
+   tips:"NEVER store onion in gunny bags — causes sweating, rapid rotting, 40% loss in 3 months. Wire mesh crates are the single most important investment for onion farmers. Remove all damaged bulbs before storage.",
+   mistakes:"Harvesting too early (green onions store very poorly). Storing in gunny sacks. Stacking too high (pressure damages bulbs). Mixing different varieties. Not curing properly before storage.",
+   sell_timing:"January-March: new crop arrives, prices crash. Hold until April-June — prices typically double or triple. Cold storage investment always pays off for onion."
+  },
+  {id:5, cat:"vegetable", crop:"Potato", icon:"🥔", loss:"20-30% without cold storage",
+   basics:{temp:"2-4°C in cold storage. Home storage: cool dark place 10-15°C.", moisture:"Cure at 15-18°C for 10-15 days first. Then store cold.", duration:"Home cool storage: 2-3 months | Cold store: 9-10 months"},
+   methods:[
+     {label:"Curing Before Storage (Essential First Step)", steps:["After harvest: cure in shade for 10-15 days at 15-18°C", "Curing heals skin wounds — prevents infection in storage", "Never wash potatoes before storage — water causes rotting", "Remove all green, damaged, disease-infected tubers", "Sort by size: big/medium/small separately", "Sprout inhibitor: CIPC spray (14ml/tonne) before cold storage — prevents sprouting for 8 months"]},
+     {label:"Home Cool Storage (₹0-2,000)", steps:["Store in dark room — light causes greening (solanine toxin, bitter taste)", "Temperature must stay below 15°C — underground cellar best in hills", "Don't store near onions — both produce gases that damage each other", "Spread in single layer on clean dry floor or in ventilated crates", "Check weekly — one rotten potato spreads to all neighbours", "Add dry sand between layers — absorbs moisture, extends shelf life by 2-3 weeks"]},
+     {label:"Cold Storage (₹400-800 per tonne per season)", steps:["Book early (November-December) — cold stores fill up fast in Punjab/UP/WB", "Temperature: 2-4°C with 90-95% relative humidity", "Ventilation essential — CO2 buildup causes physiological damage", "CIPC treatment mandatory for storing beyond 6 months", "Take out 2-3 days before selling — sudden temperature change causes sweating", "Pre-cooling room (10°C) before main storage — reduces storage stress"]}
+   ],
+   tips:"Cold storage for potato is the best investment in farming — potato prices are 3-5x higher in June-September vs March-April harvest time. 1 tonne stored at ₹600 can earn extra ₹5,000-10,000 from better price.",
+   mistakes:"Storing near light — greening makes potato unsellable and toxic. Not curing first — wounds get infected in cold storage. Storing with onions. Not applying CIPC for long storage — heavy sprouting loss.",
+   sell_timing:"Worst price: March-April (harvest). Best price: June-August. Cold storage bridges this gap completely."
+  },
+  {id:6, cat:"vegetable", crop:"Tomato", icon:"🍅", loss:"35-40% — most perishable vegetable",
+   basics:{temp:"Ripe: 8-10°C (1-2 weeks). Semi-ripe: 12-15°C (2-3 weeks). Green: 18-20°C (3-4 weeks).", moisture:"85-90% humidity. Don't wash before storage.", duration:"Room temperature: 4-7 days | Cool room: 2-3 weeks | Cold store: 4-6 weeks"},
+   methods:[
+     {label:"Field to Market (0-3 days)", steps:["Harvest in morning when cool — never in afternoon heat", "Harvest at correct stage: firm ripe (red/orange) for local market, breaker stage (pink) for 2-3 day transport, green mature for 7-10 day distant market", "Handle gently — bruises cause rapid rotting, each bruise costs you money", "Fill in plastic crates not wooden boxes (wood absorbs pathogens)", "Shade during transport — direct sun raises temperature 10-15°C inside vehicle", "Pre-cooling with cold water spray before packing reduces temperature shock"]},
+     {label:"Short Term 1-2 Weeks (₹1,000-3,000 for shade house)", steps:["Build simple shade structure (shade net 50%) near farm", "Spread in single layer on raised wooden/bamboo platform", "Spray cold water 3-4 times daily to reduce temperature", "Sort daily — remove cracked, soft, diseased tomatoes immediately", "Green tomatoes wrap in newspaper — extend shelf life 5-7 extra days", "Ethylene gas from ripe tomatoes ripens others — separate by stage"]},
+     {label:"Evaporative Cool Chamber (₹3,000-8,000)", steps:["Build brick/stone chamber with wet sand-filled double walls", "Size: 1.5m × 1.5m × 1.5m holds 100-150 kg tomato", "Keep outer wall wet — evaporation keeps inside 10-15°C cooler", "Works best in dry areas (Punjab, Rajasthan, MP, Gujarat)", "Simple to build: brick wall → cavity fill with wet sand → another brick wall", "Cost ₹3,000-8,000 but reduces losses from 40% to 10-15%. Zero electricity."]}
+   ],
+   tips:"Never refrigerate unripe tomatoes — damages cell structure, becomes mushy. Calcium spraying on plant during growing (Calcium nitrate 0.5%) reduces blossom end rot and improves storage life. Grade before selling.",
+   mistakes:"Harvesting all at once — market flooding, price crash. Stacking in deep boxes — bottom ones crushed. Washing before storage — accelerates rotting. Mixing ripe and green — ethylene gas ripens all at once.",
+   sell_timing:"Best strategy: harvest in stages over 2-3 weeks. Contract farming with restaurant/hotel gives fixed price and avoids market price crash."
+  },
+  {id:7, cat:"fruit", crop:"Mango", icon:"🥭", loss:"25-40% post-harvest loss",
+   basics:{temp:"Green mango: 13-15°C. Ripe: 8-12°C. Never below 8°C (chilling injury).", moisture:"90-95% humidity. Wrap individually.", duration:"Green: 3-4 weeks at 13-15°C | Ripe: 1-2 weeks at 10-12°C"},
+   methods:[
+     {label:"Proper Harvesting (Reduces 50% of Losses)", steps:["Harvest with 5cm stem attached — prevents stem end rot", "Don't allow mango to fall on ground — bruising causes 50% of loss", "Harvest in morning or evening — avoid midday heat", "Don't stack freshly harvested mangoes — heat build-up causes rapid ripening", "Remove latex/sap from surface — causes black spots (lye dip or water wash)", "Grade by size and ripeness before any treatment or storage"]},
+     {label:"Hot Water Treatment (Prevents Diseases, No Chemical)", steps:["Dip mangoes in 48°C water for 60 minutes (use thermometer)", "Hot water kills anthracnose fungus (causes black spots) and fruit fly eggs", "Cool in clean water immediately after hot water treatment", "Dry completely in shade before packing", "Cost: just electricity/fuel for water heating — best ROI of any post-harvest treatment", "Doubles shelf life and prevents 70% of disease losses"]},
+     {label:"Pre-cooling and Cold Chain (For Premium Market)", steps:["Pre-cool to 10-12°C within 6 hours of harvest — critical for export quality", "Wrap each mango in newspaper or tissue paper individually", "Pack in corrugated boxes with ventilation holes — not plastic bags", "Cold transport: maintain 12-13°C throughout — don't break cold chain", "CA (Controlled Atmosphere) storage for export: 5% O2 + 5% CO2 at 12°C = 3-4 weeks shelf life", "APEDA registered packhouse for export certification"]}
+   ],
+   tips:"Each 1°C temperature reduction below 25°C doubles mango shelf life. Pre-cooling is the single most important intervention — reduces respiration rate by 50%. For Alphonso export — hot water treatment mandatory.",
+   mistakes:"Harvesting immature (raw mango — never ripens properly). Keeping in full sun after harvest — temperature rises 15°C above air. Storing near ethylene sources (apples, bananas) — over-ripens quickly. Stacking in deep heaps.",
+   sell_timing:"Process excess as: aamras, pickle, dried slices, pulp (sell to food companies). Mango pulp buyers: Mother Dairy, Maaza vendors, local sweet shops."
+  },
+  {id:8, cat:"fruit", crop:"Banana", icon:"🍌", loss:"20-30%",
+   basics:{temp:"Ripe banana: 13-15°C. Green: 12-13°C. Never below 12°C (chilling injury — black skin).", moisture:"90-95% humidity.", duration:"Green: 2-3 weeks at 12-13°C | Ripe: 5-7 days"},
+   methods:[
+     {label:"Bunch Management and Harvesting", steps:["Harvest green — 75-80% maturity (round finger cross-section, not angular)", "De-hand: cut individual hands from bunch — prevents bruising damage", "Wash in clean water to remove latex sap immediately after harvest", "Don't store in full bunches — individual hands easier to grade and less bruising", "Grade by size: Grade A (22cm+), Grade B (18-22cm), Grade C (below 18cm)", "Remove any damaged, scarred, or diseased fingers before storage"]},
+     {label:"Ripening Control (Key Skill)", steps:["Natural ripening: 4-5 days at 18-20°C after harvest", "Forced ripening: ethylene gas (Ethephon 39% SL @ 0.5ml/L) spray — ripen in 24-48 hours", "Calcium carbide is BANNED and illegal — never use (health hazard)", "Ripen in batches to spread out sales over days", "Cover with jute/cloth during ripening to retain ethylene gas", "After ripening — don't refrigerate below 12°C (turns black outside)"]},
+   ],
+   tips:"Poly bunch cover on plant increases finger weight 15-20% AND improves shelf life by keeping cleaner. Remove male bud to increase bunch weight. Latex stains everything — wear old clothes during harvest.",
+   mistakes:"Using calcium carbide for ripening — illegal, destroys taste, health risk. Cold storage below 12°C = black skin (chilling injury). Not washing off latex — causes skin spots. Harvesting too mature.",
+   sell_timing:"Process overripe bananas: banana chips (dried), banana halwa, banana flour. Chip business: buy overripe at ₹3-5/kg, sell chips at ₹150-200/kg — 30-40x value addition."
+  },
+  {id:9, cat:"spice", crop:"Chilli (Mirch)", icon:"🌶️", loss:"30-40% if not dried properly",
+   basics:{temp:"Fresh: 8-10°C. Dried: room temperature in sealed container.", moisture:"Dry chilli: below 10% moisture for safe storage. Test: brittle snap = dry enough.", duration:"Fresh: 2-3 weeks refrigerated | Dried: 12-18 months in airtight container"},
+   methods:[
+     {label:"Drying for Long Storage (Most Important)", steps:["Harvest fully red mature chillies (green and yellow chillies have shorter storage life)", "Spread in thin layer on clean cement floor or raised platform in full sun", "Dry for 8-12 days — turn every day for uniform drying", "Night: cover with tarpaulin to prevent moisture reabsorption", "Do NOT dry on roads — contamination (fuel, dust) — quality and price reduction", "Test: snap chilli — should break cleanly with dry sound. If bends = still wet, keep drying"]},
+     {label:"Machine Drying (₹500-2,000 per tonne)", steps:["Mechanical dryer reduces drying time from 10 days to 10-12 hours", "Maintains colour better than sun drying — bright red = higher price", "Common in Guntur (AP) — many custom dryers available", "Temperature: 60-65°C maximum — higher damages colour and capsaicin", "Dried chilli: fill in HDPE woven bags, store in dry godown", "Moisture absorbers (silica gel) in container prevents rehydration"]}
+   ],
+   tips:"Chilli colour (ASTA value) directly affects price — bright red premium over dark/dull. Avoid drying on black roads — absorbs tar smell and fails quality test. Guntur red dried chilli exported to 50+ countries — quality pays.",
+   mistakes:"Under-drying — fungal mold destroys entire lot within weeks. Drying in rain — colour loss and mold. Storing in non-airtight bags — absorbs moisture, loses colour. Mixing different varieties.",
+   sell_timing:"Best strategy: dry and store. Sell October-November when demand peaks (festival season) rather than at July-August harvest glut. Dried chilli holds value 12+ months."
+  },
+  {id:10, cat:"spice", crop:"Turmeric & Ginger", icon:"🫚", loss:"15-25%",
+   basics:{temp:"Seed rhizomes: 12-15°C. Dry turmeric: room temp in dry storage.", moisture:"Seed rhizomes: 80-90% humidity to prevent shriveling. Dry powder: below 10%.", duration:"Fresh rhizomes: 4-6 months | Dried turmeric: 12-24 months | Ginger: 4-6 months fresh"},
+   methods:[
+     {label:"Seed Rhizome Storage (for Next Season Planting)", steps:["Select healthy, disease-free rhizomes — no soft spots, no rot", "Cure in shade for 3-4 days after harvest", "Treat with Mancozeb 75WP (3g/litre) + Quinalphos (2ml/litre) dip for 30 minutes — prevents storage diseases", "Store in pits lined with dry leaves/straw: 50cm deep, cover with leaves then soil — natural temperature and humidity control", "Traditional storage in sand/dry leaves in covered shed also works", "Check monthly — remove any rotting pieces immediately"]},
+     {label:"Dried Turmeric Processing and Storage", steps:["Boil fresh turmeric for 45-60 minutes until soft (knife enters easily)", "Dry in sun for 10-15 days until hard (20-25% drying loss in weight)", "Polishing: put in rotating drum with sand — gives golden colour and premium price", "Grind to powder only what you need to sell — ground powder loses aroma faster", "Store dried fingers in HDPE bags, sealed, in dark dry storage", "Premium price: finger turmeric > powder — don't grind early"]}
+   ],
+   tips:"Lakadong variety turmeric (Meghalaya) has highest curcumin 9-12% vs regular 2-3% — sells at ₹200-300/kg vs ₹60-80. Value addition: turmeric milk powder, capsules, cosmetic grade — 5x price vs raw.",
+   mistakes:"Not treating seed rhizomes before storage — Pythium rot destroys 30-40% seed. Under-boiling turmeric — takes too long to dry, gets mold. Storing in open without seal — loses aroma and colour.",
+   sell_timing:"Process: dried turmeric → polished fingers → powder → cosmetic grade turmeric. Each step increases value 2-3x. Organic certification adds another 2-3x premium."
+  },
+  {id:11, cat:"grain", crop:"Maize (Corn)", icon:"🌽", loss:"15-25% — high aflatoxin risk",
+   basics:{temp:"Below 15°C ideal. Dry and ventilated mandatory.", moisture:"MUST be below 13% before storage. Critical crop — aflatoxin danger above 14%.", duration:"12-18 months if properly dried and stored"},
+   methods:[
+     {label:"Critical: Dry to Safe Moisture First", steps:["Harvest at 20-25% moisture but don't store at this level", "Field dry on cob: leave on plant 2-3 extra weeks if weather permits", "After harvest: sun dry threshed grain for 4-5 days minimum", "Test moisture: electronic moisture meter (₹1,500-3,000) — invest if storing large quantity", "CRITICAL: if moisture above 13% — aflatoxin mold grows, grain is toxic and will be rejected at market", "Better to sell at lower price when wet than store wet and lose everything to aflatoxin"]},
+     {label:"Cob Storage vs Threshed Grain", steps:["Cob storage: hang in well-ventilated bamboo crib — traditional method, good for small quantity", "Natural drying continues on cob — reduces storage disease", "Threshed grain in hermetic bags: fastest storage method for large quantity", "Apply Malathion dust (2% @ 1g/kg) for threshed grain in bags", "Never pile maize bags more than 6 high — bottom bags get too hot", "Fumigate with Aluminium Phosphide every 3 months for long storage"]}
+   ],
+   tips:"Aflatoxin in maize is the #1 quality rejection issue — caused by Aspergillus mold in wet storage. It's INVISIBLE but destroys grain value and health. Moisture meter investment is mandatory for serious maize farmers.",
+   mistakes:"Storing wet grain — aflatoxin contamination. Storing near water source — condensation causes mold. Not treating for weevils — maize weevil can destroy 25% in 6 months. Poor ventilation.",
+   sell_timing:"Process into: maize flour, popcorn, baby corn (if sweet corn variety), maize starch. Poultry feed demand is year-round. Hold 2-3 months after harvest for better price."
+  },
+];
+
+let currentStorage = STORAGE_GUIDES;
+
+function filterStorage(cat) {
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active-filter"));
+  const btn = document.getElementById("sfilter-" + cat);
+  if(btn) btn.classList.add("active-filter");
+  currentStorage = cat === "all" ? STORAGE_GUIDES : STORAGE_GUIDES.filter(s => s.cat === cat);
+  renderStorage(currentStorage);
+}
+
+function renderStorage(guides) {
+  const el = document.getElementById("storage-list");
+  if(!el) return;
+  if(!guides || !guides.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">No guides in this category yet.</div>';
+    return;
+  }
+  el.innerHTML = guides.map(g => `
+    <div style="background:white;border-radius:14px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
+      <div onclick="toggleStorage(${g.id})" style="padding:14px;display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+        <div style="width:44px;height:44px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">${g.icon}</div>
+        <div style="flex:1">
+          <div style="font-family:'Baloo 2',cursive;font-weight:700;color:#92400e;font-size:0.95rem">${g.crop}</div>
+          <div style="display:flex;gap:6px;margin:3px 0;align-items:center">
+            <span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:20px;font-size:0.72rem;font-weight:700">⚠️ Loss risk: ${g.loss}</span>
+          </div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">🌡️ ${g.basics.temp.split('.')[0]} | ⏱️ ${g.basics.duration.split('|')[0].trim()}</div>
+        </div>
+        <div style="color:var(--muted)">▼</div>
+      </div>
+      <div id="storage-content-${g.id}" style="display:none;border-top:1px solid var(--border);padding:14px">
+        <!-- Basics -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px">
+          <div style="background:#fef3c7;border-radius:8px;padding:8px;text-align:center">
+            <div style="font-size:0.7rem;font-weight:700;color:#92400e">🌡️ Temperature</div>
+            <div style="font-size:0.75rem;color:#374151;margin-top:2px;line-height:1.3">${g.basics.temp}</div>
+          </div>
+          <div style="background:#eff6ff;border-radius:8px;padding:8px;text-align:center">
+            <div style="font-size:0.7rem;font-weight:700;color:#1d4ed8">💧 Moisture</div>
+            <div style="font-size:0.75rem;color:#374151;margin-top:2px;line-height:1.3">${g.basics.moisture}</div>
+          </div>
+          <div style="background:#f0fdf4;border-radius:8px;padding:8px;text-align:center">
+            <div style="font-size:0.7rem;font-weight:700;color:var(--green)">📅 Duration</div>
+            <div style="font-size:0.75rem;color:#374151;margin-top:2px;line-height:1.3">${g.basics.duration}</div>
+          </div>
+        </div>
+        <!-- Methods -->
+        ${g.methods.map(m => `
+          <div style="background:#f8fdf8;border:1px solid var(--green);border-radius:10px;padding:12px;margin-bottom:8px">
+            <div style="font-weight:700;color:var(--green);font-size:0.85rem;margin-bottom:8px">📦 ${m.label}</div>
+            ${m.steps.map((s,i) => `<div style="display:flex;gap:8px;margin-bottom:5px">
+              <div style="min-width:20px;height:20px;background:#92400e;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;flex-shrink:0">${i+1}</div>
+              <div style="font-size:0.82rem;color:#374151;line-height:1.5">${s}</div>
+            </div>`).join("")}
+          </div>`).join("")}
+        <!-- Tips and Mistakes -->
+        <div style="background:#fff7ed;border:1px solid #f59e0b;border-radius:10px;padding:10px;margin-bottom:8px">
+          <div style="font-weight:700;font-size:0.8rem;color:#92400e;margin-bottom:4px">💡 Pro Storage Tips</div>
+          <div style="font-size:0.82rem;color:#374151;line-height:1.5">${g.tips}</div>
+        </div>
+        <div style="background:#fee2e2;border:1px solid #dc2626;border-radius:10px;padding:10px;margin-bottom:8px">
+          <div style="font-weight:700;font-size:0.8rem;color:#dc2626;margin-bottom:4px">⚠️ Common Storage Mistakes</div>
+          <div style="font-size:0.82rem;color:#374151;line-height:1.5">${g.mistakes}</div>
+        </div>
+        <div style="background:var(--green-light);border-radius:10px;padding:10px;margin-bottom:10px">
+          <div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">💰 When to Sell for Best Price</div>
+          <div style="font-size:0.82rem;color:#374151;line-height:1.5">${g.sell_timing}</div>
+        </div>
+        <button onclick="askStorageQuestion('${g.crop}')" style="width:100%;padding:10px;background:var(--green);color:white;border:none;border-radius:10px;font-family:'Baloo 2',cursive;font-size:0.88rem;font-weight:700;cursor:pointer">
+          🤖 Ask AI more about ${g.crop} storage →
+        </button>
+      </div>
+    </div>`).join("");
+}
+
+function toggleStorage(id) {
+  const el = document.getElementById("storage-content-" + id);
+  if(el) el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
+function askStorageQuestion(crop) {
+  showTab("ailearn");
+  document.getElementById("learnQuestion").value = `How to store ${crop} properly after harvest? Give complete storage guide with temperature, moisture level, duration, methods by budget, common mistakes and when to sell for best price in India.`;
+  document.getElementById("learnQuestion").focus();
+}
+
 // ============= DETAILED TECHNIQUE GUIDES =============
 const TECHNIQUE_GUIDES = {
   1: {
@@ -1370,6 +1639,7 @@ window.addEventListener("load", () => {
     renderTechniques(TECHNIQUES);
     renderBusiness(BUSINESSES);
     renderBooks(BOOKS);
+  renderStorage(STORAGE_GUIDES);
   }
 
   const hash = window.location.hash.replace("#", "");
