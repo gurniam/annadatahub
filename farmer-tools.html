@@ -905,8 +905,7 @@ async function getWhatToGrow() {
   const budget = document.getElementById("wtgBudget").value;
   const goal = document.getElementById("wtgGoal").value;
   const prev = document.getElementById("wtgPrev").value || "none";
-  const lang = LANG_NAMES[currentLang] || "English";
-
+  const lang = ({en:"English",hi:"Hindi",pa:"Punjabi",mr:"Marathi",te:"Telugu",ta:"Tamil",kn:"Kannada",ml:"Malayalam",gu:"Gujarati",bn:"Bengali"})[currentLang] || "English";
   const btn = document.getElementById("wtg-btn");
   const result = document.getElementById("wtg-result");
   btn.disabled = true;
