@@ -9,6 +9,8 @@ import httpx
 import json
 import logging
 import hashlib
+import hmac
+import re
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from typing import Optional
@@ -141,6 +143,7 @@ class UserRegister(BaseModel):
     phone: Optional[str] = None
     state: Optional[str] = None
     language: Optional[str] = "en"
+    referred_by: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: str
@@ -363,17 +366,97 @@ async def call_groq_vision(image_base64: str, prompt: str) -> Optional[str]:
 
 
 def get_mandi_fallback(crop: str, state: str) -> str:
-    prices = {"wheat": 2275, "rice": 2183, "maize": 1870, "cotton": 6620, "sugarcane": 315, "soybean": 4600, "mustard": 5650, "groundnut": 6377, "onion": 1500, "potato": 1200, "tomato": 2000}
-    msp = prices.get(crop.lower(), 2000)
+    today = datetime.utcnow().strftime("%d %b %Y")
+    month = datetime.utcnow().month
+
+    # MSP 2024-25 (official government rates)
+    MSP = {
+        "wheat": 2275, "rice": 2183, "maize": 1870, "cotton": 6620,
+        "sugarcane": 315, "soybean": 4600, "mustard": 5650,
+        "groundnut": 6377, "onion": 800, "potato": 800, "tomato": 1000,
+        "chilli": 4000, "turmeric": 7000, "ginger": 2000,
+        "moong": 8682, "urad": 7400, "arhar": 7000, "gram": 5440,
+        "sunflower": 6760, "sesame": 9267, "niger": 7734,
+        "jowar": 3371, "bajra": 2500, "ragi": 4290
+    }
+
+    msp = MSP.get(crop.lower(), 2000)
+
+    # State-specific market premium/discount over MSP (based on real patterns)
+    STATE_PREMIUM = {
+        "Punjab": 1.05, "Haryana": 1.04, "Uttar Pradesh": 0.98,
+        "Maharashtra": 1.08, "Gujarat": 1.06, "Madhya Pradesh": 0.97,
+        "Rajasthan": 0.96, "Karnataka": 1.05, "Andhra Pradesh": 1.04,
+        "Telangana": 1.04, "Tamil Nadu": 1.06, "Kerala": 1.10,
+        "West Bengal": 1.02, "Bihar": 0.95, "Odisha": 0.94,
+        "Uttarakhand": 1.02, "Himachal Pradesh": 1.03,
+        "Jharkhand": 0.93, "Chhattisgarh": 0.95, "Assam": 1.01,
+    }
+
+    # Seasonal price adjustments (prices are higher when supply is low)
+    SEASONAL = {
+        "onion": {10:1.5, 11:1.6, 12:1.4, 1:1.2, 2:1.0, 3:0.8, 4:0.7, 5:0.8, 6:1.0, 7:1.2, 8:1.3, 9:1.4},
+        "potato": {10:1.0, 11:1.0, 12:0.9, 1:0.8, 2:0.8, 3:0.7, 4:0.8, 5:1.0, 6:1.2, 7:1.3, 8:1.2, 9:1.1},
+        "tomato": {10:1.1, 11:1.2, 12:1.3, 1:1.4, 2:1.3, 3:1.0, 4:0.8, 5:0.7, 6:0.9, 7:1.0, 8:1.1, 9:1.0},
+        "wheat":  {10:1.0, 11:1.0, 12:1.0, 1:1.0, 2:1.0, 3:1.0, 4:0.9, 5:1.0, 6:1.1, 7:1.1, 8:1.0, 9:1.0},
+        "rice":   {10:1.0, 11:0.9, 12:0.9, 1:1.0, 2:1.1, 3:1.1, 4:1.2, 5:1.2, 6:1.1, 7:1.0, 8:0.9, 9:0.9},
+    }
+
+    state_factor = STATE_PREMIUM.get(state, 1.0)
+    season_factor = SEASONAL.get(crop.lower(), {}).get(month, 1.0)
+    base = int(msp * state_factor * season_factor)
+
+    # Generate realistic 3 mandi prices with small variance
+    p1 = base + 50
+    p2 = base - 30
+    p3 = base - 80
+
+    # State-specific mandi names
+    MANDIS = {
+        "Punjab":       ["Ludhiana Mandi", "Amritsar Mandi", "Patiala Mandi"],
+        "Haryana":      ["Karnal Mandi", "Panipat Mandi", "Hisar Mandi"],
+        "Uttar Pradesh":["Kanpur Mandi", "Agra Mandi", "Lucknow Mandi"],
+        "Maharashtra":  ["Pune APMC", "Nashik Mandi", "Mumbai Vashi APMC"],
+        "Gujarat":      ["Ahmedabad APMC", "Rajkot Mandi", "Surat Mandi"],
+        "Madhya Pradesh":["Indore Mandi", "Bhopal Mandi", "Jabalpur Mandi"],
+        "Rajasthan":    ["Jaipur Mandi", "Jodhpur Mandi", "Kota Mandi"],
+        "Karnataka":    ["Bangalore APMC", "Hubli Mandi", "Mysore Mandi"],
+        "Andhra Pradesh":["Guntur Mandi", "Kurnool Mandi", "Vijayawada Mandi"],
+        "Telangana":    ["Warangal Mandi", "Nizamabad Mandi", "Hyderabad Mandi"],
+        "Tamil Nadu":   ["Chennai Koyambedu", "Coimbatore Mandi", "Madurai Mandi"],
+        "Kerala":       ["Ernakulam Mandi", "Thrissur Mandi", "Kozhikode Mandi"],
+        "West Bengal":  ["Kolkata Mandi", "Siliguri Mandi", "Howrah Mandi"],
+        "Bihar":        ["Patna Mandi", "Muzaffarpur Mandi", "Gaya Mandi"],
+        "Odisha":       ["Bhubaneswar Mandi", "Cuttack Mandi", "Berhampur Mandi"],
+        "Uttarakhand":  ["Dehradun Mandi", "Haridwar Mandi", "Haldwani Mandi"],
+        "Himachal Pradesh":["Shimla Mandi", "Kangra Mandi", "Mandi Town"],
+        "Jharkhand":    ["Ranchi Mandi", "Jamshedpur Mandi", "Dhanbad Mandi"],
+        "Chhattisgarh": ["Raipur Mandi", "Bilaspur Mandi", "Durg Mandi"],
+        "Assam":        ["Guwahati Mandi", "Dibrugarh Mandi", "Silchar Mandi"],
+    }
+
+    mandis = MANDIS.get(state, [f"{state} Main Mandi", f"{state} APMC", f"{state} Local Market"])
+
+    # Smart selling tip based on price vs MSP
+    diff = base - msp
+    if diff > 200:
+        tip = f"Prices are {diff} above MSP in {state} — good time to sell! Compare all 3 mandis before finalising."
+    elif diff > 0:
+        tip = f"Prices are slightly above MSP in {state}. Sell soon as prices may drop after harvest season."
+    else:
+        tip = f"Prices are below MSP. Consider selling to government procurement centers or holding stock. MSP is Rs.{msp}/quintal."
+
     return json.dumps({
         "markets": [
-            {"market": f"{state} Main Mandi", "price": msp - 50, "unit": "per quintal"},
-            {"market": f"{state} Secondary Mandi", "price": msp - 80, "unit": "per quintal"},
-            {"market": f"{state} Local Market", "price": msp - 120, "unit": "per quintal"}
+            {"market": mandis[0], "price": p1, "min_price": p1-50, "max_price": p1+100, "unit": "per quintal", "date": today},
+            {"market": mandis[1], "price": p2, "min_price": p2-50, "max_price": p2+80, "unit": "per quintal", "date": today},
+            {"market": mandis[2], "price": p3, "min_price": p3-40, "max_price": p3+60, "unit": "per quintal", "date": today},
         ],
         "msp": msp,
-        "best_selling_tip": f"MSP for {crop} is Rs.{msp}/quintal. Compare prices before selling.",
-        "date": datetime.utcnow().strftime("%d %b %Y")
+        "average_price": base,
+        "best_selling_tip": tip,
+        "date": today,
+        "source": f"Estimated based on MSP + {state} market rates — verify with local mandi before selling"
     })
 
 def get_weather_fallback(location: str) -> str:
@@ -450,13 +533,50 @@ async def register(user: UserRegister, request: Request):
             raise HTTPException(status_code=400, detail="Email already registered")
         hashed = bcrypt.hashpw(user.password.encode(), bcrypt.gensalt()).decode()
         user_id = str(uuid.uuid4())
+        # Generate unique referral code for this farmer
+        ref_code = "AH" + user_id[:6].upper()
+
+        # 7-day free trial
+        trial_expiry = datetime.utcnow() + timedelta(days=7)
+
+        # Check if referred by someone
+        referrer_id = None
+        referred_by = getattr(user, "referred_by", None)
+        if referred_by:
+            referrer = await db.users.find_one({"referral_code": referred_by.upper()})
+            if referrer:
+                referrer_id = referrer["_id"]
+
         await db.users.insert_one({
             "_id": user_id, "email": user.email, "password": hashed,
             "full_name": user.full_name, "phone": user.phone, "state": user.state,
-            "plan": "free", "scan_count": 0, "language": user.language,
-            "created_at": datetime.utcnow().isoformat()
+            "plan": "trial", "scan_count": 0, "language": user.language,
+            "created_at": datetime.utcnow().isoformat(),
+            "trial_expiry": trial_expiry,
+            "referral_code": ref_code,
+            "referred_by": referrer_id,
+            "referral_count": 0,
+            "reminder_sent": False
         })
-        return {"token": create_token(user_id, user.email), "user": {"id": user_id, "email": user.email, "full_name": user.full_name, "plan": "free"}}
+
+        # Credit referrer if valid — after 3 referrals give 1 month free
+        if referrer_id:
+            referrer_doc = await db.users.find_one({"_id": referrer_id})
+            new_count = referrer_doc.get("referral_count", 0) + 1
+            update_data = {"referral_count": new_count}
+            # Every 3 successful referrals = 1 month premium free
+            if new_count % 3 == 0:
+                current_expiry = referrer_doc.get("premium_expiry", datetime.utcnow())
+                if current_expiry < datetime.utcnow():
+                    current_expiry = datetime.utcnow()
+                new_expiry = current_expiry + timedelta(days=30)
+                update_data["plan"] = "premium"
+                update_data["premium_expiry"] = new_expiry
+                update_data["subscription_cancelled"] = False
+                logger.info(f"Referrer {referrer_id} earned 1 month free premium. Count: {new_count}")
+            await db.users.update_one({"_id": referrer_id}, {"$set": update_data})
+
+        return {"token": create_token(user_id, user.email), "user": {"id": user_id, "email": user.email, "full_name": user.full_name, "plan": "trial", "trial_expiry": trial_expiry.isoformat(), "referral_code": ref_code}}
     except HTTPException:
         raise
     except Exception as e:
@@ -1093,6 +1213,174 @@ Give exactly 3 recommendations ranked best to third-best. ONLY JSON, no extra te
             "overall_advice": f"Start with lower risk crops like wheat first season, then experiment with higher value crops as you gain confidence and capital."
         }
         return {"success": True, "recommendations": fallback["recommendations"], "overall_advice": fallback["overall_advice"]}
+
+
+# ============================================================
+# RAZORPAY SUBSCRIPTION ENDPOINTS
+# ============================================================
+RAZORPAY_KEY_ID     = os.environ.get("RAZORPAY_KEY_ID", "")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
+
+class OrderRequest(BaseModel):
+    plan: str = "premium"  # "premium"
+    token: Optional[str] = None
+
+class PaymentVerify(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+    token: Optional[str] = None
+
+@app.post("/api/payment/create-order")
+async def create_order(body: OrderRequest, request: Request):
+    check_rate_limit(get_client_ip(request), "default")
+    if not RAZORPAY_KEY_ID or not RAZORPAY_KEY_SECRET:
+        raise HTTPException(status_code=503, detail="Payment not configured")
+
+    amount = 9900  # Rs.99 in paise
+
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as c:
+            r = await c.post(
+                "https://api.razorpay.com/v1/orders",
+                auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET),
+                json={"amount": amount, "currency": "INR", "receipt": f"annadatahub_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
+                      "notes": {"plan": body.plan, "product": "AnnadataHub Premium"}}
+            )
+            if r.status_code != 200:
+                raise HTTPException(status_code=500, detail="Order creation failed")
+            order = r.json()
+            return {"success": True, "order_id": order["id"], "amount": amount, "currency": "INR", "key_id": RAZORPAY_KEY_ID}
+    except Exception as e:
+        logger.error(f"Razorpay order error: {e}")
+        raise HTTPException(status_code=500, detail="Payment error")
+
+@app.post("/api/payment/verify")
+async def verify_payment(body: PaymentVerify, request: Request):
+    check_rate_limit(get_client_ip(request), "default")
+    if not RAZORPAY_KEY_SECRET:
+        raise HTTPException(status_code=503, detail="Payment not configured")
+
+    # Verify signature
+    msg = f"{body.razorpay_order_id}|{body.razorpay_payment_id}"
+    expected = hmac.HMAC(RAZORPAY_KEY_SECRET.encode(), msg.encode(), hashlib.sha256).hexdigest()
+    if expected != body.razorpay_signature:
+        raise HTTPException(status_code=400, detail="Invalid payment signature")
+
+    # Update user plan in database
+    try:
+        if body.token:
+            payload = jwt.decode(body.token, JWT_SECRET, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            if user_id:
+                expiry = datetime.utcnow() + timedelta(days=30)
+                await db.users.update_one(
+                    {"_id": user_id},
+                    {"$set": {"plan": "premium", "premium_expiry": expiry, "payment_id": body.razorpay_payment_id}}
+                )
+                await log_feature("premium_payment", {"user_id": user_id, "payment_id": body.razorpay_payment_id})
+        return {"success": True, "message": "Payment verified. Premium activated!"}
+    except Exception as e:
+        logger.error(f"Payment verify error: {e}")
+        raise HTTPException(status_code=500, detail="Verification error")
+
+@app.get("/api/payment/status")
+async def payment_status(request: Request, token: str = ""):
+    if not token:
+        return {"plan": "free"}
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user = await db.users.find_one({"_id": user_id})
+        if not user:
+            return {"plan": "free"}
+        plan = user.get("plan", "free")
+        expiry = user.get("premium_expiry")
+        trial_expiry = user.get("trial_expiry")
+        ref_code = user.get("referral_code", "")
+        ref_count = user.get("referral_count", 0)
+
+        # Check trial expiry
+        if plan == "trial" and trial_expiry and datetime.utcnow() > trial_expiry:
+            plan = "free"
+            await db.users.update_one({"_id": user_id}, {"$set": {"plan": "free"}})
+
+        # Check premium expiry
+        if plan == "premium" and expiry and datetime.utcnow() > expiry:
+            plan = "free"
+            await db.users.update_one({"_id": user_id}, {"$set": {"plan": "free"}})
+
+        # Check if renewal reminder needed (3 days before expiry)
+        reminder_needed = False
+        if plan == "premium" and expiry and not user.get("reminder_sent"):
+            days_left = (expiry - datetime.utcnow()).days
+            if days_left <= 3:
+                reminder_needed = True
+
+        return {
+            "plan": plan,
+            "expiry": str(expiry) if expiry else None,
+            "trial_expiry": str(trial_expiry) if trial_expiry else None,
+            "cancelled": user.get("subscription_cancelled", False),
+            "referral_code": ref_code,
+            "referral_count": ref_count,
+            "reminder_needed": reminder_needed,
+            "days_left": (expiry - datetime.utcnow()).days if plan == "premium" and expiry else None
+        }
+    except:
+        return {"plan": "free"}
+
+
+@app.post("/api/payment/cancel")
+async def cancel_subscription(request: Request, token: str = ""):
+    if not token:
+        raise HTTPException(status_code=401, detail="Not logged in")
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user = await db.users.find_one({"_id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Don't delete premium immediately — let it run till expiry
+        # Just mark as cancelled so it won't auto-renew
+        await db.users.update_one(
+            {"_id": user_id},
+            {"$set": {"subscription_cancelled": True}}
+        )
+        expiry = user.get("premium_expiry")
+        expiry_str = expiry.strftime("%d %B %Y") if expiry else "end of period"
+        await log_feature("subscription_cancel", {"user_id": user_id})
+        return {"success": True, "message": f"Subscription cancelled. Premium access continues until {expiry_str}."}
+    except Exception as e:
+        logger.error(f"Cancel error: {e}")
+        raise HTTPException(status_code=500, detail="Cancellation error")
+
+
+@app.get("/api/referral/info")
+async def referral_info(request: Request, token: str = ""):
+    if not token:
+        raise HTTPException(status_code=401, detail="Not logged in")
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user = await db.users.find_one({"_id": user_id})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        ref_code = user.get("referral_code", "")
+        ref_count = user.get("referral_count", 0)
+        next_reward_at = 3 - (ref_count % 3)
+        referral_link = f"https://www.annadatahub.com/?ref={ref_code}"
+        return {
+            "success": True,
+            "referral_code": ref_code,
+            "referral_link": referral_link,
+            "referral_count": ref_count,
+            "next_reward_at": next_reward_at,
+            "message": f"Refer {next_reward_at} more farmer(s) to earn 1 month FREE Premium!"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/admin/stats")
 async def admin_stats(request: Request, password: str = ""):
