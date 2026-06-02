@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Header, Request
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
@@ -9,13 +9,10 @@ import httpx
 import json
 import logging
 import hashlib
-import hmac
-import re
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from typing import Optional
 import xml.etree.ElementTree as ET
-from collections import defaultdict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("annadatahub")
@@ -30,89 +27,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── RATE LIMITER ──────────────────────────────────────────────────────────────
-# In-memory store: {ip: {"count": N, "window_start": datetime}}
-_rate_store: dict = defaultdict(lambda: {"count": 0, "window_start": datetime.utcnow()})
-
-RATE_LIMITS = {
-    "default":    {"requests": 60,  "window_seconds": 60},   # 60 req/min general
-    "ai":         {"requests": 20,  "window_seconds": 60},   # 20 AI calls/min
-    "scan":       {"requests": 10,  "window_seconds": 60},   # 10 crop scans/min
-    "auth":       {"requests": 5,   "window_seconds": 60},   # 5 login attempts/min
-}
-
-def get_client_ip(request: Request) -> str:
-    forwarded = request.headers.get("X-Forwarded-For")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
-    return request.client.host if request.client else "unknown"
-
-def check_rate_limit(ip: str, limit_type: str = "default"):
-    limits = RATE_LIMITS.get(limit_type, RATE_LIMITS["default"])
-    max_requests = limits["requests"]
-    window_secs = limits["window_seconds"]
-
-    key = f"{ip}:{limit_type}"
-    now = datetime.utcnow()
-    entry = _rate_store[key]
-
-    # Reset window if expired
-    if (now - entry["window_start"]).total_seconds() > window_secs:
-        entry["count"] = 0
-        entry["window_start"] = now
-
-    entry["count"] += 1
-
-    if entry["count"] > max_requests:
-        logger.warning("Rate limit hit: ip=%s type=%s count=%d", ip, limit_type, entry["count"])
-        raise HTTPException(
-            status_code=429,
-            detail="Too many requests. Please wait a moment and try again."
-        )
-
-# ── END RATE LIMITER ──────────────────────────────────────────────────────────
-
-# ── FEATURE USAGE LOGGER ─────────────────────────────────────────────────────
-async def log_feature(feature: str, extra: dict = None):
-    """Log feature usage for admin analytics"""
-    try:
-        await db.feature_logs.insert_one({
-            "_id": str(uuid.uuid4()),
-            "feature": feature,
-            "extra": extra or {},
-            "date": datetime.utcnow().strftime("%Y-%m-%d"),
-            "created_at": datetime.utcnow().isoformat()
-        })
-    except Exception:
-        pass
-
-async def log_error(endpoint: str, error: str, extra: dict = None):
-    """Log API errors for admin monitoring"""
-    try:
-        await db.error_logs.insert_one({
-            "_id": str(uuid.uuid4()),
-            "endpoint": endpoint,
-            "error": str(error)[:500],
-            "extra": extra or {},
-            "created_at": datetime.utcnow().isoformat()
-        })
-    except Exception:
-        pass
-# ── END FEATURE LOGGER ────────────────────────────────────────────────────────
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
 DB_NAME = os.environ.get("DB_NAME", "annadatahub")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+AGMARKNET_API_KEY = os.environ.get("AGMARKNET_API_KEY", "")
 
 JWT_SECRET = os.environ.get("JWT_SECRET_KEY")
 if not JWT_SECRET:
@@ -122,7 +41,10 @@ client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
 _cache = {}
-_gemini_model_cache = None  # Cache the working Gemini model name
+_gemini_model_cache = None
+
+
+# ─── CACHE ────────────────────────────────────────────────────────────────────
 
 def cache_get(key: str):
     if key in _cache:
@@ -136,6 +58,8 @@ def cache_set(key: str, value, hours: int = 6):
     _cache[key] = {"value": value, "expires": datetime.utcnow() + timedelta(hours=hours)}
 
 
+# ─── MODELS ───────────────────────────────────────────────────────────────────
+
 class UserRegister(BaseModel):
     email: str
     password: str
@@ -143,7 +67,6 @@ class UserRegister(BaseModel):
     phone: Optional[str] = None
     state: Optional[str] = None
     language: Optional[str] = "en"
-    referred_by: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: str
@@ -158,6 +81,7 @@ class AIQuery(BaseModel):
     question: str
     language: Optional[str] = "en"
     system_prompt: Optional[str] = None
+    max_tokens: Optional[int] = 1024
 
 class FarmGramPost(BaseModel):
     content: str
@@ -165,9 +89,45 @@ class FarmGramPost(BaseModel):
     location: Optional[str] = None
     image_base64: Optional[str] = None
 
+class CalendarRequest(BaseModel):
+    crop: str
+    variety: Optional[str] = None
+    state: str
+    sowing_month: Optional[str] = None
+    land_size: Optional[str] = None
+    language: Optional[str] = "en"
+
+class FertilizerRequest(BaseModel):
+    crop: str
+    variety: Optional[str] = None
+    land_size: str
+    land_unit: Optional[str] = "acre"
+    growth_stage: Optional[str] = None
+    soil_type: Optional[str] = None
+    state: Optional[str] = None
+    language: Optional[str] = "en"
+
+class WhatToGrowRequest(BaseModel):
+    state: str
+    season: str
+    land_size: str
+    land_unit: Optional[str] = "acre"
+    water_source: Optional[str] = None
+    soil_type: Optional[str] = None
+    budget: Optional[str] = None
+    goal: Optional[str] = None
+    previous_crop: Optional[str] = None
+    language: Optional[str] = "en"
+
+
+# ─── AUTH HELPERS ─────────────────────────────────────────────────────────────
 
 def create_token(user_id: str, email: str) -> str:
-    payload = {"user_id": user_id, "email": email, "exp": datetime.utcnow() + timedelta(days=30)}
+    payload = {
+        "user_id": user_id,
+        "email": email,
+        "exp": datetime.utcnow() + timedelta(days=30)
+    }
     return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
 
 def verify_token(token: str) -> dict:
@@ -178,12 +138,23 @@ def verify_token(token: str) -> dict:
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token. Please login again.")
 
+def get_user_from_header(authorization: str) -> Optional[dict]:
+    if not authorization:
+        return None
+    token = authorization.replace("Bearer ", "").strip()
+    try:
+        return verify_token(token)
+    except:
+        return None
+
+
+# ─── AI HELPERS ───────────────────────────────────────────────────────────────
 
 async def call_ai(prompt: str, system: str = "", max_tokens: int = 1024) -> Optional[str]:
     if not GROQ_API_KEY:
         return None
     try:
-        async with httpx.AsyncClient(timeout=45.0) as c:
+        async with httpx.AsyncClient(timeout=30.0) as c:
             r = await c.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
@@ -191,7 +162,7 @@ async def call_ai(prompt: str, system: str = "", max_tokens: int = 1024) -> Opti
                     "model": "llama-3.3-70b-versatile",
                     "max_tokens": max_tokens,
                     "messages": [
-                        {"role": "system", "content": system or "You are AnnadataHub AI for Indian farmers."},
+                        {"role": "system", "content": system or "You are AnnadataHub AI assistant for Indian farmers. Be accurate, practical and helpful."},
                         {"role": "user", "content": prompt}
                     ]
                 }
@@ -207,9 +178,23 @@ async def call_ai(prompt: str, system: str = "", max_tokens: int = 1024) -> Opti
         logger.error("Groq error: %s", e)
         return None
 
+def clean_json_response(text: str) -> Optional[dict]:
+    try:
+        clean = text.replace("```json", "").replace("```", "").strip()
+        idx = clean.find("{")
+        if idx > 0:
+            clean = clean[idx:]
+        last = clean.rfind("}")
+        if last >= 0:
+            clean = clean[:last+1]
+        return json.loads(clean)
+    except:
+        return None
+
+
+# ─── GEMINI VISION ────────────────────────────────────────────────────────────
 
 async def get_available_gemini_models() -> list:
-    """Get list of actually available Gemini models for this API key"""
     if not GEMINI_API_KEY:
         return []
     try:
@@ -221,118 +206,82 @@ async def get_available_gemini_models() -> list:
                 if r.status_code == 200:
                     data = r.json()
                     models = data.get("models", [])
-                    # Filter models that support generateContent and have vision
                     vision_models = []
                     for m in models:
                         name = m.get("name", "")
                         methods = m.get("supportedGenerationMethods", [])
                         if "generateContent" in methods:
                             model_id = name.replace("models/", "")
-                            # Prefer flash models for speed
                             if "flash" in model_id or "pro" in model_id or "vision" in model_id:
                                 vision_models.append((api_version, model_id))
-                    logger.info("Available Gemini models: %s", [m[1] for m in vision_models])
                     return vision_models
     except Exception as e:
         logger.error("Could not list Gemini models: %s", e)
     return []
 
-
 async def call_gemini_vision(image_base64: str, prompt: str) -> Optional[str]:
-    """Call Gemini with dynamic model discovery"""
     global _gemini_model_cache
-
     if not GEMINI_API_KEY:
         return None
 
     request_body = {
-        "contents": [
-            {
-                "parts": [
-                    {"inline_data": {"mime_type": "image/jpeg", "data": image_base64}},
-                    {"text": prompt}
-                ]
-            }
-        ],
-        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 2048}
+        "contents": [{"parts": [
+            {"inline_data": {"mime_type": "image/jpeg", "data": image_base64}},
+            {"text": prompt}
+        ]}],
+        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 1024}
     }
 
-    # Use cached working model if available
     models_to_try = []
     if _gemini_model_cache:
         models_to_try = [_gemini_model_cache]
     else:
-        # First try known good combinations
         models_to_try = [
-            ("v1beta", "gemini-2.5-flash-preview-04-17"),
-            ("v1beta", "gemini-2.5-pro-preview-03-25"),
             ("v1beta", "gemini-2.0-flash"),
             ("v1", "gemini-2.0-flash"),
-            ("v1beta", "gemini-2.0-flash-lite"),
             ("v1beta", "gemini-2.0-flash-exp"),
-            ("v1beta", "gemini-2.0-flash-001"),
             ("v1beta", "gemini-1.5-flash"),
             ("v1", "gemini-1.5-flash"),
-            ("v1beta", "gemini-1.5-flash-8b"),
             ("v1beta", "gemini-1.5-flash-001"),
-            ("v1beta", "gemini-1.5-flash-002"),
             ("v1beta", "gemini-1.5-pro"),
             ("v1", "gemini-1.5-pro"),
+            ("v1beta", "gemini-pro-vision"),
         ]
-
-        # Also try dynamically discovered models
         try:
             dynamic_models = await get_available_gemini_models()
             for m in dynamic_models:
                 if m not in models_to_try:
-                    models_to_try.insert(0, m)  # Try dynamic models first
+                    models_to_try.insert(0, m)
         except Exception as e:
             logger.warning("Could not get dynamic models: %s", e)
 
     for api_version, model_id in models_to_try:
         try:
             url = f"https://generativelanguage.googleapis.com/{api_version}/models/{model_id}:generateContent?key={GEMINI_API_KEY}"
-            async with httpx.AsyncClient(timeout=45.0) as c:
+            async with httpx.AsyncClient(timeout=30.0) as c:
                 r = await c.post(url, headers={"Content-Type": "application/json"}, json=request_body)
-                logger.info("Gemini %s/%s status: %s", api_version, model_id, r.status_code)
-
                 if r.status_code == 200:
                     data = r.json()
                     candidates = data.get("candidates", [])
                     if candidates:
                         parts = candidates[0].get("content", {}).get("parts", [])
                         if parts and parts[0].get("text"):
-                            logger.info("✅ Gemini SUCCESS with %s/%s", api_version, model_id)
                             _gemini_model_cache = (api_version, model_id)
                             return parts[0]["text"]
-
                 elif r.status_code == 404:
-                    logger.warning("Model %s not found in %s", model_id, api_version)
                     continue
-
                 elif r.status_code == 403:
-                    resp_text = r.text
-                    logger.error("Permission denied for %s/%s: %s", api_version, model_id, resp_text[:200])
-                    # If permission denied for all, no point trying more
-                    if "API_KEY_INVALID" in resp_text:
-                        logger.error("GEMINI API KEY IS INVALID - check Railway env var")
+                    if "API_KEY_INVALID" in r.text:
                         return None
                     continue
-
                 elif r.status_code == 400:
-                    logger.warning("Bad request for %s/%s", api_version, model_id)
                     continue
-
         except Exception as e:
-            logger.warning("Exception for %s/%s: %s", api_version, model_id, e)
             continue
 
-    logger.error("❌ All Gemini models failed")
     return None
 
-
 async def call_groq_vision(image_base64: str, prompt: str) -> Optional[str]:
-    """Groq vision fallback"""
     if not GROQ_API_KEY:
         return None
     try:
@@ -343,137 +292,58 @@ async def call_groq_vision(image_base64: str, prompt: str) -> Optional[str]:
                 json={
                     "model": "llama-3.2-11b-vision-preview",
                     "max_tokens": 1024,
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": [
-                                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}},
-                                {"type": "text", "text": prompt}
-                            ]
-                        }
-                    ]
+                    "messages": [{"role": "user", "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}},
+                        {"type": "text", "text": prompt}
+                    ]}]
                 }
             )
-            logger.info("Groq vision status: %s", r.status_code)
             if r.status_code == 200:
                 data = r.json()
                 if "choices" in data:
                     return data["choices"][0]["message"]["content"]
-            return None
+        return None
     except Exception as e:
         logger.error("Groq vision error: %s", e)
         return None
 
 
-def get_mandi_fallback(crop: str, state: str) -> str:
-    today = datetime.utcnow().strftime("%d %b %Y")
-    month = datetime.utcnow().month
+# ─── FALLBACKS ────────────────────────────────────────────────────────────────
 
-    # MSP 2024-25 (official government rates)
-    MSP = {
-        "wheat": 2275, "rice": 2183, "maize": 1870, "cotton": 6620,
-        "sugarcane": 315, "soybean": 4600, "mustard": 5650,
-        "groundnut": 6377, "onion": 800, "potato": 800, "tomato": 1000,
-        "chilli": 4000, "turmeric": 7000, "ginger": 2000,
-        "moong": 8682, "urad": 7400, "arhar": 7000, "gram": 5440,
-        "sunflower": 6760, "sesame": 9267, "niger": 7734,
-        "jowar": 3371, "bajra": 2500, "ragi": 4290
-    }
+STATIC_MSP = {
+    "wheat": 2275, "rice": 2300, "paddy": 2300, "maize": 2090,
+    "cotton": 6620, "sugarcane": 340, "soybean": 4892,
+    "mustard": 5650, "groundnut": 6783, "onion": 1800,
+    "potato": 1400, "tomato": 2000, "gram": 5440, "lentil": 6425,
+    "moong": 8558, "urad": 7400, "jowar": 3180, "bajra": 2625,
+    "ragi": 3846, "sunflower": 6760, "sesame": 8635
+}
 
-    msp = MSP.get(crop.lower(), 2000)
-
-    # State-specific market premium/discount over MSP (based on real patterns)
-    STATE_PREMIUM = {
-        "Punjab": 1.05, "Haryana": 1.04, "Uttar Pradesh": 0.98,
-        "Maharashtra": 1.08, "Gujarat": 1.06, "Madhya Pradesh": 0.97,
-        "Rajasthan": 0.96, "Karnataka": 1.05, "Andhra Pradesh": 1.04,
-        "Telangana": 1.04, "Tamil Nadu": 1.06, "Kerala": 1.10,
-        "West Bengal": 1.02, "Bihar": 0.95, "Odisha": 0.94,
-        "Uttarakhand": 1.02, "Himachal Pradesh": 1.03,
-        "Jharkhand": 0.93, "Chhattisgarh": 0.95, "Assam": 1.01,
-    }
-
-    # Seasonal price adjustments (prices are higher when supply is low)
-    SEASONAL = {
-        "onion": {10:1.5, 11:1.6, 12:1.4, 1:1.2, 2:1.0, 3:0.8, 4:0.7, 5:0.8, 6:1.0, 7:1.2, 8:1.3, 9:1.4},
-        "potato": {10:1.0, 11:1.0, 12:0.9, 1:0.8, 2:0.8, 3:0.7, 4:0.8, 5:1.0, 6:1.2, 7:1.3, 8:1.2, 9:1.1},
-        "tomato": {10:1.1, 11:1.2, 12:1.3, 1:1.4, 2:1.3, 3:1.0, 4:0.8, 5:0.7, 6:0.9, 7:1.0, 8:1.1, 9:1.0},
-        "wheat":  {10:1.0, 11:1.0, 12:1.0, 1:1.0, 2:1.0, 3:1.0, 4:0.9, 5:1.0, 6:1.1, 7:1.1, 8:1.0, 9:1.0},
-        "rice":   {10:1.0, 11:0.9, 12:0.9, 1:1.0, 2:1.1, 3:1.1, 4:1.2, 5:1.2, 6:1.1, 7:1.0, 8:0.9, 9:0.9},
-    }
-
-    state_factor = STATE_PREMIUM.get(state, 1.0)
-    season_factor = SEASONAL.get(crop.lower(), {}).get(month, 1.0)
-    base = int(msp * state_factor * season_factor)
-
-    # Generate realistic 3 mandi prices with small variance
-    p1 = base + 50
-    p2 = base - 30
-    p3 = base - 80
-
-    # State-specific mandi names
-    MANDIS = {
-        "Punjab":       ["Ludhiana Mandi", "Amritsar Mandi", "Patiala Mandi"],
-        "Haryana":      ["Karnal Mandi", "Panipat Mandi", "Hisar Mandi"],
-        "Uttar Pradesh":["Kanpur Mandi", "Agra Mandi", "Lucknow Mandi"],
-        "Maharashtra":  ["Pune APMC", "Nashik Mandi", "Mumbai Vashi APMC"],
-        "Gujarat":      ["Ahmedabad APMC", "Rajkot Mandi", "Surat Mandi"],
-        "Madhya Pradesh":["Indore Mandi", "Bhopal Mandi", "Jabalpur Mandi"],
-        "Rajasthan":    ["Jaipur Mandi", "Jodhpur Mandi", "Kota Mandi"],
-        "Karnataka":    ["Bangalore APMC", "Hubli Mandi", "Mysore Mandi"],
-        "Andhra Pradesh":["Guntur Mandi", "Kurnool Mandi", "Vijayawada Mandi"],
-        "Telangana":    ["Warangal Mandi", "Nizamabad Mandi", "Hyderabad Mandi"],
-        "Tamil Nadu":   ["Chennai Koyambedu", "Coimbatore Mandi", "Madurai Mandi"],
-        "Kerala":       ["Ernakulam Mandi", "Thrissur Mandi", "Kozhikode Mandi"],
-        "West Bengal":  ["Kolkata Mandi", "Siliguri Mandi", "Howrah Mandi"],
-        "Bihar":        ["Patna Mandi", "Muzaffarpur Mandi", "Gaya Mandi"],
-        "Odisha":       ["Bhubaneswar Mandi", "Cuttack Mandi", "Berhampur Mandi"],
-        "Uttarakhand":  ["Dehradun Mandi", "Haridwar Mandi", "Haldwani Mandi"],
-        "Himachal Pradesh":["Shimla Mandi", "Kangra Mandi", "Mandi Town"],
-        "Jharkhand":    ["Ranchi Mandi", "Jamshedpur Mandi", "Dhanbad Mandi"],
-        "Chhattisgarh": ["Raipur Mandi", "Bilaspur Mandi", "Durg Mandi"],
-        "Assam":        ["Guwahati Mandi", "Dibrugarh Mandi", "Silchar Mandi"],
-    }
-
-    mandis = MANDIS.get(state, [f"{state} Main Mandi", f"{state} APMC", f"{state} Local Market"])
-
-    # Smart selling tip based on price vs MSP
-    diff = base - msp
-    if diff > 200:
-        tip = f"Prices are {diff} above MSP in {state} — good time to sell! Compare all 3 mandis before finalising."
-    elif diff > 0:
-        tip = f"Prices are slightly above MSP in {state}. Sell soon as prices may drop after harvest season."
-    else:
-        tip = f"Prices are below MSP. Consider selling to government procurement centers or holding stock. MSP is Rs.{msp}/quintal."
-
-    return json.dumps({
+def get_mandi_fallback(crop: str, state: str) -> dict:
+    msp = STATIC_MSP.get(crop.lower(), 2000)
+    return {
+        "source": "fallback",
+        "is_live": False,
+        "badge": "AI Estimate",
+        "crop": crop,
+        "state": state,
         "markets": [
-            {"market": mandis[0], "price": p1, "min_price": p1-50, "max_price": p1+100, "unit": "per quintal", "date": today},
-            {"market": mandis[1], "price": p2, "min_price": p2-50, "max_price": p2+80, "unit": "per quintal", "date": today},
-            {"market": mandis[2], "price": p3, "min_price": p3-40, "max_price": p3+60, "unit": "per quintal", "date": today},
+            {"market": f"{state} Main Mandi", "min_price": msp - 100, "max_price": msp + 200, "modal_price": msp + 50, "unit": "per quintal"},
+            {"market": f"{state} Secondary Mandi", "min_price": msp - 150, "max_price": msp + 150, "modal_price": msp, "unit": "per quintal"},
+            {"market": f"{state} Local Market", "min_price": msp - 200, "max_price": msp + 100, "modal_price": msp - 50, "unit": "per quintal"}
         ],
         "msp": msp,
-        "average_price": base,
-        "best_selling_tip": tip,
-        "date": today,
-        "source": f"Estimated based on MSP + {state} market rates — verify with local mandi before selling"
-    })
-
-def get_weather_fallback(location: str) -> str:
-    return json.dumps({
-        "temperature": 28, "humidity": 65, "rainfall_chance": 20,
-        "spray_suitable": True,
-        "farming_advice": "Good conditions for farming. Avoid spraying during afternoon 12-3pm.",
-        "best_time_to_work": "Early morning 6-10am",
-        "alert": None
-    })
+        "best_selling_tip": f"Government MSP for {crop} is ₹{msp}/quintal. Always compare 3 mandis before selling.",
+        "date": datetime.utcnow().strftime("%d %b %Y"),
+        "note": "Add AGMARKNET_API_KEY to Railway for live prices"
+    }
 
 FALLBACK_NEWS = [
-    {"category": "price", "title": "Wheat MSP ₹2,275/quintal for 2024-25", "summary": "Government has set MSP for wheat at ₹2,275/quintal.", "detail": "The MSP for wheat is ₹2,275 per quintal for the 2024-25 Rabi season.", "impact": "Sell wheat at minimum ₹2,275/quintal.", "action": "Register on your state mandi portal before selling.", "time_ago": "Today"},
+    {"category": "price", "title": "Wheat MSP ₹2,275/quintal for 2024-25", "summary": "Government MSP for wheat set at ₹2,275/quintal.", "detail": "The MSP for wheat is ₹2,275 per quintal for the 2024-25 Rabi season.", "impact": "Sell wheat at minimum ₹2,275/quintal.", "action": "Register on your state mandi portal before selling.", "time_ago": "Today"},
     {"category": "scheme", "title": "PM-KISAN — ₹2,000 installment coming soon", "summary": "Check your PM-KISAN status.", "detail": "Over 9 crore farmers receive ₹6,000 per year in 3 installments.", "impact": "₹2,000 will be credited to your bank account.", "action": "Check at pmkisan.gov.in or call 155261.", "time_ago": "Recently"},
-    {"category": "scheme", "title": "Kisan Credit Card — crop loan at 4% interest", "summary": "KCC provides easy credit for farming needs.", "detail": "Kisan Credit Card provides credit up to ₹3 lakh at 4% interest.", "impact": "Save money on farming loans.", "action": "Apply at nearest SBI, PNB or cooperative bank.", "time_ago": "This week"},
-    {"category": "alert", "title": "Use certified seeds for better yield", "summary": "KVK recommends certified seeds for 20-30% higher yield.", "detail": "Certified seeds ensure better germination and disease resistance.", "impact": "20-30% higher yield with certified seeds.", "action": "Buy seeds only from registered dealers.", "time_ago": "This week"},
-    {"category": "scheme", "title": "PM-KUSUM solar pump — 90% subsidy", "summary": "Solar pumps at 10% cost under PM-KUSUM scheme.", "detail": "90% government subsidy on solar pumps. Save ₹20,000-50,000/year on electricity.", "impact": "Free irrigation electricity forever.", "action": "Apply at pmkusum.mnre.gov.in.", "time_ago": "This month"},
+    {"category": "scheme", "title": "Kisan Credit Card — 4% interest crop loan", "summary": "KCC provides easy credit for farming needs.", "detail": "Kisan Credit Card provides credit up to ₹3 lakh at 4% interest.", "impact": "Save money on farming loans.", "action": "Apply at nearest SBI, PNB or cooperative bank.", "time_ago": "This week"},
+    {"category": "alert", "title": "Use certified seeds for 20-30% higher yield", "summary": "KVK recommends certified seeds.", "detail": "Certified seeds ensure better germination and disease resistance.", "impact": "20-30% higher yield with certified seeds.", "action": "Buy seeds only from registered dealers.", "time_ago": "This week"},
+    {"category": "scheme", "title": "PM-KUSUM solar pump — 90% subsidy", "summary": "Solar pumps at 10% cost under PM-KUSUM.", "detail": "90% government subsidy on solar pumps. Save ₹20,000-50,000/year on electricity.", "impact": "Free irrigation electricity forever.", "action": "Apply at pmkusum.mnre.gov.in.", "time_ago": "This month"},
 ]
 
 async def fetch_rss_news(state: str) -> list:
@@ -503,6 +373,8 @@ async def fetch_rss_news(state: str) -> list:
     return news_items
 
 
+# ─── ROUTES ───────────────────────────────────────────────────────────────────
+
 @app.get("/")
 async def root():
     return {"message": "AnnadataHub API is running!", "status": "ok"}
@@ -513,70 +385,35 @@ async def health():
         "status": "healthy",
         "message": "AnnadataHub backend is live!",
         "ai_enabled": bool(GROQ_API_KEY),
-        "ai_provider": "Groq (llama-3.3-70b-versatile)",
-        "vision_provider": "Google Gemini (auto-discover) + Groq fallback",
-        "gemini_enabled": bool(GEMINI_API_KEY)
+        "vision_provider": "Google Gemini + Groq fallback",
+        "gemini_enabled": bool(GEMINI_API_KEY),
+        "mandi_live": bool(AGMARKNET_API_KEY)
     }
 
 @app.get("/api/gemini/models")
 async def list_gemini_models():
-    """Debug endpoint to see available Gemini models"""
     models = await get_available_gemini_models()
     return {"models": models, "count": len(models)}
 
+
+# ─── AUTH ─────────────────────────────────────────────────────────────────────
+
 @app.post("/api/auth/register")
-async def register(user: UserRegister, request: Request):
-    check_rate_limit(get_client_ip(request), "auth")
+async def register(user: UserRegister):
     try:
         existing = await db.users.find_one({"email": user.email})
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
         hashed = bcrypt.hashpw(user.password.encode(), bcrypt.gensalt()).decode()
         user_id = str(uuid.uuid4())
-        # Generate unique referral code for this farmer
-        ref_code = "AH" + user_id[:6].upper()
-
-        # 7-day free trial
-        trial_expiry = datetime.utcnow() + timedelta(days=7)
-
-        # Check if referred by someone
-        referrer_id = None
-        referred_by = getattr(user, "referred_by", None)
-        if referred_by:
-            referrer = await db.users.find_one({"referral_code": referred_by.upper()})
-            if referrer:
-                referrer_id = referrer["_id"]
-
         await db.users.insert_one({
             "_id": user_id, "email": user.email, "password": hashed,
             "full_name": user.full_name, "phone": user.phone, "state": user.state,
-            "plan": "trial", "scan_count": 0, "language": user.language,
-            "created_at": datetime.utcnow().isoformat(),
-            "trial_expiry": trial_expiry,
-            "referral_code": ref_code,
-            "referred_by": referrer_id,
-            "referral_count": 0,
-            "reminder_sent": False
+            "plan": "free", "scan_count": 0, "language": user.language,
+            "created_at": datetime.utcnow().isoformat()
         })
-
-        # Credit referrer if valid — after 3 referrals give 1 month free
-        if referrer_id:
-            referrer_doc = await db.users.find_one({"_id": referrer_id})
-            new_count = referrer_doc.get("referral_count", 0) + 1
-            update_data = {"referral_count": new_count}
-            # Every 3 successful referrals = 1 month premium free
-            if new_count % 3 == 0:
-                current_expiry = referrer_doc.get("premium_expiry", datetime.utcnow())
-                if current_expiry < datetime.utcnow():
-                    current_expiry = datetime.utcnow()
-                new_expiry = current_expiry + timedelta(days=30)
-                update_data["plan"] = "premium"
-                update_data["premium_expiry"] = new_expiry
-                update_data["subscription_cancelled"] = False
-                logger.info(f"Referrer {referrer_id} earned 1 month free premium. Count: {new_count}")
-            await db.users.update_one({"_id": referrer_id}, {"$set": update_data})
-
-        return {"token": create_token(user_id, user.email), "user": {"id": user_id, "email": user.email, "full_name": user.full_name, "plan": "trial", "trial_expiry": trial_expiry.isoformat(), "referral_code": ref_code}}
+        await db.feature_logs.insert_one({"feature": "register", "timestamp": datetime.utcnow().isoformat()})
+        return {"token": create_token(user_id, user.email), "user": {"id": user_id, "email": user.email, "full_name": user.full_name, "plan": "free"}}
     except HTTPException:
         raise
     except Exception as e:
@@ -584,8 +421,7 @@ async def register(user: UserRegister, request: Request):
         raise HTTPException(status_code=500, detail="Registration failed. Please try again.")
 
 @app.post("/api/auth/login")
-async def login(user: UserLogin, request: Request):
-    check_rate_limit(get_client_ip(request), "auth")
+async def login(user: UserLogin):
     try:
         db_user = await db.users.find_one({"email": user.email})
         if not db_user or not bcrypt.checkpw(user.password.encode(), db_user["password"].encode()):
@@ -597,988 +433,559 @@ async def login(user: UserLogin, request: Request):
         raise HTTPException(status_code=500, detail="Login failed. Please try again.")
 
 
+# ─── CROP SCAN ────────────────────────────────────────────────────────────────
+
 @app.post("/api/crop/scan")
-async def scan_crop(scan_request: CropScanRequest, request: Request, authorization: str = Header(None)):
-    check_rate_limit(get_client_ip(request), "scan")
+async def scan_crop(request: CropScanRequest, authorization: str = Header(None)):
     lang_map = {
         "hi": "Respond in Hindi.", "pa": "Respond in Punjabi.",
         "mr": "Respond in Marathi.", "te": "Respond in Telugu.",
-        "ta": "Respond in Tamil.", "en": "Respond in English."
+        "ta": "Respond in Tamil.", "en": "Respond in English.",
+        "kn": "Respond in Kannada.", "ml": "Respond in Malayalam.",
+        "gu": "Respond in Gujarati.", "bn": "Respond in Bengali."
     }
-    lang_instruction = lang_map.get(scan_request.language, "Respond in English.")
-
+    lang_instruction = lang_map.get(request.language, "Respond in English.")
     vision_prompt = (
         f"You are an expert agricultural scientist. {lang_instruction} "
-        f"Analyze this crop/plant image. Identify disease, pest damage, nutrient deficiency, or if healthy. "
-        f"Return ONLY valid JSON: "
-        f"{{\"disease\": \"disease name or Healthy\", \"severity\": \"Low/Medium/High/None\", "
-        f"\"crop\": \"crop type\", \"confidence\": 85, "
-        f"\"treatment\": \"specific treatment steps\", "
-        f"\"medicine\": \"medicine name available in India\", "
-        f"\"dosage\": \"dosage per litre\", "
-        f"\"prevention\": \"prevention tips\", "
-        f"\"urgency\": \"Immediate/Within 7 days/No action needed\"}}"
+        f"Analyze this crop/plant image carefully. Identify disease, pest damage, nutrient deficiency, or if healthy. "
+        f"Return ONLY valid JSON with no extra text: "
+        f'{{\"disease\": \"disease name or Healthy\", \"severity\": \"Low/Medium/High/None\", '
+        f'\"crop\": \"crop type\", \"confidence\": 85, '
+        f'\"treatment\": \"specific treatment steps\", '
+        f'\"medicine\": \"medicine name available in India\", '
+        f'\"dosage\": \"dosage per litre\", '
+        f'\"prevention\": \"prevention tips\", '
+        f'\"urgency\": \"Immediate/Within 7 days/No action needed\"}}'
     )
 
     result = None
+    result = await call_gemini_vision(request.image_base64, vision_prompt)
 
-    # 1. Try Gemini (with auto-discovery of working model)
-    result = await call_gemini_vision(scan_request.image_base64, vision_prompt)
-
-    # 2. Try Groq vision
     if not result:
-        logger.info("Gemini failed, trying Groq vision")
-        result = await call_groq_vision(scan_request.image_base64, vision_prompt)
+        result = await call_groq_vision(request.image_base64, vision_prompt)
 
-    # 3. Text-based diagnosis using crop type (always works)
     if not result:
-        logger.info("Vision failed, using text-based diagnosis")
-        crop = scan_request.crop_type or "unknown crop"
+        crop = request.crop_type or "unknown crop"
         text_prompt = (
             f"An Indian farmer's {crop} crop shows disease/pest symptoms. {lang_instruction} "
             f"Give the most common diagnosis for {crop} in India. "
             f"Return ONLY valid JSON: "
-            f"{{\"disease\": \"most likely disease\", \"severity\": \"Medium\", "
-            f"\"crop\": \"{crop}\", \"confidence\": 65, "
-            f"\"treatment\": \"treatment steps\", "
-            f"\"medicine\": \"medicine available in India\", "
-            f"\"dosage\": \"standard dosage\", "
-            f"\"prevention\": \"prevention tips\", "
-            f"\"urgency\": \"Within 7 days\"}}"
+            f'{{\"disease\": \"most likely disease\", \"severity\": \"Medium\", '
+            f'\"crop\": \"{crop}\", \"confidence\": 65, '
+            f'\"treatment\": \"treatment steps\", '
+            f'\"medicine\": \"medicine available in India\", '
+            f'\"dosage\": \"standard dosage\", '
+            f'\"prevention\": \"prevention tips\", '
+            f'\"urgency\": \"Within 7 days\"}}'
         )
         result = await call_ai(text_prompt)
 
-    # 4. Final fallback
     if not result:
         result = json.dumps({
             "disease": "Please select crop type and try again",
-            "severity": "Unknown",
-            "crop": scan_request.crop_type or "Unknown",
+            "severity": "Unknown", "crop": request.crop_type or "Unknown",
             "confidence": 0,
-            "treatment": "Select your crop type from the dropdown, then scan again for better diagnosis.",
-            "medicine": "N/A",
-            "dosage": "N/A",
+            "treatment": "Select your crop type from the dropdown, then scan again.",
+            "medicine": "N/A", "dosage": "N/A",
             "prevention": "For accurate diagnosis visit your nearest KVK — free service.",
             "urgency": "Within 7 days"
         })
 
-    # Clean JSON
     try:
         clean = result.replace("```json", "").replace("```", "").strip()
         idx = clean.find("{")
         if idx > 0:
             clean = clean[idx:]
-        json.loads(clean)
-        result = clean
-    except Exception:
-        pass
-
-    if authorization:
-        try:
-            payload = verify_token(authorization.replace("Bearer ", ""))
-            await db.scans.insert_one({
-                "_id": str(uuid.uuid4()),
-                "user_id": payload["user_id"],
-                "result": result,
-                "crop_type": scan_request.crop_type,
-                "created_at": datetime.utcnow().isoformat()
-            })
-            await db.users.update_one({"_id": payload["user_id"]}, {"$inc": {"scan_count": 1}})
-        except Exception as e:
-            logger.warning("Could not save scan: %s", e)
-
-    await log_feature("crop_scan", {"crop": scan_request.crop_type, "language": scan_request.language})
-    return {"success": True, "result": result}
-
-
-@app.post("/api/ai/ask")
-async def ask_ai(query: AIQuery, request: Request):
-    check_rate_limit(get_client_ip(request), "ai")
-    cache_key = hashlib.md5(f"{query.question}{query.language}".encode()).hexdigest()
-    cached = cache_get(cache_key)
-    if cached:
-        return {"success": True, "answer": cached, "powered_by": "AnnadataHub AI", "cached": True}
-
-    lang_map = {
-        "hi": "हिंदी में जवाब दें।", "pa": "ਪੰਜਾਬੀ ਵਿੱਚ ਜਵਾਬ ਦਿਓ।",
-        "mr": "मराठीत उत्तर द्या.", "te": "తెలుగులో సమాధానం.",
-        "ta": "தமிழில் பதில்.", "gu": "ગુજરાતીમાં જવાબ.",
-        "bn": "বাংলায় উত্তর দিন।", "kn": "ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರ.",
-        "ml": "മലയാളത്തിൽ.", "ur": "اردو میں جواب۔", "en": "Reply in English."
-    }
-    lang = lang_map.get(query.language, "Reply in English.")
-    system = query.system_prompt if query.system_prompt else f"""You are AnnadataHub AI, an expert agricultural advisor for Indian farmers with deep knowledge of Indian farming. {lang}
-
-When answering farming questions, ALWAYS give DETAILED answers covering:
-1. DIRECT ANSWER — Answer clearly and specifically
-2. DETAILED EXPLANATION — Explain WHY with specific quantities, timings, doses in Indian units (kg/acre, litre/acre, rupees)
-3. STEP BY STEP METHOD — Numbered steps on exactly HOW to do it
-4. BEST TIME/SEASON — Which month, which crop stage
-5. COST & BENEFIT — Approximate cost in rupees, how much farmer saves or earns extra
-6. WARNING — What NOT to do, common Indian farmer mistakes
-7. PRO TIP — One expert tip most farmers don't know
-
-Use simple language a village farmer understands. Give SPECIFIC product names, doses, prices available in Indian markets. Always mention Indian crop varieties. Give state-specific examples (Punjab, UP, Maharashtra, AP etc). Never be vague — always specific with numbers. Base all recommendations on ICAR Package of Practices and State Agricultural University (SAU) guidelines."""
-    result = await call_ai(query.question, system, max_tokens=2000)
-
-    if not result:
-        fallback_map = {
-            "hi": "AI सेवा अभी व्यस्त है। कृपया 1 मिनट बाद कोशिश करें। किसान हेल्पलाइन: 1800-180-1551",
-            "pa": "AI ਸੇਵਾ ਹੁਣੇ ਵਿਅਸਤ ਹੈ। 1 ਮਿੰਟ ਬਾਅਦ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਕਿਸਾਨ ਹੈਲਪਲਾਈਨ: 1800-180-1551",
+        last = clean.rfind("}")
+        if last >= 0:
+            clean = clean[:last+1]
+        parsed = json.loads(clean)
+        await db.feature_logs.insert_one({"feature": "crop_scan", "timestamp": datetime.utcnow().isoformat()})
+        return parsed
+    except:
+        return json.loads(result) if isinstance(result, str) and result.startswith("{") else {
+            "disease": "Scan failed", "severity": "Unknown", "crop": "Unknown",
+            "confidence": 0, "treatment": "Please try again.",
+            "medicine": "N/A", "dosage": "N/A", "prevention": "Visit KVK.", "urgency": "Within 7 days"
         }
-        result = fallback_map.get(query.language, "AI service is busy. Please try again in 1 minute. Kisan Helpline: 1800-180-1551 (Free)")
-    else:
-        cache_set(cache_key, result, hours=6)
-        # Log AI question for admin panel
-        try:
-            await db.ai_logs.insert_one({
-                "_id": str(uuid.uuid4()),
-                "question": query.question[:300],
-                "language": query.language,
-                "ip": get_client_ip(request),
-                "created_at": datetime.utcnow().isoformat()
-            })
-        except Exception:
-            pass
-
-    return {"success": True, "answer": result, "powered_by": "AnnadataHub AI"}
 
 
-@app.get("/api/news")
-async def get_news(request: Request, state: str = "All India", topic: str = "all"):
-    check_rate_limit(get_client_ip(request), "default")
-    cache_key = f"news_{state}_{topic}_{datetime.utcnow().strftime('%Y-%m-%d')}"
-    cached = cache_get(cache_key)
-    if cached:
-        return {"success": True, "news": cached, "source": "cache"}
-
-    rss_news = await fetch_rss_news(state)
-    news = rss_news[:2] if rss_news else []
-
-    if len(news) < 5:
-        try:
-            ai_result = await call_ai(
-                f'Generate {5 - len(news)} important agricultural news for {state}, India. Topic: {topic}. Month: {datetime.utcnow().strftime("%B %Y")}. Return ONLY JSON: {{"news":[{{"category":"price/scheme/weather/alert/general","title":"headline","summary":"2 sentences","detail":"3-4 sentences","impact":"farmer impact","action":"what to do","time_ago":"X hours ago"}}]}}',
-                "Agricultural news editor for India. Return ONLY valid JSON, no markdown."
-            )
-            if ai_result:
-                clean = ai_result.replace("```json", "").replace("```", "").strip()
-                idx = clean.find("{")
-                if idx >= 0:
-                    ai_data = json.loads(clean[idx:])
-                    news.extend(ai_data.get("news", []))
-        except Exception as e:
-            logger.warning("AI news failed: %s", e)
-
-    if not news:
-        news = FALLBACK_NEWS
-
-    cache_set(cache_key, news, hours=6)
-    await log_feature("news", {"state": state, "topic": topic})
-    return {"success": True, "news": news, "source": "live"}
-
+# ─── MANDI PRICES (FIXED) ─────────────────────────────────────────────────────
 
 @app.get("/api/mandi/prices")
-async def mandi_prices(request: Request, crop: str = "wheat", state: str = "Punjab"):
-    check_rate_limit(get_client_ip(request), "default")
-    cache_key = f"mandi_{crop}_{state}_{datetime.utcnow().strftime('%Y-%m-%d')}"
+async def get_mandi_prices(crop: str = "wheat", state: str = "Uttar Pradesh", language: str = "en"):
+    cache_key = f"mandi_{crop.lower()}_{state.lower()}"
     cached = cache_get(cache_key)
     if cached:
-        return {"success": True, "data": cached, "crop": crop, "state": state, "source": "cache"}
+        return cached
 
-    AGMARKNET_KEY = os.environ.get("AGMARKNET_API_KEY", "")
-    agmarknet_data = None
-
-    # Try AGMARKNET real government data first
-    if AGMARKNET_KEY:
+    # 1. Try AGMARKNET live data
+    if AGMARKNET_API_KEY:
         try:
-            crop_map = {
-                "wheat": "Wheat", "rice": "Paddy(Desi)(Brown)", "maize": "Maize",
-                "cotton": "Cotton", "sugarcane": "Sugarcane", "soybean": "Soyabean",
-                "mustard": "Rapeseed(Canola)", "groundnut": "Groundnut",
-                "onion": "Onion", "potato": "Potato", "tomato": "Tomato",
-                "chilli": "Chilli", "turmeric": "Turmeric", "ginger": "Ginger"
-            }
-            api_crop = crop_map.get(crop.lower(), crop.title())
-            async with httpx.AsyncClient(timeout=10.0) as c:
+            async with httpx.AsyncClient(timeout=12.0) as c:
                 r = await c.get(
                     "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070",
                     params={
-                        "api-key": AGMARKNET_KEY, "format": "json", "limit": "10",
-                        "filters[state]": state, "filters[commodity]": api_crop,
-                        "sort[arrival_date]": "desc"
-                    }
+                        "api-key": AGMARKNET_API_KEY,
+                        "format": "json",
+                        "limit": 10,
+                        "filters[State]": state,
+                        "filters[Commodity]": crop.capitalize()
+                    },
+                    headers={"User-Agent": "AnnadataHub/1.0"}
                 )
+                logger.info("AGMARKNET status: %s", r.status_code)
                 if r.status_code == 200:
                     data = r.json()
                     records = data.get("records", [])
                     if records:
                         markets = []
-                        total_modal = 0
                         for rec in records[:5]:
-                            modal = int(float(rec.get("modal_price", 0)))
-                            min_p = int(float(rec.get("min_price", modal)))
-                            max_p = int(float(rec.get("max_price", modal)))
-                            if modal > 0:
-                                markets.append({
-                                    "market": f"{rec.get('market','')} ({rec.get('district','')})",
-                                    "price": modal, "min_price": min_p, "max_price": max_p,
-                                    "unit": "per quintal", "date": rec.get("arrival_date","")
-                                })
-                                total_modal += modal
-                        if markets:
-                            avg = total_modal // len(markets)
-                            msp_map = {"wheat":2275,"rice":2183,"maize":1870,"cotton":6620,"soybean":4600,"mustard":5650,"groundnut":6377}
-                            msp = msp_map.get(crop.lower(), avg)
-                            tip = f"Average today: Rs.{avg}/quintal across {len(markets)} mandis. {'Above MSP - good time to sell!' if avg >= msp else 'Below MSP - consider government procurement.'}"
-                            agmarknet_data = json.dumps({
-                                "markets": markets, "msp": msp, "average_price": avg,
-                                "best_selling_tip": tip,
-                                "date": datetime.utcnow().strftime("%d %b %Y"),
-                                "source": "AGMARKNET - Government of India (Live Data)"
+                            markets.append({
+                                "market": rec.get("Market", rec.get("market", "")),
+                                "district": rec.get("District", ""),
+                                "min_price": int(rec.get("Min Price", rec.get("min_price", 0))),
+                                "max_price": int(rec.get("Max Price", rec.get("max_price", 0))),
+                                "modal_price": int(rec.get("Modal Price", rec.get("modal_price", 0))),
+                                "unit": "per quintal",
+                                "date": rec.get("Arrival Date", rec.get("arrival_date", ""))
                             })
-                            logger.info(f"AGMARKNET: {len(markets)} markets for {crop}/{state}")
+                        result = {
+                            "source": "live",
+                            "is_live": True,
+                            "badge": "LIVE",
+                            "crop": crop,
+                            "state": state,
+                            "markets": markets,
+                            "msp": STATIC_MSP.get(crop.lower(), 0),
+                            "best_selling_tip": f"Sell at the highest paying mandi. Always compare prices.",
+                            "date": datetime.utcnow().strftime("%d %b %Y")
+                        }
+                        cache_set(cache_key, result, hours=6)
+                        await db.feature_logs.insert_one({"feature": "mandi_live", "crop": crop, "state": state, "timestamp": datetime.utcnow().isoformat()})
+                        return result
         except Exception as e:
-            logger.warning(f"AGMARKNET error: {e}")
+            logger.error("AGMARKNET error: %s", e)
 
-    if agmarknet_data:
-        result = agmarknet_data
-        source = "agmarknet"
-    else:
-        msp_map = {"wheat":2275,"rice":2183,"maize":1870,"cotton":6620,"sugarcane":315,"soybean":4600,"mustard":5650,"groundnut":6377,"onion":800,"potato":600,"tomato":800}
-        msp = msp_map.get(crop.lower(), 2000)
-        today = datetime.utcnow().strftime("%d %b %Y")
-        prompt = f"Mandi prices for {crop} in {state} today {today}. MSP Rs.{msp}/quintal. Return ONLY JSON with markets array (market name, price, unit per quintal), msp value, average_price, best_selling_tip, date, source fields. Give 3 realistic prices."
-        source = "ai_estimate"
+    # 2. AI-generated realistic estimate
+    if GROQ_API_KEY:
+        try:
+            season = "Kharif (monsoon)" if datetime.utcnow().month in [6,7,8,9,10] else "Rabi (winter)"
+            prompt = (
+                f"Give realistic current mandi prices for {crop} in {state}, India for {season} season {datetime.utcnow().year}. "
+                f"Based on actual market trends, MSP of ₹{STATIC_MSP.get(crop.lower(), 2000)}/quintal. "
+                f"Return ONLY valid JSON, no extra text: "
+                f'{{"source":"ai_estimate","is_live":false,"badge":"AI Estimate","crop":"{crop}","state":"{state}",'
+                f'"markets":['
+                f'{{"market":"[Main mandi name] Mandi","district":"[district]","min_price":0,"max_price":0,"modal_price":0,"unit":"per quintal","date":"{datetime.utcnow().strftime("%d %b %Y")}"}},'
+                f'{{"market":"[Second mandi] Mandi","district":"[district]","min_price":0,"max_price":0,"modal_price":0,"unit":"per quintal","date":"{datetime.utcnow().strftime("%d %b %Y")}"}},'
+                f'{{"market":"[Third mandi] Mandi","district":"[district]","min_price":0,"max_price":0,"modal_price":0,"unit":"per quintal","date":"{datetime.utcnow().strftime("%d %b %Y")}"}}],'
+                f'"msp":{STATIC_MSP.get(crop.lower(), 0)},'
+                f'"best_selling_tip":"[practical tip for selling {crop} in {state}]",'
+                f'"date":"{datetime.utcnow().strftime("%d %b %Y")}",'
+                f'"note":"AI estimate — add AGMARKNET_API_KEY to Railway for live prices"}}'
+            )
+            ai_result = await call_ai(prompt, max_tokens=800)
+            if ai_result:
+                parsed = clean_json_response(ai_result)
+                if parsed and parsed.get("markets"):
+                    cache_set(cache_key, parsed, hours=3)
+                    await db.feature_logs.insert_one({"feature": "mandi_ai", "crop": crop, "state": state, "timestamp": datetime.utcnow().isoformat()})
+                    return parsed
+        except Exception as e:
+            logger.error("Mandi AI error: %s", e)
 
-    cache_set(cache_key, result, hours=4)
-    await log_feature("mandi_prices", {"crop": crop, "state": state, "source": source})
-    return {"success": True, "data": result, "crop": crop, "state": state, "source": source}
+    # 3. Static fallback
+    fallback = get_mandi_fallback(crop, state)
+    cache_set(cache_key, fallback, hours=1)
+    return fallback
 
+
+# ─── WEATHER ──────────────────────────────────────────────────────────────────
 
 @app.get("/api/weather")
-async def weather(request: Request, location: str = "Punjab"):
-    check_rate_limit(get_client_ip(request), "default")
-    WEATHER_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as c:
-            r = await c.get(
-                "https://api.openweathermap.org/data/2.5/weather",
-                params={"q": f"{location},IN", "appid": WEATHER_KEY, "units": "metric"}
-            )
-            w = r.json()
-            if w.get("cod") != 200:
-                raise Exception(f"OpenWeather error: {w.get('message')}")
-            temp = w["main"]["temp"]
-            humidity = w["main"]["humidity"]
-            rain = w.get("rain", {}).get("1h", 0)
-            desc = w["weather"][0]["description"]
-            spray = humidity < 80 and rain == 0
-            result = json.dumps({
-                "temperature": round(temp), "humidity": humidity,
-                "rainfall_chance": min(int(rain * 100), 100),
-                "description": desc, "spray_suitable": spray,
-                "farming_advice": "Good conditions for farming." if spray else "High humidity or rain. Avoid spraying.",
-                "best_time_to_work": "Early morning 6-10am",
-                "alert": "Rain detected - protect harvested crops!" if rain > 0 else None
-            })
-    except Exception as e:
-        logger.warning("OpenWeather failed: %s", e)
-        result = get_weather_fallback(location)
-    await log_feature("weather", {"location": location})
-    return {"success": True, "data": result, "location": location}
-
-
-@app.get("/api/schemes")
-async def govt_schemes(request: Request, state: str = "Punjab", crop: str = "Wheat", land: str = "2"):
-    check_rate_limit(get_client_ip(request), "default")
-
-    # Comprehensive list of ALL major central + state government schemes
-    ALL_CENTRAL_SCHEMES = """
-CENTRAL GOVERNMENT SCHEMES (apply to ALL states):
-1. PM-KISAN - ₹6,000/year direct income support (₹2,000 every 4 months). pmkisan.gov.in
-2. PM Fasal Bima Yojana (PMFBY) - Crop insurance: Kharif 2% premium, Rabi 1.5% premium, full crop loss covered. pmfby.gov.in
-3. Kisan Credit Card (KCC) - Crop loan up to ₹3 lakh at only 4% interest rate. Any nationalized bank.
-4. PM Kisan Maan Dhan Yojana - ₹3,000/month pension after age 60, contribute ₹55-200/month. maandhan.in
-5. Soil Health Card Scheme - Free soil testing, fertilizer recommendations, saves 20% input cost. soilhealth.dac.gov.in
-6. PM-KUSUM Solar Pump - 90% subsidy on solar water pumps, saves ₹20,000-50,000/year electricity. pmkusum.mnre.gov.in
-7. PM Krishi Sinchai Yojana (PMKSY) - Drip/sprinkler irrigation 55-75% subsidy, "Har Khet Ko Pani". pmksy.gov.in
-8. Paramparagat Krishi Vikas Yojana (PKVY) - ₹50,000/hectare for organic farming, 3 year support. pgsindia-ncof.gov.in
-9. National Food Security Mission (NFSM) - Free/subsidized seeds, fertilizers, machinery for rice/wheat/pulses farmers.
-10. Rashtriya Krishi Vikas Yojana (RKVY) - State-level agricultural development funding, machinery subsidies.
-11. Agricultural Infrastructure Fund (AIF) - Low interest loan up to ₹2 crore at 3% for storage, cold chain. agriinfra.dac.gov.in
-12. eNAM (National Agriculture Market) - Online mandi platform, sell crops at best price from home. enam.gov.in
-13. PM Kisan Sampada Yojana - Food processing unit setup subsidy 35-75%. mofpi.gov.in
-14. Pradhan Mantri Kisan Drone Yojana - Subsidized drone for crop spraying. Up to ₹5 lakh subsidy.
-15. National Beekeeping & Honey Mission - Beehive subsidy, training for additional income. nbhm.gov.in
-16. Sub-Mission on Agricultural Mechanization (SMAM) - 40-50% subsidy on tractors, harvesters, implements. agrimachinery.nic.in
-17. National Horticulture Mission (NHM) - Fruit/vegetable/flower farmers: subsidized planting material, drip irrigation. nhm.nic.in
-18. PM Annadata Aay SanraksHan Abhiyan (PM-AASHA) - Price support, procurement at MSP when market falls below MSP.
-19. Interest Subvention Scheme - Short term crop loan up to ₹3 lakh at effective 4% rate.
-20. Crop Diversification Programme - Incentive to shift from water-intensive crops, financial support for new crops.
-"""
-
-    STATE_SCHEMES = {
-        "Punjab": "Punjab: Aam Aadmi Kisan Scheme (free electricity 300 units/month), Punjab Kisan Karj Mafi (loan waiver), Punjab Agriculture Subsidy Scheme (seed/fertilizer subsidy), Mera Pani Meri Virasat (₹7,000/acre for crop diversification away from paddy).",
-        "Haryana": "Haryana: Meri Fasal Mera Byora (crop registration portal, MSP guarantee), Haryana Kisan Kalyan Pradhikaran, Bhavantar Bharpai Yojana (price difference compensation for vegetables), Saksham Yuva Scheme.",
-        "Uttar Pradesh": "UP: UP Kisan Karj Rahat (loan waiver up to ₹1 lakh), Mukhyamantri Krishak Durghatna Kalyan Yojana (accident insurance ₹5 lakh), UP Kisan Mitra Scheme, Paramparagat Krishi Vikas Yojana UP.",
-        "Bihar": "Bihar: Bihar Rajya Fasal Sahayata Yojana (crop insurance alternative), Krishi Input Subsidy (₹13,500/hectare after flood/drought), DBT Agriculture portal, Bihar Horticulture Development Society subsidy.",
-        "Rajasthan": "Rajasthan: Mukhyamantri Krishak Saathi Yojana (accident ₹2 lakh), Rajasthan Krishi Processing, Marketing & Agri-Business Policy, Rajasthan Solar Agriculture Pumping Scheme.",
-        "Madhya Pradesh": "MP: Mukhyamantri Krishak Jeevan Kalyan Yojana, MP Kisan App, Bhavantar Bhugtan Yojana (price support), MP Rajya Krishi Vikas Yojana.",
-        "Maharashtra": "Maharashtra: Jalyukt Shivar Yojana (water conservation), Godhan Nyay Yojana, Gokul Mission dairy support, Nanaji Deshmukh Krishi Sanjivani Project (climate-resilient farming), Mahadbt farmer portal.",
-        "Gujarat": "Gujarat: Kisan Suryodaya Yojana (daytime electricity for irrigation), GAIC crop insurance, Gujarat Organic Farming Policy, I-Khedut portal for all subsidies.",
-        "Karnataka": "Karnataka: Raitha Siri Scheme (₹10,000 relief), Krishi Bhagya drought scheme, Bhoochetana (soil health), Raitha Samparka Kendra, PM Kusum state component for solar pumps.",
-        "Andhra Pradesh": "AP: YSR Rythu Bharosa (₹13,500/year per farmer), YSR Free Crop Insurance, YSR Sunna Vaddi (zero interest crop loan), Rythu Bharosa Kendras (RBK) free agri services.",
-        "Telangana": "Telangana: Rythu Bandhu (₹10,000/acre per season = ₹20,000/year), Rythu Bima (farmer life insurance ₹5 lakh), Rythu Vedika farmer centers.",
-        "Tamil Nadu": "TN: Uzhavar Sandhai farmer markets, TNEGA schemes, CM Drought Relief, TN Precision Farming Project, TANFNET market linkage.",
-        "Kerala": "Kerala: Karshaka Kshemanidhi pension, Karshaka Sree, Subhiksha Keralam food security program, VFPCK vegetable/fruit promotion.",
-        "West Bengal": "WB: Krishak Bandhu (₹10,000/year + ₹2 lakh life insurance), WB Crop Insurance, Matua community schemes, Bangla Shasya Bima.",
-        "Odisha": "Odisha: KALIA Yojana (₹25,000 support + ₹2 lakh life insurance), Odisha Millet Mission, SMSP price support.",
-        "Uttarakhand": "Uttarakhand: Mukhyamantri Krishak Durghatna Yojana, UK horticulture subsidy schemes, Parvatiya Krishi Vikas Yojana for hill farming.",
-        "Himachal Pradesh": "HP: HP Kisan subsidy portal, Apple/horticulture marketing support, HIMCOSFED farmer cooperative support.",
-        "Jharkhand": "Jharkhand: Mukhyamantri Krishi Ashirwad Yojana, Zero interest loan scheme, Jharkhand Fasal Rahat Yojana.",
-        "Chhattisgarh": "CG: Rajiv Gandhi Kisan Nyay Yojana (input subsidy ₹9,000/acre for paddy), Godhan Nyay Yojana (cowdung purchase).",
-        "Assam": "Assam: Mukhyamantri Krishi Sa-Sajuli Yojana (free farm equipment), Assam Krishi Yojana, ATMA farmer group support.",
-    }
-
-    state_specific = STATE_SCHEMES.get(state, f"Check your state agriculture department website for {state}-specific schemes.")
-
-    prompt = f"""Indian farmer in {state}, growing {crop}, has {land} acres land. List ALL eligible government schemes.
-
-CENTRAL SCHEMES (always include relevant ones):
-PM-KISAN ₹6000/yr | PM Fasal Bima Yojana crop insurance 1.5-2% | Kisan Credit Card ₹3L at 4% | PM Kisan Maan Dhan ₹3000/month pension | Soil Health Card free | PM-KUSUM solar pump 90% subsidy | PMKSY drip irrigation 75% subsidy | SMAM machinery 50% subsidy | NHM horticulture subsidy | eNAM online market | Organic farming PKVY ₹50000/ha | AIF cold storage loan 3% | PM-AASHA MSP protection | Interest subvention 4% crop loan | Kisan Drone 40% subsidy
-
-STATE SCHEMES for {state}: {STATE_SCHEMES.get(state, "Check state agriculture department for " + state + " specific schemes")}
-
-Return ONLY JSON:
-{{"summary":"Eligible for X schemes worth ₹XX,XXX+ benefits","schemes":[{{"name":"","emoji":"","color":"#hex","tagline":"","amount":"","amount_label":"","description":"2 sentences","benefits":["","",""],"documents":["",""],"how_to_apply":"steps","apply_url":"https://"}}]}}
-
-Include 8-10 most relevant schemes for {crop} farmer in {state}. ONLY JSON, no extra text."""
-
-    try:
-        raw = await call_ai(prompt, system="You are an expert on Indian government agricultural schemes. Return ONLY valid JSON.", max_tokens=3000)
-        if not raw:
-            raise ValueError("No AI response")
-        raw = raw.strip()
-        raw = raw.replace("```json", "").replace("```", "").strip()
-        match = re.search(r'\{[\s\S]*\}', raw)
-        if match:
-            data = json.loads(match.group(0))
-        else:
-            raise ValueError("No JSON found")
-    except Exception as e:
-        logger.error(f"Schemes AI error: {e}")
-        # Fallback to hardcoded if AI fails
-        data = {
-            "summary": "You are eligible for 8+ central government schemes",
-            "schemes": [
-                {"name": "PM-KISAN", "emoji": "💰", "color": "#2e7d32", "tagline": "₹6,000/year direct to bank", "amount": "₹6,000", "amount_label": "per year", "description": "Direct income support of Rs.6000 per year to all farmer families in 3 installments.", "benefits": ["₹2,000 every 4 months", "Direct bank transfer", "No middlemen"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Visit pmkisan.gov.in or nearest CSC center", "apply_url": "https://pmkisan.gov.in"},
-                {"name": "PM Fasal Bima Yojana", "emoji": "🌾", "color": "#f57c00", "tagline": "Crop insurance at lowest premium", "amount": "1.5-2%", "amount_label": "premium only", "description": "Comprehensive crop insurance against flood, drought, pest and disease.", "benefits": ["Full crop loss compensation", "Kharif premium only 2%", "Rabi premium only 1.5%"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Sowing certificate"], "how_to_apply": "Contact nearest bank before sowing season", "apply_url": "https://pmfby.gov.in"},
-                {"name": "Kisan Credit Card", "emoji": "💳", "color": "#1565c0", "tagline": "Crop loan at 4% interest", "amount": "₹3 lakh", "amount_label": "at 4% interest", "description": "Easy credit for crop production, post-harvest expenses and allied activities.", "benefits": ["Loan up to ₹3 lakh", "Interest only 4%", "Flexible repayment"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Passport photo"], "how_to_apply": "Apply at nearest SBI, PNB or cooperative bank", "apply_url": "https://pmkisan.gov.in"},
-                {"name": "PM-KUSUM Solar Pump", "emoji": "☀️", "color": "#f57f17", "tagline": "90% subsidy on solar pump", "amount": "90%", "amount_label": "subsidy", "description": "Solar water pumps with 90% government subsidy. Saves electricity cost every year.", "benefits": ["90% subsidy", "Save ₹20,000-50,000/year", "No electricity bills"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Electricity bill"], "how_to_apply": "Apply at pmkusum.mnre.gov.in or district agriculture office", "apply_url": "https://pmkusum.mnre.gov.in"},
-                {"name": "Soil Health Card", "emoji": "🌱", "color": "#558b2f", "tagline": "Free soil testing + advice", "amount": "Free", "amount_label": "no cost", "description": "Free soil testing with crop-wise fertilizer recommendations. Saves 20% fertilizer cost.", "benefits": ["Free soil testing", "Fertilizer recommendations", "Reduce input costs 20%"], "documents": ["Aadhar card", "Land records"], "how_to_apply": "Contact nearest Krishi Vigyan Kendra (KVK)", "apply_url": "https://soilhealth.dac.gov.in"},
-                {"name": "PM Kisan Maan Dhan Yojana", "emoji": "👴", "color": "#6a1b9a", "tagline": "₹3,000/month pension after 60", "amount": "₹3,000", "amount_label": "per month after 60", "description": "Pension scheme for small and marginal farmers. Government matches your contribution.", "benefits": ["₹3,000 monthly pension", "Contribute only ₹55-200/month", "Government matches contribution"], "documents": ["Aadhar card", "Land records", "Bank passbook", "Age proof"], "how_to_apply": "Visit nearest CSC center with all documents", "apply_url": "https://maandhan.in"},
-                {"name": "PM Krishi Sinchai Yojana", "emoji": "💧", "color": "#0277bd", "tagline": "55-75% subsidy on drip/sprinkler", "amount": "75%", "amount_label": "subsidy", "description": "Subsidy on micro-irrigation (drip and sprinkler). Saves 40-50% water and increases yield.", "benefits": ["75% subsidy for small farmers", "Save 40-50% water", "Increase yield 20-30%"], "documents": ["Aadhar card", "Land records", "Bank passbook"], "how_to_apply": "Apply at district agriculture office or pmksy.gov.in", "apply_url": "https://pmksy.gov.in"},
-                {"name": "eNAM Mandi Portal", "emoji": "📱", "color": "#00695c", "tagline": "Sell crops online at best price", "amount": "Best price", "amount_label": "nationwide", "description": "Online national agriculture market. Sell your crops to buyers across India at best price.", "benefits": ["Access buyers nationwide", "Transparent pricing", "Direct payment to bank"], "documents": ["Aadhar card", "Bank passbook", "Mobile number"], "how_to_apply": "Register at enam.gov.in or nearest APMC mandi", "apply_url": "https://enam.gov.in"},
-            ]
-        }
-
-    await log_feature("schemes", {"state": state, "crop": crop})
-    return {"success": True, "data": json.dumps(data)}
-
-
-@app.get("/api/msp")
-async def get_msp(request: Request, crop: str = "Wheat", state: str = "Punjab"):
-    check_rate_limit(get_client_ip(request), "default")
-    # Real MSP 2024-25 prices from CACP — Cabinet Committee on Economic Affairs
-    MSP_PRICES = {
-        "Wheat": {"msp": 2275, "season": "Rabi", "procurement": "FCI / State Procurement Agency"},
-        "Rice": {"msp": 2183, "season": "Kharif", "procurement": "FCI / State Procurement Agency"},
-        "Paddy": {"msp": 2183, "season": "Kharif", "procurement": "FCI / State Procurement Agency"},
-        "Maize": {"msp": 1870, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Cotton": {"msp": 6620, "season": "Kharif", "procurement": "CCI (Cotton Corporation of India)"},
-        "Soybean": {"msp": 4600, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Mustard": {"msp": 5650, "season": "Rabi", "procurement": "NAFED / State Agency"},
-        "Groundnut": {"msp": 6377, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Sugarcane": {"msp": 340, "season": "Annual", "procurement": "Sugar Mills (FRP)"},
-        "Moong": {"msp": 8682, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Urad": {"msp": 7400, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Chana": {"msp": 5440, "season": "Rabi", "procurement": "NAFED / State Agency"},
-        "Sunflower": {"msp": 6760, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Jowar": {"msp": 3371, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Bajra": {"msp": 2500, "season": "Kharif", "procurement": "NAFED / State Agency"},
-        "Ragi": {"msp": 3846, "season": "Kharif", "procurement": "NAFED / State Agency"},
-    }
-
-    crop_data = MSP_PRICES.get(crop, MSP_PRICES.get("Wheat"))
-    msp_price = crop_data["msp"]
-
-    # State-specific procurement info
-    state_portals = {
-        "Punjab": "anaajkharid.in", "Haryana": "hsamb.gov.in",
-        "Uttar Pradesh": "fcs.up.gov.in", "Madhya Pradesh": "mpeuparjan.nic.in",
-        "Rajasthan": "food.raj.nic.in", "Maharashtra": "mahafood.gov.in",
-        "Andhra Pradesh": "apagros.com", "Telangana": "pricingtelangana.cgg.gov.in",
-    }
-    portal = state_portals.get(state, "your state agriculture portal")
-
-    data = {
-        "crop": crop,
-        "msp_price": msp_price,
-        "season": crop_data["season"],
-        "procurement_agency": crop_data["procurement"],
-        "how_to_sell": f"Register on {portal} before selling. Bring your Aadhaar card, land records (Khasra/Khatauni) and bank passbook to your nearest government procurement centre.",
-        "payment_timeline": "3-5 working days — directly to your bank account",
-        "documents_needed": ["Aadhaar card", "Land records (Khasra/Khatauni)", "Bank passbook", "Mobile number linked to Aadhaar"],
-        "helpline": "1800-180-1551",
-        "source": "CACP — Government of India 2024-25",
-        "state_portal": portal,
-        "important": f"If any trader buys {crop} below ₹{msp_price}/quintal it is illegal. File complaint at your district agriculture office or call 1800-180-1551."
-    }
-    return {"success": True, "data": json.dumps(data), "crop": crop, "state": state}
-
-
-@app.get("/api/farmgram/posts")
-async def get_posts(request: Request):
-    check_rate_limit(get_client_ip(request), "default")
-    try:
-        posts = await db.farmgram.find().sort("created_at", -1).limit(20).to_list(20)
-        for p in posts:
-            p["id"] = p.pop("_id")
-        return {"success": True, "posts": posts}
-    except Exception:
-        return {"success": True, "posts": []}
-
-
-@app.post("/api/farmgram/post")
-async def create_post(post: FarmGramPost, request: Request, authorization: str = Header(None)):
-    check_rate_limit(get_client_ip(request), "default")
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Login required to post")
-    payload = verify_token(authorization.replace("Bearer ", ""))
-    try:
-        user = await db.users.find_one({"_id": payload["user_id"]})
-        post_id = str(uuid.uuid4())
-        await db.farmgram.insert_one({
-            "_id": post_id, "user_id": payload["user_id"],
-            "user_name": user["full_name"] if user else "Farmer",
-            "user_state": user.get("state", "") if user else "",
-            "content": post.content, "crop_type": post.crop_type,
-            "location": post.location, "image_base64": post.image_base64,
-            "likes": 0, "liked_by": [],
-            "created_at": datetime.utcnow().isoformat()
-        })
-        return {"success": True, "post_id": post_id}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Could not create post.")
-
-
-@app.post("/api/farmgram/like/{post_id}")
-async def like_post(post_id: str, authorization: str = Header(None)):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Login required")
-    payload = verify_token(authorization.replace("Bearer ", ""))
-    try:
-        post = await db.farmgram.find_one({"_id": post_id})
-        if not post:
-            raise HTTPException(status_code=404, detail="Post not found")
-        liked_by = post.get("liked_by", [])
-        user_id = payload["user_id"]
-        if user_id in liked_by:
-            await db.farmgram.update_one({"_id": post_id}, {"$inc": {"likes": -1}, "$pull": {"liked_by": user_id}})
-            return {"success": True, "action": "unliked"}
-        else:
-            await db.farmgram.update_one({"_id": post_id}, {"$inc": {"likes": 1}, "$push": {"liked_by": user_id}})
-            return {"success": True, "action": "liked"}
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Could not like post")
-
-
-@app.get("/api/user/profile")
-async def get_profile(authorization: str = Header(None)):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="No token provided")
-    payload = verify_token(authorization.replace("Bearer ", ""))
-    try:
-        user = await db.users.find_one({"_id": payload["user_id"]})
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        return {
-            "success": True,
-            "user": {
-                "id": user["_id"], "email": user["email"],
-                "full_name": user["full_name"], "plan": user.get("plan", "free"),
-                "scan_count": user.get("scan_count", 0),
-                "state": user.get("state", ""), "language": user.get("language", "en")
-            }
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Could not fetch profile")
-
-# ── ADMIN ENDPOINTS ───────────────────────────────────────────────────────────
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Anmol2002")
-
-def verify_admin(password: str):
-    if password != ADMIN_PASSWORD:
-        raise HTTPException(status_code=403, detail="Invalid admin password")
-
-
-class WhatToGrowQuery(BaseModel):
-    state: str = "Punjab"
-    season: str = "Rabi"
-    land: str = "2 acres"
-    land_acres: float = 2.0
-    water: str = "Borewell"
-    soil: str = "Loamy"
-    budget: str = "Medium"
-    goal: str = "Maximum income per acre"
-    previous_crop: str = "none"
-    language: str = "English"
-
-@app.post("/api/what-to-grow")
-async def what_to_grow(query: WhatToGrowQuery, request: Request):
-    check_rate_limit(get_client_ip(request), "ai")
-
-    cache_key = hashlib.md5(f"{query.state}{query.season}{query.land_acres}{query.water}{query.soil}{query.budget}{query.goal}".encode()).hexdigest()
+async def get_weather(location: str = "Pithoragarh", state: str = "Uttarakhand", language: str = "en"):
+    cache_key = f"weather_{location.lower()}"
     cached = cache_get(cache_key)
     if cached:
-        try:
-            data = json.loads(cached)
-            return {"success": True, "recommendations": data["recommendations"], "overall_advice": data["overall_advice"], "cached": True}
-        except:
-            pass
+        return cached
 
-    prompt = f"""You are an expert agricultural advisor for Indian farmers. A farmer wants to know what to grow on their farm.
+    prompt = (
+        f"Give farming weather advice for {location}, {state}, India for today {datetime.utcnow().strftime('%B %Y')}. "
+        f"Return ONLY valid JSON: "
+        f'{{"temperature":28,"humidity":65,"rainfall_chance":20,"conditions":"Partly Cloudy",'
+        f'"spray_suitable":true,"farming_advice":"practical advice",'
+        f'"best_time_to_work":"Early morning 6-10am","alert":null,'
+        f'"weekly_outlook":"next 7 days outlook"}}'
+    )
+    result = await call_ai(prompt, max_tokens=500)
+    if result:
+        parsed = clean_json_response(result)
+        if parsed:
+            cache_set(cache_key, parsed, hours=3)
+            return parsed
 
-Farm Details:
-- State: {query.state}
-- Season: {query.season}
-- Land: {query.land} ({query.land_acres} acres)
-- Water Source: {query.water}
-- Soil Type: {query.soil}
-- Budget: {query.budget}
-- Goal: {query.goal}
-- Previous Crop: {query.previous_crop}
+    fallback = {
+        "temperature": 28, "humidity": 65, "rainfall_chance": 20,
+        "conditions": "Partly Cloudy", "spray_suitable": True,
+        "farming_advice": "Good conditions for farming. Avoid spraying during afternoon 12-3pm.",
+        "best_time_to_work": "Early morning 6-10am",
+        "alert": None, "weekly_outlook": "Normal weather expected this week."
+    }
+    return fallback
 
-Respond in {query.language}.
 
-Recommend the TOP 3 best crops for this specific farm. Consider: local climate of {query.state}, water availability ({query.water}), soil type ({query.soil}), budget constraint ({query.budget}), and goal ({query.goal}). Include crop rotation if previous crop is mentioned.
+# ─── GOVERNMENT SCHEMES ───────────────────────────────────────────────────────
 
-Return ONLY valid JSON:
-{{
-  "recommendations": [
-    {{
-      "name": "Crop Name",
-      "emoji": "🌾",
-      "reason": "2-3 sentences why this crop is perfect for THIS specific farm — mention state, water, soil, season specifically",
-      "expected_income": "Rs.X,XXX - Rs.X,XXX per acre",
-      "duration": "XX-XX days",
-      "investment": "Rs.X,XXX - Rs.X,XXX per acre",
-      "risk_level": "Low/Medium/High — one line why",
-      "varieties": "Best 2-3 variety names for {query.state}",
-      "state_specific_tip": "One specific tip for {query.state} farmers growing this crop",
-      "where_to_sell": "Specific markets, mandis, buyers for this crop in {query.state}"
-    }}
-  ],
-  "overall_advice": "One powerful piece of advice for this specific farmer based on all their conditions"
-}}
+@app.get("/api/schemes")
+async def get_schemes(state: str = "Uttarakhand", crop: str = "", land_size: str = "", language: str = "en"):
+    cache_key = f"schemes_{state.lower()}_{crop.lower()}"
+    cached = cache_get(cache_key)
+    if cached:
+        return cached
 
-Give exactly 3 recommendations ranked best to third-best. ONLY JSON, no extra text."""
+    lang_map = {"hi": "Hindi", "pa": "Punjabi", "mr": "Marathi", "en": "English"}
+    lang = lang_map.get(language, "English")
 
+    prompt = (
+        f"You are an Indian government schemes expert. List relevant agricultural schemes for a farmer in {state}"
+        f"{' growing ' + crop if crop else ''}{' with ' + land_size + ' land' if land_size else ''}. "
+        f"Include both central and {state} state schemes. Respond in {lang}. "
+        f"Return ONLY valid JSON: "
+        f'{{"schemes":['
+        f'{{"name":"PM-KISAN","type":"central","benefit":"₹6000/year","eligibility":"All farmers","how_to_apply":"pmkisan.gov.in","documents":["Aadhaar","Bank passbook","Land record"]}},'
+        f'... 8 more relevant schemes],'
+        f'"total_schemes":9,"state":"{state}","personalized_tip":"most important scheme for this farmer"}}'
+    )
+    result = await call_ai(prompt, max_tokens=3000)
+    if result:
+        parsed = clean_json_response(result)
+        if parsed:
+            cache_set(cache_key, parsed, hours=24)
+            await db.feature_logs.insert_one({"feature": "schemes", "state": state, "timestamp": datetime.utcnow().isoformat()})
+            return parsed
+
+    return {"schemes": [], "total_schemes": 0, "state": state, "error": "Could not load schemes. Please try again."}
+
+
+# ─── WHAT TO GROW ─────────────────────────────────────────────────────────────
+
+@app.post("/api/what-to-grow")
+async def what_to_grow(request: WhatToGrowRequest):
+    prompt = (
+        f"You are an expert Indian agricultural advisor. Recommend top 3 crops for a farmer with these details: "
+        f"State: {request.state}, Season: {request.season}, Land: {request.land_size} {request.land_unit}, "
+        f"Water: {request.water_source or 'Not specified'}, Soil: {request.soil_type or 'Not specified'}, "
+        f"Budget: {request.budget or 'Not specified'}, Goal: {request.goal or 'Income'}, "
+        f"Previous crop: {request.previous_crop or 'Not specified'}. "
+        f"Return ONLY valid JSON: "
+        f'{{"recommendations":['
+        f'{{"rank":1,"crop":"Crop Name","variety":"Best variety for {request.state}",'
+        f'"expected_income":"₹X per {request.land_unit}","duration":"X months",'
+        f'"investment":"₹X total","risk":"Low/Medium/High",'
+        f'"why_recommended":"specific reason for {request.state} and {request.season}",'
+        f'"varieties":["var1","var2"],'
+        f'"state_specific_tips":"tips for {request.state} farmers",'
+        f'"where_to_sell":"nearest mandi/FPO/buyer",'
+        f'"government_support":"relevant scheme name"}}],'
+        f'"season":"{request.season}","state":"{request.state}",'
+        f'"best_choice":"Name of rank 1 crop and why in one line"}}'
+    )
+    result = await call_ai(prompt, max_tokens=2500)
+    if result:
+        parsed = clean_json_response(result)
+        if parsed:
+            await db.feature_logs.insert_one({"feature": "what_to_grow", "state": request.state, "timestamp": datetime.utcnow().isoformat()})
+            return parsed
+
+    raise HTTPException(status_code=500, detail="Could not generate recommendations. Please try again.")
+
+
+# ─── AI ASK ───────────────────────────────────────────────────────────────────
+
+@app.post("/api/ai/ask")
+async def ai_ask(query: AIQuery):
+    lang_map = {
+        "hi": "Hindi", "pa": "Punjabi", "mr": "Marathi",
+        "te": "Telugu", "ta": "Tamil", "en": "English",
+        "kn": "Kannada", "ml": "Malayalam", "gu": "Gujarati", "bn": "Bengali"
+    }
+    lang = lang_map.get(query.language, "English")
+
+    system = query.system_prompt or (
+        f"You are AnnadataHub AI — an expert farming advisor for Indian farmers. "
+        f"Always respond in {lang}. Give practical, actionable advice with: "
+        f"exact costs in rupees, product names available in India, step-by-step methods, "
+        f"government schemes if relevant, and realistic income estimates. "
+        f"Structure your answer with clear sections."
+    )
+
+    result = await call_ai(query.question, system=system, max_tokens=2000)
+    if result:
+        await db.feature_logs.insert_one({"feature": "ai_ask", "timestamp": datetime.utcnow().isoformat()})
+        await db.questions_log.insert_one({
+            "question": query.question[:500],
+            "language": query.language,
+            "timestamp": datetime.utcnow().isoformat()
+        })
+        return {"answer": result, "language": query.language}
+
+    raise HTTPException(status_code=500, detail="AI unavailable. Please try again.")
+
+
+# ─── CROP CALENDAR ────────────────────────────────────────────────────────────
+
+@app.post("/api/calendar")
+async def crop_calendar(request: CalendarRequest):
+    prompt = (
+        f"Create a complete crop calendar for {request.crop}"
+        f"{' (' + request.variety + ')' if request.variety else ''} "
+        f"in {request.state}, India"
+        f"{', sowing in ' + request.sowing_month if request.sowing_month else ''}. "
+        f"Return ONLY valid JSON: "
+        f'{{"crop":"{request.crop}","state":"{request.state}","variety":"{request.variety or "Standard"}",'
+        f'"total_duration":"X months",'
+        f'"stages":['
+        f'{{"stage":"Land Preparation","week":"Week 1-2","tasks":["task1","task2"],"inputs":"fertilizer/seeds needed","cost":"₹X","warning":"what to avoid"}},'
+        f'... all stages until harvest],'
+        f'"harvest_time":"Month Year estimate",'
+        f'"expected_yield":"X quintal per acre",'
+        f'"expected_income":"₹X per acre",'
+        f'"key_tips":["tip1","tip2","tip3"]}}'
+    )
+    result = await call_ai(prompt, max_tokens=2000)
+    if result:
+        parsed = clean_json_response(result)
+        if parsed:
+            await db.feature_logs.insert_one({"feature": "calendar", "crop": request.crop, "timestamp": datetime.utcnow().isoformat()})
+            return parsed
+    raise HTTPException(status_code=500, detail="Could not generate calendar. Please try again.")
+
+
+# ─── FERTILIZER CALCULATOR ────────────────────────────────────────────────────
+
+@app.post("/api/fertilizer")
+async def fertilizer_calc(request: FertilizerRequest):
+    prompt = (
+        f"Calculate exact fertilizer doses for {request.crop}"
+        f"{' (' + request.variety + ')' if request.variety else ''} "
+        f"on {request.land_size} {request.land_unit}"
+        f"{' in ' + request.state if request.state else ''}"
+        f"{', soil type: ' + request.soil_type if request.soil_type else ''}"
+        f"{', growth stage: ' + request.growth_stage if request.growth_stage else ''}. "
+        f"Return ONLY valid JSON: "
+        f'{{"crop":"{request.crop}","land":"{request.land_size} {request.land_unit}",'
+        f'"fertilizers":['
+        f'{{"name":"Urea","quantity":"X kg","timing":"when to apply","method":"how to apply","cost":"₹X","brand_example":"available brand in India"}},'
+        f'... all required fertilizers],'
+        f'"micronutrients":["if any"],'
+        f'"total_cost":"₹X",'
+        f'"schedule":"application schedule",'
+        f'"warnings":["what not to mix","overdose risks"],'
+        f'"organic_alternative":"if any"}}'
+    )
+    result = await call_ai(prompt, max_tokens=1500)
+    if result:
+        parsed = clean_json_response(result)
+        if parsed:
+            await db.feature_logs.insert_one({"feature": "fertilizer", "crop": request.crop, "timestamp": datetime.utcnow().isoformat()})
+            return parsed
+    raise HTTPException(status_code=500, detail="Could not calculate. Please try again.")
+
+
+# ─── MSP ──────────────────────────────────────────────────────────────────────
+
+@app.get("/api/msp")
+async def get_msp(crop: str = "", language: str = "en"):
+    cache_key = "msp_all"
+    cached = cache_get(cache_key)
+    if cached:
+        if crop:
+            msp_val = STATIC_MSP.get(crop.lower())
+            if msp_val:
+                return {"crop": crop, "msp": msp_val, "unit": "per quintal", "year": "2024-25", "all_crops": cached}
+        return cached
+
+    msp_data = {
+        "year": "2024-25",
+        "source": "Government of India",
+        "prices": [{"crop": k.capitalize(), "msp": v, "unit": "per quintal"} for k, v in STATIC_MSP.items()]
+    }
+    cache_set(cache_key, msp_data, hours=168)
+
+    if crop:
+        msp_val = STATIC_MSP.get(crop.lower())
+        return {"crop": crop, "msp": msp_val, "unit": "per quintal", "year": "2024-25", "all_crops": msp_data}
+
+    return msp_data
+
+
+# ─── NEWS ─────────────────────────────────────────────────────────────────────
+
+@app.get("/api/news")
+async def get_news(state: str = "Uttarakhand", language: str = "en"):
+    cache_key = f"news_{state.lower()}"
+    cached = cache_get(cache_key)
+    if cached:
+        return cached
+
+    rss_news = await fetch_rss_news(state)
+    all_news = rss_news + FALLBACK_NEWS
+    result = {"news": all_news[:8], "state": state, "date": datetime.utcnow().strftime("%d %b %Y")}
+    cache_set(cache_key, result, hours=2)
+    return result
+
+
+# ─── FARMGRAM ─────────────────────────────────────────────────────────────────
+
+@app.get("/api/farmgram/posts")
+async def get_posts(limit: int = 20, skip: int = 0):
     try:
-        raw = await call_ai(prompt, max_tokens=2500)
-        if not raw:
-            raise ValueError("No AI response")
-        raw = raw.strip().replace("```json","").replace("```","").strip()
-        match = re.search(r'\{[\s\S]*\}', raw)
-        if not match:
-            raise ValueError("No JSON found")
-        data = json.loads(match.group(0))
-        cache_set(cache_key, json.dumps(data), hours=6)
-        await log_feature("what_to_grow", {"state": query.state, "season": query.season})
-        return {"success": True, "recommendations": data["recommendations"], "overall_advice": data.get("overall_advice", "")}
+        posts = []
+        cursor = db.farmgram_posts.find({}).sort("created_at", -1).skip(skip).limit(limit)
+        async for post in cursor:
+            post["_id"] = str(post["_id"]) if "_id" in post else post.get("post_id", "")
+            posts.append(post)
+        return {"posts": posts, "count": len(posts)}
     except Exception as e:
-        logger.error(f"What to grow error: {e}")
-        # Fallback recommendations
-        fallback = {
-            "recommendations": [
-                {"name": "Wheat", "emoji": "🌾", "reason": f"Wheat is a reliable Rabi crop for {query.state} with good MSP support of Rs.2,275/quintal.", "expected_income": "Rs.25,000-35,000 per acre", "duration": "120-150 days", "investment": "Rs.8,000-12,000 per acre", "risk_level": "Low — government MSP protection", "varieties": "HD-3086, PBW-343, DBW-187", "state_specific_tip": f"Sow between Nov 1-15 for best yield in {query.state}.", "where_to_sell": "Local mandi, government procurement centers, private traders"},
-                {"name": "Mustard", "emoji": "🌼", "reason": "Mustard needs less water than wheat and gives good income with oil content premium.", "expected_income": "Rs.20,000-28,000 per acre", "duration": "110-120 days", "investment": "Rs.5,000-8,000 per acre", "risk_level": "Low — drought tolerant", "varieties": "Pusa Bold, RH-30, Varuna", "state_specific_tip": "Sow Oct 15-Nov 15. Aphid management critical in Feb.", "where_to_sell": "Local oil mills, mandis, processor direct"},
-                {"name": "Potato", "emoji": "🥔", "reason": "High value crop with good market demand and strong returns per acre.", "expected_income": "Rs.40,000-80,000 per acre", "duration": "70-90 days", "investment": "Rs.25,000-35,000 per acre", "risk_level": "Medium — late blight risk", "varieties": "Kufri Jyoti, Kufri Pukhraj", "state_specific_tip": "Plant Oct-Nov. Cold store in March for better price in June-August.", "where_to_sell": "Local mandi, cold storage traders, chips companies"}
-            ],
-            "overall_advice": f"Start with lower risk crops like wheat first season, then experiment with higher value crops as you gain confidence and capital."
+        logger.error("FarmGram fetch error: %s", e)
+        return {"posts": [], "count": 0}
+
+@app.post("/api/farmgram/posts")
+async def create_post(post: FarmGramPost, authorization: str = Header(None)):
+    user = get_user_from_header(authorization)
+    try:
+        post_id = str(uuid.uuid4())
+        post_doc = {
+            "post_id": post_id,
+            "content": post.content,
+            "crop_type": post.crop_type,
+            "location": post.location,
+            "has_image": bool(post.image_base64),
+            "user_id": user["user_id"] if user else "anonymous",
+            "user_name": "Farmer",
+            "likes": 0,
+            "comments": [],
+            "created_at": datetime.utcnow().isoformat()
         }
-        return {"success": True, "recommendations": fallback["recommendations"], "overall_advice": fallback["overall_advice"]}
-
-
-# ============================================================
-# RAZORPAY SUBSCRIPTION ENDPOINTS
-# ============================================================
-RAZORPAY_KEY_ID     = os.environ.get("RAZORPAY_KEY_ID", "")
-RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "")
-
-class OrderRequest(BaseModel):
-    plan: str = "premium"  # "premium"
-    token: Optional[str] = None
-
-class PaymentVerify(BaseModel):
-    razorpay_order_id: str
-    razorpay_payment_id: str
-    razorpay_signature: str
-    token: Optional[str] = None
-
-@app.post("/api/payment/create-order")
-async def create_order(body: OrderRequest, request: Request):
-    check_rate_limit(get_client_ip(request), "default")
-    if not RAZORPAY_KEY_ID or not RAZORPAY_KEY_SECRET:
-        raise HTTPException(status_code=503, detail="Payment not configured")
-
-    amount = 9900  # Rs.99 in paise
-
-    try:
-        async with httpx.AsyncClient(timeout=15.0) as c:
-            r = await c.post(
-                "https://api.razorpay.com/v1/orders",
-                auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET),
-                json={"amount": amount, "currency": "INR", "receipt": f"annadatahub_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
-                      "notes": {"plan": body.plan, "product": "AnnadataHub Premium"}}
-            )
-            if r.status_code != 200:
-                raise HTTPException(status_code=500, detail="Order creation failed")
-            order = r.json()
-            return {"success": True, "order_id": order["id"], "amount": amount, "currency": "INR", "key_id": RAZORPAY_KEY_ID}
+        await db.farmgram_posts.insert_one(post_doc)
+        await db.feature_logs.insert_one({"feature": "farmgram_post", "timestamp": datetime.utcnow().isoformat()})
+        return {"success": True, "post_id": post_id}
     except Exception as e:
-        logger.error(f"Razorpay order error: {e}")
-        raise HTTPException(status_code=500, detail="Payment error")
+        logger.error("FarmGram post error: %s", e)
+        raise HTTPException(status_code=500, detail="Could not create post.")
 
-@app.post("/api/payment/verify")
-async def verify_payment(body: PaymentVerify, request: Request):
-    check_rate_limit(get_client_ip(request), "default")
-    if not RAZORPAY_KEY_SECRET:
-        raise HTTPException(status_code=503, detail="Payment not configured")
-
-    # Verify signature
-    msg = f"{body.razorpay_order_id}|{body.razorpay_payment_id}"
-    expected = hmac.HMAC(RAZORPAY_KEY_SECRET.encode(), msg.encode(), hashlib.sha256).hexdigest()
-    if expected != body.razorpay_signature:
-        raise HTTPException(status_code=400, detail="Invalid payment signature")
-
-    # Update user plan in database
+@app.post("/api/farmgram/posts/{post_id}/like")
+async def like_post(post_id: str):
     try:
-        if body.token:
-            payload = jwt.decode(body.token, JWT_SECRET, algorithms=["HS256"])
-            user_id = payload.get("user_id")
-            if user_id:
-                expiry = datetime.utcnow() + timedelta(days=30)
-                await db.users.update_one(
-                    {"_id": user_id},
-                    {"$set": {"plan": "premium", "premium_expiry": expiry, "payment_id": body.razorpay_payment_id}}
-                )
-                await log_feature("premium_payment", {"user_id": user_id, "payment_id": body.razorpay_payment_id})
-        return {"success": True, "message": "Payment verified. Premium activated!"}
-    except Exception as e:
-        logger.error(f"Payment verify error: {e}")
-        raise HTTPException(status_code=500, detail="Verification error")
-
-@app.get("/api/payment/status")
-async def payment_status(request: Request, token: str = ""):
-    if not token:
-        return {"plan": "free"}
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        user_id = payload.get("user_id")
-        user = await db.users.find_one({"_id": user_id})
-        if not user:
-            return {"plan": "free"}
-        plan = user.get("plan", "free")
-        expiry = user.get("premium_expiry")
-        trial_expiry = user.get("trial_expiry")
-        ref_code = user.get("referral_code", "")
-        ref_count = user.get("referral_count", 0)
-
-        # Check trial expiry
-        if plan == "trial" and trial_expiry and datetime.utcnow() > trial_expiry:
-            plan = "free"
-            await db.users.update_one({"_id": user_id}, {"$set": {"plan": "free"}})
-
-        # Check premium expiry
-        if plan == "premium" and expiry and datetime.utcnow() > expiry:
-            plan = "free"
-            await db.users.update_one({"_id": user_id}, {"$set": {"plan": "free"}})
-
-        # Check if renewal reminder needed (3 days before expiry)
-        reminder_needed = False
-        if plan == "premium" and expiry and not user.get("reminder_sent"):
-            days_left = (expiry - datetime.utcnow()).days
-            if days_left <= 3:
-                reminder_needed = True
-
-        return {
-            "plan": plan,
-            "expiry": str(expiry) if expiry else None,
-            "trial_expiry": str(trial_expiry) if trial_expiry else None,
-            "cancelled": user.get("subscription_cancelled", False),
-            "referral_code": ref_code,
-            "referral_count": ref_count,
-            "reminder_needed": reminder_needed,
-            "days_left": (expiry - datetime.utcnow()).days if plan == "premium" and expiry else None
-        }
+        await db.farmgram_posts.update_one({"post_id": post_id}, {"$inc": {"likes": 1}})
+        return {"success": True}
     except:
-        return {"plan": "free"}
+        raise HTTPException(status_code=500, detail="Could not like post.")
 
 
-@app.post("/api/payment/cancel")
-async def cancel_subscription(request: Request, token: str = ""):
-    if not token:
-        raise HTTPException(status_code=401, detail="Not logged in")
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        user_id = payload.get("user_id")
-        user = await db.users.find_one({"_id": user_id})
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
+# ─── ADMIN ────────────────────────────────────────────────────────────────────
 
-        # Don't delete premium immediately — let it run till expiry
-        # Just mark as cancelled so it won't auto-renew
-        await db.users.update_one(
-            {"_id": user_id},
-            {"$set": {"subscription_cancelled": True}}
-        )
-        expiry = user.get("premium_expiry")
-        expiry_str = expiry.strftime("%d %B %Y") if expiry else "end of period"
-        await log_feature("subscription_cancel", {"user_id": user_id})
-        return {"success": True, "message": f"Subscription cancelled. Premium access continues until {expiry_str}."}
-    except Exception as e:
-        logger.error(f"Cancel error: {e}")
-        raise HTTPException(status_code=500, detail="Cancellation error")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Anmol2002")
 
-
-@app.get("/api/referral/info")
-async def referral_info(request: Request, token: str = ""):
-    if not token:
-        raise HTTPException(status_code=401, detail="Not logged in")
-    try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-        user_id = payload.get("user_id")
-        user = await db.users.find_one({"_id": user_id})
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        ref_code = user.get("referral_code", "")
-        ref_count = user.get("referral_count", 0)
-        next_reward_at = 3 - (ref_count % 3)
-        referral_link = f"https://www.annadatahub.com/?ref={ref_code}"
-        return {
-            "success": True,
-            "referral_code": ref_code,
-            "referral_link": referral_link,
-            "referral_count": ref_count,
-            "next_reward_at": next_reward_at,
-            "message": f"Refer {next_reward_at} more farmer(s) to earn 1 month FREE Premium!"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+def verify_admin(authorization: str):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Admin access required")
+    token = authorization.replace("Bearer ", "").strip()
+    if token != ADMIN_PASSWORD and token != hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest():
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            if payload.get("role") != "admin":
+                raise HTTPException(status_code=403, detail="Not an admin")
+        except:
+            raise HTTPException(status_code=401, detail="Invalid admin token")
 
 @app.get("/api/admin/stats")
-async def admin_stats(request: Request, password: str = ""):
-    verify_admin(password)
+async def admin_stats(authorization: str = Header(None)):
+    verify_admin(authorization)
     try:
-        total_farmers = await db.users.count_documents({})
-        total_scans = await db.scans.count_documents({})
-        total_posts = await db.farmgram.count_documents({})
-        total_questions = await db.ai_logs.count_documents({})
-
-        # Farmers by state
-        state_pipeline = [
-            {"$group": {"_id": "$state", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}},
-            {"$limit": 10}
-        ]
-        states = await db.users.aggregate(state_pipeline).to_list(10)
-
-        # Farmers by language
-        lang_pipeline = [
-            {"$group": {"_id": "$language", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}}
-        ]
-        langs = await db.users.aggregate(lang_pipeline).to_list(20)
-
-        # Recent registrations (last 7 days)
-        week_ago = (datetime.utcnow() - timedelta(days=7)).isoformat()
-        recent_farmers = await db.users.count_documents({"created_at": {"$gte": week_ago}})
-
+        total_users = await db.users.count_documents({})
+        total_posts = await db.farmgram_posts.count_documents({})
+        total_questions = await db.questions_log.count_documents({})
+        today = datetime.utcnow().strftime("%Y-%m-%d")
+        today_logs = await db.feature_logs.count_documents({"timestamp": {"$gte": today}})
         return {
-            "success": True,
-            "stats": {
-                "total_farmers": total_farmers,
-                "total_scans": total_scans,
-                "total_posts": total_posts,
-                "total_questions": total_questions,
-                "new_this_week": recent_farmers,
-            },
-            "states": states,
-            "languages": langs
+            "total_users": total_users,
+            "total_posts": total_posts,
+            "total_questions": total_questions,
+            "today_activity": today_logs,
+            "timestamp": datetime.utcnow().isoformat()
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/api/admin/farmers")
-async def admin_farmers(request: Request, password: str = "", limit: int = 50):
-    verify_admin(password)
+async def admin_farmers(authorization: str = Header(None)):
+    verify_admin(authorization)
     try:
-        farmers = await db.users.find(
-            {}, {"password": 0}  # exclude passwords
-        ).sort("created_at", -1).limit(limit).to_list(limit)
-        for f in farmers:
-            f["id"] = f.pop("_id")
-        return {"success": True, "farmers": farmers, "total": len(farmers)}
+        farmers = []
+        cursor = db.users.find({}, {"password": 0}).sort("created_at", -1).limit(100)
+        async for u in cursor:
+            u["_id"] = str(u["_id"]) if "_id" in u else u.get("id", "")
+            farmers.append(u)
+        return {"farmers": farmers, "count": len(farmers)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/api/admin/questions")
-async def admin_questions(request: Request, password: str = "", limit: int = 50):
-    verify_admin(password)
+async def admin_questions(authorization: str = Header(None)):
+    verify_admin(authorization)
     try:
-        questions = await db.ai_logs.find().sort("created_at", -1).limit(limit).to_list(limit)
-        for q in questions:
-            q["id"] = q.pop("_id")
-        return {"success": True, "questions": questions, "total": len(questions)}
+        questions = []
+        cursor = db.questions_log.find({}).sort("timestamp", -1).limit(100)
+        async for q in cursor:
+            q["_id"] = str(q["_id"])
+            questions.append(q)
+        return {"questions": questions, "count": len(questions)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/api/admin/posts")
-async def admin_posts(request: Request, password: str = "", limit: int = 50):
-    verify_admin(password)
+async def admin_posts(authorization: str = Header(None)):
+    verify_admin(authorization)
     try:
-        posts = await db.farmgram.find().sort("created_at", -1).limit(limit).to_list(limit)
-        for p in posts:
-            p["id"] = p.pop("_id")
-        return {"success": True, "posts": posts, "total": len(posts)}
+        posts = []
+        cursor = db.farmgram_posts.find({}).sort("created_at", -1).limit(100)
+        async for p in cursor:
+            p["_id"] = str(p["_id"])
+            posts.append(p)
+        return {"posts": posts, "count": len(posts)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-# ── END ADMIN ─────────────────────────────────────────────────────────────────
-
-
-# ── PHASE 2 ADMIN ENDPOINTS ───────────────────────────────────────────────────
 
 @app.get("/api/admin/feature-usage")
-async def admin_feature_usage(request: Request, password: str = "", days: int = 7):
-    verify_admin(password)
+async def admin_feature_usage(authorization: str = Header(None)):
+    verify_admin(authorization)
     try:
-        # Usage per feature
-        feature_pipeline = [
-            {"$group": {"_id": "$feature", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}}
-        ]
-        features = await db.feature_logs.aggregate(feature_pipeline).to_list(20)
-
-        # Daily usage last N days
-        from_date = (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
-        daily_pipeline = [
-            {"$match": {"date": {"$gte": from_date}}},
-            {"$group": {"_id": "$date", "count": {"$sum": 1}}},
-            {"$sort": {"_id": 1}}
-        ]
-        daily = await db.feature_logs.aggregate(daily_pipeline).to_list(30)
-
-        # Top crops scanned
-        crop_pipeline = [
-            {"$match": {"feature": "crop_scan"}},
-            {"$group": {"_id": "$extra.crop", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}},
-            {"$limit": 10}
-        ]
-        top_crops = await db.feature_logs.aggregate(crop_pipeline).to_list(10)
-
-        # Most active states
-        state_pipeline = [
-            {"$match": {"extra.state": {"$exists": True}}},
-            {"$group": {"_id": "$extra.state", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}},
-            {"$limit": 10}
-        ]
-        active_states = await db.feature_logs.aggregate(state_pipeline).to_list(10)
-
-        return {
-            "success": True,
-            "features": features,
-            "daily": daily,
-            "top_crops": top_crops,
-            "active_states": active_states,
-            "total_events": sum(f["count"] for f in features)
-        }
+        pipeline = [{"$group": {"_id": "$feature", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}]
+        usage = []
+        async for doc in db.feature_logs.aggregate(pipeline):
+            usage.append({"feature": doc["_id"], "count": doc["count"]})
+        return {"usage": usage}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/api/admin/errors")
-async def admin_errors(request: Request, password: str = "", limit: int = 50):
-    verify_admin(password)
-    try:
-        errors = await db.error_logs.find().sort("created_at", -1).limit(limit).to_list(limit)
-        for e in errors:
-            e["id"] = e.pop("_id")
-
-        # Error counts by endpoint
-        err_pipeline = [
-            {"$group": {"_id": "$endpoint", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}}
-        ]
-        err_summary = await db.error_logs.aggregate(err_pipeline).to_list(20)
-
-        return {
-            "success": True,
-            "errors": errors,
-            "summary": err_summary,
-            "total": len(errors)
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/api/admin/growth")
-async def admin_growth(request: Request, password: str = "", days: int = 30):
-    verify_admin(password)
+async def admin_growth(authorization: str = Header(None)):
+    verify_admin(authorization)
     try:
-        # Daily farmer registrations
-        from_date = (datetime.utcnow() - timedelta(days=days)).isoformat()[:10]
-        farmers_raw = await db.users.find(
-            {"created_at": {"$gte": from_date}},
-            {"created_at": 1}
-        ).to_list(1000)
-
-        # Group by date
-        daily_map = {}
-        for f in farmers_raw:
-            date = f.get("created_at", "")[:10]
-            if date:
-                daily_map[date] = daily_map.get(date, 0) + 1
-
-        # Fill missing dates with 0
-        result_days = []
-        for i in range(days):
-            d = (datetime.utcnow() - timedelta(days=days-1-i)).strftime("%Y-%m-%d")
-            result_days.append({"date": d, "count": daily_map.get(d, 0)})
-
-        # Running total
-        total = await db.users.count_documents({})
-        running = total - sum(daily_map.values())
-        for day in result_days:
-            running += day["count"]
-            day["total"] = running
-
-        return {
-            "success": True,
-            "daily": result_days,
-            "total_farmers": total,
-            "new_in_period": sum(daily_map.values())
-        }
+        pipeline = [
+            {"$group": {"_id": {"$substr": ["$created_at", 0, 10]}, "count": {"$sum": 1}}},
+            {"$sort": {"_id": 1}}, {"$limit": 30}
+        ]
+        growth = []
+        async for doc in db.users.aggregate(pipeline):
+            growth.append({"date": doc["_id"], "new_users": doc["count"]})
+        return {"growth": growth}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-# ── END PHASE 2 ADMIN ─────────────────────────────────────────────────────────
+
+@app.get("/api/admin/errors")
+async def admin_errors(authorization: str = Header(None)):
+    verify_admin(authorization)
+    return {"errors": [], "message": "Error logging via Railway logs. Check Railway console."}
