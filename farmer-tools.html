@@ -762,7 +762,7 @@ async function getMandiPrices() {
     const res = await fetch(`${BACKEND}/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`);
     if (!res.ok) throw new Error("HTTP " + res.status);
     const outer = await res.json();
-    const raw = typeof outer.data === "string" ? JSON.parse(outer.data) : outer.data;
+    const raw = outer;
     const markets = raw.markets || [];
     const sourceBadge = outer.source === "agmarknet"
       ? `<span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">✅ LIVE — AGMARKNET Government Data</span>`
