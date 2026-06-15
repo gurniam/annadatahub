@@ -764,7 +764,7 @@ async function getMandiPrices() {
     const outer = await res.json();
     const raw = outer;
     const markets = raw.markets || [];
-    const sourceBadge = outer.source === "agmarknet"
+    const sourceBadge = outer.source === "live"
       ? `<span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">✅ LIVE — AGMARKNET Government Data</span>`
       : `<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">⚠️ AI Estimate — Verify before selling</span>`;
     result.innerHTML = `
