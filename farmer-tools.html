@@ -777,7 +777,7 @@ async function getMandiPrices() {
         <div class="price-grid">
           ${markets.map(m => `<div class="price-card">
             <div class="price-mandi">${m.market}</div>
-            <div class="price-amount">₹${m.price}</div>
+            <div class="price-amount">₹${m.modal_price || m.price}</div>
             ${m.min_price && m.max_price ? `<div style="font-size:0.7rem;color:var(--muted)">₹${m.min_price}–₹${m.max_price}</div>` : ""}
             <div class="price-unit">${m.unit}</div>
             ${m.date ? `<div style="font-size:0.68rem;color:var(--muted)">${m.date}</div>` : ""}
