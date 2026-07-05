@@ -5,6 +5,7 @@
 <meta name="description" content="Free AI crop disease scanner for Indian farmers. Get live mandi prices, weather alerts and government schemes in your language. Powered by AI."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AnnadataHub — Farmer Tools</title>
+<link rel="icon" type="image/svg+xml" href="logo/icon.svg"/>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root{--green:#1a5c2e;--green-mid:#2d7a45;--green-light:#e8f5ec;--gold:#f5a623;--gold-light:#fff8ec;--sky:#0ea5e9;--sky-light:#e0f2fe;--earth:#92400e;--earth-light:#fef3c7;--red:#dc2626;--red-light:#fee2e2;--bg:#f0f5f1;--white:#fff;--text:#1a2e1a;--muted:#6b7c6b;--border:#d0e4d4;}
@@ -96,6 +97,51 @@
   .hidden{display:none;}
   .badge-live{background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;}
   .badge-ai{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;}
+
+  /* ===== REDESIGN: low-literacy friendly additions ===== */
+  body{font-size:16px;}
+  .tab{min-width:74px;padding:10px 4px;gap:2px;}
+  .tab span:first-child{font-size:1.55rem;}
+  .tab .tab-en{font-size:0.78rem;font-weight:700;}
+  .tab .tab-hi{font-size:0.7rem;font-weight:500;opacity:0.85;}
+
+  .crop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
+  .crop-tile{
+    background:white;border:2px solid var(--border);border-radius:12px;
+    padding:10px 4px;text-align:center;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .crop-tile .em{font-size:1.6rem;line-height:1;}
+  .crop-tile .nm{font-size:0.68rem;font-weight:700;color:var(--text);line-height:1.2;}
+  .crop-tile .nm-hi{font-size:0.62rem;color:var(--muted);}
+  .crop-tile.selected{border-color:var(--green);background:var(--green-light);}
+  .crop-tile.selected .nm{color:var(--green);}
+
+  .auto-tile{grid-column:span 4;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;padding:10px;margin-bottom:8px;}
+
+  .state-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--green-light);border-radius:12px;padding:12px 14px;margin-bottom:10px;
+  }
+  .state-row .lbl-line{font-size:0.78rem;color:var(--muted);}
+  .state-row .val-line{font-family:'Baloo 2',cursive;font-weight:700;color:var(--green);font-size:1rem;}
+  .state-change-btn{
+    background:white;border:1.5px solid var(--green);color:var(--green);
+    font-weight:700;font-size:0.78rem;padding:7px 12px;border-radius:8px;cursor:pointer;flex-shrink:0;
+  }
+
+  .listen-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--sky-light);color:#0369a1;border:1.5px solid #7dd3fc;
+    font-family:'Baloo 2',cursive;font-weight:700;font-size:0.85rem;
+    padding:9px 16px;border-radius:100px;cursor:pointer;margin-top:10px;
+  }
+  .listen-btn.playing{background:#0369a1;color:white;}
+
+  .btn{min-height:50px;font-size:1.05rem;}
+  select,input{min-height:46px;font-size:0.95rem;}
+  .tab-en{display:block;}
 </style>
 </head>
 <body>
@@ -106,7 +152,7 @@
     <div class="logo-name">Annadata<span>Hub</span></div>
   </a>
   <select class="lang-select" id="langSelect" onchange="setLanguage(this.value)">
-    <option value="en">English</option><option value="hi">हिंदी</option>
+    <option value="hi">हिंदी</option><option value="en">English</option>
     <option value="pa">ਪੰਜਾਬੀ</option><option value="mr">मराठी</option>
     <option value="te">తెలుగు</option><option value="ta">தமிழ்</option>
     <option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option>
@@ -114,15 +160,15 @@
   </select>
 </div>
 <script>
-try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem("annadatahub_lang")||"en"; if(_s)_s.value=_v; } catch(e){}
+try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem("annadatahub_lang")||"hi"; if(_s)_s.value=_v; } catch(e){}
 </script>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('scan')" id="tab-scan"><span>📷</span><span id="t-scan">Scan</span></button>
-  <button class="tab" onclick="showTab('mandi')" id="tab-mandi"><span>📊</span><span id="t-mandi">Mandi</span></button>
-  <button class="tab" onclick="showTab('weather')" id="tab-weather"><span>🌦️</span><span id="t-weather">Weather</span></button>
-  <button class="tab" onclick="showTab('schemes')" id="tab-schemes"><span>🏛️</span><span id="t-schemes">Schemes</span></button>
-  <button class="tab" onclick="showTab('whattogrow')" id="tab-whattogrow"><span>🌱</span><span id="t-wtg">What to Grow</span></button>
+  <button class="tab active" onclick="showTab('scan')" id="tab-scan"><span>📷</span><span class="tab-en">Scan</span><span class="tab-hi">स्कैन</span></button>
+  <button class="tab" onclick="showTab('mandi')" id="tab-mandi"><span>📊</span><span class="tab-en">Mandi</span><span class="tab-hi">मंडी भाव</span></button>
+  <button class="tab" onclick="showTab('weather')" id="tab-weather"><span>🌦️</span><span class="tab-en">Weather</span><span class="tab-hi">मौसम</span></button>
+  <button class="tab" onclick="showTab('schemes')" id="tab-schemes"><span>🏛️</span><span class="tab-en">Schemes</span><span class="tab-hi">योजना</span></button>
+  <button class="tab" onclick="showTab('whattogrow')" id="tab-whattogrow"><span>🌱</span><span class="tab-en">Grow</span><span class="tab-hi">क्या बोयें</span></button>
 </div>
 
 <div class="content">
@@ -144,30 +190,12 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
           </div>
         </div>
       </div>
-      <div class="two-col">
-        <div class="field">
-          <label id="lbl-crop-type">Crop Type</label>
-          <select id="scanCrop">
-            <option value="">Auto-detect</option>
-            <option>Wheat</option><option>Rice</option><option>Cotton</option>
-            <option>Tomato</option><option>Potato</option><option>Onion</option>
-            <option>Sugarcane</option><option>Mustard</option><option>Soybean</option>
-            <option>Maize</option><option>Chilli</option><option>Mango</option>
-            <option>Banana</option><option>Grapes</option><option>Apple</option>
-          </select>
-        </div>
-        <div class="field">
-          <label id="lbl-lang">Language</label>
-          <select id="scanLang">
-            <option value="en">English</option><option value="hi">हिंदी</option>
-            <option value="pa">ਪੰਜਾਬੀ</option><option value="mr">मराठी</option>
-            <option value="te">తెలుగు</option><option value="ta">தமிழ்</option>
-            <option value="gu">ગુજરાતી</option><option value="kn">ಕನ್ನಡ</option>
-            <option value="ml">മലയാളം</option><option value="bn">বাংলা</option>
-          </select>
-        </div>
+      <div class="field">
+        <label id="lbl-crop-type">🌾 Apni Fasal Chuno / Pick your crop</label>
+        <div class="crop-grid" id="scanCropGrid"></div>
+        <input type="hidden" id="scanCrop" value=""/>
       </div>
-      <button class="btn btn-green" onclick="scanCrop()" id="scan-btn">🔍 <span id="scan-btn-text">Scan for Disease</span></button>
+      <button class="btn btn-green" onclick="scanCrop()" id="scan-btn">🔍 <span id="scan-btn-text">Scan for Disease / जांच करें</span></button>
     </div>
     <div id="scan-result"></div>
   </div>
@@ -176,35 +204,13 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
   <div class="page" id="page-mandi">
     <div class="card">
       <div class="card-title" style="color:var(--green)">📊 <span id="mandi-title">Live Mandi Prices</span></div>
-      <div class="two-col">
-        <div class="field">
-          <label id="lbl-mandi-crop">Your Crop</label>
-          <select id="mandiCrop">
-            <option value="Wheat">Wheat (गेहूं)</option><option value="Rice">Rice (धान)</option>
-            <option value="Maize">Maize (मक्का)</option><option value="Tomato">Tomato (टमाटर)</option>
-            <option value="Potato">Potato (आलू)</option><option value="Onion">Onion (प्याज)</option>
-            <option value="Cotton">Cotton (कपास)</option><option value="Soybean">Soybean (सोयाबीन)</option>
-            <option value="Sugarcane">Sugarcane (गन्ना)</option><option value="Mustard">Mustard (सरसों)</option>
-            <option value="Groundnut">Groundnut (मूंगफली)</option><option value="Chilli">Chilli (मिर्च)</option>
-            <option value="Turmeric">Turmeric (हल्दी)</option><option value="Garlic">Garlic (लहसुन)</option>
-            <option value="Banana">Banana (केला)</option><option value="Mango">Mango (आम)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label id="lbl-mandi-state">Your State</label>
-          <select id="mandiState">
-            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
-            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
-            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
-            <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
-            <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
-            <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
-            <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
-            <option>Assam</option><option>Goa</option>
-          </select>
-        </div>
+      <div class="field">
+        <label id="lbl-mandi-crop">🌾 Apni Fasal Chuno / Pick your crop</label>
+        <div class="crop-grid" id="mandiCropGrid"></div>
+        <input type="hidden" id="mandiCrop" value="Wheat"/>
       </div>
-      <button class="btn btn-green" onclick="getMandiPrices()" id="mandi-btn">📊 <span id="mandi-btn-text">Get Today's Prices</span></button>
+      <div id="mandiStateWrap"></div>
+      <button class="btn btn-green" onclick="getMandiPrices()" id="mandi-btn">📊 <span id="mandi-btn-text">Get Today's Prices / आज का भाव देखें</span></button>
     </div>
     <div id="mandi-result"></div>
   </div>
@@ -212,23 +218,12 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
   <!-- WEATHER -->
   <div class="page" id="page-weather">
     <div class="card">
-      <div class="card-title" style="color:var(--sky)">🌦️ <span id="weather-title">Weather & Farm Alerts</span></div>
-      <div class="two-col">
-        <div class="field">
-          <label id="lbl-location">District / City</label>
-          <input id="weatherLocation" placeholder="e.g. Ludhiana, Nashik"/>
-        </div>
-        <div class="field">
-          <label id="lbl-weather-state">State</label>
-          <select id="weatherState">
-            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
-            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
-            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
-            <option>Uttarakhand</option><option>Tamil Nadu</option><option>Andhra Pradesh</option>
-          </select>
-        </div>
+      <div class="card-title" style="color:var(--sky)">🌦️ <span id="weather-title">Mausam / Weather</span></div>
+      <div class="field">
+        <label id="lbl-location">🏘️ Apna Gaon/Shehar Likho / Your village or city</label>
+        <input id="weatherLocation" placeholder="जैसे Pithoragarh, Ludhiana..." style="font-size:1.05rem"/>
       </div>
-      <button class="btn btn-sky" onclick="getWeather()" id="weather-btn">🌤️ <span id="weather-btn-text">Get Weather & Alerts</span></button>
+      <button class="btn btn-sky" onclick="getWeather()" id="weather-btn">🌤️ <span id="weather-btn-text">Mausam Dekho / Check Weather</span></button>
     </div>
     <div id="weather-result"></div>
   </div>
@@ -236,38 +231,24 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
   <!-- GOVERNMENT SCHEMES -->
   <div class="page" id="page-schemes">
     <div class="card">
-      <div class="card-title" style="color:var(--earth)">🏛️ <span id="schemes-title">Government Schemes</span></div>
-      <div class="two-col">
-        <div class="field">
-          <label id="lbl-scheme-state">State</label>
-          <select id="schemeState" onchange="syncSchemeLandUnit()">
-            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
-            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
-            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
-            <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
-            <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
-            <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
-            <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
-            <option>Assam</option><option>Goa</option>
-          </select>
-        </div>
-        <div class="field">
-          <label id="lbl-scheme-crop">Main Crop</label>
-          <select id="schemeCrop">
-            <option>Wheat</option><option>Rice</option><option>Cotton</option>
-            <option>Sugarcane</option><option>Vegetables</option><option>Fruits</option>
-            <option>Pulses</option><option>Oilseeds</option>
-          </select>
-        </div>
+      <div class="card-title" style="color:var(--earth)">🏛️ <span id="schemes-title">Sarkari Yojana / Govt. Schemes</span></div>
+      <div id="schemeStateWrap"></div>
+      <div class="field">
+        <label id="lbl-scheme-crop">🌾 Mukhya Fasal / Main Crop</label>
+        <select id="schemeCrop" style="font-size:1rem">
+          <option>Wheat</option><option>Rice</option><option>Cotton</option>
+          <option>Sugarcane</option><option>Vegetables</option><option>Fruits</option>
+          <option>Pulses</option><option>Oilseeds</option>
+        </select>
       </div>
       <div class="field">
-        <label id="lbl-land">Land Size</label>
+        <label id="lbl-land">📏 Zameen / Land Size</label>
         <div style="display:flex;gap:6px">
-          <input type="number" id="schemeLandAmt" value="2" min="0.01" step="0.01" style="flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:0.88rem"/>
-          <select id="schemeLandUnit" style="width:100px;padding:11px 8px;border:1.5px solid var(--border);border-radius:10px;font-size:0.78rem;background:white;color:var(--text)"></select>
+          <input type="number" id="schemeLandAmt" value="2" min="0.01" step="0.01" style="flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'Hind',sans-serif;font-size:1rem"/>
+          <select id="schemeLandUnit" style="width:110px;padding:11px 8px;border:1.5px solid var(--border);border-radius:10px;font-size:0.85rem;background:white;color:var(--text)"></select>
         </div>
       </div>
-      <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">🏛️ <span id="schemes-btn-text">Find My Eligible Schemes</span></button>
+      <button class="btn btn-gold" onclick="getSchemes()" id="schemes-btn">🏛️ <span id="schemes-btn-text">Yojana Dekho / Find Schemes</span></button>
     </div>
     <div id="schemes-result"></div>
   </div>
@@ -280,30 +261,16 @@ try { var _s=document.getElementById("langSelect"); var _v=localStorage.getItem(
       <div style="font-size:0.82rem;opacity:0.85" id="wtg-hero-sub">Tell us about your farm — AI will recommend the best crops for maximum income.</div>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--green)">🌾 Tell Us About Your Farm</div>
-      <div class="two-col">
-        <div class="field">
-          <label>Your State</label>
-          <select id="wtgState" onchange="syncWtgLandUnit()">
-            <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
-            <option>Bihar</option><option>Rajasthan</option><option>Madhya Pradesh</option>
-            <option>Maharashtra</option><option>Gujarat</option><option>Karnataka</option>
-            <option>Andhra Pradesh</option><option>Telangana</option><option>Tamil Nadu</option>
-            <option>Kerala</option><option>West Bengal</option><option>Odisha</option>
-            <option>Jharkhand</option><option>Chhattisgarh</option><option>Uttarakhand</option>
-            <option>Himachal Pradesh</option><option>Jammu and Kashmir</option>
-            <option>Assam</option><option>Goa</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Season</label>
-          <select id="wtgSeason">
-            <option value="Kharif (June-October)">Kharif (June-Oct)</option>
-            <option value="Rabi (November-March)">Rabi (Nov-Mar)</option>
-            <option value="Zaid (March-June)">Zaid (Mar-Jun)</option>
-            <option value="Year Round">Year Round</option>
-          </select>
-        </div>
+      <div class="card-title" style="color:var(--green)">🌾 Apne Khet Ke Baare Mein Batao / Tell Us About Your Farm</div>
+      <div id="wtgStateWrap"></div>
+      <div class="field">
+        <label>📅 Season</label>
+        <select id="wtgSeason" style="font-size:1rem">
+          <option value="Kharif (June-October)">Kharif (June-Oct)</option>
+          <option value="Rabi (November-March)">Rabi (Nov-Mar)</option>
+          <option value="Zaid (March-June)">Zaid (Mar-Jun)</option>
+          <option value="Year Round">Year Round</option>
+        </select>
       </div>
       <div class="field">
         <label>Land Size</label>
@@ -400,18 +367,111 @@ const DEFAULT_LAND = {units:["Acre","Hectare"],acres:[1,2.47105]};
 function getLandFT(state){return LAND_UNITS_FT[state]||DEFAULT_LAND;}
 
 function syncSchemeLandUnit(){
-  const d=getLandFT(document.getElementById("schemeState").value);
+  const d=getLandFT(REMEMBERED_STATE.get());
   const sel=document.getElementById("schemeLandUnit");
   if(sel) sel.innerHTML=d.units.map((u,i)=>`<option value="${i}">${u}</option>`).join("");
 }
 function syncWtgLandUnit(){
-  const d=getLandFT(document.getElementById("wtgState").value);
+  const d=getLandFT(REMEMBERED_STATE.get());
   const sel=document.getElementById("wtgLandUnit");
   if(sel) sel.innerHTML=d.units.map((u,i)=>`<option value="${i}">${u}</option>`).join("");
 }
 
-let currentLang="en";
+let currentLang="hi";
 let scanImageBase64=null;
+
+const ALL_STATES=["Uttarakhand","Punjab","Haryana","Uttar Pradesh","Bihar","Rajasthan","Madhya Pradesh","Maharashtra","Gujarat","Karnataka","Andhra Pradesh","Telangana","Tamil Nadu","Kerala","West Bengal","Odisha","Jharkhand","Chhattisgarh","Himachal Pradesh","Jammu and Kashmir","Assam","Goa"];
+
+// ===== REMEMBERED STATE — ask once, reuse everywhere =====
+const REMEMBERED_STATE={
+  get(){ try{return localStorage.getItem("annadatahub_state")||"Uttarakhand";}catch(e){return "Uttarakhand";} },
+  set(v){ try{localStorage.setItem("annadatahub_state",v);}catch(e){} }
+};
+
+function renderStateRow(containerId, onChange){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  const current=REMEMBERED_STATE.get();
+  el.innerHTML=`
+    <div class="state-row" id="${containerId}-display">
+      <div><div class="lbl-line">📍 Aapka Rajya / Your State</div><div class="val-line">${current}</div></div>
+      <button class="state-change-btn" type="button" onclick="document.getElementById('${containerId}-display').style.display='none';document.getElementById('${containerId}-edit').style.display='flex';">Badlo / Change</button>
+    </div>
+    <div class="state-row" id="${containerId}-edit" style="display:none">
+      <select id="${containerId}-select" style="flex:1;font-size:1rem">
+        ${ALL_STATES.map(s=>`<option value="${s}" ${s===current?'selected':''}>${s}</option>`).join("")}
+      </select>
+    </div>`;
+  const sel=document.getElementById(containerId+"-select");
+  sel.addEventListener("change",()=>{
+    REMEMBERED_STATE.set(sel.value);
+    renderStateRow(containerId,onChange);
+    if(onChange) onChange(sel.value);
+  });
+}
+
+function refreshAllStateRows(){
+  renderStateRow("mandiStateWrap");
+  renderStateRow("schemeStateWrap",()=>syncSchemeLandUnit());
+  renderStateRow("wtgStateWrap",()=>syncWtgLandUnit());
+}
+
+// ===== CROP ICON GRID — tap instead of dropdown =====
+const CROP_LIST=[
+  {v:"Wheat",em:"🌾",hi:"गेहूं"},{v:"Rice",em:"🍚",hi:"धान"},
+  {v:"Maize",em:"🌽",hi:"मक्का"},{v:"Cotton",em:"🧵",hi:"कपास"},
+  {v:"Tomato",em:"🍅",hi:"टमाटर"},{v:"Potato",em:"🥔",hi:"आलू"},
+  {v:"Onion",em:"🧅",hi:"प्याज"},{v:"Sugarcane",em:"🎋",hi:"गन्ना"},
+  {v:"Mustard",em:"🌼",hi:"सरसों"},{v:"Soybean",em:"🫘",hi:"सोयाबीन"},
+  {v:"Groundnut",em:"🥜",hi:"मूंगफली"},{v:"Chilli",em:"🌶️",hi:"मिर्च"},
+  {v:"Turmeric",em:"🟡",hi:"हल्दी"},{v:"Garlic",em:"🧄",hi:"लहसुन"},
+  {v:"Banana",em:"🍌",hi:"केला"},{v:"Mango",em:"🥭",hi:"आम"},
+];
+
+function renderCropGrid(gridId, hiddenInputId, opts){
+  opts=opts||{};
+  const grid=document.getElementById(gridId);
+  const hidden=document.getElementById(hiddenInputId);
+  if(!grid||!hidden) return;
+  const selected=hidden.value;
+  let html="";
+  if(opts.allowAuto){
+    html+=`<div class="crop-tile auto-tile ${selected===''?'selected':''}" data-v="" onclick="selectCrop('${gridId}','${hiddenInputId}','')">
+      <span class="em">🤖</span><span class="nm">Auto-detect / खुद पहचानो</span>
+    </div>`;
+  }
+  html+=CROP_LIST.map(c=>`
+    <div class="crop-tile ${selected===c.v?'selected':''}" data-v="${c.v}" onclick="selectCrop('${gridId}','${hiddenInputId}','${c.v}')">
+      <span class="em">${c.em}</span><span class="nm">${c.v}</span><span class="nm-hi">${c.hi}</span>
+    </div>`).join("");
+  grid.innerHTML=html;
+}
+function selectCrop(gridId,hiddenInputId,value){
+  document.getElementById(hiddenInputId).value=value;
+  renderCropGrid(gridId,hiddenInputId,{allowAuto:gridId==="scanCropGrid"});
+}
+
+// ===== VOICE READOUT — for low-literacy users =====
+const SPEECH_LANG_MAP={hi:"hi-IN",en:"en-IN",pa:"pa-IN",mr:"mr-IN",te:"te-IN",ta:"ta-IN",gu:"gu-IN",kn:"kn-IN",ml:"ml-IN",bn:"bn-IN"};
+function speakText(text, btn){
+  if(!("speechSynthesis" in window)){ return; }
+  window.speechSynthesis.cancel();
+  if(btn && btn.classList.contains("playing")){ btn.classList.remove("playing"); return; }
+  const utter=new SpeechSynthesisUtterance(text);
+  utter.lang=SPEECH_LANG_MAP[currentLang]||"hi-IN";
+  utter.rate=0.92;
+  if(btn){
+    btn.classList.add("playing");
+    utter.onend=()=>btn.classList.remove("playing");
+    utter.onerror=()=>btn.classList.remove("playing");
+  }
+  window.speechSynthesis.speak(utter);
+}
+function listenButtonHTML(plainText){
+  if(!("speechSynthesis" in window)) return "";
+  const safe=plainText.replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+  return `<button class="listen-btn" type="button" onclick='speakText("${safe.replace(/"/g,'\\"')}",this)'>🔊 Suniye / Listen</button>`;
+}
 
 function showToast(msg,type="success"){
   const t=document.getElementById("toast");
@@ -429,8 +489,6 @@ function showTab(tab){
 function setLanguage(lang){
   currentLang=lang;
   try{localStorage.setItem("annadatahub_lang",lang);}catch(e){}
-  const scanLang=document.getElementById("scanLang");
-  if(scanLang) scanLang.value=lang;
 }
 
 // SCAN
@@ -480,25 +538,27 @@ function clearScan(){
 
 async function scanCrop(){
   if(!scanImageBase64){
-    showToast("Please take or upload a photo first","error");
+    showToast("Pehle photo lo / Please take a photo first","error");
     return;
   }
   const cropType=document.getElementById("scanCrop").value;
-  const lang=document.getElementById("scanLang").value;
   const btn=document.getElementById("scan-btn");
   const result=document.getElementById("scan-result");
-  btn.disabled=true;btn.innerHTML="⏳ Scanning...";
-  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>AI is analysing your crop photo...</p></div>`;
+  btn.disabled=true;btn.innerHTML="⏳ Jaanch ho rahi hai...";
+  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>AI aapki fasal ki photo jaanch rahi hai...</p></div>`;
   try{
     const res=await fetch(`${BACKEND}/api/crop/scan`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({image_base64:scanImageBase64,crop_type:cropType||null,language:lang})
+      body:JSON.stringify({image_base64:scanImageBase64,crop_type:cropType||null,language:currentLang})
     });
     if(!res.ok) throw new Error("HTTP "+res.status);
     const data=await res.json();
     const isHealthy=(data.disease||"").toLowerCase().includes("health");
     const sevColor={"Low":"#16a34a","Medium":"#f5a623","High":"#dc2626","None":"#16a34a"}[data.severity]||"#6b7c6b";
+    const speakSummary=isHealthy
+      ? `Aapki fasal swasth hai. ${data.prevention||''}`
+      : `${data.disease}. Upchaar: ${data.treatment}. Dawai: ${data.medicine||''}. Matra: ${data.dosage||''}.`;
     result.innerHTML=`
       <div class="disease-result ${isHealthy?'disease-healthy':'disease-sick'}">
         <div style="text-align:center;margin-bottom:12px">
@@ -506,66 +566,68 @@ async function scanCrop(){
           <div class="disease-name">${data.disease||'Result'}</div>
           <div style="font-size:0.82rem;margin-top:4px;opacity:0.8">${data.crop} · Confidence: ${data.confidence}%</div>
           ${data.severity&&data.severity!=='None'&&data.severity!=='Unknown'?`<div style="margin-top:6px;display:inline-block;padding:3px 12px;border-radius:20px;background:${sevColor}22;color:${sevColor};font-weight:700;font-size:0.8rem">${data.severity}</div>`:''}
+          <div>${listenButtonHTML(speakSummary)}</div>
         </div>
       </div>
       ${!isHealthy?`
       <div class="card">
-        <div class="card-title" style="color:var(--green)">💊 Treatment</div>
-        <div style="font-size:0.86rem;line-height:1.6;color:#374151;margin-bottom:10px">${data.treatment}</div>
+        <div class="card-title" style="color:var(--green)">💊 Upchaar / Treatment</div>
+        <div style="font-size:0.9rem;line-height:1.6;color:#374151;margin-bottom:10px">${data.treatment}</div>
         ${data.medicine&&data.medicine!=='N/A'?`
         <div style="background:var(--gold-light);border-radius:10px;padding:12px;margin-bottom:10px">
-          <strong style="color:var(--earth)">💊 Medicine:</strong> ${data.medicine}<br/>
-          <strong style="color:var(--earth)">📏 Dosage:</strong> ${data.dosage}
+          <strong style="color:var(--earth)">💊 Dawai / Medicine:</strong> ${data.medicine}<br/>
+          <strong style="color:var(--earth)">📏 Matra / Dosage:</strong> ${data.dosage}
         </div>`:''}
         <div style="background:var(--green-light);border-radius:10px;padding:12px;margin-bottom:10px">
-          <strong style="color:var(--green)">🛡️ Prevention:</strong>
-          <div style="font-size:0.84rem;margin-top:4px">${data.prevention}</div>
+          <strong style="color:var(--green)">🛡️ Bachav / Prevention:</strong>
+          <div style="font-size:0.88rem;margin-top:4px">${data.prevention}</div>
         </div>
         <div style="background:${data.urgency==='Immediate'?'var(--red-light)':'var(--sky-light)'};border-radius:10px;padding:10px;text-align:center;font-weight:700">
-          ⏰ Urgency: ${data.urgency}
+          ⏰ ${data.urgency}
         </div>
       </div>`:`
       <div class="card">
         <div style="text-align:center;padding:10px">
           <div style="font-size:1.5rem;margin-bottom:6px">🌱</div>
-          <div style="font-weight:700;color:#16a34a">Your crop looks healthy!</div>
-          <div style="font-size:0.84rem;color:var(--muted);margin-top:6px">${data.prevention}</div>
+          <div style="font-weight:700;color:#16a34a">Aapki fasal swasth hai! / Your crop looks healthy!</div>
+          <div style="font-size:0.88rem;color:var(--muted);margin-top:6px">${data.prevention}</div>
         </div>
       </div>`}
-      <div class="powered">🌾 AnnadataHub AI Vision · Confirm with local KVK</div>`;
-    showToast(isHealthy?"Crop is healthy ✅":"⚠️ "+data.disease,isHealthy?"success":"error");
+      <div class="powered">🌾 AnnadataHub AI Vision · Apne KVK se bhi pucchein</div>`;
+    showToast(isHealthy?"Fasal swasth hai ✅":"⚠️ "+data.disease,isHealthy?"success":"error");
   }catch(e){
-    result.innerHTML=`<div class="empty"><div class="icon">😕</div><p>Analysis failed. Try with a clearer photo.</p></div>`;
+    result.innerHTML=`<div class="empty"><div class="icon">😕</div><p>Jaanch nahi ho payi. Phir koshish karein.</p></div>`;
     showToast("Error. Try with better photo.","error");
   }
-  btn.disabled=false;btn.innerHTML=`🔍 <span id="scan-btn-text">Scan for Disease</span>`;
+  btn.disabled=false;btn.innerHTML=`🔍 <span id="scan-btn-text">Scan for Disease / जांच करें</span>`;
 }
 
-// MANDI — FIXED
+// MANDI
 async function getMandiPrices(){
-  const crop=document.getElementById("mandiCrop").value;
-  const state=document.getElementById("mandiState").value;
+  const crop=document.getElementById("mandiCrop").value||"Wheat";
+  const state=REMEMBERED_STATE.get();
   const btn=document.getElementById("mandi-btn");
   const result=document.getElementById("mandi-result");
-  btn.disabled=true;btn.innerHTML="⏳ Fetching prices...";
-  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>Fetching mandi prices...</p></div>`;
+  btn.disabled=true;btn.innerHTML="⏳ Bhav la rahe hain...";
+  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>Mandi bhav la rahe hain...</p></div>`;
   try{
     const res=await fetch(`${BACKEND}/api/mandi/prices?crop=${encodeURIComponent(crop)}&state=${encodeURIComponent(state)}`);
     if(!res.ok) throw new Error("HTTP "+res.status);
-    // FIX: backend returns data directly, not nested in outer.data
     const raw=await res.json();
     const markets=raw.markets||[];
     const isLive=raw.source==="live";
     const sourceBadge=isLive
-      ?`<span class="badge-live">✅ LIVE — Government Data</span>`
-      :`<span class="badge-ai">⚠️ AI Estimate — Verify before selling</span>`;
+      ?`<span class="badge-live">✅ LIVE — Sarkari Data</span>`
+      :`<span class="badge-ai">⚠️ AI Estimate — Bechne se pehle verify karein</span>`;
+    const topPrice=markets[0]?(markets[0].modal_price||markets[0].price):raw.msp;
+    const speakSummary=`${raw.crop} ka bhav ${state} mein, ${markets.map(m=>(m.market||'')+' mein '+(m.modal_price||m.price)+' rupaye').join(', ')}. MSP ${raw.msp} rupaye.`;
     result.innerHTML=`
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px">
           <div class="card-title" style="margin:0;color:var(--green)">${raw.crop} — ${raw.state}</div>
           ${sourceBadge}
         </div>
-        ${raw.msp?`<div style="font-size:0.82rem;margin-bottom:10px;color:var(--muted)">MSP: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date||''}</div>`:''}
+        ${raw.msp?`<div style="font-size:0.86rem;margin-bottom:10px;color:var(--muted)">MSP: <strong style="color:var(--green)">₹${raw.msp}/quintal</strong> | ${raw.date||''}</div>`:''}
         <div class="price-grid">
           ${markets.map(m=>`<div class="price-card">
             <div class="price-mandi">${m.market||m.district||''}</div>
@@ -576,30 +638,32 @@ async function getMandiPrices(){
           </div>`).join("")}
         </div>
         ${raw.best_selling_tip?`<div class="advice-box"><strong>💡 Tip:</strong> ${raw.best_selling_tip}</div>`:''}
+        ${listenButtonHTML(speakSummary)}
         ${raw.note?`<div style="font-size:0.75rem;color:var(--muted);margin-top:8px;text-align:center">${raw.note}</div>`:''}
       </div>
-      <div class="powered">🌾 Verify at your local mandi before selling</div>`;
-    showToast("✅ Prices loaded!");
+      <div class="powered">🌾 Bechne se pehle apni mandi mein bhi bhav check karein</div>`;
+    showToast("✅ Bhav mil gaya!");
   }catch(e){
     result.innerHTML=`<div class="empty"><div class="icon">😕</div><p>Could not fetch. Try again.</p></div>`;
     showToast("Error fetching prices","error");
   }
-  btn.disabled=false;btn.innerHTML=`📊 <span id="mandi-btn-text">Get Today's Prices</span>`;
+  btn.disabled=false;btn.innerHTML=`📊 <span id="mandi-btn-text">Get Today's Prices / आज का भाव देखें</span>`;
 }
 
 // WEATHER
 async function getWeather(){
-  const location=document.getElementById("weatherLocation").value||"Delhi";
-  const state=document.getElementById("weatherState").value||"";
+  const location=document.getElementById("weatherLocation").value||"Pithoragarh";
+  const state=REMEMBERED_STATE.get();
   const btn=document.getElementById("weather-btn");
   const result=document.getElementById("weather-result");
-  btn.disabled=true;btn.innerHTML="⏳ Fetching weather...";
-  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>Fetching weather...</p></div>`;
+  btn.disabled=true;btn.innerHTML="⏳ Mausam la rahe hain...";
+  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>Mausam la rahe hain...</p></div>`;
   try{
     const res=await fetch(`${BACKEND}/api/weather?location=${encodeURIComponent(location)}&state=${encodeURIComponent(state)}`);
     if(!res.ok) throw new Error("HTTP "+res.status);
     const w=await res.json();
     const emoji=w.rainfall_chance>50?'🌧️':w.humidity>75?'☁️':'☀️';
+    const speakSummary=`${location} mein aaj ${w.temperature} degree. ${w.spray_suitable?'Spray karne ke liye accha din hai.':'Aaj spray na karein.'} ${w.farming_advice||''}`;
     result.innerHTML=`
       <div class="weather-hero">
         <div style="font-size:3rem;margin-bottom:6px">${emoji}</div>
@@ -607,28 +671,29 @@ async function getWeather(){
         <div class="weather-desc">${w.conditions||'Current conditions'}</div>
         <div class="weather-location">📍 ${location}</div>
         <div class="weather-grid">
-          <div class="weather-stat"><div class="icon">💧</div><div class="val">${w.humidity}%</div><div class="lbl">Humidity</div></div>
-          <div class="weather-stat"><div class="icon">🌧</div><div class="val">${w.rainfall_chance}%</div><div class="lbl">Rain</div></div>
-          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work||'6-10am'}</div><div class="lbl">Best Time</div></div>
+          <div class="weather-stat"><div class="icon">💧</div><div class="val">${w.humidity}%</div><div class="lbl">Namee</div></div>
+          <div class="weather-stat"><div class="icon">🌧</div><div class="val">${w.rainfall_chance}%</div><div class="lbl">Baarish</div></div>
+          <div class="weather-stat"><div class="icon">⏰</div><div class="val">${w.best_time_to_work||'6-10am'}</div><div class="lbl">Sahi Samay</div></div>
         </div>
       </div>
       <div style="padding:12px;border-radius:10px;background:${w.spray_suitable?'var(--green-light)':'var(--earth-light)'};margin-bottom:12px">
-        <strong>${w.spray_suitable?'✅ Good for spraying':'⚠️ Avoid spraying today'}</strong>
-        <p style="margin-top:4px;font-size:0.85rem">${w.farming_advice}</p>
+        <strong>${w.spray_suitable?'✅ Spray ke liye accha din':'⚠️ Aaj spray na karein'}</strong>
+        <p style="margin-top:4px;font-size:0.88rem">${w.farming_advice}</p>
         ${w.alert?`<p style="color:red;font-weight:600;margin-top:4px">⚠️ ${w.alert}</p>`:''}
+        ${listenButtonHTML(speakSummary)}
       </div>
-      ${w.weekly_outlook?`<div class="advice-box"><strong>📅 This Week:</strong> ${w.weekly_outlook}</div>`:''}`;
-    showToast("✅ Weather loaded!");
+      ${w.weekly_outlook?`<div class="advice-box"><strong>📅 Iss Hafte:</strong> ${w.weekly_outlook}</div>`:''}`;
+    showToast("✅ Mausam mil gaya!");
   }catch(e){
     result.innerHTML=`<div class="empty"><div class="icon">😕</div><p>Could not fetch. Try again.</p></div>`;
     showToast("Error fetching weather","error");
   }
-  btn.disabled=false;btn.innerHTML=`🌤️ <span id="weather-btn-text">Get Weather & Alerts</span>`;
+  btn.disabled=false;btn.innerHTML=`🌤️ <span id="weather-btn-text">Mausam Dekho / Check Weather</span>`;
 }
 
 // SCHEMES
 async function getSchemes(){
-  const state=document.getElementById("schemeState").value;
+  const state=REMEMBERED_STATE.get();
   const crop=document.getElementById("schemeCrop").value;
   const val=parseFloat(document.getElementById("schemeLandAmt").value)||2;
   const idx=parseInt(document.getElementById("schemeLandUnit").value)||0;
@@ -636,8 +701,8 @@ async function getSchemes(){
   const land=parseFloat((val*d.acres[idx]).toFixed(4)).toString();
   const btn=document.getElementById("schemes-btn");
   const result=document.getElementById("schemes-result");
-  btn.disabled=true;btn.innerHTML="⏳ Finding schemes...";
-  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>Finding schemes...</p></div>`;
+  btn.disabled=true;btn.innerHTML="⏳ Yojana dhoondh rahe hain...";
+  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>Yojana dhoondh rahe hain...</p></div>`;
   try{
     const res=await fetch(`${BACKEND}/api/schemes?state=${encodeURIComponent(state)}&crop=${encodeURIComponent(crop)}&land_size=${encodeURIComponent(land)}&language=${currentLang}`);
     if(!res.ok) throw new Error("HTTP "+res.status);
@@ -648,7 +713,7 @@ async function getSchemes(){
       return;
     }
     result.innerHTML=`
-      ${data.personalized_tip?`<div class="advice-box" style="margin-bottom:14px"><strong>🎯 For You:</strong> ${data.personalized_tip}</div>`:''}
+      ${data.personalized_tip?`<div class="advice-box" style="margin-bottom:14px"><strong>🎯 Aapke Liye:</strong> ${data.personalized_tip} ${listenButtonHTML(data.personalized_tip)}</div>`:''}
       ${schemes.map((s,i)=>`
         <div class="scheme-card">
           <div class="scheme-header" onclick="toggleScheme(${i})">
@@ -663,25 +728,25 @@ async function getSchemes(){
             </div>
           </div>
           <div class="scheme-body" id="scheme-${i}">
-            <span class="eligible-badge">✅ You are eligible!</span>
-            ${s.documents?`<div style="margin-bottom:8px"><strong style="font-size:0.82rem;color:var(--green)">Documents needed:</strong><p style="font-size:0.83rem;margin-top:4px">${Array.isArray(s.documents)?s.documents.join(", "):s.documents}</p></div>`:''}
-            ${s.how_to_apply?`<div style="padding:10px;background:var(--green-light);border-radius:8px;font-size:0.83rem;margin-bottom:8px">📋 <strong>How to apply:</strong> ${s.how_to_apply}</div>`:''}
+            <span class="eligible-badge">✅ Aap eligible hain!</span>
+            ${s.documents?`<div style="margin-bottom:8px"><strong style="font-size:0.85rem;color:var(--green)">Kaagaz chahiye / Documents:</strong><p style="font-size:0.86rem;margin-top:4px">${Array.isArray(s.documents)?s.documents.join(", "):s.documents}</p></div>`:''}
+            ${s.how_to_apply?`<div style="padding:10px;background:var(--green-light);border-radius:8px;font-size:0.86rem;margin-bottom:8px">📋 <strong>Apply Kaise Karein:</strong> ${s.how_to_apply}</div>`:''}
           </div>
         </div>`).join("")}
-      <div class="powered">🌾 Always verify at official government websites</div>`;
-    showToast("✅ Schemes loaded!");
+      <div class="powered">🌾 Sarkari website par bhi confirm karein</div>`;
+    showToast("✅ Yojana mil gayi!");
   }catch(e){
     result.innerHTML=`<div class="empty"><div class="icon">😕</div><p>Could not fetch. Try again.</p></div>`;
     showToast("Error fetching schemes","error");
   }
-  btn.disabled=false;btn.innerHTML=`🏛️ <span id="schemes-btn-text">Find My Eligible Schemes</span>`;
+  btn.disabled=false;btn.innerHTML=`🏛️ <span id="schemes-btn-text">Yojana Dekho / Find Schemes</span>`;
 }
 
 function toggleScheme(i){document.getElementById("scheme-"+i).classList.toggle("open");}
 
 // WHAT TO GROW
 async function getWhatToGrow(){
-  const state=document.getElementById("wtgState").value;
+  const state=REMEMBERED_STATE.get();
   const season=document.getElementById("wtgSeason").value;
   const landAmt=parseFloat(document.getElementById("wtgLandAmt").value)||2;
   const landIdx=parseInt(document.getElementById("wtgLandUnit").value)||0;
@@ -695,8 +760,8 @@ async function getWhatToGrow(){
   const prev=document.getElementById("wtgPrev").value||"none";
   const btn=document.getElementById("wtg-btn");
   const result=document.getElementById("wtg-result");
-  btn.disabled=true;btn.innerHTML="⏳ Analysing your farm...";
-  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>AI is analysing your farm conditions...</p></div>`;
+  btn.disabled=true;btn.innerHTML="⏳ Khet ki jaanch ho rahi hai...";
+  result.innerHTML=`<div class="loading"><div class="spinner"></div><p>AI aapke khet ki jaanch kar raha hai...</p></div>`;
   try{
     const res=await fetch(`${BACKEND}/api/what-to-grow`,{
       method:"POST",
@@ -709,8 +774,8 @@ async function getWhatToGrow(){
     if(!recs.length) throw new Error("No recommendations");
     result.innerHTML=`
       <div style="background:var(--green-light);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center">
-        <div style="font-family:'Baloo 2',cursive;font-weight:800;color:var(--green);font-size:1rem">🌾 Top Crops for Your Farm</div>
-        <div style="font-size:0.82rem;color:var(--muted);margin-top:3px">${state} · ${season} · ${landAmt} ${landUnit}</div>
+        <div style="font-family:'Baloo 2',cursive;font-weight:800;color:var(--green);font-size:1rem">🌾 Aapke Khet Ke Liye Behtareen Fasal</div>
+        <div style="font-size:0.84rem;color:var(--muted);margin-top:3px">${state} · ${season} · ${landAmt} ${landUnit}</div>
       </div>
       ${recs.map((crop,i)=>`
         <div style="background:white;border-radius:14px;border:2px solid ${i===0?'var(--green)':'var(--border)'};margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.05)">
@@ -720,33 +785,34 @@ async function getWhatToGrow(){
             ${i===0?'<span style="margin-left:auto;background:white;color:var(--green);padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:700">BEST CHOICE</span>':''}
           </div>
           <div style="padding:14px">
-            <div style="font-size:0.84rem;color:#374151;line-height:1.6;margin-bottom:10px">${crop.why_recommended||crop.reason||''}</div>
+            <div style="font-size:0.88rem;color:#374151;line-height:1.6;margin-bottom:10px">${crop.why_recommended||crop.reason||''}</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
               <div style="background:#f0fdf4;border-radius:8px;padding:8px;text-align:center">
-                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">💰 Expected Income</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">💰 Aamdani</div>
                 <div style="font-family:'Baloo 2',cursive;font-weight:800;color:var(--green);font-size:0.95rem">${crop.expected_income||'—'}</div>
               </div>
               <div style="background:#fef3c7;border-radius:8px;padding:8px;text-align:center">
-                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">📅 Duration</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">📅 Samay</div>
                 <div style="font-family:'Baloo 2',cursive;font-weight:800;color:#92400e;font-size:0.95rem">${crop.duration||'—'}</div>
               </div>
               <div style="background:#eff6ff;border-radius:8px;padding:8px;text-align:center">
-                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">💸 Investment</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">💸 Lagat</div>
                 <div style="font-family:'Baloo 2',cursive;font-weight:800;color:#1d4ed8;font-size:0.88rem">${crop.investment||'—'}</div>
               </div>
               <div style="background:#fdf4ff;border-radius:8px;padding:8px;text-align:center">
-                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">⚠️ Risk</div>
+                <div style="font-size:0.7rem;color:var(--muted);font-weight:600">⚠️ Jokhim</div>
                 <div style="font-family:'Baloo 2',cursive;font-weight:800;color:#7e22ce;font-size:0.88rem">${crop.risk||crop.risk_level||'—'}</div>
               </div>
             </div>
-            ${crop.varieties||crop.variety?`<div style="background:#f8fdf8;border-radius:8px;padding:10px;margin-bottom:8px"><div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">🌱 Recommended Varieties</div><div style="font-size:0.82rem;color:#374151">${Array.isArray(crop.varieties)?crop.varieties.join(", "):crop.varieties||crop.variety}</div></div>`:''}
-            ${crop.state_specific_tips||crop.state_specific_tip?`<div style="background:#fff7ed;border-radius:8px;padding:10px;margin-bottom:8px"><div style="font-weight:700;font-size:0.8rem;color:#92400e;margin-bottom:4px">💡 Tips for ${state}</div><div style="font-size:0.82rem;color:#374151">${crop.state_specific_tips||crop.state_specific_tip}</div></div>`:''}
-            ${crop.where_to_sell?`<div style="background:var(--green-light);border-radius:8px;padding:10px"><div style="font-weight:700;font-size:0.8rem;color:var(--green);margin-bottom:4px">🏪 Where to Sell</div><div style="font-size:0.82rem;color:#374151">${crop.where_to_sell}</div></div>`:''}
+            ${crop.varieties||crop.variety?`<div style="background:#f8fdf8;border-radius:8px;padding:10px;margin-bottom:8px"><div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">🌱 Variety</div><div style="font-size:0.85rem;color:#374151">${Array.isArray(crop.varieties)?crop.varieties.join(", "):crop.varieties||crop.variety}</div></div>`:''}
+            ${crop.state_specific_tips||crop.state_specific_tip?`<div style="background:#fff7ed;border-radius:8px;padding:10px;margin-bottom:8px"><div style="font-weight:700;font-size:0.82rem;color:#92400e;margin-bottom:4px">💡 ${state} Ke Liye Tip</div><div style="font-size:0.85rem;color:#374151">${crop.state_specific_tips||crop.state_specific_tip}</div></div>`:''}
+            ${crop.where_to_sell?`<div style="background:var(--green-light);border-radius:8px;padding:10px"><div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:4px">🏪 Kahan Bechein</div><div style="font-size:0.85rem;color:#374151">${crop.where_to_sell}</div></div>`:''}
+            ${listenButtonHTML(`${crop.crop||crop.name}. ${crop.why_recommended||crop.reason||''}`)}
           </div>
         </div>`).join("")}
-      ${data.best_choice?`<div style="background:#fef3c7;border-radius:12px;padding:12px;font-size:0.8rem;color:#92400e"><strong>💡 Best Choice:</strong> ${data.best_choice}</div>`:''}
-      <div class="powered" style="margin-top:8px">🌾 AnnadataHub AI · Based on your specific farm conditions</div>`;
-    showToast("✅ Recommendations ready!");
+      ${data.best_choice?`<div style="background:#fef3c7;border-radius:12px;padding:12px;font-size:0.84rem;color:#92400e"><strong>💡 Best Choice:</strong> ${data.best_choice}</div>`:''}
+      <div class="powered" style="margin-top:8px">🌾 AnnadataHub AI · Aapke khet ki jaankari ke hisaab se</div>`;
+    showToast("✅ Sujhaav taiyaar hain!");
   }catch(e){
     result.innerHTML=`<div class="empty"><div class="icon">😕</div><p>Could not get recommendations. Please try again.</p></div>`;
     showToast("Error getting recommendations","error");
@@ -757,8 +823,11 @@ async function getWhatToGrow(){
 window.addEventListener("load",()=>{
   const hash=window.location.hash.replace("#","");
   if(hash&&document.getElementById("tab-"+hash)) showTab(hash);
+  refreshAllStateRows();
   syncSchemeLandUnit();
   syncWtgLandUnit();
+  renderCropGrid("scanCropGrid","scanCrop",{allowAuto:true});
+  renderCropGrid("mandiCropGrid","mandiCrop",{allowAuto:false});
   try{
     const saved=localStorage.getItem("annadatahub_lang");
     if(saved){currentLang=saved;document.getElementById("langSelect").value=saved;}
@@ -767,3 +836,4 @@ window.addEventListener("load",()=>{
 </script>
 </body>
 </html>
+
