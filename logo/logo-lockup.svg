@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 128">
+  <g transform="translate(4,14)">
+    <rect x="0" y="0" width="100" height="100" rx="22" fill="#ffffff"/>
+    <path d="M14 66 L34 46 L46 58 L62 34 L86 66 Z" fill="#123d1f" opacity="0.92"/>
+    <line x1="50" y1="60" x2="50" y2="26" stroke="#e3a93a" stroke-width="3.4" stroke-linecap="round"/>
+    <ellipse cx="50" cy="24" rx="6.5" ry="9" fill="#e3a93a"/>
+    <ellipse cx="40" cy="34" rx="5.5" ry="7.5" fill="#e3a93a" transform="rotate(-28 40 34)"/>
+    <ellipse cx="60" cy="34" rx="5.5" ry="7.5" fill="#e3a93a" transform="rotate(28 60 34)"/>
+    <ellipse cx="42" cy="46" rx="5" ry="6.8" fill="#e3a93a" opacity="0.92" transform="rotate(-22 42 46)"/>
+    <ellipse cx="58" cy="46" rx="5" ry="6.8" fill="#e3a93a" opacity="0.92" transform="rotate(22 58 46)"/>
+  </g>
+  <text x="128" y="78" font-family="Baloo 2, cursive" font-weight="800" font-size="46" fill="#123d1f">Annadata<tspan fill="#a85a35">Hub</tspan></text>
+</svg>
